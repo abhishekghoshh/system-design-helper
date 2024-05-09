@@ -8,6 +8,8 @@
 
 #### Books
 - [Crafting Interpreters](https://craftinginterpreters.com/contents.html) **book for building interpreter in C/Java**
+- [Writing An Interpreter In Go](./pdf/writing%20an%20INTERPRETER%20in%20go.pdf)
+- [Writing A Compiler In Go](./pdf/writing-a-compiler-in-go_compress.pdf)
 - [handmade.network](https://handmade.network/)
 
 #### Project using low level programming

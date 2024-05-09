@@ -15,6 +15,8 @@
   - [Lets Chat About Unit Tests](https://www.youtube.com/watch?v=IInciWyU74U)
   - [Thoughts About Unit Testing | Prime Reacts](https://www.youtube.com/watch?v=KzV0mTqBcZA)
   - [When To Unit, E2E, And Integration Test](https://www.youtube.com/watch?v=isI1c0eGSZ0)
+- **others**
+  - [The cloud is over-engineered and overpriced](https://www.youtube.com/watch?v=Cd9aRtwj9xA)
 
 
 ## Medium
