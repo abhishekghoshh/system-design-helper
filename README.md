@@ -3,6 +3,10 @@
 
 ## Youtube
 
+- **gist of blogs and books**
+  - [System-design-notes](https://raymondjones.dev/en/system-design-notes/)
+  - [Hello Interview](https://www.hellointerview.com/learn/system-design/in-a-hurry/introduction)
+
 - **general**
   - [Why I focus on patterns instead of technologies](https://www.youtube.com/watch?v=F1tuoMobTfQ)
 
