@@ -1,5 +1,7 @@
 # System designing basics
 
+## Courses
+- [Grokking Modern System Design Interview for Engineers & Managers](https://www.educative.io/courses/grokking-modern-system-design-interview-for-engineers-managers)
 
 ## Youtube
 
@@ -9,6 +11,11 @@
 
 - **general**
   - [Why I focus on patterns instead of technologies](https://www.youtube.com/watch?v=F1tuoMobTfQ)
+  - [How I Mastered System Design Interviews](https://www.youtube.com/watch?v=l3X1t3kpmwY)
+    - [ashishps1/awesome-system-design-resources](https://github.com/ashishps1/awesome-system-design-resources)
+    - [How to Answer a System Design Interview Problem](https://blog.algomaster.io/p/how-to-answer-a-system-design-interview-problem)
+    - [donnemartin/system-design-primer](https://github.com/donnemartin/system-design-primer)
+    - [binhnguyennus/awesome-scalability](https://github.com/binhnguyennus/awesome-scalability)
 
 - **database**
   - [Adding a cache is not as simple as it may seem...](https://www.youtube.com/watch?v=bFf-A27Rc9s)
