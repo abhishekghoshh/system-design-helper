@@ -9,6 +9,12 @@
 - [pocketbase](https://pocketbase.io/)
 
 
+## Youtube
+- [Paying for software is stupid… 10 free and open-source SaaS replacements](https://www.youtube.com/watch?v=e5dhaQm_J6U)
+- [How To Make AWS Not Suck](https://www.youtube.com/watch?v=gJmz31JywM0)
+- [I tried 5 Firebase alternatives](https://www.youtube.com/watch?v=SXmYUalHyYk)
+
+
 ## Medium blogs
 - [9 Best-In-Class New Tools for Software Developers](https://alex-omeyer.medium.com/9-best-in-class-new-tools-for-software-developers-c9a9bf0153b0)
 - [9 Best-In-Class AI Tools Software Developers Need to Know for 2024](https://alex-omeyer.medium.com/9-best-in-class-ai-tools-software-developers-need-to-know-for-2024-d341e4840e34)
