@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  system-design-helper:
+    container_name: system-design-helper
+    image: abhishek1009/system-design-helper:latest
+    build:
+      context: .  # Set the build context to the docs directory
+    ports:
+      - "8000:8000"
+    # volume mount so that it will get the local changes automatically
+    volumes:
+      - ./:/home/abhishek/workspace/system-design-helper  # Mounts the local docs directory to /docs in the container
