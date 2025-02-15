@@ -1,0 +1,1 @@
+{"config":{"lang":["en"],"separator":"[\\s\\-]+","pipeline":["stopWordFilter"]},"docs":[{"location":"","title":"System design helper","text":""},{"location":"high-level-design/","title":"High Level Design","text":""},{"location":"high-level-design/#youtube-channels","title":"Youtube Channels","text":""}]}
