@@ -3,9 +3,10 @@ site_url: https://abhishekghoshh.github.io/system-design-helper
 
 nav:
   - Home: index.md
-  - Prerequisites: prerequisites.md
   - High Level Design: high-level-design.md
   - Low Level Design: low-level-design.md
+  - Java Interview Helper: java-interview-helper.md
+  - Spring Boot Interview Helper: spring-boot-interview-helper.md
 
 theme:
   name: material
