@@ -27,6 +27,19 @@
 
 
 
+## Spring JPA
+
+- [Hibernate Interview Questions for 2024](https://www.geeksforgeeks.org/hibernate-interview-questions/)
+- [10 Spring JPA Interview Questions (With Example Answers)](https://in.indeed.com/career-advice/interviewing/spring-jpa-interview-questions)
+- [JPA Interview Questions](https://www.interviewbit.com/jpa-interview-questions/)
+- [Important JPA Interview Questions: A Detailed Guide](https://medium.com/@pratik.941/important-jpa-interview-questions-a-detailed-guide-5c1405e0927b)
+- [Essential Spring Data Questions and Answers for Java Developers](https://medium.com/@psdevraye/essential-spring-data-questions-and-answers-for-java-developers-88646a22b0d6)
+- [JPA Interview Questions](https://www.naukri.com/code360/library/jpa-interview-questions)
+- [JPA Interview Questions and Answers for 7 years experience](https://hellointern.in/blog/jpa-interview-questions-and-answers-for-7-years-experience-87445)
+- [Top 15 Spring Data JPA Interview Questions with Answers](https://www.java67.com/2021/01/spring-data-jpa-interview-questions-answers-java.html#google_vignette)
+
+
+
 ## Spring boot async
 
 ### Website
