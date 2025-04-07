@@ -7,6 +7,7 @@ nav:
   - Low Level Design: low-level-design.md
   - Java Interview Helper: java-interview-helper.md
   - Spring Boot Interview Helper: spring-boot-interview-helper.md
+  - Behavioural Interview: behavioural-interview-helper.md
 
 theme:
   name: material
