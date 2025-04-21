@@ -46,7 +46,7 @@
 - [Systems Design in an Hour](https://www.youtube.com/watch?v=iYIjJ7utdDI)
 - [Learn High-Level System Design by Coding YouTube - Full Course](https://www.youtube.com/watch?v=FiXOaYnW64w)
     - [keertipurswani/HHLD-YouTube](https://github.com/keertipurswani/HHLD-YouTube)
-- [Introduction to System Design | Fundamental of System Design | How to Crack System Design](https://www.youtube.com/watch?v=gKezeEe5UKU)a
+- [Introduction to System Design | Fundamental of System Design | How to Crack System Design](https://www.youtube.com/watch?v=gKezeEe5UKU)
 - [How to Crack Any System Design Interview | Scalable System Design](https://www.youtube.com/watch?v=sSKhdZ32YpY)
 - [System Design Concepts Course and Interview Prep](https://www.youtube.com/watch?v=F2FmTdLtb_4)
 
@@ -54,6 +54,7 @@
 
 ### Playlists
 
+- [High Level Design from Basics to Advanced](https://www.youtube.com/playlist?list=PL6W8uoQQ2c63W58rpNFDwdrBnq5G3EfT7)
 - [System Design Roadmap: Database | Networking | Load Balancing | Scalability](https://www.youtube.com/playlist?list=PLLhBy6YSIT0ANaihpjwDBSBju0qUZ82SK)
 
 
@@ -76,9 +77,27 @@
 
 ## Medium
 
+### Channels
+- [Shivam Srivastava](https://medium.com/@shivamsrivastava.iec)
+- [Oleksandr Klymenko](https://medium.com/@alxkm)
+- [Career Drill](https://medium.com/career-drill)
+- [javarevisited](https://medium.com/javarevisited)
+- [Lets Learn Now](https://medium.com/@letslearnnow)
+- [AKCoding.com](https://akcoding.medium.com/)
+- [Mohamed Enn](https://medium.com/@mohamed.enn)
+- [SureshR](https://medium.com/@sureshkrishna75525)
+- [Byte Wise 010](https://medium.com/@bytewise010)
+
+
+- [Shubham Kumbhar](https://usersk7.medium.com/)
+
+
 ### Topics
 - [General Coding Knowledge](https://eddiebarth.medium.com/list/general-coding-knowledge-f2d429d4f0cd)
 - [Coding & Development](https://medium.com/@jscribes/list/coding-development-e360d380bb82)
+
+
+> Move this to somewhere else
 
 ### Blogs
 - [JSON is incredibly slow: Here's What's Faster!](https://medium.com/data-science-community-srm/json-is-incredibly-slow-heres-what-s-faster-ca35d5aaf9e8)
