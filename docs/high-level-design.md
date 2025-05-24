@@ -3,26 +3,33 @@
 ## Blogs & Websites
 
 - [Hello Interview](https://www.hellointerview.com/learn/system-design/in-a-hurry/introduction)
+
 - [How I Mastered System Design Interviews](https://www.youtube.com/watch?v=l3X1t3kpmwY)
   - [ashishps1/awesome-system-design-resources](https://github.com/ashishps1/awesome-system-design-resources)
   - [How to Answer a System Design Interview Problem](https://blog.algomaster.io/p/how-to-answer-a-system-design-interview-problem)
   - [donnemartin/system-design-primer](https://github.com/donnemartin/system-design-primer)
   - [binhnguyennus/awesome-scalability](https://github.com/binhnguyennus/awesome-scalability)
+
 - [The Microservices Book - Learn How to Build and Manage Services in the Cloud](https://www.freecodecamp.org/news/the-microservices-book-build-and-manage-services-in-the-cloud/)
+
 - [Master DevOps If You Master it : System Design !!](https://dev.to/aws-builders/system-design-for-devops-engineers-45lh)
+
 - [Top 110+ DevOps Interview Questions and Answers for 2025](https://dev.to/aws-builders/top-110-devops-interview-questions-and-answers-for-2025-4h4n)
-- [System-design-notes](https://raymondjones.dev/en/system-design-notes/)
+
 - [Learn Software Design Basics: Key Phases and Best Practices](https://www.freecodecamp.org/news/learn-software-design-basics/)
-- [eraser.io/decision-node](https://www.eraser.io/decision-node)
-- [Awesome Software Architecture](https://awesome-architecture.com/)
-- [Grokking Modern System Design Interview for Engineers & Managers](https://www.educative.io/courses/grokking-modern-system-design-interview-for-engineers-managers)
+
 - [System Design Interview - An Insider's Guide (vol 1 & 2)](https://github.com/preslavmihaylov/booknotes/blob/master/system-design/system-design-interview/README.md)
+
+- [eraser.io/decision-node](https://www.eraser.io/decision-node)
+
+- [Grokking Modern System Design Interview for Engineers & Managers](https://www.educative.io/courses/grokking-modern-system-design-interview-for-engineers-managers)
+
 - [NotHarshhaa/DevOps-Interview-Questions](https://github.com/NotHarshhaa/DevOps-Interview-Questions)
 - [javabuddy/best-system-design-resources](https://github.com/javabuddy/best-system-design-resources)
 - [sdmg15/Best-websites-a-programmer-should-visit](https://github.com/sdmg15/Best-websites-a-programmer-should-visit)
 - [mehdihadeli/awesome-software-architecture](https://github.com/mehdihadeli/awesome-software-architecture)
-
-
+- [Awesome Software Architecture](https://awesome-architecture.com/)
+- [System-design-notes](https://raymondjones.dev/en/system-design-notes/)
 
 
 ## Youtube 
@@ -49,6 +56,7 @@
 - [Introduction to System Design | Fundamental of System Design | How to Crack System Design](https://www.youtube.com/watch?v=gKezeEe5UKU)
 - [How to Crack Any System Design Interview | Scalable System Design](https://www.youtube.com/watch?v=sSKhdZ32YpY)
 - [System Design Concepts Course and Interview Prep](https://www.youtube.com/watch?v=F2FmTdLtb_4)
+- [Complete System Design Roadmap 2025 | HLD & LLD by Shradha Ma'am](https://www.youtube.com/watch?v=CuQmQpvw04I)
 
 
 
@@ -77,19 +85,27 @@
 
 ## Medium
 
-### Channels
+### Individuals
+
+- [ByteByteBoot](https://medium.com/@bytebyteboot)
 - [Shivam Srivastava](https://medium.com/@shivamsrivastava.iec)
+    - [Interview Experiences and Learnings](https://medium.com/@shivamsrivastava.iec/list/interview-experiences-and-learnings-b859fb631e28)
+- [Soma](https://medium.com/@somasharma_81597)
 - [Oleksandr Klymenko](https://medium.com/@alxkm)
+- [Ali Zeynalli](https://azeynalli1990.medium.com/)
+- [Mohamed Enn](https://medium.com/@mohamed.enn)
+- [SureshR](https://medium.com/@sureshkrishna75525)
+- [Shubham Kumbhar](https://usersk7.medium.com/)
+- [Cesar Aguirre](https://medium.com/@iamcesaraguirre)
+
+### Channels
+
 - [Career Drill](https://medium.com/career-drill)
 - [javarevisited](https://medium.com/javarevisited)
 - [Lets Learn Now](https://medium.com/@letslearnnow)
 - [AKCoding.com](https://akcoding.medium.com/)
-- [Mohamed Enn](https://medium.com/@mohamed.enn)
-- [SureshR](https://medium.com/@sureshkrishna75525)
 - [Byte Wise 010](https://medium.com/@bytewise010)
-
-
-- [Shubham Kumbhar](https://usersk7.medium.com/)
+- [Medium Tech Articles](https://mediuntecharticles.medium.com/)
 
 
 ### Topics

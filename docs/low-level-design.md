@@ -16,6 +16,7 @@
 - [Low Level Design from Basics to Advanced](https://www.youtube.com/playlist?list=PL6W8uoQQ2c61X_9e6Net0WdYZidm7zooW)
 - [System Design - Low Level](https://www.youtube.com/playlist?list=PLJN9ydlFnJsiEgyjO3D3yBhtiENymhF8G)
 - [Low Level Design Course](https://www.youtube.com/playlist?list=PLpxM6m39X_t-Rk9lZVVD4U6JycAAIIEDW)
+    - [Low Level Design](https://codewitharyan.com/system-design/low-level-design)
 
 
 ## Design Patterns
