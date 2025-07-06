@@ -64,6 +64,7 @@
 
 - [High Level Design from Basics to Advanced](https://www.youtube.com/playlist?list=PL6W8uoQQ2c63W58rpNFDwdrBnq5G3EfT7)
 - [System Design Roadmap: Database | Networking | Load Balancing | Scalability](https://www.youtube.com/playlist?list=PLLhBy6YSIT0ANaihpjwDBSBju0qUZ82SK)
+- [System Design Concepts You NEED to Know](https://www.youtube.com/playlist?list=PL9nWRykSBSFjU7UGR37SFfOb1oMYLNhag)
 
 
 
@@ -88,6 +89,7 @@
 ### Individuals
 
 - [ByteByteBoot](https://medium.com/@bytebyteboot)
+- [Agil](https://medium.com/@aqilzeka99)
 - [Shivam Srivastava](https://medium.com/@shivamsrivastava.iec)
     - [Interview Experiences and Learnings](https://medium.com/@shivamsrivastava.iec/list/interview-experiences-and-learnings-b859fb631e28)
 - [Soma](https://medium.com/@somasharma_81597)
@@ -97,15 +99,18 @@
 - [SureshR](https://medium.com/@sureshkrishna75525)
 - [Shubham Kumbhar](https://usersk7.medium.com/)
 - [Cesar Aguirre](https://medium.com/@iamcesaraguirre)
+- [Martin Hodges](https://medium.com/@martin.hodges)
 
 ### Channels
 
 - [Career Drill](https://medium.com/career-drill)
 - [javarevisited](https://medium.com/javarevisited)
+- [Java Interview](https://medium.com/@kaurharjeet122)
 - [Lets Learn Now](https://medium.com/@letslearnnow)
 - [AKCoding.com](https://akcoding.medium.com/)
 - [Byte Wise 010](https://medium.com/@bytewise010)
 - [Medium Tech Articles](https://mediuntecharticles.medium.com/)
+- [Level Up Coding](https://levelup.gitconnected.com/)
 
 
 ### Topics
