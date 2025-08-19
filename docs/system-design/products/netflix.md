@@ -42,6 +42,8 @@
 - [Practical API Design Using gRPC at Netflix](https://www.infoq.com/news/2021/09/practical-api-design-netflix/#mainLogin/)
 - [How Netflix Uses Java - 2025 Edition](https://www.reddit.com/r/java/comments/1k9lwrh/how_netflix_uses_java_2025_edition/)
 - [How Netflix Runs on Java: Modern Backend Engineering at Scale](https://talent500.com/blog/netflix-java-backend-architecture/)
+- [Netflix Java Tech Stack: Architectural Insights from GraphQL to gRPC](https://www.linkedin.com/pulse/netflix-java-tech-stack-architectural-insights-from-graphql-hau-thai-gm6uc/)
+- [New Trends in API Architecture: GraphQL and  gRPC](https://www.bluealtair.com/blog/new-trends-in-api-architecture-graphql-and-grpc)
 
 
 ### Technologies

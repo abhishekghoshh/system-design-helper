@@ -1,29 +1,21 @@
 # High Level System Design
 
+
 ## Blogs & Websites
 
 - [Hello Interview](https://www.hellointerview.com/learn/system-design/in-a-hurry/introduction)
-
 - [How I Mastered System Design Interviews](https://www.youtube.com/watch?v=l3X1t3kpmwY)
   - [ashishps1/awesome-system-design-resources](https://github.com/ashishps1/awesome-system-design-resources)
   - [How to Answer a System Design Interview Problem](https://blog.algomaster.io/p/how-to-answer-a-system-design-interview-problem)
   - [donnemartin/system-design-primer](https://github.com/donnemartin/system-design-primer)
   - [binhnguyennus/awesome-scalability](https://github.com/binhnguyennus/awesome-scalability)
-
 - [The Microservices Book - Learn How to Build and Manage Services in the Cloud](https://www.freecodecamp.org/news/the-microservices-book-build-and-manage-services-in-the-cloud/)
-
 - [Master DevOps If You Master it : System Design !!](https://dev.to/aws-builders/system-design-for-devops-engineers-45lh)
-
 - [Top 110+ DevOps Interview Questions and Answers for 2025](https://dev.to/aws-builders/top-110-devops-interview-questions-and-answers-for-2025-4h4n)
-
 - [Learn Software Design Basics: Key Phases and Best Practices](https://www.freecodecamp.org/news/learn-software-design-basics/)
-
 - [System Design Interview - An Insider's Guide (vol 1 & 2)](https://github.com/preslavmihaylov/booknotes/blob/master/system-design/system-design-interview/README.md)
-
 - [eraser.io/decision-node](https://www.eraser.io/decision-node)
-
 - [Grokking Modern System Design Interview for Engineers & Managers](https://www.educative.io/courses/grokking-modern-system-design-interview-for-engineers-managers)
-
 - [NotHarshhaa/DevOps-Interview-Questions](https://github.com/NotHarshhaa/DevOps-Interview-Questions)
 - [javabuddy/best-system-design-resources](https://github.com/javabuddy/best-system-design-resources)
 - [sdmg15/Best-websites-a-programmer-should-visit](https://github.com/sdmg15/Best-websites-a-programmer-should-visit)
@@ -32,8 +24,67 @@
 - [System-design-notes](https://raymondjones.dev/en/system-design-notes/)
 
 
-## Youtube 
+- [How to Design Structured Database Systems Using SQL [Full Book]](https://www.freecodecamp.org/news/how-to-design-structured-database-systems-using-sql-full-book/)
+- [Learn DevSecOps and API Security](https://www.freecodecamp.org/news/learn-devsecops-and-api-security/)
 
+---
+
+## Linked-In
+
+- [30 Blogs to Learn 30 System Design Fundamentals](https://www.linkedin.com/posts/ashishps1_30-blogs-to-learn-30-system-design-fundamentals-activity-7328659612201549827-8m7C/)
+- [Still asking "how to start system design"](https://www.linkedin.com/posts/akashsinnghh_still-asking-how-to-start-system-design-activity-7331280170336571394-bwPi/)
+- [Caching Mega Thread !](https://www.linkedin.com/posts/arpit-adlakha-30691a101_caching-mega-thread-caching-concepts-activity-7332340830382317568-SUdH/)
+- [If I had only 1 week to revise for coding interviews, these are the 35 problems I'd solve.](https://www.linkedin.com/posts/akashsinnghh_if-i-had-only-1-week-to-revise-for-coding-activity-7342439587874525185-dipt/)
+
+---
+
+## Medium
+
+### Blogs 
+
+- [The System Design Cheat Sheet That Made Me a Staff Engineer (Save This!)](https://bytebyteboot.medium.com/the-system-design-cheat-sheet-that-made-me-a-staff-engineer-save-this-b2202ef9b449)
+
+
+### Individuals
+
+- [Shivam Srivastava](https://medium.com/@shivamsrivastava.iec)
+    - [Interview Experiences and Learnings](https://medium.com/@shivamsrivastava.iec/list/interview-experiences-and-learnings-b859fb631e28)
+- [Pudari Madhavi](https://medium.com/@pudarimadhavi99)
+- [ByteByteBoot](https://medium.com/@bytebyteboot)
+- [Agil](https://medium.com/@aqilzeka99)
+- [Soma](https://medium.com/@somasharma_81597)
+- [Oleksandr Klymenko](https://medium.com/@alxkm)
+- [Ali Zeynalli](https://azeynalli1990.medium.com/)
+- [Mohamed Enn](https://medium.com/@mohamed.enn)
+- [SureshR](https://medium.com/@sureshkrishna75525)
+- [Shubham Kumbhar](https://usersk7.medium.com/)
+- [Cesar Aguirre](https://medium.com/@iamcesaraguirre)
+- [Martin Hodges](https://medium.com/@martin.hodges)
+- [The Abstract Engineer](https://medium.com/@TheAbstractEngineer)
+
+
+### Channels
+
+- [ScalaBrix](https://scalabrix.medium.com/)
+- [Career Drill](https://medium.com/career-drill)
+- [javarevisited](https://medium.com/javarevisited)
+- [Java Interview](https://medium.com/@kaurharjeet122)
+- [Lets Learn Now](https://medium.com/@letslearnnow)
+- [AKCoding.com](https://akcoding.medium.com/)
+- [Byte Wise 010](https://medium.com/@bytewise010)
+- [Medium Tech Articles](https://mediuntecharticles.medium.com/)
+- [Level Up Coding](https://levelup.gitconnected.com/)
+- [TheSystemDesign](https://medium.com/thesystemdesign)
+
+
+### Topics
+- [General Coding Knowledge](https://eddiebarth.medium.com/list/general-coding-knowledge-f2d429d4f0cd)
+- [Coding & Development](https://medium.com/@jscribes/list/coding-development-e360d380bb82)
+
+
+---
+
+## Youtube 
 
 ## Short videos
 
@@ -48,16 +99,57 @@
 
 ### Single videos
 
+- [System design is actually easy...](https://www.youtube.com/watch?v=sIkRdfSxCiI)
+- [I ACED my Technical Interviews knowing these System Design Basics](https://www.youtube.com/watch?v=FxAom29OEKE)
+- [How to Prepare for System Design Interviews w/ Meta Staff Engineer](https://www.youtube.com/watch?v=Ru54dxzCyD0)
+  - **Chek the description links**
 - [System Design was HARD until I Learned these 30 Concepts](https://www.youtube.com/watch?v=s9Qh9fWeOAk)
 - [How to Master System Design (Step-by-Step for FAANG-Level Interviews)](https://www.youtube.com/watch?v=ZNiNYOJE4yI)
+- [Step-by-Step Roadmap to Mastering System Design for Interviews](https://www.youtube.com/watch?v=Ooy-KpRH66M)
+- [Complete System Design Roadmap 2025 | HLD & LLD by Shradha Ma'am](https://www.youtube.com/watch?v=CuQmQpvw04I)
+
+
 - [Systems Design in an Hour](https://www.youtube.com/watch?v=iYIjJ7utdDI)
 - [Learn High-Level System Design by Coding YouTube - Full Course](https://www.youtube.com/watch?v=FiXOaYnW64w)
     - [keertipurswani/HHLD-YouTube](https://github.com/keertipurswani/HHLD-YouTube)
 - [Introduction to System Design | Fundamental of System Design | How to Crack System Design](https://www.youtube.com/watch?v=gKezeEe5UKU)
 - [How to Crack Any System Design Interview | Scalable System Design](https://www.youtube.com/watch?v=sSKhdZ32YpY)
 - [System Design Concepts Course and Interview Prep](https://www.youtube.com/watch?v=F2FmTdLtb_4)
-- [Complete System Design Roadmap 2025 | HLD & LLD by Shradha Ma'am](https://www.youtube.com/watch?v=CuQmQpvw04I)
+- 
 
+
+- [7 System Design Concepts Explained in 10 Minutes](https://www.youtube.com/watch?v=uq-JpclPQV4)
+- [20 System Design Concepts You Must Know - Final Part](https://www.youtube.com/watch?v=uq-JpclPQV4)
+- [System Design Interview - BIGGEST Mistakes to Avoid](https://www.youtube.com/watch?v=OvufRkoD-D0)
+- [Scalability Simply Explained in 10 Minutes](https://www.youtube.com/watch?v=EWS_CIxttVw)
+
+
+
+### Channels and Playlists
+
+- [Concept && Coding - by Shrayansh](https://www.youtube.com/@ConceptandCoding)
+  - [InterviewCodingPractise](https://gitlab.com/shrayansh8/interviewcodingpractise)
+- [Hello Interview - SWE Interview Preparation](https://www.youtube.com/@hello_interview/playlists)
+- [sudoCODE](https://www.youtube.com/@sudocode/playlists)
+- [ByteByteGo](https://www.youtube.com/@ByteByteGo/playlists)
+- [ByteMonk](https://www.youtube.com/@ByteMonk/playlists)
+- [Arpit Bhayani](https://www.youtube.com/@AsliEngineering/playlists)
+- [Jordan has no life](https://www.youtube.com/@jordanhasnolife5163/playlists)
+- [Mehul - Codedamn](https://www.youtube.com/@codedamn/playlists)
+- [TechPrep](https://www.youtube.com/@TechPrepYT/playlists)
+
+
+### Other Channels
+
+- [System Design School](https://www.youtube.com/@SystemDesignSchool)
+- [Himanshu Goyal](https://www.youtube.com/@himanshugoyal91/playlists)
+- [Interview Pen](https://www.youtube.com/@interviewpen/playlists)
+
+
+
+---
+
+> Note: Remaining Portions are not organized
 
 
 ### Playlists
@@ -66,56 +158,6 @@
 - [System Design Roadmap: Database | Networking | Load Balancing | Scalability](https://www.youtube.com/playlist?list=PLLhBy6YSIT0ANaihpjwDBSBju0qUZ82SK)
 - [System Design Concepts You NEED to Know](https://www.youtube.com/playlist?list=PL9nWRykSBSFjU7UGR37SFfOb1oMYLNhag)
 
-
-
-## Concepts and products
-
-- [concepts](./concepts/concepts.md)
-- [products](./products/products.md)
-
-
-
-## Essential course websites
-
-- [Coursera](https://www.coursera.org/my-learning)
-- [Udacity](https://www.udacity.com/catalog?price=free)
-- [Free Programming Courses with Certification](https://www.scaler.com/topics/courses/)
-
-
-
-
-## Medium
-
-### Individuals
-
-- [ByteByteBoot](https://medium.com/@bytebyteboot)
-- [Agil](https://medium.com/@aqilzeka99)
-- [Shivam Srivastava](https://medium.com/@shivamsrivastava.iec)
-    - [Interview Experiences and Learnings](https://medium.com/@shivamsrivastava.iec/list/interview-experiences-and-learnings-b859fb631e28)
-- [Soma](https://medium.com/@somasharma_81597)
-- [Oleksandr Klymenko](https://medium.com/@alxkm)
-- [Ali Zeynalli](https://azeynalli1990.medium.com/)
-- [Mohamed Enn](https://medium.com/@mohamed.enn)
-- [SureshR](https://medium.com/@sureshkrishna75525)
-- [Shubham Kumbhar](https://usersk7.medium.com/)
-- [Cesar Aguirre](https://medium.com/@iamcesaraguirre)
-- [Martin Hodges](https://medium.com/@martin.hodges)
-
-### Channels
-
-- [Career Drill](https://medium.com/career-drill)
-- [javarevisited](https://medium.com/javarevisited)
-- [Java Interview](https://medium.com/@kaurharjeet122)
-- [Lets Learn Now](https://medium.com/@letslearnnow)
-- [AKCoding.com](https://akcoding.medium.com/)
-- [Byte Wise 010](https://medium.com/@bytewise010)
-- [Medium Tech Articles](https://mediuntecharticles.medium.com/)
-- [Level Up Coding](https://levelup.gitconnected.com/)
-
-
-### Topics
-- [General Coding Knowledge](https://eddiebarth.medium.com/list/general-coding-knowledge-f2d429d4f0cd)
-- [Coding & Development](https://medium.com/@jscribes/list/coding-development-e360d380bb82)
 
 
 > Move this to somewhere else

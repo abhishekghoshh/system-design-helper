@@ -1,0 +1,17 @@
+# Github Repos
+
+- [awesome](https://github.com/sindresorhus/awesome)
+- [The Algorithms](https://github.com/thealgorithms)
+- [Build your own <insert-technology-here>x](https://github.com/codecrafters-io/build-your-own-x)
+- [free-for.dev](https://github.com/ripienaar/free-for-dev)
+- [List of Free Learning Resources In Many Languages](https://github.com/EbookFoundation/free-programming-books)
+- [Open Source Society University](https://github.com/ossu/computer-science)
+- [Software Engineering Blogs](https://github.com/kilimchoi/engineering-blogs)
+- [The System Design Primer](https://github.com/donnemartin/system-design-primer)
+- [Try Public APIs for free](https://github.com/public-apis/public-apis)
+- [Open source alternatives](https://github.com/btw-so/open-source-alternatives)
+- [Papers We Love](https://github.com/papers-we-love/papers-we-love)
+- [Best-websites-a-programmer-should-visit](https://github.com/sdmg15/Best-websites-a-programmer-should-visit)
+- [Build a Large Language Model (From Scratch)](https://github.com/rasbt/LLMs-from-scratch)
+- [Machine Learning From Scratch](https://github.com/eriklindernoren/ML-From-Scratch)
+- [Made With ML](https://github.com/GokuMohandas/Made-With-ML)

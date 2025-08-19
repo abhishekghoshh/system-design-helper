@@ -1,6 +1,54 @@
-# Produc Designing
+# Products
 
-## Medium blogs
+
+## Contents
+
+- 
+
+
+## System Design Case Studies
+
+- Design Vending Machine
+- Design Facebook
+- Design Distributed Job Scheduler
+- Design Google Search
+- Design a Digital Wallet
+- Design Instagram
+- Design Distributed Cache
+- Design Uber
+- Design Distributed Key-Value Store
+- Design Notification Service
+- Design Spotify
+- Design Payment System
+- Design Leaderboard
+- Design File Sharing System like Dropbox
+- Design Google Maps
+- Design Distributed Counter
+- Design WhatsApp
+- Design Netflix
+- Design TikTok
+- Design Text Storage Service like Pastebin
+- Design Rate Limiter
+- Design E-commerce Store like Amazon
+- Design Google Docs
+- Design Live Comments
+- Design Flight Booking System
+- Design Content Delivery Network (CDN)
+- Design Online Code Editor
+- Design Autocomplete for Search Engines
+- Design Food Delivery App like Doordash
+- Design Authentication System
+- Design Distributed Message Queue like Kafka
+- Design Slack
+- Design Distributed Locking Service
+- Design Twitter
+
+
+
+## Produc Designing
+
+### Medium blogs
+
 - [I Built an App in 6 Hours that Makes $1,500/Mo](https://medium.com/@artturi-jalli/i-built-an-app-in-6-hours-that-makes-1-500-mo-85139edee87d)
 - [How does URL shortening for TinyUrl, Bit.ly work?](https://medium.com/javarevisited/day-1-high-level-system-design-series-url-shortening-d28888d71084)
 - [Day 2 — High Level System Design Series -How does YouTube stream millions of videos daily?](https://medium.com/javarevisited/how-does-youtube-stream-millions-of-videos-daily-3d8627d297e5)
