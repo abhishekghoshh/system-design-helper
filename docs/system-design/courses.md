@@ -6,14 +6,15 @@
 - [bytebytego](https://bytebytego.com/pricing?fpr=javarevisited)
 - [techprep.app](https://www.techprep.app/)
 - [System Design School](https://systemdesignschool.io/primer)
-- [roadmap.sh](https://github.com/kamranahmedse/developer-roadmap)
+- [Grokking the System Design Interview](https://www.designgurus.io/course/grokking-the-system-design-interview?aff=84Y9hP)
+- [System Design Interviews](https://www.tryexponent.com/courses/system-design-interviews?ref=javinpaul2)
+
 - [codecrafters](https://app.codecrafters.io/catalog)
 - [boot.dev](https://www.boot.dev/courses)
+
 - [Coursera](https://www.coursera.org/my-learning)
 - [Udacity](https://www.udacity.com/catalog?price=free)
 - [Free Programming Courses with Certification](https://www.scaler.com/topics/courses/)
-- [Grokking the System Design Interview](https://www.designgurus.io/course/grokking-the-system-design-interview?aff=84Y9hP)
-- [System Design Interviews](https://www.tryexponent.com/courses/system-design-interviews?ref=javinpaul2)
 
 
 ---
@@ -21,6 +22,7 @@
 ## Udemy courses
 
 ### Michael Pogrebinsky | Software Architecture, System Design, Java Expert
+
 
 ---
 

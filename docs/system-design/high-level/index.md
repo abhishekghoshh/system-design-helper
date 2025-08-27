@@ -3,29 +3,70 @@
 
 ## Blogs & Websites
 
-- [Hello Interview](https://www.hellointerview.com/learn/system-design/in-a-hurry/introduction)
-- [How I Mastered System Design Interviews](https://www.youtube.com/watch?v=l3X1t3kpmwY)
-  - [ashishps1/awesome-system-design-resources](https://github.com/ashishps1/awesome-system-design-resources)
+- [blog.algomaster.io](https://blog.algomaster.io/t/system-design)
   - [How to Answer a System Design Interview Problem](https://blog.algomaster.io/p/how-to-answer-a-system-design-interview-problem)
-  - [donnemartin/system-design-primer](https://github.com/donnemartin/system-design-primer)
-  - [binhnguyennus/awesome-scalability](https://github.com/binhnguyennus/awesome-scalability)
+  - [How I Mastered System Design Interviews](https://www.youtube.com/watch?v=l3X1t3kpmwY)
+  - [ashishps1/awesome-system-design-resources](https://github.com/ashishps1/awesome-system-design-resources)
+
+- [Hello Interview](https://www.hellointerview.com/learn/system-design/in-a-hurry/introduction)
+
+- [ByteByteGo Newsletter](https://blog.bytebytego.com/archive?sort=new)
+  - [Engineering Visual Guides](https://bytebytego.com/guides/)
+
+- [donnemartin/system-design-primer](https://github.com/donnemartin/system-design-primer)
+- [binhnguyennus/awesome-scalability](https://github.com/binhnguyennus/awesome-scalability)
+
 - [The Microservices Book - Learn How to Build and Manage Services in the Cloud](https://www.freecodecamp.org/news/the-microservices-book-build-and-manage-services-in-the-cloud/)
-- [Master DevOps If You Master it : System Design !!](https://dev.to/aws-builders/system-design-for-devops-engineers-45lh)
-- [Top 110+ DevOps Interview Questions and Answers for 2025](https://dev.to/aws-builders/top-110-devops-interview-questions-and-answers-for-2025-4h4n)
+
+
 - [Learn Software Design Basics: Key Phases and Best Practices](https://www.freecodecamp.org/news/learn-software-design-basics/)
 - [System Design Interview - An Insider's Guide (vol 1 & 2)](https://github.com/preslavmihaylov/booknotes/blob/master/system-design/system-design-interview/README.md)
 - [eraser.io/decision-node](https://www.eraser.io/decision-node)
 - [Grokking Modern System Design Interview for Engineers & Managers](https://www.educative.io/courses/grokking-modern-system-design-interview-for-engineers-managers)
-- [NotHarshhaa/DevOps-Interview-Questions](https://github.com/NotHarshhaa/DevOps-Interview-Questions)
+
+
 - [javabuddy/best-system-design-resources](https://github.com/javabuddy/best-system-design-resources)
 - [sdmg15/Best-websites-a-programmer-should-visit](https://github.com/sdmg15/Best-websites-a-programmer-should-visit)
 - [mehdihadeli/awesome-software-architecture](https://github.com/mehdihadeli/awesome-software-architecture)
 - [Awesome Software Architecture](https://awesome-architecture.com/)
 - [System-design-notes](https://raymondjones.dev/en/system-design-notes/)
 
+- [roadmap.sh](https://github.com/kamranahmedse/developer-roadmap)
+
+- [Master DevOps If You Master it : System Design !!](https://dev.to/aws-builders/system-design-for-devops-engineers-45lh)
+- [Top 110+ DevOps Interview Questions and Answers for 2025](https://dev.to/aws-builders/top-110-devops-interview-questions-and-answers-for-2025-4h4n)
+- [NotHarshhaa/DevOps-Interview-Questions](https://github.com/NotHarshhaa/DevOps-Interview-Questions)
+- [Learn DevSecOps and API Security](https://www.freecodecamp.org/news/learn-devsecops-and-api-security/)
 
 - [How to Design Structured Database Systems Using SQL [Full Book]](https://www.freecodecamp.org/news/how-to-design-structured-database-systems-using-sql-full-book/)
-- [Learn DevSecOps and API Security](https://www.freecodecamp.org/news/learn-devsecops-and-api-security/)
+
+
+
+## Paid Courses
+
+- [Hello Interview](https://www.hellointerview.com/learn/system-design/in-a-hurry/introduction)
+- [Tech Prep](https://www.techprep.app/system-design/high-level-design)
+- [System Design School](https://systemdesignschool.io/)
+
+
+## Github repos
+
+- [awesome](https://github.com/sindresorhus/awesome)
+- [The Algorithms](https://github.com/thealgorithms)
+- [Build your own <insert-technology-here>x](https://github.com/codecrafters-io/build-your-own-x)
+- [free-for.dev](https://github.com/ripienaar/free-for-dev)
+- [List of Free Learning Resources In Many Languages](https://github.com/EbookFoundation/free-programming-books)
+- [Open Source Society University](https://github.com/ossu/computer-science)
+- [Software Engineering Blogs](https://github.com/kilimchoi/engineering-blogs)
+- [The System Design Primer](https://github.com/donnemartin/system-design-primer)
+- [Try Public APIs for free](https://github.com/public-apis/public-apis)
+- [Open source alternatives](https://github.com/btw-so/open-source-alternatives)
+- [Papers We Love](https://github.com/papers-we-love/papers-we-love)
+- [Best-websites-a-programmer-should-visit](https://github.com/sdmg15/Best-websites-a-programmer-should-visit)
+- [Build a Large Language Model (From Scratch)](https://github.com/rasbt/LLMs-from-scratch)
+- [Machine Learning From Scratch](https://github.com/eriklindernoren/ML-From-Scratch)
+- [Made With ML](https://github.com/GokuMohandas/Made-With-ML)
+
 
 ---
 
@@ -137,6 +178,7 @@
 - [Jordan has no life](https://www.youtube.com/@jordanhasnolife5163/playlists)
 - [Mehul - Codedamn](https://www.youtube.com/@codedamn/playlists)
 - [TechPrep](https://www.youtube.com/@TechPrepYT/playlists)
+- [Piyush Garg](https://www.youtube.com/@piyushgargdev/playlists)
 
 
 ### Other Channels
@@ -144,7 +186,12 @@
 - [System Design School](https://www.youtube.com/@SystemDesignSchool)
 - [Himanshu Goyal](https://www.youtube.com/@himanshugoyal91/playlists)
 - [Interview Pen](https://www.youtube.com/@interviewpen/playlists)
+- [Think Software](https://www.youtube.com/@ThinkSoftware/playlists)
+- [Kiki's Bytes](https://www.youtube.com/@kikisbytes/videos)
 
+
+
+## Udemy
 
 
 ---
