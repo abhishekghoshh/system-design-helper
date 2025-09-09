@@ -1,6 +1,16 @@
 # Concepts
 
 
+
+
+## Blogs 
+
+- [Algorithms you should know before you take system design interviews](https://blog.bytebytego.com/p/algorithms-you-should-know-before)
+
+
+
+
+
 - Why Learn System Design  
 - How to Learn System Design  
 - Client-Server Architecture  

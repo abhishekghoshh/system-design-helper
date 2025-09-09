@@ -8,19 +8,25 @@
   - [How I Mastered System Design Interviews](https://www.youtube.com/watch?v=l3X1t3kpmwY)
   - [ashishps1/awesome-system-design-resources](https://github.com/ashishps1/awesome-system-design-resources)
 
+- [ByteByteGo Newsletter](https://blog.bytebytego.com/archive?sort=new)
+  - [ByteByteGo courses](https://bytebytego.com/courses/system-design-interview/foreword)
+  - [Engineering Visual Guides](https://bytebytego.com/guides/)
+
 - [Hello Interview](https://www.hellointerview.com/learn/system-design/in-a-hurry/introduction)
 
-- [ByteByteGo Newsletter](https://blog.bytebytego.com/archive?sort=new)
-  - [Engineering Visual Guides](https://bytebytego.com/guides/)
+- [System Design Primer](https://systemdesignschool.io/primer#introduction)
 
 - [donnemartin/system-design-primer](https://github.com/donnemartin/system-design-primer)
 - [binhnguyennus/awesome-scalability](https://github.com/binhnguyennus/awesome-scalability)
 
 - [The Microservices Book - Learn How to Build and Manage Services in the Cloud](https://www.freecodecamp.org/news/the-microservices-book-build-and-manage-services-in-the-cloud/)
-
-
 - [Learn Software Design Basics: Key Phases and Best Practices](https://www.freecodecamp.org/news/learn-software-design-basics/)
+
+- [codeWithAryan](https://codewitharyan.com/system-design/high-level-design)
+- [System Design Roadmap with Videos for SDEs](https://takeuforward.org/system-design/complete-system-design-roadmap-with-videos-for-sdes)
+
 - [System Design Interview - An Insider's Guide (vol 1 & 2)](https://github.com/preslavmihaylov/booknotes/blob/master/system-design/system-design-interview/README.md)
+
 - [eraser.io/decision-node](https://www.eraser.io/decision-node)
 - [Grokking Modern System Design Interview for Engineers & Managers](https://www.educative.io/courses/grokking-modern-system-design-interview-for-engineers-managers)
 
@@ -73,9 +79,13 @@
 ## Linked-In
 
 - [30 Blogs to Learn 30 System Design Fundamentals](https://www.linkedin.com/posts/ashishps1_30-blogs-to-learn-30-system-design-fundamentals-activity-7328659612201549827-8m7C/)
+- [30 Blogs to Learn 30 System Design Concepts](https://www.linkedin.com/posts/ashishps1_30-blogs-to-learn-30-system-design-concepts-activity-7368132950321786881-4LpD/)
+- [9 Software Design Principles Every Developer Should Know](https://www.linkedin.com/posts/ashishps1_9-software-design-principles-every-developer-activity-7368855265099599872-J9oZ/)
+
 - [Still asking "how to start system design"](https://www.linkedin.com/posts/akashsinnghh_still-asking-how-to-start-system-design-activity-7331280170336571394-bwPi/)
 - [Caching Mega Thread !](https://www.linkedin.com/posts/arpit-adlakha-30691a101_caching-mega-thread-caching-concepts-activity-7332340830382317568-SUdH/)
 - [If I had only 1 week to revise for coding interviews, these are the 35 problems I'd solve.](https://www.linkedin.com/posts/akashsinnghh_if-i-had-only-1-week-to-revise-for-coding-activity-7342439587874525185-dipt/)
+- [Alex Xu](https://www.linkedin.com/in/alexxubyte/recent-activity/all/)
 
 ---
 
@@ -140,6 +150,8 @@
 
 ### Single videos
 
+#### Roadmaps and topics
+
 - [System design is actually easy...](https://www.youtube.com/watch?v=sIkRdfSxCiI)
 - [I ACED my Technical Interviews knowing these System Design Basics](https://www.youtube.com/watch?v=FxAom29OEKE)
 - [How to Prepare for System Design Interviews w/ Meta Staff Engineer](https://www.youtube.com/watch?v=Ru54dxzCyD0)
@@ -150,13 +162,25 @@
 - [Complete System Design Roadmap 2025 | HLD & LLD by Shradha Ma'am](https://www.youtube.com/watch?v=CuQmQpvw04I)
 
 
+#### System Design Crash Course
+
+- [System Design for Beginners](https://www.youtube.com/watch?v=lFeYU31TnQ8)
+- [System Design Crash Course - Part 2](https://www.youtube.com/watch?v=YuB3OuF3MUE)
+
 - [Systems Design in an Hour](https://www.youtube.com/watch?v=iYIjJ7utdDI)
 - [Learn High-Level System Design by Coding YouTube - Full Course](https://www.youtube.com/watch?v=FiXOaYnW64w)
     - [keertipurswani/HHLD-YouTube](https://github.com/keertipurswani/HHLD-YouTube)
 - [Introduction to System Design | Fundamental of System Design | How to Crack System Design](https://www.youtube.com/watch?v=gKezeEe5UKU)
-- [How to Crack Any System Design Interview | Scalable System Design](https://www.youtube.com/watch?v=sSKhdZ32YpY)
+
+
+
+
+
+
 - [System Design Concepts Course and Interview Prep](https://www.youtube.com/watch?v=F2FmTdLtb_4)
-- 
+
+
+- [How to Crack Any System Design Interview | Scalable System Design](https://www.youtube.com/watch?v=sSKhdZ32YpY)
 
 
 - [7 System Design Concepts Explained in 10 Minutes](https://www.youtube.com/watch?v=uq-JpclPQV4)
@@ -188,6 +212,7 @@
 - [Interview Pen](https://www.youtube.com/@interviewpen/playlists)
 - [Think Software](https://www.youtube.com/@ThinkSoftware/playlists)
 - [Kiki's Bytes](https://www.youtube.com/@kikisbytes/videos)
+- [Martin Kleppmann](https://www.youtube.com/@kleppmann/playlists)
 
 
 
