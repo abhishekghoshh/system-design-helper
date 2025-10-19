@@ -8,11 +8,14 @@
   - [How I Mastered System Design Interviews](https://www.youtube.com/watch?v=l3X1t3kpmwY)
   - [ashishps1/awesome-system-design-resources](https://github.com/ashishps1/awesome-system-design-resources)
 
+- [Hello Interview](https://www.hellointerview.com/learn/system-design/in-a-hurry/introduction)
+
 - [ByteByteGo Newsletter](https://blog.bytebytego.com/archive?sort=new)
   - [ByteByteGo courses](https://bytebytego.com/courses/system-design-interview/foreword)
   - [Engineering Visual Guides](https://bytebytego.com/guides/)
 
-- [Hello Interview](https://www.hellointerview.com/learn/system-design/in-a-hurry/introduction)
+- [The System Design Newsletter](https://newsletter.systemdesign.one/archive?sort=top)
+- [Hacking Scale by Better Stack](https://newsletter.betterstack.com/archive)
 
 - [System Design Primer](https://systemdesignschool.io/primer#introduction)
 
@@ -80,6 +83,7 @@
 
 - [30 Blogs to Learn 30 System Design Fundamentals](https://www.linkedin.com/posts/ashishps1_30-blogs-to-learn-30-system-design-fundamentals-activity-7328659612201549827-8m7C/)
 - [30 Blogs to Learn 30 System Design Concepts](https://www.linkedin.com/posts/ashishps1_30-blogs-to-learn-30-system-design-concepts-activity-7368132950321786881-4LpD/)
+- [𝟯𝟬 𝗕𝗹𝗼𝗴𝘀 𝘁𝗼 𝗟𝗲𝗮𝗿𝗻 𝟯𝟬 𝗦𝘆𝘀𝘁𝗲𝗺 𝗗𝗲𝘀𝗶𝗴𝗻 𝗖𝗼𝗻𝗰𝗲𝗽𝘁𝘀:](https://www.linkedin.com/posts/aishwarya-pani-63a476167_%F0%9D%9F%AF%F0%9D%9F%AC-%F0%9D%97%95%F0%9D%97%B9%F0%9D%97%BC%F0%9D%97%B4%F0%9D%98%80-%F0%9D%98%81%F0%9D%97%BC-%F0%9D%97%9F%F0%9D%97%B2%F0%9D%97%AE%F0%9D%97%BF%F0%9D%97%BB-%F0%9D%9F%AF%F0%9D%9F%AC-%F0%9D%97%A6%F0%9D%98%86-activity-7371361343645413377-btjP/)
 - [9 Software Design Principles Every Developer Should Know](https://www.linkedin.com/posts/ashishps1_9-software-design-principles-every-developer-activity-7368855265099599872-J9oZ/)
 
 - [Still asking "how to start system design"](https://www.linkedin.com/posts/akashsinnghh_still-asking-how-to-start-system-design-activity-7331280170336571394-bwPi/)
@@ -146,6 +150,7 @@
 - [Thoughts About Unit Testing | Prime Reacts](https://www.youtube.com/watch?v=KzV0mTqBcZA)
 - [When To Unit, E2E, And Integration Test](https://www.youtube.com/watch?v=isI1c0eGSZ0)
 - [The cloud is over-engineered and overpriced](https://www.youtube.com/watch?v=Cd9aRtwj9xA)
+- [5 System Design Misconceptions Even Senior Engineers Make](https://www.youtube.com/watch?v=UovsPd8fDfc)
 
 
 ### Single videos
@@ -166,15 +171,14 @@
 
 - [System Design for Beginners](https://www.youtube.com/watch?v=lFeYU31TnQ8)
 - [System Design Crash Course - Part 2](https://www.youtube.com/watch?v=YuB3OuF3MUE)
-
+- [How to Design APIs Like a Senior Engineer (REST, GraphQL, Auth, Security)](https://www.youtube.com/watch?v=7iHl71nt49o)
 - [Systems Design in an Hour](https://www.youtube.com/watch?v=iYIjJ7utdDI)
 - [Learn High-Level System Design by Coding YouTube - Full Course](https://www.youtube.com/watch?v=FiXOaYnW64w)
     - [keertipurswani/HHLD-YouTube](https://github.com/keertipurswani/HHLD-YouTube)
+
 - [Introduction to System Design | Fundamental of System Design | How to Crack System Design](https://www.youtube.com/watch?v=gKezeEe5UKU)
 
-
-
-
+- [Become PRO at Backend and System Design](https://www.youtube.com/watch?v=fkQUkZRFq8g)
 
 
 - [System Design Concepts Course and Interview Prep](https://www.youtube.com/watch?v=F2FmTdLtb_4)
@@ -235,6 +239,7 @@
 > Move this to somewhere else
 
 ### Blogs
+
 - [JSON is incredibly slow: Here's What's Faster!](https://medium.com/data-science-community-srm/json-is-incredibly-slow-heres-what-s-faster-ca35d5aaf9e8)
 - [Understanding CORS](https://itnext.io/understanding-cors-4157bf640e11)
 - [6 Cache Strategies to Save Your Database's Performance](https://levelup.gitconnected.com/6-cache-strategies-to-save-your-databases-performance-762ed2cccfa8)

@@ -5,6 +5,7 @@
 
 
 ### Youtube
+
 - [Netflix is Built on Java](https://www.youtube.com/watch?v=sMPMiy0NsUs)
 - [How Netflix Uses Java - 2025 Edition](https://www.youtube.com/watch?v=XpunFFS-n8I)
   - [Build GraphQL Services with Spring Boot like Netflix](https://www.youtube.com/watch?v=Xn-oLXQQklU)
@@ -14,6 +15,8 @@
 
 
 ### Medium
+
+- [How Java Powers Netflix's Backend Architecture (2025 Edition)](https://medium.com/@adityabanerjee1406/how-java-powers-netflixs-backend-architecture-2025-edition-172e961af3ec)
 - [The Netflix Tech Blog](https://netflixtechblog.com/)
 - [Netflix Technology Blog](https://netflixtechblog.medium.com/)
 

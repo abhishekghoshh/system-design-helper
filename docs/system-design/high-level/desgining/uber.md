@@ -4,6 +4,7 @@
 ## Youtube
 
 - [System Design Interview: Design Uber w/ a Google Engineer](https://www.youtube.com/watch?v=TYl0HiOLKUc)
+- [Basic System Design for Uber or Lyft | System Design Interview Prep](https://www.youtube.com/watch?v=R_agd5qZ26Y)
 
 
 ## Blogs

@@ -9,6 +9,8 @@
   - [piyushgarg-dev/hls-streaming](https://github.com/piyushgarg-dev/hls-streaming)
 - [How I Built Video Transcoding Service From Scratch | System Design](https://www.youtube.com/watch?v=wcdaIQjtWQI)
 
+- [System Design: Design YouTube](https://www.youtube.com/watch?v=jWRW2xGMqSw)
+
 
 ---
 
