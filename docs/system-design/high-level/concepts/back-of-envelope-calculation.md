@@ -4,6 +4,7 @@
 ## Youtube
 
 - [Back of Envelope Calculation - System Design Concept](https://www.youtube.com/watch?v=DwqTon7ZS_s)
+- [8. Back-Of-The-Envelope Estimation for System Design Interview | Capacity Planning of Facebook | HLD](https://www.youtube.com/watch?v=WZjSFNPS9Lo)
 
 
 ## Websites
@@ -13,6 +14,7 @@
 
 
 ## Theory
+
 Back of envelope calculation is a technique used to quickly estimate values and check the feasibility of a system design. It involves making reasonable approximations and simplifying assumptions to get rough, order-of-magnitude answers.
 
 Some common approximations:
@@ -22,7 +24,5 @@ Some common approximations:
 
 - **Bytes and Bits:**  
     $1$ Byte $= 8$ bits (sometimes approximated as $10$ bits for easier calculations)
-
-> Add the remaining parts
 
 These quick calculations help engineers estimate storage, bandwidth, or processing requirements without needing precise numbers. The goal is to validate ideas and catch obvious issues early in the design process.

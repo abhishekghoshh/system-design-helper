@@ -1,5 +1,6 @@
 # Distributed Concurrency Control
 
+
 ## Youtube 
 
-- - [Concurrency Control in Distributed System](https://www.youtube.com/watch?v=D3XhDu--uoI)
+- [System Design: Concurrency Control in Distributed System | Optimistic & Pessimistic Concurrency Lock](https://www.youtube.com/watch?v=D3XhDu--uoI)

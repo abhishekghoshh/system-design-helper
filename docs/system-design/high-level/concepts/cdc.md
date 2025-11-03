@@ -30,3 +30,7 @@
 
 - [Enterprise CDC Architecture: Oracle to Kafka with GoldenGate](https://medium.com/@vamcrulz09/enterprise-cdc-architecture-oracle-to-kafka-with-goldengate-0d02d1d21d56)
   - [Part 1: Preparing Oracle for GoldenGate-based Streaming](https://medium.com/@vamcrulz09/part-1-preparing-oracle-for-goldengate-based-streaming-08c6aae4754e)
+  - [Part 2: GoldenGate Extract — Capturing Oracle Transactions Efficiently](https://medium.com/@vamcrulz09/part-2-goldengate-extract-capturing-oracle-transactions-efficiently-cb913b887aea)
+  - [Part 3: Streaming Oracle Changes to Kafka with Replicat](https://medium.com/@vamcrulz09/part-3-streaming-oracle-changes-to-kafka-with-replicat-d16fbf5cc623)
+  - [Part 4: Customizing Kafka Payloads and Message Keys](https://medium.com/@vamcrulz09/part-4-customizing-kafka-payloads-and-message-keys-8b04fa70cbc8)
+  - [Part 5: Tuning & Hardening Your CDC Pipeline](https://medium.com/@vamcrulz09/part5-tuning-7e07f2d7017a)

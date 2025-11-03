@@ -35,23 +35,3 @@
 - [Think Software](https://www.youtube.com/@ThinkSoftware/playlists)
 
 
-
-## Prerequisites
-
-- SOLID
-- Liskov Substituition Principle
-- Design Patterns
-    - Strategy Pattern
-    - Observer Pattern
-    - Decorator Pattern
-    - Factory Pattern + Abstract Factory Pattern
-    - Chain of Responsibility Design Pattern
-    - Proxy Pattern
-
-
-## Topics
-
-- Weather Station/Stock Notifier(Consumer/Subscriber)
-- Pizza Topping/Coffe with addons(Decorator Pattern)
-- ATM Vending/Logging System(Chain of Responsibility Design Pattern)
-

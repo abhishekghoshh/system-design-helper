@@ -17,14 +17,7 @@
 - [Free Programming Courses with Certification](https://www.scaler.com/topics/courses/)
 
 
----
-
-## Udemy courses
-
-### Michael Pogrebinsky | Software Architecture, System Design, Java Expert
-
-
----
+## Udemy
 
 ### Hussein Nasser
 
@@ -34,7 +27,6 @@
 - [Fundamentals of Network Engineering](https://udemy.com/course/fundamentals-of-networking-for-effective-backend-design/)
 - [Troubleshooting Backend Performance](https://udemy.com/course/discovering-backend-bottlenecks-unlocking-peak-performance/)
 
----
 ### Vignesh Sekar
 
 
