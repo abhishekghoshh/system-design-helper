@@ -91,6 +91,7 @@
 
 - [30 Blogs to Learn 30 System Design Fundamentals](https://www.linkedin.com/posts/ashishps1_30-blogs-to-learn-30-system-design-fundamentals-activity-7328659612201549827-8m7C/)
 - [30 Blogs to Learn 30 System Design Concepts](https://www.linkedin.com/posts/ashishps1_30-blogs-to-learn-30-system-design-concepts-activity-7368132950321786881-4LpD/)
+- [System Design was HARD until I Learned these 30 Concepts](https://www.linkedin.com/posts/ashishps1_system-design-was-hard-until-i-learned-these-activity-7388786598798135296-6xj4)
 - [𝟯𝟬 𝗕𝗹𝗼𝗴𝘀 𝘁𝗼 𝗟𝗲𝗮𝗿𝗻 𝟯𝟬 𝗦𝘆𝘀𝘁𝗲𝗺 𝗗𝗲𝘀𝗶𝗴𝗻 𝗖𝗼𝗻𝗰𝗲𝗽𝘁𝘀:](https://www.linkedin.com/posts/aishwarya-pani-63a476167_%F0%9D%9F%AF%F0%9D%9F%AC-%F0%9D%97%95%F0%9D%97%B9%F0%9D%97%BC%F0%9D%97%B4%F0%9D%98%80-%F0%9D%98%81%F0%9D%97%BC-%F0%9D%97%9F%F0%9D%97%B2%F0%9D%97%AE%F0%9D%97%BF%F0%9D%97%BB-%F0%9D%9F%AF%F0%9D%9F%AC-%F0%9D%97%A6%F0%9D%98%86-activity-7371361343645413377-btjP/)
 - [9 Software Design Principles Every Developer Should Know](https://www.linkedin.com/posts/ashishps1_9-software-design-principles-every-developer-activity-7368855265099599872-J9oZ/)
 
