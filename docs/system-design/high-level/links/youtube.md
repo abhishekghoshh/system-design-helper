@@ -10,6 +10,7 @@
 - [When To Unit, E2E, And Integration Test](https://www.youtube.com/watch?v=isI1c0eGSZ0)
 - [The cloud is over-engineered and overpriced](https://www.youtube.com/watch?v=Cd9aRtwj9xA)
 - [5 System Design Misconceptions Even Senior Engineers Make](https://www.youtube.com/watch?v=UovsPd8fDfc)
+- [6 Backend Mistakes Keeping You Stuck at Junior Level](https://www.youtube.com/watch?v=Wp7HjH8AunU)
 
 
 ### Single videos
@@ -27,6 +28,7 @@
 
 #### System Design Crash Course
 
+- [System Design](https://www.youtube.com/playlist?list=PLi0P3bAJieri71WhnLs1esOCr27hpvFBZ)
 - [System Design for Beginners](https://www.youtube.com/watch?v=lFeYU31TnQ8)
 - [System Design Crash Course - Part 2](https://www.youtube.com/watch?v=YuB3OuF3MUE)
 - [How to Design APIs Like a Senior Engineer (REST, GraphQL, Auth, Security)](https://www.youtube.com/watch?v=7iHl71nt49o)

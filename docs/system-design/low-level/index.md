@@ -16,6 +16,8 @@
 - [The Absolute Best Intro to Monads For Software Engineers](https://www.youtube.com/watch?v=C2w45qRc3aU)
 - [Design Patterns Revisited in Modern Java by Venkat Subramaniam](https://www.youtube.com/watch?v=yTuwi--LFsM)
 
+- [This one change will make your code better...](https://www.youtube.com/watch?v=5eNF0y89kWM)
+
 
 ### Playlist
 

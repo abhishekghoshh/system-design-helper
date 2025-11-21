@@ -14,6 +14,7 @@
 - [AMA About the Java Language — Brian Goetz and Nicolai Parlog](https://www.youtube.com/watch?v=9si7gK94gLo)
 
 
+
 ### Medium
 
 - [How Java Powers Netflix's Backend Architecture (2025 Edition)](https://medium.com/@adityabanerjee1406/how-java-powers-netflixs-backend-architecture-2025-edition-172e961af3ec)
@@ -33,20 +34,29 @@
 - [A Tale of Two Frameworks: The Domain Graph Service Framework Meets Spring GraphQL](https://netflixtechblog.medium.com/a-tale-of-two-frameworks-the-domain-graph-service-framework-meets-spring-graphql-f8237f09c389)
 - [Open Sourcing the Netflix Domain Graph Service Framework: GraphQL for Spring Boot](https://netflixtechblog.com/open-sourcing-the-netflix-domain-graph-service-framework-graphql-for-spring-boot-92b9dcecda18)
 
+- [Mastering Netflix Archaius: A Deep Dive into Configuration Management for Scalable Applications](https://medium.com/javarevisited/mastering-netflix-archaius-a-deep-dive-into-configuration-management-for-scalable-applications-f6ba66ca3654)
+- [Mastering Spring Archaius: Revolutionize Your Spring Application Configuration](https://medium.com/javarevisited/mastering-spring-archaius-revolutionize-your-spring-application-configuration-cb0177767978)
+
+
+
 ### Docs
+
 - [JEP 444: Virtual Threads](https://openjdk.org/jeps/444)
 - [Spectator Docs](https://netflix.github.io/spectator/en/latest/)
 - [DGS | Domain Graph Service](https://netflix.github.io/dgs/)
 - [Intro to GraphQL with Java & DGS](https://www.apollographql.com/tutorials/intro-dgs)
 - [Apollo Federation Subgraph Specification](https://www.apollographql.com/docs/graphos/schema-design/federated-schemas/reference/subgraph-spec)
 
+
 ### Blogs
+
 - [An Introduction to Domain Graph Service (DGS) Framework](https://www.baeldung.com/spring-boot-domain-graph-service)
 - [Practical API Design Using gRPC at Netflix](https://www.infoq.com/news/2021/09/practical-api-design-netflix/#mainLogin/)
 - [How Netflix Uses Java - 2025 Edition](https://www.reddit.com/r/java/comments/1k9lwrh/how_netflix_uses_java_2025_edition/)
 - [How Netflix Runs on Java: Modern Backend Engineering at Scale](https://talent500.com/blog/netflix-java-backend-architecture/)
 - [Netflix Java Tech Stack: Architectural Insights from GraphQL to gRPC](https://www.linkedin.com/pulse/netflix-java-tech-stack-architectural-insights-from-graphql-hau-thai-gm6uc/)
 - [New Trends in API Architecture: GraphQL and  gRPC](https://www.bluealtair.com/blog/new-trends-in-api-architecture-graphql-and-grpc)
+- [How Netflix optimized its petabyte-scale logging system with ClickHouse](https://clickhouse.com/blog/netflix-petabyte-scale-logging)
 
 
 ### Technologies

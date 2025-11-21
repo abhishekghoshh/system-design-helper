@@ -65,6 +65,7 @@
 - [Build your own <insert-technology-here>x](https://github.com/codecrafters-io/build-your-own-x)
 - [The Algorithms](https://github.com/thealgorithms)
 - [roadmap.sh](https://github.com/kamranahmedse/developer-roadmap)
+  - [Developer Roadmaps](https://roadmap.sh/)
 - [Papers We Love](https://github.com/papers-we-love/papers-we-love)
 - [awesome](https://github.com/sindresorhus/awesome)
 
@@ -74,7 +75,9 @@
 - [sdmg15/Best-websites-a-programmer-should-visit](https://github.com/sdmg15/Best-websites-a-programmer-should-visit)
 - [free-for.dev](https://github.com/ripienaar/free-for-dev)
 - [List of Free Learning Resources In Many Languages](https://github.com/EbookFoundation/free-programming-books)
+  - [free-programming-books](https://ebookfoundation.github.io/free-programming-books/)
 - [Try Public APIs for free](https://github.com/public-apis/public-apis)
+  - [API Layer](https://apilayer.com/)
 - [Open source alternatives](https://github.com/btw-so/open-source-alternatives)
 - [Open Source Society University](https://github.com/ossu/computer-science)
 
