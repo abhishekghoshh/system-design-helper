@@ -38,13 +38,9 @@
 - [How to Design Structured Database Systems Using SQL [Full Book]](https://www.freecodecamp.org/news/how-to-design-structured-database-systems-using-sql-full-book/)
 
 
+## DEV.io
 
-## Devops
-
-- [Master DevOps If You Master it : System Design !!](https://dev.to/aws-builders/system-design-for-devops-engineers-45lh)
-- [Top 110+ DevOps Interview Questions and Answers for 2025](https://dev.to/aws-builders/top-110-devops-interview-questions-and-answers-for-2025-4h4n)
-- [NotHarshhaa/DevOps-Interview-Questions](https://github.com/NotHarshhaa/DevOps-Interview-Questions)
-- [Learn DevSecOps and API Security](https://www.freecodecamp.org/news/learn-devsecops-and-api-security/)
+- [The Complete Guide to System Design in 2026](https://dev.to/fahimulhaq/complete-guide-to-system-design-oc7)
 
 
 

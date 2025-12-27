@@ -22,11 +22,14 @@
 > Read the blogs later again and apply
 
 
-## Blogs
+## Medium
 
 - [Building a Real-Time CDC Data Application Using Debezium, SQL Server, Docker, Consumer App, and AWS Athena -Part 1](https://medium.com/@kiddojazz/building-a-real-time-cdc-data-application-using-debezium-sql-server-docker-consumer-app-and-aws-363bf1cf006f)
 - [Building a Scalable Real-Time ETL Pipeline with Kafka, Debezium, Flink, Airflow, MinIO, and ClickHouse](https://towardsdev.com/building-a-scalable-real-time-etl-pipeline-with-kafka-debezium-flink-airflow-minio-and-b5a85ae28a02)
 - [Real-Time Data Streaming: Monitoring Database Changes with Postgres, Debezium, and Kafka](https://medium.com/@jushijun/real-time-data-streaming-monitoring-database-changes-with-postgres-debezium-and-kafka-f37c85cc9975)
+
+
+- [Kafka, Debezium CDC, Kafka Connect: 12-Day Guide](https://codefarm0.medium.com/list/learning-kafka-with-building-real-production-ready-systems-5b63508a7096)
 
 - [Enterprise CDC Architecture: Oracle to Kafka with GoldenGate](https://medium.com/@vamcrulz09/enterprise-cdc-architecture-oracle-to-kafka-with-goldengate-0d02d1d21d56)
   - [Part 1: Preparing Oracle for GoldenGate-based Streaming](https://medium.com/@vamcrulz09/part-1-preparing-oracle-for-goldengate-based-streaming-08c6aae4754e)
@@ -34,3 +37,5 @@
   - [Part 3: Streaming Oracle Changes to Kafka with Replicat](https://medium.com/@vamcrulz09/part-3-streaming-oracle-changes-to-kafka-with-replicat-d16fbf5cc623)
   - [Part 4: Customizing Kafka Payloads and Message Keys](https://medium.com/@vamcrulz09/part-4-customizing-kafka-payloads-and-message-keys-8b04fa70cbc8)
   - [Part 5: Tuning & Hardening Your CDC Pipeline](https://medium.com/@vamcrulz09/part5-tuning-7e07f2d7017a)
+
+- [Kafka + Debezium CDC vs. Cron ETL (Trade-offs, Cost, and When to Choose Which)](https://medium.com/@balaji.rajan.ts/kafka-debezium-cdc-vs-cron-etl-trade-offs-cost-and-when-to-choose-which-c53ae8d18c4f)

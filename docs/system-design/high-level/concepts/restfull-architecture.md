@@ -21,3 +21,9 @@
 ### Comparisions
 
 - [HTTP vs WebSockets: Performance (Latency - CPU - Memory - Network)](https://www.youtube.com/watch?v=UtyxjO8LJQs)
+
+
+### Idempotent API design
+
+- [14. Design Idempotent POST API | System Design to Handle Duplicate Request by Idempotency Handler](https://www.youtube.com/watch?v=mI73eTlSqeU)
+

@@ -3,13 +3,29 @@
 
 ## Youtube
 
+### Introduction
+
 - [Design a Video Streaming Protocol (HLS, DASH) | System Design](https://www.youtube.com/watch?v=v6qvrIY5Tgs)
 - [How Video Streaming Works on Scale - System Design](https://www.youtube.com/watch?v=-JtjQ-OA7XE)
+
+
+### Video Streaming internals
+
 - [HLS Adaptive Bitrate Streaming - System Design](https://www.youtube.com/watch?v=6JTV4PwisoQ)
   - [piyushgarg-dev/hls-streaming](https://github.com/piyushgarg-dev/hls-streaming)
 - [How I Built Video Transcoding Service From Scratch | System Design](https://www.youtube.com/watch?v=wcdaIQjtWQI)
 
+
+### Design youtube
+
 - [System Design: Design YouTube](https://www.youtube.com/watch?v=jWRW2xGMqSw)
+- [Design Youtube - System Design Interview](https://www.youtube.com/watch?v=jPKTo1iGQiE)
+- [System Design Interview: Design YouTube w/ a Ex-Meta Staff Engineer](https://www.youtube.com/watch?v=IUrQ5_g3XKs)
+- [Master Youtube System Design](https://www.youtube.com/watch?v=WlMTxHcm4Qs)
+- [Video Streaming & Sharing Service (YouTube) - System Design Interview Question](https://www.youtube.com/watch?v=XAZqmLXy4kY)
+- [5: Netflix + YouTube | Systems Design Interview Questions With Ex-Google SWE](https://www.youtube.com/watch?v=43bB7oSn190)
+- [YouTube High Level System Design with @harkirat1 !!](https://www.youtube.com/watch?v=l3AOubKFB1U)
+- [Netflix System Design | YouTube System Design | System Design Interview Question](https://www.youtube.com/watch?v=lYoSd2WCJTo)
 
 
 ---

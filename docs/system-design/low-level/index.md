@@ -22,6 +22,7 @@
 ### Playlist
 
 - [Low Level Design from Basics to Advanced](https://www.youtube.com/playlist?list=PL6W8uoQQ2c61X_9e6Net0WdYZidm7zooW)
+- [Low Level Design - Basics to Advance 2025](https://www.youtube.com/playlist?list=PLaihB5c0gLqZFB9nvV_k9c2WfjpI_GHoh)
 - [Low Level Design](https://www.youtube.com/playlist?list=PLjTveVh7FakJWMQroIQhVxNxMZTl5l1Sc)
 - [Low Level Designing](https://www.youtube.com/playlist?list=PLPtUyMfD0mNIQ9rSXdX5LprFvbIJ0KrIQ)
 - [Low Level Design Primer Course](https://www.youtube.com/playlist?list=PLTCrU9sGybupCpY20eked6blbHI4zZ55k)
@@ -30,6 +31,7 @@
 - [System Design - Low Level](https://www.youtube.com/playlist?list=PLJN9ydlFnJsiEgyjO3D3yBhtiENymhF8G)
 - [Low Level Design Course](https://www.youtube.com/playlist?list=PLpxM6m39X_t-Rk9lZVVD4U6JycAAIIEDW)
     - [Low Level Design](https://codewitharyan.com/system-design/low-level-design)
+- [Low Level System Design](https://www.youtube.com/playlist?list=PLqlmRgovKMxuONOdW20QWYBbFSoU1bDon)
 
 
 ### Channels

@@ -2,6 +2,7 @@
 
 ## Short videos
 
+- [Backend Development Roadmap 2026: Zero to 100](https://www.youtube.com/watch?v=JYTfLCuq9cA)
 - [Why I focus on patterns instead of technologies](https://www.youtube.com/watch?v=F1tuoMobTfQ)
 - [Adding a cache is not as simple as it may seem...](https://www.youtube.com/watch?v=bFf-A27Rc9s)
 - [5 Types of Testing Software Every Developer Needs to Know!](https://www.youtube.com/watch?v=YaXJeUkBe4Y)
@@ -11,6 +12,7 @@
 - [The cloud is over-engineered and overpriced](https://www.youtube.com/watch?v=Cd9aRtwj9xA)
 - [5 System Design Misconceptions Even Senior Engineers Make](https://www.youtube.com/watch?v=UovsPd8fDfc)
 - [6 Backend Mistakes Keeping You Stuck at Junior Level](https://www.youtube.com/watch?v=Wp7HjH8AunU)
+- [How is this Website so fast!?](https://www.youtube.com/watch?v=-Ln-8QM8KhQ)
 
 
 ### Single videos
@@ -28,6 +30,8 @@
 
 #### System Design Crash Course
 
+- [Master Microservices & Event-Driven Architecture: Complete 6-Hour Guide for Beginners to Advanced](https://www.youtube.com/watch?v=FDjmWxETjn8)
+
 - [System Design](https://www.youtube.com/playlist?list=PLi0P3bAJieri71WhnLs1esOCr27hpvFBZ)
 - [System Design for Beginners](https://www.youtube.com/watch?v=lFeYU31TnQ8)
 - [System Design Crash Course - Part 2](https://www.youtube.com/watch?v=YuB3OuF3MUE)
@@ -40,18 +44,18 @@
 
 - [Become PRO at Backend and System Design](https://www.youtube.com/watch?v=fkQUkZRFq8g)
 
+- [Backend Scaling and Performance Engineering: Part-1](https://www.youtube.com/watch?v=z7kt_p44rjs)
 
 - [System Design Concepts Course and Interview Prep](https://www.youtube.com/watch?v=F2FmTdLtb_4)
 
-
 - [How to Crack Any System Design Interview | Scalable System Design](https://www.youtube.com/watch?v=sSKhdZ32YpY)
-
 
 - [7 System Design Concepts Explained in 10 Minutes](https://www.youtube.com/watch?v=uq-JpclPQV4)
 - [20 System Design Concepts You Must Know - Final Part](https://www.youtube.com/watch?v=uq-JpclPQV4)
 - [System Design Interview - BIGGEST Mistakes to Avoid](https://www.youtube.com/watch?v=OvufRkoD-D0)
 - [Scalability Simply Explained in 10 Minutes](https://www.youtube.com/watch?v=EWS_CIxttVw)
 
+- [Build backends like a senior engineer - Here's how](https://www.youtube.com/watch?v=RtucdRlGv1o)
 
 
 ### Channels and Playlists
@@ -67,6 +71,7 @@
 - [Mehul - Codedamn](https://www.youtube.com/@codedamn/playlists)
 - [TechPrep](https://www.youtube.com/@TechPrepYT/playlists)
 - [Piyush Garg](https://www.youtube.com/@piyushgargdev/playlists)
+- [Exponent](https://www.youtube.com/@tryexponent/playlists)
 
 
 ### Other Channels
@@ -77,6 +82,13 @@
 - [Think Software](https://www.youtube.com/@ThinkSoftware/playlists)
 - [Kiki's Bytes](https://www.youtube.com/@kikisbytes/videos)
 - [Martin Kleppmann](https://www.youtube.com/@kleppmann/playlists)
+
+- [Cloud With Raj](https://www.youtube.com/@cloudwithraj/playlists)
+- [Gaurav Sen](https://www.youtube.com/@gkcs/playlists)
+  - [System Design Playlist](https://www.youtube.com/playlist?list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX)
+- [Tushar Roy - Coding Made Simple](https://www.youtube.com/@tusharroy2525)
+  - [System Design](https://www.youtube.com/playlist?list=PLrmLmBdmIlps7GJJWW9I7N0P0rB0C3eY2)
+- [Scortier](https://www.youtube.com/@scortierHQ/playlists)
 
 
 ### Other Playlist

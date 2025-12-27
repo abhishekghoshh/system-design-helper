@@ -1,5 +1,6 @@
 # Key Value Store
 
+> Create a distributed key value store use golang and rust for writing different components and use helm for infrastructure using kubernetes stateful set
 
 ## Youtube
 
@@ -11,3 +12,6 @@
 ## Github
 
 - [Key Value Store](https://github.com/oryankibandi/key-value-store?tab=readme-ov-file)
+
+
+

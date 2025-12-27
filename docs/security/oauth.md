@@ -5,6 +5,8 @@
 - [Token vs Session Authentication | Authentication Explained!!!](https://www.youtube.com/watch?v=QzntvHz23tw)
 - [OAuth2 Can Be Hacked Without PKCE | PKCE Explained](https://www.youtube.com/watch?v=hpryVn8LT4E)
 
+- [99% of Developers Don't Get OAuth](https://www.youtube.com/watch?v=-VwWitk4_s4)
+
 
 ## Udemy
 

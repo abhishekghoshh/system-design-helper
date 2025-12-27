@@ -9,3 +9,8 @@
 - [System Design 12: Design Stock Broker Trading Application like Zerodha | Grow | Upstox | HLD | LLD](https://www.youtube.com/watch?v=W5FJnSywmLE)
 - [Machine Coding Interview Round | Design and Code Zerodha like Stock Broker App LIVE-Low Level Design](https://www.youtube.com/watch?v=OVkxdFJLgwE)
 - [Designing Zerodha | Mock Interview | Shreyansh Goyal | System Design #Zerodha | SG OG Ep 1](https://www.youtube.com/watch?v=rmva6BjKsp4)
+
+
+## Others
+
+- [Building & Deploying an Order Book for Stock Exchanges](https://unacademy.com/class/building-deploying-an-order-book-for-stock-exchanges/NWSMCAHY)
