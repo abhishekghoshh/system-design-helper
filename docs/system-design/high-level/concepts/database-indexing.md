@@ -66,6 +66,15 @@ A **data page** (also called a database page or disk page) is the smallest unit 
 │  │ ...                                           │     │
 │  │ Offset[44]: 7650 (points to 45th row)        │     │
 │  └───────────────────────────────────────────────┘     │
+│                                                          │
+│  WHY OFFSET ARRAY IS NEEDED:                            │
+│  • Variable-length rows: Rows can be different sizes    │
+│  • Direct access: Jump to any row without scanning      │
+│  • Update efficiency: Relocate rows without affecting   │
+│    other rows' positions                                │
+│  • Deletion handling: Mark slots as deleted, reuse      │
+│    space without shifting all rows                      │
+│                                                          │
 ├─────────────────────────────────────────────────────────┤
 │  Data Records (7814 bytes)                              │
 │  ┌───────────────────────────────────────────────┐     │
@@ -106,6 +115,224 @@ The **Buffer Manager** (part of the database storage engine) controls data pages
 - Handles page writes to disk
 - Implements page replacement algorithms (LRU, Clock)
 - Ensures page consistency and integrity
+
+### Row Offset Array: Why It's Critical
+
+**The Problem: Variable-Length Rows**
+
+Database rows are **not fixed-size** because of:
+- VARCHAR columns (variable-length strings)
+- NULL values (may occupy no space)
+- TEXT/BLOB columns
+- Different character encodings (UTF-8 can use 1-4 bytes per character)
+
+**Example Problem Without Offset Array:**
+
+```
+Fixed-size approach (DOESN'T WORK):
+┌─────────────────────────────────────────┐
+│ Row 1 (150 bytes) | Row 2 (80 bytes)   │
+│ Row 3 (200 bytes) | ...                │
+└─────────────────────────────────────────┘
+
+❌ Problem: How to find Row 3 quickly?
+   - Can't calculate: Position = row_number × row_size
+   - Must scan: Row 1 → Row 2 → Row 3
+   - O(n) time to access any row!
+```
+
+**Solution: Row Offset Array**
+
+```
+With Offset Array:
+┌─────────────────────────────────────────┐
+│ Header                                  │
+│ ┌──────────────────────┐                │
+│ │ Offset[0] = 200      │ ← Points to Row 1 at byte 200
+│ │ Offset[1] = 350      │ ← Points to Row 2 at byte 350
+│ │ Offset[2] = 430      │ ← Points to Row 3 at byte 430
+│ │ Offset[3] = 630      │ ← Points to Row 4 at byte 630
+│ └──────────────────────┘                │
+│                                          │
+│ Data Area:                               │
+│ [byte 200] Row 1 (150 bytes)            │
+│ [byte 350] Row 2 (80 bytes)             │
+│ [byte 430] Row 3 (200 bytes)            │
+│ [byte 630] Row 4 (...)                  │
+└─────────────────────────────────────────┘
+
+✅ Advantage: Direct access to Row 3 in O(1):
+   1. Read Offset[2] = 430
+   2. Jump to byte 430
+   3. Read row
+```
+
+**Why Row Offset Array is Needed:**
+
+1. **Variable-Length Row Support**
+   ```
+   Without offsets: Must scan from start
+   With offsets: Direct jump to any row
+   
+   Example with VARCHAR:
+   Row 1: id=1, name="Jo" (short)
+   Row 2: id=2, name="Christopher Alexander" (long)
+   Row 3: id=3, name="Li" (short)
+   
+   Offset[0] = 200  (Row 1 starts)
+   Offset[1] = 220  (Row 2 starts, 20 bytes after)
+   Offset[2] = 265  (Row 3 starts, 45 bytes after)
+   ```
+
+2. **Fast Random Access**
+   ```
+   Access row #5:
+   - WITHOUT offset array: O(n) - scan rows 0→1→2→3→4→5
+   - WITH offset array: O(1) - read Offset[5], jump directly
+   ```
+
+3. **Efficient Updates (Row Relocation)**
+   ```
+   UPDATE users SET name = 'Very Long Name Here' WHERE id = 2;
+   
+   Old Row 2: 80 bytes
+   New Row 2: 150 bytes (doesn't fit in original location!)
+   
+   Solution:
+   1. Move Row 2 to end of page (new location)
+   2. Update Offset[1] to new location
+   3. Other rows' offsets unchanged!
+   
+   ┌────────────────────────────────────────┐
+   │ Offset[0] = 200  (unchanged)           │
+   │ Offset[1] = 7800 (updated!)            │
+   │ Offset[2] = 430  (unchanged)           │
+   └────────────────────────────────────────┘
+   
+   No need to shift Row 3, Row 4, Row 5... in memory!
+   ```
+
+4. **Efficient Deletion (Slot Reuse)**
+   ```
+   DELETE FROM users WHERE id = 2;
+   
+   Method 1 - WITHOUT offset array:
+   - Shift all following rows backward
+   - Expensive for large pages (thousands of bytes moved)
+   
+   Method 2 - WITH offset array:
+   - Mark Offset[1] as NULL/deleted (-1)
+   - Don't move any data
+   - Reuse slot for future inserts
+   
+   ┌────────────────────────────────────────┐
+   │ Offset[0] = 200                        │
+   │ Offset[1] = -1     (deleted!)          │
+   │ Offset[2] = 430                        │
+   │ Offset[3] = 630                        │
+   └────────────────────────────────────────┘
+   
+   Space at old Row 2 location becomes free space!
+   ```
+
+5. **Maintains Row Order Without Physical Order**
+   ```
+   Logical order (by primary key):
+   Row 0: id=1
+   Row 1: id=2
+   Row 2: id=3
+   
+   Physical storage (after updates):
+   [byte 200] id=1 (original)
+   [byte 350] id=3 (inserted later)
+   [byte 430] id=2 (updated, relocated)
+   
+   Offset array maintains logical order:
+   Offset[0] = 200  → id=1
+   Offset[1] = 430  → id=2 (points to relocated position)
+   Offset[2] = 350  → id=3
+   
+   Queries still return rows in correct order!
+   ```
+
+**Advantages of Row Offset Array:**
+
+| Advantage | Description | Performance Impact |
+|-----------|-------------|-------------------|
+| **O(1) Row Access** | Direct jump to any row without scanning | 100x faster for large pages |
+| **No Data Movement on Update** | Just update offset pointer when row relocates | Saves thousands of memory copies |
+| **Fast Deletion** | Mark offset as deleted, don't shift data | O(1) instead of O(n) |
+| **Space Reuse** | Deleted slots can be reused by new inserts | Better space utilization |
+| **Logical vs Physical Separation** | Rows can be physically scattered but logically ordered | Flexibility in storage |
+| **Update-in-Place Optimization** | If new data fits in old location, no relocation needed | Minimal overhead |
+| **Compact Array** | Offsets are small (2-4 bytes each) | Minimal space overhead (~0.1% of page) |
+
+**Real-World Performance Example:**
+
+```
+Scenario: Page with 100 rows, access row #87
+
+WITHOUT Offset Array:
+1. Start at byte 96 (after header)
+2. Read row 0 length → skip row 0
+3. Read row 1 length → skip row 1
+...
+87. Read row 86 length → skip row 86
+88. Finally read row 87
+
+Time: ~87 reads × 10μs = 870μs
+
+WITH Offset Array:
+1. Read Offset[87] = 6543
+2. Jump to byte 6543
+3. Read row 87
+
+Time: ~2 reads × 10μs = 20μs
+
+Result: 43x faster!
+```
+
+**Memory Overhead Calculation:**
+
+```
+Page size: 8KB (8192 bytes)
+Average row size: 100 bytes
+Rows per page: ~80 rows
+
+Offset Array Size:
+- 2 bytes per offset × 80 rows = 160 bytes
+- Overhead: 160 / 8192 = 1.95% of page
+
+Trade-off:
+- Cost: ~2% storage overhead
+- Benefit: O(n) → O(1) access, massively faster updates/deletes
+
+Conclusion: Worth it! 2% overhead for 10-100x performance gain
+```
+
+**How Databases Use Offset Arrays:**
+
+```
+PostgreSQL:
+- Array at start of page
+- 4-byte offsets (ItemIdData)
+- Format: [offset, length, flags]
+
+MySQL InnoDB:
+- "Record directory" at end of page
+- 2-byte offsets
+- Grows backward from page end
+
+SQL Server:
+- "Slot array" after page header
+- 2-byte offsets
+- Supports row versioning
+
+Oracle:
+- "Row directory" in page header
+- Variable-size offsets
+- Supports row chaining
+```
 
 ### Data Blocks
 
