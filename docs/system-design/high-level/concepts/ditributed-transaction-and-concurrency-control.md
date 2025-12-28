@@ -8417,3 +8417,2884 @@ def adaptive_concurrency_control(db, account_id, amount):
 ```
 
 ---
+
+### 6. Distributed Transactions
+
+**Description:**
+
+A **distributed transaction** is a transaction that involves operations on data stored across **multiple nodes, databases, or services** in a distributed system. Unlike local transactions that execute entirely within a single database instance, distributed transactions must coordinate operations across network boundaries, dealing with partial failures, network delays, and the fundamental challenges of distributed computing.
+
+**The Challenge of Distribution:**
+
+When a transaction spans multiple systems, we face the **distributed transaction problem**: How do we ensure that either all participating systems commit the transaction or all abort it, even in the presence of network failures, node crashes, and communication delays?
+
+This is fundamentally harder than local transactions because:
+1. **No shared memory**: Nodes can't directly access each other's state
+2. **Network unreliability**: Messages can be delayed, lost, or duplicated
+3. **Independent failures**: One node can crash while others continue
+4. **No global clock**: Hard to determine ordering of events
+5. **Partial visibility**: No node has complete view of system state
+
+**Historical Context:**
+
+Distributed transactions became critical in the 1980s when organizations needed to coordinate operations across:
+- Multiple mainframes in different data centers
+- Distributed banking networks (ATM networks, wire transfers)
+- Airline reservation systems across countries
+- Supply chain systems spanning multiple companies
+
+The pioneering work by **Jim Gray** (Turing Award winner, 1998) on transaction processing and the **X/Open XA standard** (1991) provided the foundation for modern distributed transaction protocols.
+
+**Real-World Distributed Transaction Examples:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         DISTRIBUTED TRANSACTION EXAMPLES                │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ 1. 🏦 BANK WIRE TRANSFER                                │
+│    Transaction involves:                                │
+│    • Bank A database (withdraw from account)            │
+│    • Bank B database (deposit to account)               │
+│    • Federal Reserve System (record transfer)           │
+│    • Audit log database (compliance)                    │
+│                                                         │
+│    Must be atomic: All succeed or all fail              │
+│                                                         │
+│ 2. ✈️  FLIGHT BOOKING                                   │
+│    Transaction involves:                                │
+│    • Airline database (reserve seat)                    │
+│    • Hotel database (reserve room)                      │
+│    • Car rental database (reserve vehicle)              │
+│    • Payment gateway (charge credit card)               │
+│                                                         │
+│    Must be atomic: Book all or cancel all               │
+│                                                         │
+│ 3. 🛒 E-COMMERCE ORDER                                  │
+│    Transaction involves:                                │
+│    • Inventory service (reserve items)                  │
+│    • Payment service (process payment)                  │
+│    • Shipping service (create shipment)                 │
+│    • Customer service (update order history)            │
+│                                                         │
+│    Must be atomic: Complete order or rollback           │
+│                                                         │
+│ 4. 📱 MICROSERVICES SAGA                                │
+│    Transaction involves:                                │
+│    • User service (update profile)                      │
+│    • Notification service (send email)                  │
+│    • Analytics service (log event)                      │
+│    • Billing service (update credits)                   │
+│                                                         │
+│    Must be consistent across all services               │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Distributed Transaction Architecture:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│      DISTRIBUTED TRANSACTION ARCHITECTURE               │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│                  ┌──────────────┐                       │
+│                  │ APPLICATION  │                       │
+│                  │ (Initiator)  │                       │
+│                  └──────┬───────┘                       │
+│                         │                               │
+│                         │ BEGIN DISTRIBUTED TXN         │
+│                         ▼                               │
+│              ┌─────────────────────┐                    │
+│              │ TRANSACTION         │                    │
+│              │ COORDINATOR         │                    │
+│              │ (Orchestrator)      │                    │
+│              └──────┬──────────────┘                    │
+│                     │                                   │
+│         ┌───────────┼───────────┬───────────┐          │
+│         │           │           │           │          │
+│         ▼           ▼           ▼           ▼          │
+│    ┌────────┐  ┌────────┐  ┌────────┐  ┌────────┐     │
+│    │ Node 1 │  │ Node 2 │  │ Node 3 │  │ Node 4 │     │
+│    │Database│  │Database│  │Database│  │Database│     │
+│    │        │  │        │  │        │  │        │     │
+│    │ [Data] │  │ [Data] │  │ [Data] │  │ [Data] │     │
+│    └────────┘  └────────┘  └────────┘  └────────┘     │
+│                                                         │
+│    Participants                                         │
+│    (Execute local operations)                           │
+│                                                         │
+│ Flow:                                                   │
+│ 1. Application sends transaction to coordinator         │
+│ 2. Coordinator distributes operations to participants   │
+│ 3. Each participant executes locally                    │
+│ 4. Coordinator ensures all commit or all abort          │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Key Components:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│    DISTRIBUTED TRANSACTION COMPONENTS                   │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ 1. COORDINATOR (Transaction Manager)                    │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Initiates distributed transaction  │            │
+│    │ • Tracks all participants            │            │
+│    │ • Manages commit/abort protocol      │            │
+│    │ • Maintains transaction log          │            │
+│    │ • Handles failure recovery           │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 2. PARTICIPANTS (Resource Managers)                     │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Execute local transaction ops      │            │
+│    │ • Prepare for commit (vote)          │            │
+│    │ • Commit or abort on coordinator cmd │            │
+│    │ • Maintain local transaction logs    │            │
+│    │ • Respond to coordinator queries     │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 3. TRANSACTION LOG                                      │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Records transaction state          │            │
+│    │ • Enables crash recovery             │            │
+│    │ • Written before state changes       │            │
+│    │ • Persisted to durable storage       │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Distributed Transaction Lifecycle:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│      DISTRIBUTED TRANSACTION LIFECYCLE                  │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Phase 1: INITIATION                                     │
+│ ────────────────────                                    │
+│ • Application starts transaction                        │
+│ • Coordinator assigns global transaction ID             │
+│ • Coordinator records transaction start                 │
+│                                                         │
+│ Phase 2: EXECUTION                                      │
+│ ────────────────────                                    │
+│ • Application sends operations to coordinator           │
+│ • Coordinator forwards to appropriate participants      │
+│ • Each participant executes locally                     │
+│ • Participants hold locks on modified data              │
+│                                                         │
+│ Phase 3: COORDINATION (Commit Protocol)                 │
+│ ────────────────────                                    │
+│ • Coordinator initiates commit protocol                 │
+│ • Participants vote (YES/NO to commit)                  │
+│ • Coordinator decides based on votes                    │
+│ • Decision propagated to all participants               │
+│                                                         │
+│ Phase 4: COMPLETION                                     │
+│ ────────────────────                                    │
+│ • All participants commit or abort                      │
+│ • Locks released                                        │
+│ • Transaction marked complete                           │
+│ • Resources cleaned up                                  │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Challenges in Distributed Transactions:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│    CHALLENGES IN DISTRIBUTED TRANSACTIONS               │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ 1. ❌ PARTIAL FAILURES                                  │
+│    • Some participants succeed, others fail             │
+│    • Network partition isolates nodes                   │
+│    • Must ensure atomicity across failures              │
+│                                                         │
+│ 2. ❌ NETWORK DELAYS & TIMEOUTS                         │
+│    • Messages delayed unpredictably                     │
+│    • Hard to distinguish slow node from dead node       │
+│    • Timeout too short: false failures                  │
+│    • Timeout too long: poor performance                 │
+│                                                         │
+│ 3. ❌ COORDINATOR FAILURE                               │
+│    • Single point of failure                            │
+│    • If coordinator crashes, participants blocked       │
+│    • Recovery requires stable storage                   │
+│                                                         │
+│ 4. ❌ BLOCKING & REDUCED AVAILABILITY                   │
+│    • Participants must wait for coordinator             │
+│    • Locks held during coordination (reduces throughput)│
+│    • System unavailable during coordinator recovery     │
+│                                                         │
+│ 5. ❌ CAP THEOREM CONSTRAINTS                           │
+│    • Cannot have Consistency + Availability + Partition │
+│    • Distributed transactions sacrifice Availability    │
+│    • Network partition can block progress               │
+│                                                         │
+│ 6. ❌ PERFORMANCE OVERHEAD                              │
+│    • Multiple network round trips                       │
+│    • Synchronous coordination (latency)                 │
+│    • Logging overhead at each node                      │
+│    • 10-100x slower than local transactions             │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+#### 6.1 Two-Phase Commit (2PC) Protocol
+
+**Description:**
+
+**Two-Phase Commit (2PC)** is the most widely used protocol for coordinating distributed transactions. Developed in the 1970s and standardized in the X/Open XA specification, 2PC ensures that all participants in a distributed transaction either commit or abort together, maintaining atomicity across multiple nodes.
+
+The protocol is called "two-phase" because it operates in two distinct phases: a **voting phase** (prepare) and a **decision phase** (commit/abort). This separation ensures that the coordinator can collect votes from all participants before making a final decision.
+
+**Historical Significance:**
+
+Jim Gray's work on transaction processing at IBM in the 1970s introduced 2PC as part of the System R project. His insight was that distributed consensus requires:
+1. **Unanimous agreement**: All participants must agree to commit
+2. **Stable storage**: Decisions must survive crashes
+3. **Blocking tolerance**: System must handle failures gracefully
+
+2PC became the foundation for:
+- **X/Open XA** (1991): Industry standard for distributed transactions
+- **Java Transaction API (JTA)**: Java's distributed transaction support
+- **WS-AtomicTransaction**: Web services transaction protocol
+- **Database vendor implementations**: Oracle, DB2, SQL Server, PostgreSQL
+
+**The Two-Phase Commit Protocol:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         TWO-PHASE COMMIT (2PC) PROTOCOL                 │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ PHASE 1: VOTING (PREPARE PHASE)                         │
+│ ═══════════════════════════════                         │
+│                                                         │
+│   Coordinator                Participants               │
+│       │                                                 │
+│       │  1. PREPARE?                                    │
+│       ├──────────────────┐                              │
+│       │                  ├────────→ Participant 1       │
+│       │                  │          • Execute ops       │
+│       │                  │          • Acquire locks     │
+│       │                  │          • Write undo/redo   │
+│       │                  │          • Vote YES/NO       │
+│       │                  │                              │
+│       │                  ├────────→ Participant 2       │
+│       │                  │          • Execute ops       │
+│       │                  │          • Vote YES/NO       │
+│       │                  │                              │
+│       │                  └────────→ Participant 3       │
+│       │                             • Execute ops       │
+│       │                             • Vote YES/NO       │
+│       │                                                 │
+│       │  2. Collect votes                               │
+│       │◄─────────────────── YES (ready to commit)       │
+│       │◄─────────────────── YES (ready to commit)       │
+│       │◄─────────────────── NO  (cannot commit)         │
+│       │                                                 │
+│       │  3. Decision: ABORT (any NO → ABORT)            │
+│       │              COMMIT (all YES → COMMIT)          │
+│       │                                                 │
+│ ─────────────────────────────────────────────────       │
+│                                                         │
+│ PHASE 2: DECISION (COMMIT PHASE)                        │
+│ ═══════════════════════════════                         │
+│                                                         │
+│       │  4. Send decision                               │
+│       ├──────────────────┐                              │
+│       │                  ├────────→ Participant 1       │
+│       │   COMMIT/ABORT   │          • Commit/Rollback   │
+│       │                  │          • Release locks     │
+│       │                  │          • Send ACK          │
+│       │                  │                              │
+│       │                  ├────────→ Participant 2       │
+│       │                  │          • Commit/Rollback   │
+│       │                  │          • Send ACK          │
+│       │                  │                              │
+│       │                  └────────→ Participant 3       │
+│       │                             • Commit/Rollback   │
+│       │                             • Send ACK          │
+│       │                                                 │
+│       │  5. Collect ACKs                                │
+│       │◄─────────────────── ACK                         │
+│       │◄─────────────────── ACK                         │
+│       │◄─────────────────── ACK                         │
+│       │                                                 │
+│       │  6. Transaction complete                        │
+│       ▼                                                 │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Detailed Timeline - Successful Commit:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       2PC TIMELINE - SUCCESSFUL COMMIT                  │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Time  Coordinator        Participant A    Participant B │
+│ ────────────────────────────────────────────────────── │
+│                                                         │
+│ t1    BEGIN                                             │
+│       Generate TXN-ID                                   │
+│                                                         │
+│ t2    Send operations                                   │
+│       ├──────────────→  Execute ops      Execute ops    │
+│       │                 Lock resources   Lock resources │
+│       │                                                 │
+│ ─────── PHASE 1: VOTING ────────────────────────────   │
+│                                                         │
+│ t3    PREPARE?                                          │
+│       ├──────────────→  PREPARE?         PREPARE?       │
+│       │                                                 │
+│ t4                      Write PREPARE    Write PREPARE  │
+│                         log              log            │
+│                                                         │
+│ t5                      Vote: YES        Vote: YES      │
+│       │◄────────────────┤               ┤               │
+│       Collect votes     │               │               │
+│       All YES!          │               │               │
+│                         │               │               │
+│ t6    Write COMMIT      │               │               │
+│       decision to log   │               │               │
+│       (durable)         │               │               │
+│                         │               │               │
+│ ─────── PHASE 2: DECISION ──────────────────────────   │
+│                                                         │
+│ t7    COMMIT!           │               │               │
+│       ├──────────────→  COMMIT!         COMMIT!         │
+│       │                                                 │
+│ t8                      Write COMMIT    Write COMMIT    │
+│                         to log          to log          │
+│                                                         │
+│ t9                      Apply changes   Apply changes   │
+│                         Release locks   Release locks   │
+│                                                         │
+│ t10                     ACK             ACK             │
+│       │◄────────────────┤               ┤               │
+│       All ACKs received │               │               │
+│                         │               │               │
+│ t11   Write END         │               │               │
+│       Transaction done  Done            Done            │
+│                                                         │
+│ ✅ RESULT: All committed successfully                   │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Detailed Timeline - Abort Scenario:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       2PC TIMELINE - ABORT SCENARIO                     │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Time  Coordinator        Participant A    Participant B │
+│ ────────────────────────────────────────────────────── │
+│                                                         │
+│ t1-   Same as commit scenario...                        │
+│ t2                                                      │
+│                                                         │
+│ ─────── PHASE 1: VOTING ────────────────────────────   │
+│                                                         │
+│ t3    PREPARE?                                          │
+│       ├──────────────→  PREPARE?         PREPARE?       │
+│       │                                                 │
+│ t4                      Write PREPARE    [CONSTRAINT    │
+│                         log              VIOLATION!]    │
+│                                                         │
+│ t5                      Vote: YES        Vote: NO ❌    │
+│       │◄────────────────┤               ┤               │
+│       Collect votes     │               (Cannot commit) │
+│       Got NO! → ABORT   │               │               │
+│                         │               │               │
+│ t6    Write ABORT       │               │               │
+│       decision to log   │               │               │
+│       (durable)         │               │               │
+│                         │               │               │
+│ ─────── PHASE 2: DECISION ──────────────────────────   │
+│                                                         │
+│ t7    ABORT!            │               │               │
+│       ├──────────────→  ABORT!          ABORT!          │
+│       │                                                 │
+│ t8                      Write ABORT     Write ABORT     │
+│                         to log          to log          │
+│                                                         │
+│ t9                      Rollback        Rollback        │
+│                         Release locks   Release locks   │
+│                                                         │
+│ t10                     ACK             ACK             │
+│       │◄────────────────┤               ┤               │
+│       All ACKs received │               │               │
+│                         │               │               │
+│ t11   Write END         │               │               │
+│       Transaction done  Done            Done            │
+│                                                         │
+│ ❌ RESULT: All aborted                                  │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**State Machine - Coordinator:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       2PC COORDINATOR STATE MACHINE                     │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│                  ┌──────────┐                           │
+│                  │  INIT    │                           │
+│                  └────┬─────┘                           │
+│                       │                                 │
+│                       │ Send PREPARE                    │
+│                       ▼                                 │
+│                  ┌──────────┐                           │
+│            ┌────→│  WAIT    │                           │
+│            │     │  (for    │                           │
+│            │     │  votes)  │                           │
+│            │     └────┬─────┘                           │
+│    Timeout │          │                                 │
+│    (ABORT) │          │ All votes received              │
+│            │          ▼                                 │
+│            │     ┌──────────┐                           │
+│            │     │ DECIDE   │                           │
+│            │     └────┬─────┘                           │
+│            │          │                                 │
+│            │    ┌─────┴─────┐                           │
+│            │    │           │                           │
+│            │    ▼           ▼                           │
+│            │ ┌────────┐ ┌────────┐                      │
+│            └─│ ABORT  │ │ COMMIT │                      │
+│              └───┬────┘ └───┬────┘                      │
+│                  │          │                           │
+│                  │  Send    │  Send                     │
+│                  │  ABORT   │  COMMIT                   │
+│                  │          │                           │
+│                  ▼          ▼                           │
+│              ┌──────────────────┐                       │
+│              │  WAIT FOR ACKS   │                       │
+│              └────────┬─────────┘                       │
+│                       │                                 │
+│                       │ All ACKs received               │
+│                       ▼                                 │
+│                  ┌──────────┐                           │
+│                  │   END    │                           │
+│                  └──────────┘                           │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**State Machine - Participant:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       2PC PARTICIPANT STATE MACHINE                     │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│                  ┌──────────┐                           │
+│                  │  INIT    │                           │
+│                  └────┬─────┘                           │
+│                       │                                 │
+│                       │ Receive PREPARE                 │
+│                       ▼                                 │
+│                  ┌──────────┐                           │
+│                  │ PREPARE  │                           │
+│                  │ (execute │                           │
+│                  │  & vote) │                           │
+│                  └────┬─────┘                           │
+│                       │                                 │
+│                  ┌────┴────┐                            │
+│                  │         │                            │
+│         Can      ▼         ▼       Cannot               │
+│         commit ┌─────┐  ┌─────┐   commit                │
+│         ┌──────│ YES │  │ NO  │───────┐                 │
+│         │      └──┬──┘  └──┬──┘       │                 │
+│         │         │        │          │                 │
+│         │         │ Wait   │ Vote NO  │                 │
+│         │         ▼        └──────────┼─────┐           │
+│         │    ┌────────┐               │     │           │
+│         │    │ READY  │               │     │           │
+│         │    │(blocked│               │     │           │
+│         │    │waiting)│               │     │           │
+│         │    └───┬────┘               │     │           │
+│         │        │                    │     │           │
+│         │   ┌────┴────┐               │     │           │
+│         │   │         │               │     │           │
+│         │   ▼         ▼               │     │           │
+│         │ ┌────────┐ ┌────────┐      │     │           │
+│         └→│ COMMIT │ │ ABORT  │◄─────┘     │           │
+│           └───┬────┘ └───┬────┘            │           │
+│               │          │                 │           │
+│               │ Apply    │ Rollback        │ Rollback  │
+│               │ changes  │ changes         │ changes   │
+│               │          │                 │           │
+│               ▼          ▼                 ▼           │
+│           ┌──────────────────────────────────┐         │
+│           │           END                    │         │
+│           └──────────────────────────────────┘         │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+#### 6.2 How Two-Phase Commit Works (Step-by-Step)
+
+**Complete Example: Bank Transfer Across Two Banks**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│    2PC EXAMPLE: TRANSFER $500 ACROSS TWO BANKS          │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Transaction: Transfer $500 from Bank A to Bank B       │
+│                                                         │
+│ Components:                                             │
+│ • Coordinator: Transaction Manager                      │
+│ • Participant 1: Bank A Database                        │
+│ • Participant 2: Bank B Database                        │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Phase 1: Prepare (Voting Phase)**
+
+```
+Step 1: Coordinator sends PREPARE
+─────────────────────────────────
+
+Coordinator:
+  Log: [TXN-123] BEGIN
+  Action: Send PREPARE to all participants
+  
+  Message to Bank A: "PREPARE TXN-123: Deduct $500 from Account #1001"
+  Message to Bank B: "PREPARE TXN-123: Add $500 to Account #2002"
+
+
+Step 2: Participants execute and vote
+──────────────────────────────────────
+
+Participant: Bank A
+  1. Execute: SELECT balance FROM accounts WHERE id=1001 FOR UPDATE
+     Result: balance = $1000 (sufficient funds)
+  
+  2. Execute: UPDATE accounts SET balance = 500 WHERE id=1001
+     (Operation prepared, not committed yet)
+  
+  3. Write to log: [TXN-123] PREPARE DEDUCT $500 FROM 1001
+  
+  4. Lock: Account #1001 LOCKED
+  
+  5. Vote: YES (ready to commit)
+  
+  6. Send to coordinator: "YES - Bank A ready"
+
+
+Participant: Bank B
+  1. Execute: SELECT balance FROM accounts WHERE id=2002 FOR UPDATE
+     Result: balance = $300
+  
+  2. Execute: UPDATE accounts SET balance = 800 WHERE id=2002
+     (Operation prepared, not committed yet)
+  
+  3. Write to log: [TXN-123] PREPARE ADD $500 TO 2002
+  
+  4. Lock: Account #2002 LOCKED
+  
+  5. Vote: YES (ready to commit)
+  
+  6. Send to coordinator: "YES - Bank B ready"
+
+
+Step 3: Coordinator collects votes and decides
+───────────────────────────────────────────────
+
+Coordinator:
+  Received votes:
+  • Bank A: YES
+  • Bank B: YES
+  
+  Decision: All voted YES → COMMIT
+  
+  Log: [TXN-123] DECISION: COMMIT
+  (Write to stable storage - critical!)
+```
+
+**Phase 2: Commit (Decision Phase)**
+
+```
+Step 4: Coordinator sends decision
+──────────────────────────────────
+
+Coordinator:
+  Action: Broadcast COMMIT to all participants
+  
+  Message to Bank A: "COMMIT TXN-123"
+  Message to Bank B: "COMMIT TXN-123"
+
+
+Step 5: Participants commit
+───────────────────────────
+
+Participant: Bank A
+  1. Write to log: [TXN-123] COMMIT
+  
+  2. Apply changes: Make balance = $500 permanent
+  
+  3. Release lock: Account #1001 UNLOCKED
+  
+  4. Send ACK to coordinator: "ACK - Bank A committed"
+
+
+Participant: Bank B
+  1. Write to log: [TXN-123] COMMIT
+  
+  2. Apply changes: Make balance = $800 permanent
+  
+  3. Release lock: Account #2002 UNLOCKED
+  
+  4. Send ACK to coordinator: "ACK - Bank B committed"
+
+
+Step 6: Coordinator finalizes
+──────────────────────────────
+
+Coordinator:
+  Received ACKs:
+  • Bank A: ACK
+  • Bank B: ACK
+  
+  Log: [TXN-123] END
+  
+  Transaction complete!
+
+
+FINAL STATE:
+────────────
+Bank A Account #1001: $1000 → $500  (deducted $500) ✅
+Bank B Account #2002: $300  → $800  (added $500)    ✅
+Total: $1300 → $1300 (conserved) ✅
+```
+
+---
+
+#### 6.3 Advantages of Two-Phase Commit
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         2PC ADVANTAGES                                  │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ 1. ✅ ATOMICITY GUARANTEE                               │
+│    ┌──────────────────────────────────────┐            │
+│    │ • All-or-nothing across nodes        │            │
+│    │ • No partial commits possible        │            │
+│    │ • Strong consistency maintained      │            │
+│    │ • ACID properties preserved          │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 2. ✅ SIMPLE AND WELL-UNDERSTOOD                        │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Clear protocol, easy to reason     │            │
+│    │ • Standardized (X/Open XA)           │            │
+│    │ • Extensive vendor support           │            │
+│    │ • Decades of production use          │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 3. ✅ WIDELY IMPLEMENTED                                │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Built into most databases          │            │
+│    │ • Java JTA/JTS support               │            │
+│    │ • .NET System.Transactions           │            │
+│    │ • Application server integration     │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 4. ✅ CRASH RECOVERY SUPPORT                            │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Coordinator failure recoverable    │            │
+│    │ • Participant failure recoverable    │            │
+│    │ • Durable logs enable recovery       │            │
+│    │ • No data loss after commit          │            │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 5. ✅ STRONG ISOLATION                                  │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Locks held until commit            │            │
+│    │ • No dirty reads across nodes        │            │
+│    │ • Serializable across participants   │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+#### 6.4 Disadvantages of Two-Phase Commit
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         2PC DISADVANTAGES                               │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ 1. ❌ BLOCKING PROTOCOL                                 │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Participants block waiting for     │            │
+│    │   coordinator decision               │            │
+│    │ • Locks held during coordination     │            │
+│    │ • Reduced availability               │            │
+│    │ • Poor performance under failures    │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 2. ❌ SINGLE POINT OF FAILURE                           │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Coordinator crash blocks system    │            │
+│    │ • Participants stuck in READY state  │            │
+│    │ • Cannot commit or abort until       │            │
+│    │   coordinator recovers               │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 3. ❌ HIGH LATENCY                                      │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Multiple network round trips:      │            │
+│    │   - PREPARE messages                 │            │
+│    │   - Vote responses                   │            │
+│    │   - COMMIT/ABORT messages            │            │
+│    │   - ACK responses                    │            │
+│    │ • Synchronous (not async)            │            │
+│    │ • 10-100x slower than local          │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 4. ❌ REDUCED THROUGHPUT                                │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Locks held for entire protocol     │            │
+│    │ • Limits concurrent transactions     │            │
+│    │ • Coordinator becomes bottleneck     │            │
+│    │ • Doesn't scale well                 │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 5. ❌ CAP THEOREM TRADE-OFF                             │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Chooses Consistency over           │            │
+│    │   Availability                       │            │
+│    │ • Network partition blocks progress  │            │
+│    │ • Cannot tolerate partition          │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 6. ❌ LOGGING OVERHEAD                                  │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Multiple durable writes required   │            │
+│    │ • Coordinator log + participant logs │            │
+│    │ • Disk I/O latency                   │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+#### 6.5 Problems in Two-Phase Commit
+
+**Problem 1: Coordinator Failure (Blocking)**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       PROBLEM 1: COORDINATOR FAILURE                    │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Scenario: Coordinator crashes after receiving votes    │
+│           but before sending decision                   │
+│                                                         │
+│ Timeline:                                               │
+│ ────────                                                │
+│ t1    Coordinator sends PREPARE                         │
+│ t2    Participants vote YES                             │
+│ t3    💥 COORDINATOR CRASHES 💥                         │
+│       (Decision not yet sent!)                          │
+│                                                         │
+│ Result:                                                 │
+│ ┌──────────────────────────────────────────┐           │
+│ │ Participants are BLOCKED in READY state  │           │
+│ │ • Cannot commit (no decision received)   │           │
+│ │ • Cannot abort (might be only failure)   │           │
+│ │ • Hold locks indefinitely                │           │
+│ │ • System unavailable                     │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Why participants can't decide:                          │
+│ • If they commit and coordinator decided abort:         │
+│   → Inconsistency! ❌                                   │
+│ • If they abort and coordinator decided commit:         │
+│   → Inconsistency! ❌                                   │
+│ • Must wait for coordinator recovery                    │
+│                                                         │
+│ Impact:                                                 │
+│ • Locks held → Other transactions blocked               │
+│ • Resources unavailable                                 │
+│ • Cascading delays                                      │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Problem 2: Participant Failure After Voting YES**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│    PROBLEM 2: PARTICIPANT FAILURE AFTER YES VOTE        │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Scenario: Participant crashes after voting YES         │
+│           but before receiving decision                 │
+│                                                         │
+│ Timeline:                                               │
+│ ────────                                                │
+│ t1    Participant A votes YES                           │
+│ t2    💥 PARTICIPANT A CRASHES 💥                       │
+│ t3    Coordinator sends COMMIT                          │
+│ t4    Participant A recovers...                         │
+│                                                         │
+│ Problem:                                                │
+│ ┌──────────────────────────────────────────┐           │
+│ │ Participant A doesn't know outcome:      │           │
+│ │ • Voted YES (logged)                     │           │
+│ │ • Never received decision                │           │
+│ │ • Cannot commit or abort independently   │           │
+│ │ • Must contact coordinator               │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Recovery:                                               │
+│ • Read log: "Voted YES for TXN-123"                     │
+│ • Contact coordinator: "What happened to TXN-123?"      │
+│ • Coordinator responds: "COMMIT" or "ABORT"             │
+│ • Apply decision                                        │
+│                                                         │
+│ If coordinator also crashed:                            │
+│ → BLOCKED until coordinator recovers! ❌                │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Problem 3: Network Partition**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       PROBLEM 3: NETWORK PARTITION                      │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Scenario: Network partition splits coordinator and     │
+│           participants                                  │
+│                                                         │
+│    ┌──────────────┐          ╱╱╱╱╱╱╱╱                  │
+│    │ Coordinator  │        Network Partition            │
+│    └──────────────┘          ╱╱╱╱╱╱╱╱                  │
+│          │                                              │
+│          │ PREPARE? (sent)                              │
+│          │ (message lost!)                              │
+│          ▼                                              │
+│    ╱╱╱╱╱╱╱╱╱╱╱                                          │
+│                                                         │
+│    ┌──────────────┐       ┌──────────────┐             │
+│    │Participant A │       │Participant B │             │
+│    │(unreachable) │       │(unreachable) │             │
+│    └──────────────┘       └──────────────┘             │
+│                                                         │
+│ Impact:                                                 │
+│ ┌──────────────────────────────────────────┐           │
+│ │ • Coordinator times out waiting for votes│           │
+│ │ • Decides to ABORT (safety)              │           │
+│ │ • But cannot reach participants!         │           │
+│ │ • Participants waiting indefinitely      │           │
+│ │ • System split-brain risk                │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ When partition heals:                                   │
+│ • Messages finally delivered                            │
+│ • But significant delay occurred                        │
+│ • Locks held for extended period                        │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Problem 4: Heuristic Decisions (Manual Intervention)**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       PROBLEM 4: HEURISTIC DECISIONS                    │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Scenario: Administrator manually commits/aborts        │
+│           to unblock system                             │
+│                                                         │
+│ Situation:                                              │
+│ • Coordinator crashed and not recovering                │
+│ • Participants blocked for hours                        │
+│ • Critical system unavailable                           │
+│ • DBA intervenes manually                               │
+│                                                         │
+│ DBA Action:                                             │
+│ ┌──────────────────────────────────────────┐           │
+│ │ Participant A: FORCE COMMIT               │           │
+│ │ Participant B: FORCE ABORT                │           │
+│ │ (Different decisions! 😱)                 │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Result: INCONSISTENCY!                                  │
+│ ┌──────────────────────────────────────────┐           │
+│ │ • Database inconsistent across nodes     │           │
+│ │ • Data integrity violated                │           │
+│ │ • Extremely difficult to fix             │           │
+│ │ • May require manual reconciliation      │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Heuristic outcomes:                                     │
+│ • Heuristic Commit: Force commit locally                │
+│ • Heuristic Abort: Force abort locally                  │
+│ • Heuristic Mixed: Some commit, some abort ❌           │
+│                                                         │
+│ This is why 2PC is called "blocking" protocol          │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Problem 5: Performance Degradation**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       PROBLEM 5: PERFORMANCE ISSUES                     │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Message Overhead:                                       │
+│ ┌──────────────────────────────────────────┐           │
+│ │ For N participants:                      │           │
+│ │ • PREPARE messages: N                    │           │
+│ │ • Vote responses: N                      │           │
+│ │ • COMMIT/ABORT messages: N               │           │
+│ │ • ACK responses: N                       │           │
+│ │ Total: 4N messages (synchronous)         │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Latency Analysis:                                       │
+│ ┌──────────────────────────────────────────┐           │
+│ │ Local transaction:  1-10 ms              │           │
+│ │                                          │           │
+│ │ 2PC transaction:                         │           │
+│ │ • Network RTT (×4): 4 × 5ms = 20ms       │           │
+│ │ • Logging (×6):     6 × 2ms = 12ms       │           │
+│ │ • Processing:              3ms           │           │
+│ │ Total:                   ~35ms           │           │
+│ │                                          │           │
+│ │ → 3-35x slower! 📉                       │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Throughput Impact:                                      │
+│ ┌──────────────────────────────────────────┐           │
+│ │ Locks held for 35ms (vs 1ms local)       │           │
+│ │ → 35x longer lock duration               │           │
+│ │ → 97% reduction in concurrent capacity   │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Summary: When 2PC Fails**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         WHEN TWO-PHASE COMMIT FAILS                     │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ ❌ Coordinator crash → Blocking                         │
+│ ❌ Participant crash after YES → Uncertainty            │
+│ ❌ Network partition → Split-brain risk                 │
+│ ❌ Multiple failures → Indefinite blocking              │
+│ ❌ Heuristic decisions → Inconsistency                  │
+│ ❌ High latency → Poor performance                      │
+│ ❌ Many participants → Exponential failure probability  │
+│                                                         │
+│ Key Limitation:                                         │
+│ ┌──────────────────────────────────────────┐           │
+│ │ 2PC is a BLOCKING protocol               │           │
+│ │                                          │           │
+│ │ Availability is sacrificed for           │           │
+│ │ Consistency (CAP theorem)                │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Modern alternatives:                                    │
+│ • Three-Phase Commit (3PC) - Non-blocking               │
+│ • Paxos/Raft - Consensus protocols                      │
+│ • Saga pattern - Eventual consistency                   │
+│ • Event sourcing - Asynchronous                         │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+#### 6.6 Three-Phase Commit (3PC) Protocol
+
+**Description:**
+
+**Three-Phase Commit (3PC)** is a non-blocking atomic commitment protocol designed to solve the blocking problem of Two-Phase Commit (2PC). Developed by **Dale Skeen** in his 1981 doctoral dissertation at UC Berkeley, 3PC introduces an additional phase between the voting and commit phases to prevent participants from blocking when the coordinator fails.
+
+**The Core Innovation:**
+
+While 2PC can block when the coordinator crashes after participants vote YES, 3PC adds a **PreCommit** phase that allows participants to distinguish between "transaction will definitely abort" and "transaction might commit." This enables participants to make progress even if the coordinator fails.
+
+**Why 3PC Was Created:**
+
+The fundamental problem with 2PC is that participants enter an **uncertain state** after voting YES:
+- They don't know if coordinator received their vote
+- They don't know if other participants voted YES
+- They don't know the final decision
+- They **cannot abort** (might be only failure)
+- They **cannot commit** (others might have voted NO)
+- Result: **BLOCKED indefinitely** ❌
+
+3PC solves this by ensuring participants always know whether the transaction **can still abort** or **must eventually commit**.
+
+**Historical Context:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         EVOLUTION: 2PC → 3PC                            │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ 1970s: Two-Phase Commit (Jim Gray, IBM)                │
+│        • Simple, widely adopted                         │
+│        • Problem: Blocking on coordinator failure       │
+│                                                         │
+│ 1981: Three-Phase Commit (Dale Skeen, Berkeley)        │
+│        • Added PreCommit phase                          │
+│        • Non-blocking under single failures             │
+│        • Trade-off: More complex, more messages         │
+│                                                         │
+│ Reality: 2PC still dominates                            │
+│        • 3PC rarely used in practice                    │
+│        • Network partitions remain problematic          │
+│        • Modern systems use consensus protocols         │
+│          (Paxos, Raft) instead                          │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**The Three Phases:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         THREE-PHASE COMMIT PROTOCOL                     │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ PHASE 1: CAN-COMMIT (Voting Phase)                      │
+│ ═══════════════════════════════════                     │
+│ • Coordinator asks: "Can you commit?"                   │
+│ • Participants vote YES or NO                           │
+│ • If any NO → ABORT immediately                         │
+│ • If all YES → Proceed to Phase 2                       │
+│                                                         │
+│ PHASE 2: PRE-COMMIT (Preparation Phase) ⭐ NEW!         │
+│ ═══════════════════════════════════════                 │
+│ • Coordinator sends: "Prepare to commit"                │
+│ • Participants acknowledge PreCommit                    │
+│ • Participants enter PRE-COMMITTED state                │
+│ • Now participants KNOW transaction will commit         │
+│ • This phase makes protocol non-blocking!               │
+│                                                         │
+│ PHASE 3: DO-COMMIT (Commit Phase)                       │
+│ ══════════════════════════════════                      │
+│ • Coordinator sends: "Do commit"                        │
+│ • Participants commit transaction                       │
+│ • Release locks and send ACK                            │
+│ • Transaction complete                                  │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**3PC Protocol Diagram (Success Scenario):**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       3PC PROTOCOL - SUCCESSFUL COMMIT                  │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│   Coordinator              Participant A  Participant B │
+│       │                                                 │
+│ ══════════ PHASE 1: CAN-COMMIT ═══════════════         │
+│       │                                                 │
+│       │  1. CAN-COMMIT?                                 │
+│       ├──────────────────┐                              │
+│       │                  ├────────→ Can commit?         │
+│       │                  │          Check constraints   │
+│       │                  │          Vote: YES           │
+│       │                  │                              │
+│       │                  ├────────→ Can commit?         │
+│       │                  │          Vote: YES           │
+│       │                  │                              │
+│       │  2. Collect votes (all YES)                     │
+│       │◄─────────────────── YES                         │
+│       │◄─────────────────── YES                         │
+│       │                                                 │
+│       │  Decision: Proceed to PreCommit                 │
+│       │                                                 │
+│ ══════════ PHASE 2: PRE-COMMIT ════════════════        │
+│       │                                                 │
+│       │  3. PRE-COMMIT!                                 │
+│       ├──────────────────┐                              │
+│       │                  ├────────→ Write PreCommit log │
+│       │                  │          Enter PRE-COMMITTED │
+│       │                  │          ACK                 │
+│       │                  │                              │
+│       │                  ├────────→ Write PreCommit log │
+│       │                  │          Enter PRE-COMMITTED │
+│       │                  │          ACK                 │
+│       │                  │                              │
+│       │  4. Collect ACKs (all received)                 │
+│       │◄─────────────────── ACK                         │
+│       │◄─────────────────── ACK                         │
+│       │                                                 │
+│       │  Write COMMIT to log                            │
+│       │                                                 │
+│ ══════════ PHASE 3: DO-COMMIT ═════════════════        │
+│       │                                                 │
+│       │  5. DO-COMMIT!                                  │
+│       ├──────────────────┐                              │
+│       │                  ├────────→ Commit transaction  │
+│       │                  │          Release locks       │
+│       │                  │          ACK                 │
+│       │                  │                              │
+│       │                  ├────────→ Commit transaction  │
+│       │                  │          Release locks       │
+│       │                  │          ACK                 │
+│       │                  │                              │
+│       │  6. Transaction complete                        │
+│       │◄─────────────────── ACK                         │
+│       │◄─────────────────── ACK                         │
+│       │                                                 │
+│       ▼  Done!                                          │
+│                                                         │
+│ ✅ RESULT: All committed successfully                   │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**3PC Abort Scenario (Vote NO in Phase 1):**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       3PC PROTOCOL - ABORT SCENARIO                     │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│   Coordinator              Participant A  Participant B │
+│       │                                                 │
+│ ══════════ PHASE 1: CAN-COMMIT ═══════════════         │
+│       │                                                 │
+│       │  1. CAN-COMMIT?                                 │
+│       ├──────────────────┐                              │
+│       │                  ├────────→ Can commit?         │
+│       │                  │          Vote: YES           │
+│       │                  │                              │
+│       │                  ├────────→ Can commit?         │
+│       │                  │          [Constraint fails!] │
+│       │                  │          Vote: NO ❌         │
+│       │                  │                              │
+│       │  2. Collect votes (got NO)                      │
+│       │◄─────────────────── YES                         │
+│       │◄─────────────────── NO                          │
+│       │                                                 │
+│       │  Decision: ABORT (immediate)                    │
+│       │  Write ABORT to log                             │
+│       │                                                 │
+│ ══════════ ABORT - Skip Phase 2 & 3 ══════════         │
+│       │                                                 │
+│       │  3. ABORT!                                      │
+│       ├──────────────────┐                              │
+│       │                  ├────────→ Abort transaction   │
+│       │                  │          ACK                 │
+│       │                  │                              │
+│       │                  ├────────→ Abort transaction   │
+│       │                  │          ACK                 │
+│       │                  │                              │
+│       │  4. Transaction aborted                         │
+│       │◄─────────────────── ACK                         │
+│       │◄─────────────────── ACK                         │
+│       │                                                 │
+│       ▼  Done                                           │
+│                                                         │
+│ ❌ RESULT: All aborted (no Phase 2/3 needed)            │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Key Difference from 2PC - The PreCommit State:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│    WHY PHASE 2 (PRE-COMMIT) MAKES 3PC NON-BLOCKING      │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ In 2PC (BLOCKING):                                      │
+│ ┌──────────────────────────────────────────┐           │
+│ │ After voting YES, participant is BLOCKED │           │
+│ │ • Doesn't know if others voted YES       │           │
+│ │ • Cannot abort (might be only failure)   │           │
+│ │ • Cannot commit (don't know decision)    │           │
+│ │ → STUCK waiting for coordinator! ❌      │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ In 3PC (NON-BLOCKING):                                  │
+│ ┌──────────────────────────────────────────┐           │
+│ │ After receiving PRE-COMMIT:              │           │
+│ │ • Participant KNOWS all voted YES        │           │
+│ │ • Coordinator decided to commit          │           │
+│ │ • Transaction WILL eventually commit     │           │
+│ │ • If coordinator fails → COMMIT anyway!  │           │
+│ │ → Can make progress independently! ✅    │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ State Knowledge:                                        │
+│ • BEFORE PreCommit: Transaction can still abort         │
+│   → If timeout, abort safely                            │
+│                                                         │
+│ • AFTER PreCommit: Transaction will commit              │
+│   → If timeout, commit safely                           │
+│                                                         │
+│ This distinction enables non-blocking behavior!         │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**3PC State Machine - Coordinator:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       3PC COORDINATOR STATE MACHINE                     │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│                  ┌──────────┐                           │
+│                  │  INIT    │                           │
+│                  └────┬─────┘                           │
+│                       │                                 │
+│                       │ Send CAN-COMMIT                 │
+│                       ▼                                 │
+│                  ┌──────────┐                           │
+│            ┌────→│  WAIT    │                           │
+│            │     │(for votes│                           │
+│            │     └────┬─────┘                           │
+│    Timeout │          │                                 │
+│    (ABORT) │          │ All votes received              │
+│            │          ▼                                 │
+│            │     ┌──────────┐                           │
+│            │     │  DECIDE  │                           │
+│            │     └────┬─────┘                           │
+│            │          │                                 │
+│            │    ┌─────┴─────┐                           │
+│            │    │           │                           │
+│            │    ▼           ▼                           │
+│            │ ┌────────┐    │                            │
+│            └─│ ABORT  │    │ All YES                    │
+│              └───┬────┘    ▼                            │
+│                  │    ┌──────────┐                      │
+│                  │    │PRE-COMMIT│ ⭐ NEW STATE         │
+│                  │    │  (send)  │                      │
+│                  │    └────┬─────┘                      │
+│                  │         │                            │
+│                  │         │ Wait for ACKs              │
+│                  │         ▼                            │
+│                  │    ┌──────────┐                      │
+│                  │    │   WAIT   │                      │
+│                  │    │(for ACKs)│                      │
+│                  │    └────┬─────┘                      │
+│                  │         │                            │
+│                  │         │ All ACKs received          │
+│                  │         ▼                            │
+│                  │    ┌──────────┐                      │
+│                  │    │DO-COMMIT │                      │
+│                  │    │  (send)  │                      │
+│                  │    └────┬─────┘                      │
+│                  │         │                            │
+│                  ▼         ▼                            │
+│              ┌──────────────────┐                       │
+│              │  WAIT FOR ACKS   │                       │
+│              └────────┬─────────┘                       │
+│                       │                                 │
+│                       │ All ACKs                        │
+│                       ▼                                 │
+│                  ┌──────────┐                           │
+│                  │   END    │                           │
+│                  └──────────┘                           │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**3PC State Machine - Participant:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       3PC PARTICIPANT STATE MACHINE                     │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│                  ┌──────────┐                           │
+│                  │  INIT    │                           │
+│                  └────┬─────┘                           │
+│                       │                                 │
+│                       │ Receive CAN-COMMIT              │
+│                       ▼                                 │
+│                  ┌──────────┐                           │
+│                  │CAN-COMMIT│                           │
+│                  │  (vote)  │                           │
+│                  └────┬─────┘                           │
+│                       │                                 │
+│                  ┌────┴────┐                            │
+│                  │         │                            │
+│         Can      ▼         ▼       Cannot               │
+│         commit ┌─────┐  ┌─────┐   commit                │
+│         ┌──────│ YES │  │ NO  │───────┐                 │
+│         │      └──┬──┘  └──┬──┘       │                 │
+│         │         │        │          │                 │
+│         │         │ Wait   │ Vote NO  │                 │
+│         │         ▼        └──────────┼─────┐           │
+│         │    ┌────────┐               │     │           │
+│         │    │  WAIT  │               │     │           │
+│         │    │(for msg│               │     │           │
+│         │    └───┬────┘               │     │           │
+│         │        │                    │     │           │
+│         │   ┌────┴────┐               │     │           │
+│         │   │         │               │     │           │
+│         │   ▼         ▼               │     │           │
+│         │ ┌────────┐ ┌────────┐      │     │           │
+│         │ │  PRE-  │ │ ABORT  │◄─────┘     │           │
+│         │ │ COMMIT │ └───┬────┘            │           │
+│         │ │⭐ NEW! │     │                 │           │
+│         │ └───┬────┘     │                 │           │
+│         │     │          │                 │           │
+│         │     │ Wait for │ Rollback        │           │
+│         │     │DO-COMMIT │                 │           │
+│         │     │          │                 │           │
+│         │ ┌───┴────┐     │                 │           │
+│         │ │ Timeout│     │                 │           │
+│         │ └───┬────┘     │                 │           │
+│         │     │          │                 │           │
+│         │     ▼          │                 │           │
+│         │ ┌────────┐     │                 │           │
+│         └→│ COMMIT │     │   ⭐ Can commit │           │
+│           │(forced)│     │     on timeout! │           │
+│           └───┬────┘     │                 │           │
+│               │          │                 │           │
+│               ▼          ▼                 ▼           │
+│           ┌──────────────────────────────────┐         │
+│           │           END                    │         │
+│           └──────────────────────────────────┘         │
+│                                                         │
+│ Key: After PRE-COMMIT, if timeout → COMMIT              │
+│      (Non-blocking!)                                    │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+#### 6.7 How Three-Phase Commit Handles Coordinator Failure
+
+**The Non-Blocking Property:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│    3PC: HANDLING COORDINATOR FAILURE (NON-BLOCKING)     │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Scenario 1: Coordinator fails BEFORE PreCommit         │
+│ ═══════════════════════════════════════════════         │
+│                                                         │
+│ Timeline:                                               │
+│ t1    Coordinator sends CAN-COMMIT?                     │
+│ t2    Participants vote YES                             │
+│ t3    💥 COORDINATOR CRASHES 💥                         │
+│       (Before sending PRE-COMMIT)                       │
+│                                                         │
+│ Participant Recovery:                                   │
+│ ┌──────────────────────────────────────────┐           │
+│ │ • Voted YES, waiting for message         │           │
+│ │ • Timeout expires                        │           │
+│ │ • Check state: Not yet PRE-COMMITTED     │           │
+│ │ • Decision: ABORT (safe!)                │           │
+│ │ • Reasoning: Transaction not committed   │           │
+│ │   yet, so aborting is safe               │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ ✅ Result: Participants abort independently             │
+│    No blocking! System makes progress.                  │
+│                                                         │
+│ ───────────────────────────────────────────────         │
+│                                                         │
+│ Scenario 2: Coordinator fails AFTER PreCommit          │
+│ ════════════════════════════════════════════            │
+│                                                         │
+│ Timeline:                                               │
+│ t1    Coordinator sends CAN-COMMIT?                     │
+│ t2    Participants vote YES                             │
+│ t3    Coordinator sends PRE-COMMIT                      │
+│ t4    Participants acknowledge PRE-COMMIT               │
+│ t5    💥 COORDINATOR CRASHES 💥                         │
+│       (Before sending DO-COMMIT)                        │
+│                                                         │
+│ Participant Recovery:                                   │
+│ ┌──────────────────────────────────────────┐           │
+│ │ • Entered PRE-COMMITTED state            │           │
+│ │ • Timeout expires (no DO-COMMIT)         │           │
+│ │ • Check state: Already PRE-COMMITTED     │           │
+│ │ • Decision: COMMIT (safe!)               │           │
+│ │ • Reasoning: Coordinator decided to      │           │
+│ │   commit, all participants agreed        │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ ✅ Result: Participants commit independently            │
+│    No blocking! Transaction completes.                  │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Termination Protocol (Participant Self-Recovery):**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│    3PC TERMINATION PROTOCOL (PARTICIPANT RECOVERY)      │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ When coordinator fails, participant runs:               │
+│                                                         │
+│ ┌─────────────────────────────────────┐                │
+│ │  TERMINATION PROTOCOL               │                │
+│ ├─────────────────────────────────────┤                │
+│ │                                     │                │
+│ │ 1. Detect timeout (coordinator      │                │
+│ │    not responding)                  │                │
+│ │                                     │                │
+│ │ 2. Contact other participants       │                │
+│ │    (find alive participants)        │                │
+│ │                                     │                │
+│ │ 3. Gather states from all alive     │                │
+│ │    participants                     │                │
+│ │                                     │                │
+│ │ 4. Apply decision rules:            │                │
+│ │                                     │                │
+│ │    IF any participant in ABORT:     │                │
+│ │       → ALL ABORT                   │                │
+│ │                                     │                │
+│ │    ELSE IF any in PRE-COMMITTED:    │                │
+│ │       → ALL COMMIT                  │                │
+│ │                                     │                │
+│ │    ELSE IF any in COMMITTED:        │                │
+│ │       → ALL COMMIT                  │                │
+│ │                                     │                │
+│ │    ELSE (all in WAIT):              │                │
+│ │       → ALL ABORT                   │                │
+│ │                                     │                │
+│ │ 5. Execute decision                 │                │
+│ │                                     │                │
+│ │ 6. Inform other participants        │                │
+│ │                                     │                │
+│ └─────────────────────────────────────┘                │
+│                                                         │
+│ Key Insight:                                            │
+│ The state information is sufficient to make             │
+│ a safe decision without coordinator!                    │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Comparison: 2PC vs 3PC Coordinator Failure:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│    COORDINATOR FAILURE: 2PC vs 3PC                      │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ 2PC (BLOCKING):                                         │
+│ ┌──────────────────────────────────────────┐           │
+│ │ Coordinator crashes after PREPARE        │           │
+│ │                                          │           │
+│ │ Participant state: READY                 │           │
+│ │ • Voted YES                              │           │
+│ │ • Waiting for decision                   │           │
+│ │                                          │           │
+│ │ Problem:                                 │           │
+│ │ • Cannot abort (others might commit)     │           │
+│ │ • Cannot commit (decision unknown)       │           │
+│ │ • BLOCKED indefinitely ❌                │           │
+│ │                                          │           │
+│ │ Impact:                                  │           │
+│ │ • Locks held until coordinator recovers  │           │
+│ │ • System unavailable                     │           │
+│ │ • Cascading failures                     │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ 3PC (NON-BLOCKING):                                     │
+│ ┌──────────────────────────────────────────┐           │
+│ │ Coordinator crashes after PRE-COMMIT     │           │
+│ │                                          │           │
+│ │ Participant state: PRE-COMMITTED         │           │
+│ │ • Voted YES                              │           │
+│ │ • Received PRE-COMMIT                    │           │
+│ │                                          │           │
+│ │ Solution:                                │           │
+│ │ • KNOWS all voted YES                    │           │
+│ │ • KNOWS transaction will commit          │           │
+│ │ • Can COMMIT independently ✅            │           │
+│ │                                          │           │
+│ │ Impact:                                  │           │
+│ │ • Locks released after timeout           │           │
+│ │ • System remains available               │           │
+│ │ • Transaction completes                  │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+#### 6.8 Advantages of Three-Phase Commit
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         3PC ADVANTAGES                                  │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ 1. ✅ NON-BLOCKING UNDER SINGLE FAILURES                │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Coordinator failure recoverable    │            │
+│    │ • Participants can make progress     │            │
+│    │ • No indefinite waiting              │            │
+│    │ • System remains available           │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 2. ✅ IMPROVED AVAILABILITY                             │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Better fault tolerance             │            │
+│    │ • Shorter lock holding periods       │            │
+│    │ • Reduced blocking time              │            │
+│    │ • Graceful degradation               │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 3. ✅ ATOMICITY STILL GUARANTEED                        │
+│    ┌──────────────────────────────────────┐            │
+│    │ • All-or-nothing across nodes        │            │
+│    │ • Consistency maintained             │            │
+│    │ • ACID properties preserved          │            │
+│    │ • No partial commits                 │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 4. ✅ TERMINATION PROTOCOL                              │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Participants can elect new leader  │            │
+│    │ • Cooperative decision making        │            │
+│    │ • Distributed recovery               │            │
+│    │ • No single point of failure         │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 5. ✅ CLEAR STATE BOUNDARIES                            │
+│    ┌──────────────────────────────────────┐            │
+│    │ • "Can abort" vs "Will commit" clear │            │
+│    │ • Unambiguous recovery decisions     │            │
+│    │ • Easier to reason about             │            │
+│    │ • Formal correctness proofs exist    │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 6. ✅ BETTER THAN 2PC FOR LONG TRANSACTIONS             │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Reduces risk of indefinite block   │            │
+│    │ • Better for high-latency networks   │            │
+│    │ • Suitable for geo-distributed       │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+#### 6.9 Disadvantages of Three-Phase Commit
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         3PC DISADVANTAGES                               │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ 1. ❌ MORE COMPLEX THAN 2PC                             │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Additional phase adds complexity   │            │
+│    │ • More states to manage              │            │
+│    │ • Termination protocol needed        │            │
+│    │ • Harder to implement correctly      │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 2. ❌ HIGHER LATENCY                                    │
+│    ┌──────────────────────────────────────┐            │
+│    │ Message counts:                      │            │
+│    │ • 2PC: 4N messages (4 rounds)        │            │
+│    │ • 3PC: 6N messages (6 rounds) 📈     │            │
+│    │                                      │            │
+│    │ Latency analysis (N=3 participants): │            │
+│    │ • 2PC: ~35ms                         │            │
+│    │ • 3PC: ~50ms (43% slower)            │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 3. ❌ VULNERABLE TO NETWORK PARTITIONS                  │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Assumes reliable failure detection │            │
+│    │ • Network partition can cause split- │            │
+│    │   brain scenarios                    │            │
+│    │ • Can violate consistency! ⚠️        │            │
+│    │ • NOT partition-tolerant (CAP)       │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 4. ❌ RARELY IMPLEMENTED IN PRACTICE                    │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Few database vendors support       │            │
+│    │ • Limited tooling/frameworks         │            │
+│    │ • Lack of production experience      │            │
+│    │ • No standard like XA for 2PC        │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 5. ❌ INCREASED FAILURE PROBABILITY                     │
+│    ┌──────────────────────────────────────┐            │
+│    │ • More phases = more failure points  │            │
+│    │ • More network messages can fail     │            │
+│    │ • Coordinator must survive 3 phases  │            │
+│    │ • Higher overall failure rate        │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 6. ❌ MORE LOGGING OVERHEAD                             │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Extra phase = extra log writes     │            │
+│    │ • PRE-COMMIT must be logged          │            │
+│    │ • More disk I/O                      │            │
+│    │ • Increased storage requirements     │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 7. ❌ STILL SYNCHRONOUS                                 │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Blocking during normal operation   │            │
+│    │ • Locks held for 3 phases            │            │
+│    │ • Cannot scale to large systems      │            │
+│    │ • Poor for high throughput           │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+#### 6.10 Problems in Three-Phase Commit
+
+**Problem 1: Network Partition (Split-Brain)**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       PROBLEM 1: NETWORK PARTITION (CRITICAL!)          │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Scenario: Network partition during Phase 2             │
+│                                                         │
+│ Timeline:                                               │
+│ ────────                                                │
+│ t1    Coordinator sends PRE-COMMIT                      │
+│ t2    Partition A receives PRE-COMMIT                   │
+│ t3    💥 NETWORK PARTITION 💥                           │
+│       (Splits coordinator + A from B + C)               │
+│                                                         │
+│ Network topology:                                       │
+│ ┌──────────────────────────────────────────┐           │
+│ │  Partition 1        ╱╱╱╱╱   Partition 2  │           │
+│ │                                          │           │
+│ │  Coordinator        ╱╱╱╱╱   Participant C│           │
+│ │  Participant A      ╱╱╱╱╱   Participant D│           │
+│ │  Participant B      ╱╱╱╱╱                │           │
+│ │                                          │           │
+│ │  Received           ╱╱╱╱╱   Did NOT      │           │
+│ │  PRE-COMMIT         ╱╱╱╱╱   receive      │           │
+│ │                                          │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Partition 1 (Coordinator + A + B):                      │
+│ ┌──────────────────────────────────────────┐           │
+│ │ • Received PRE-COMMIT                    │           │
+│ │ • State: PRE-COMMITTED                   │           │
+│ │ • Timeout waiting for C, D               │           │
+│ │ • Termination protocol runs              │           │
+│ │ • Decision: All in PRE-COMMIT → COMMIT   │           │
+│ │ • ✅ COMMITS transaction                 │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Partition 2 (C + D):                                    │
+│ ┌──────────────────────────────────────────┐           │
+│ │ • Did NOT receive PRE-COMMIT             │           │
+│ │ • State: WAIT (after voting YES)         │           │
+│ │ • Timeout waiting for coordinator        │           │
+│ │ • Termination protocol runs              │           │
+│ │ • Decision: All in WAIT → ABORT          │           │
+│ │ • ❌ ABORTS transaction                  │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Result: INCONSISTENCY! 💣                               │
+│ ┌──────────────────────────────────────────┐           │
+│ │ Partition 1: COMMITTED                   │           │
+│ │ Partition 2: ABORTED                     │           │
+│ │                                          │           │
+│ │ → Split-brain scenario!                  │           │
+│ │ → Data inconsistency across nodes!       │           │
+│ │ → Atomicity violated! ❌                 │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Why this happens:                                       │
+│ • 3PC assumes synchronous network                       │
+│ • Assumes failures detectable (FLP impossibility)       │
+│ • Cannot distinguish slow vs dead vs partitioned        │
+│ • Timeout-based recovery makes guesses                  │
+│                                                         │
+│ This is why 3PC is rarely used in practice! ⚠️         │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Problem 2: Increased Message Complexity**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       PROBLEM 2: MESSAGE OVERHEAD                       │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Message Count Comparison:                               │
+│                                                         │
+│ For N participants:                                     │
+│ ┌──────────────────────────────────────────┐           │
+│ │ 2PC:                                     │           │
+│ │ • Round 1: PREPARE (N messages)          │           │
+│ │ • Round 2: Votes (N responses)           │           │
+│ │ • Round 3: COMMIT/ABORT (N messages)     │           │
+│ │ • Round 4: ACKs (N responses)            │           │
+│ │ Total: 4N messages                       │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ ┌──────────────────────────────────────────┐           │
+│ │ 3PC:                                     │           │
+│ │ • Round 1: CAN-COMMIT (N messages)       │           │
+│ │ • Round 2: Votes (N responses)           │           │
+│ │ • Round 3: PRE-COMMIT (N messages)       │           │
+│ │ • Round 4: ACKs (N responses)            │           │
+│ │ • Round 5: DO-COMMIT (N messages)        │           │
+│ │ • Round 6: ACKs (N responses)            │           │
+│ │ Total: 6N messages (50% more!)           │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Example (10 participants):                              │
+│ • 2PC: 40 messages                                      │
+│ • 3PC: 60 messages                                      │
+│ • Difference: 20 extra messages (50% overhead)          │
+│                                                         │
+│ Latency Impact (assuming 5ms RTT):                      │
+│ • 2PC: 4 rounds × 5ms = 20ms network time               │
+│ • 3PC: 6 rounds × 5ms = 30ms network time               │
+│ • Overhead: +50%                                        │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Problem 3: Complexity and Bug-Prone Implementation**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       PROBLEM 3: IMPLEMENTATION COMPLEXITY              │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ State Space Explosion:                                  │
+│ ┌──────────────────────────────────────────┐           │
+│ │ Coordinator states:                      │           │
+│ │ • INIT                                   │           │
+│ │ • WAIT (for votes)                       │           │
+│ │ • PRE-COMMIT                             │           │
+│ │ • WAIT (for pre-commit ACKs)             │           │
+│ │ • DO-COMMIT                              │           │
+│ │ • WAIT (for commit ACKs)                 │           │
+│ │ • ABORT                                  │           │
+│ │ • END                                    │           │
+│ │ Total: 8 states (vs 5 in 2PC)            │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Edge Cases to Handle:                                   │
+│ ┌──────────────────────────────────────────┐           │
+│ │ ✓ Timeout in each phase                  │           │
+│ │ ✓ Partial message delivery                │           │
+│ │ ✓ Coordinator failure in each state       │           │
+│ │ ✓ Participant failure in each state       │           │
+│ │ ✓ Message reordering                      │           │
+│ │ ✓ Network partition in each phase         │           │
+│ │ ✓ Multiple simultaneous failures          │           │
+│ │ ✓ Recovery and state reconstruction       │           │
+│ │ ✓ Termination protocol                    │           │
+│ │ ✓ Election of new coordinator             │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Result:                                                 │
+│ • Hard to implement correctly                           │
+│ • Subtle bugs in corner cases                           │
+│ • Difficult to test all scenarios                       │
+│ • Maintenance burden                                    │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Problem 4: Performance Under Normal Operation**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       PROBLEM 4: PERFORMANCE DEGRADATION                │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Throughput Comparison (100 transactions/sec):           │
+│                                                         │
+│ Local Transaction:                                      │
+│ • Latency: 2ms                                          │
+│ • Throughput: 500 TPS (max)                             │
+│                                                         │
+│ 2PC:                                                    │
+│ • Latency: 35ms (network + logging)                     │
+│ • Throughput: ~28 TPS (93% reduction)                   │
+│                                                         │
+│ 3PC:                                                    │
+│ • Latency: 50ms (more phases)                           │
+│ • Throughput: ~20 TPS (96% reduction)                   │
+│                                                         │
+│ Lock Holding Time:                                      │
+│ ┌──────────────────────────────────────────┐           │
+│ │ 2PC: Locks held for 2 phases (~35ms)     │           │
+│ │ 3PC: Locks held for 3 phases (~50ms)     │           │
+│ │                                          │           │
+│ │ → 43% longer lock duration               │           │
+│ │ → Reduced concurrency                    │           │
+│ │ → More lock contention                   │           │
+│ │ → Lower overall throughput               │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Scalability:                                            │
+│ ┌──────────────────────────────────────────┐           │
+│ │ As N (participants) increases:           │           │
+│ │ • Latency increases linearly             │           │
+│ │ • Failure probability increases          │           │
+│ │ • Coordinator bottleneck worsens         │           │
+│ │ • 3PC worse than 2PC at every N          │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Problem 5: False Assumptions (FLP Impossibility)**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       PROBLEM 5: FLP IMPOSSIBILITY                      │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ FLP Theorem (Fischer, Lynch, Paterson, 1985):           │
+│ ┌──────────────────────────────────────────┐           │
+│ │ "It is impossible to achieve consensus   │           │
+│ │  in an asynchronous distributed system   │           │
+│ │  with even a single faulty process."     │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ What this means for 3PC:                                │
+│                                                         │
+│ 3PC assumes:                                            │
+│ ┌──────────────────────────────────────────┐           │
+│ │ ✗ Synchronous network (bounded delays)   │           │
+│ │ ✗ Perfect failure detection               │           │
+│ │ ✗ Can distinguish crashed vs slow         │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Reality:                                                │
+│ ┌──────────────────────────────────────────┐           │
+│ │ ✓ Asynchronous network (unbounded delays)│           │
+│ │ ✓ Imperfect failure detection             │           │
+│ │ ✓ Cannot distinguish crashed vs slow      │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Consequence:                                            │
+│ • 3PC cannot guarantee both safety and liveness         │
+│   in all scenarios                                      │
+│ • Network partition can violate atomicity               │
+│ • Timeout-based approach fundamentally flawed           │
+│                                                         │
+│ This is why modern systems use:                         │
+│ • Paxos/Raft (consensus with majority quorum)           │
+│ • Eventual consistency (sacrifice strong consistency)   │
+│ • Application-level compensation (Sagas)                │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Summary: Why 3PC Is Rarely Used**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         WHY 3PC FAILED IN PRACTICE                      │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Theoretical Advantages:                                 │
+│ ✅ Non-blocking under single coordinator failure        │
+│ ✅ Improved availability vs 2PC                         │
+│                                                         │
+│ Practical Problems:                                     │
+│ ❌ Vulnerable to network partitions (split-brain)       │
+│ ❌ 50% more messages than 2PC                           │
+│ ❌ 43% higher latency                                   │
+│ ❌ More complex implementation                          │
+│ ❌ Violates FLP impossibility assumptions               │
+│ ❌ No vendor support or standards                       │
+│                                                         │
+│ Industry Decision:                                      │
+│ ┌──────────────────────────────────────────┐           │
+│ │ "3PC solves the blocking problem of 2PC  │           │
+│ │  but creates worse problems with network │           │
+│ │  partitions. Better to accept 2PC's      │           │
+│ │  blocking or use modern consensus        │           │
+│ │  protocols (Paxos/Raft)."                │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Modern Alternatives (used instead of 3PC):              │
+│ • Paxos/Multi-Paxos: Majority quorum consensus          │
+│ • Raft: Understandable consensus protocol               │
+│ • Saga Pattern: Compensating transactions               │
+│ • Event Sourcing: Eventual consistency                  │
+│ • CRDTs: Conflict-free replicated data types            │
+│                                                         │
+│ Bottom Line:                                            │
+│ 3PC is academically interesting but practically         │
+│ superseded by better approaches.                        │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+### 7. Saga Pattern
+
+**Description:**
+
+The **Saga pattern** is a design pattern for managing distributed transactions by breaking them into a sequence of **local transactions**, where each local transaction updates data in a single service and publishes an event or message to trigger the next step. Unlike 2PC and 3PC which provide **atomic commits**, Sagas provide **eventual consistency** through **compensating transactions**.
+
+**The Fundamental Shift:**
+
+Sagas represent a paradigm shift from traditional ACID transactions:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         PARADIGM SHIFT: ACID → SAGA                     │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Traditional ACID (2PC/3PC):                             │
+│ ┌──────────────────────────────────────────┐           │
+│ │ • All-or-nothing atomic commit           │           │
+│ │ • Strong consistency guaranteed          │           │
+│ │ • Locks held across services             │           │
+│ │ • Blocking coordination                  │           │
+│ │ • Poor scalability                       │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Saga Pattern:                                           │
+│ ┌──────────────────────────────────────────┐           │
+│ │ • Sequence of local transactions         │           │
+│ │ • Eventual consistency                   │           │
+│ │ • No distributed locks                   │           │
+│ │ • Asynchronous coordination              │           │
+│ │ • High scalability                       │           │
+│ │ • Compensating transactions on failure   │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Historical Context:**
+
+The Saga pattern was introduced by **Hector Garcia-Molina and Kenneth Salem** in their 1987 paper "Sagas" at Princeton University. They recognized that long-lived transactions (LLTs) in distributed systems cause:
+- Excessive lock holding
+- Reduced concurrency
+- Increased failure probability
+- Poor system availability
+
+Their solution: Break long transactions into smaller, independent steps that can be **compensated** if something fails later.
+
+**Modern Revival:**
+
+While originally designed for database transactions, Sagas experienced a **renaissance with microservices architecture** (2010s):
+- **Chris Richardson** popularized Sagas for microservices (2015+)
+- Netflix, Uber, Amazon adopted for distributed workflows
+- Essential pattern for event-driven architectures
+- Core to Domain-Driven Design (DDD) bounded contexts
+
+**What is a Saga?**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         SAGA COMPONENTS                                 │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ A Saga consists of:                                     │
+│                                                         │
+│ 1. SEQUENCE OF TRANSACTIONS (T1, T2, ..., Tn)           │
+│    ┌──────────────────────────────────────┐            │
+│    │ Each Ti is a local transaction in    │            │
+│    │ a single service/database            │            │
+│    │ Commits immediately (no 2PC)         │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 2. COMPENSATING TRANSACTIONS (C1, C2, ..., Cn-1)        │
+│    ┌──────────────────────────────────────┐            │
+│    │ Each Ci "undoes" the effect of Ti    │            │
+│    │ Semantically reverses the operation  │            │
+│    │ Must be idempotent                   │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 3. SAGA EXECUTION COORDINATOR                           │
+│    ┌──────────────────────────────────────┐            │
+│    │ Orchestrates transaction sequence    │            │
+│    │ Triggers compensations on failure    │            │
+│    │ Maintains saga state                 │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ Guarantee:                                              │
+│ ┌──────────────────────────────────────────┐           │
+│ │ Either:                                  │           │
+│ │ • T1, T2, T3, ..., Tn (all succeed) ✅   │           │
+│ │ OR                                       │           │
+│ │ • T1, T2, ..., Ti, Ci, Ci-1, ..., C1     │           │
+│ │   (partial execution + compensation) ✅  │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+#### 7.1 Types of Saga Implementation
+
+**1. Choreography-Based Saga (Event-Driven)**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         CHOREOGRAPHY-BASED SAGA                         │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ No central coordinator - services react to events       │
+│                                                         │
+│     Service A        Service B        Service C         │
+│        │                │                │              │
+│        │ 1. Execute T1  │                │              │
+│        ├───────┐        │                │              │
+│        │       │        │                │              │
+│        │◄──────┘        │                │              │
+│        │                │                │              │
+│        │ 2. Publish     │                │              │
+│        │    Event E1    │                │              │
+│        ├────────────────┼────────────────┤              │
+│        │                │                │              │
+│        │                │ 3. Listen E1   │              │
+│        │                │    Execute T2  │              │
+│        │                ├───────┐        │              │
+│        │                │       │        │              │
+│        │                │◄──────┘        │              │
+│        │                │                │              │
+│        │                │ 4. Publish     │              │
+│        │                │    Event E2    │              │
+│        │                ├────────────────┼─────────┐    │
+│        │                │                │         │    │
+│        │                │                │ 5. Listen E2 │
+│        │                │                │    Execute T3│
+│        │                │                ├─────────┐    │
+│        │                │                │         │    │
+│        │                │                │◄────────┘    │
+│        │                │                │              │
+│        │                │                │ 6. Publish   │
+│        │                │                │    Success   │
+│        │◄───────────────┼────────────────┤              │
+│        │                │                │              │
+│        ▼                ▼                ▼              │
+│       Done             Done             Done            │
+│                                                         │
+│ Characteristics:                                        │
+│ • Decentralized control                                 │
+│ • Services listen to events and react                   │
+│ • No single point of failure                            │
+│ • Loose coupling                                        │
+│ • Complex to understand and debug                       │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**2. Orchestration-Based Saga (Centralized)**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         ORCHESTRATION-BASED SAGA                        │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Central coordinator directs all steps                   │
+│                                                         │
+│                  ┌──────────────┐                       │
+│                  │   SAGA       │                       │
+│                  │ ORCHESTRATOR │                       │
+│                  └──────┬───────┘                       │
+│                         │                               │
+│         ┌───────────────┼───────────────┐              │
+│         │               │               │              │
+│         ▼               ▼               ▼              │
+│    ┌────────┐      ┌────────┐      ┌────────┐         │
+│    │Service │      │Service │      │Service │         │
+│    │   A    │      │   B    │      │   C    │         │
+│    └────────┘      └────────┘      └────────┘         │
+│                                                         │
+│ Flow:                                                   │
+│ 1. Orchestrator → Service A: Execute T1                │
+│ 2. Service A → Orchestrator: T1 Success                │
+│ 3. Orchestrator → Service B: Execute T2                │
+│ 4. Service B → Orchestrator: T2 Success                │
+│ 5. Orchestrator → Service C: Execute T3                │
+│ 6. Service C → Orchestrator: T3 Success                │
+│ 7. Saga Complete                                        │
+│                                                         │
+│ Characteristics:                                        │
+│ • Centralized control                                   │
+│ • Orchestrator explicitly invokes services              │
+│ • Single point of control (easier to understand)        │
+│ • Tighter coupling                                      │
+│ • Orchestrator is single point of failure               │
+│ • Easier to implement complex logic                     │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Comparison: Choreography vs Orchestration**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│    CHOREOGRAPHY vs ORCHESTRATION                        │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Aspect          │ Choreography    │ Orchestration      │
+│ ────────────────┼─────────────────┼─────────────────── │
+│ Control         │ Decentralized   │ Centralized        │
+│ Coupling        │ Loose           │ Tighter            │
+│ Complexity      │ Higher          │ Lower              │
+│ Debugging       │ Difficult       │ Easier             │
+│ Single Point    │ None            │ Orchestrator       │
+│ of Failure      │                 │                    │
+│ Scalability     │ Better          │ Orchestrator       │
+│                 │                 │ bottleneck         │
+│ Transaction     │ Emergent        │ Explicit           │
+│ Flow            │                 │                    │
+│ Best For        │ Simple flows    │ Complex business   │
+│                 │ Event-driven    │ logic              │
+│                 │                 │                    │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+#### 7.2 Saga Pattern Example: E-Commerce Order
+
+**Scenario:** Process an order involving payment, inventory, and shipping
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         SAGA EXAMPLE: E-COMMERCE ORDER                  │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Steps (Forward Transactions):                           │
+│ 1. T1: Order Service - Create order                     │
+│ 2. T2: Payment Service - Charge customer                │
+│ 3. T3: Inventory Service - Reserve items                │
+│ 4. T4: Shipping Service - Create shipment               │
+│                                                         │
+│ Compensations (Reverse Transactions):                   │
+│ 1. C1: Order Service - Cancel order                     │
+│ 2. C2: Payment Service - Refund customer                │
+│ 3. C3: Inventory Service - Release items                │
+│ 4. C4: Shipping Service - Cancel shipment               │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Success Scenario (All Steps Succeed):**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         SAGA SUCCESS FLOW                               │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Time  Order      Payment     Inventory    Shipping      │
+│ ──────────────────────────────────────────────────────  │
+│                                                         │
+│ t1    T1: Create                                        │
+│       Order #123                                        │
+│       Status: PENDING                                   │
+│       ✅ Success                                         │
+│       │                                                 │
+│ t2    │          T2: Charge                             │
+│       │          $100                                   │
+│       │          Card: ****1234                         │
+│       │          ✅ Success                              │
+│       │          │                                      │
+│ t3    │          │          T3: Reserve                 │
+│       │          │          Items: [A, B]               │
+│       │          │          Stock: 10→8                 │
+│       │          │          ✅ Success                   │
+│       │          │          │                           │
+│ t4    │          │          │          T4: Create       │
+│       │          │          │          Shipment #456    │
+│       │          │          │          Address: 123 St  │
+│       │          │          │          ✅ Success        │
+│       │          │          │          │                │
+│ t5    Update                │          │                │
+│       Order #123            │          │                │
+│       Status: CONFIRMED     │          │                │
+│       ✅                     ✅          ✅               ✅│
+│                                                         │
+│ ✅ RESULT: Order processed successfully                 │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Failure Scenario (Payment Fails - Compensation Triggered):**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         SAGA FAILURE & COMPENSATION FLOW                │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Time  Order      Payment     Inventory    Shipping      │
+│ ──────────────────────────────────────────────────────  │
+│                                                         │
+│ ━━━━━━ FORWARD EXECUTION ━━━━━━━━━━━━━━━━━━━          │
+│                                                         │
+│ t1    T1: Create                                        │
+│       Order #123                                        │
+│       Status: PENDING                                   │
+│       ✅ Success                                         │
+│       │                                                 │
+│ t2    │          T2: Charge                             │
+│       │          $100                                   │
+│       │          Card: ****1234                         │
+│       │          ❌ FAILED!                             │
+│       │          (Insufficient funds)                   │
+│       │                                                 │
+│ ━━━━━━ COMPENSATION (ROLLBACK) ━━━━━━━━━━━━━          │
+│       │                                                 │
+│ t3    │          Trigger                                │
+│       │◄─────────Compensation                           │
+│       │                                                 │
+│ t4    C1: Cancel                                        │
+│       Order #123                                        │
+│       Status: CANCELLED                                 │
+│       Reason: Payment failed                            │
+│       ✅ Compensated                                     │
+│       │                                                 │
+│ t5    Notify                                            │
+│       Customer                                          │
+│       ✅ Done                                            │
+│                                                         │
+│ ❌ RESULT: Order cancelled (compensated)                │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Complex Failure Scenario (Inventory Fails After Payment):**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         SAGA COMPLEX COMPENSATION                       │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Time  Order      Payment     Inventory    Shipping      │
+│ ──────────────────────────────────────────────────────  │
+│                                                         │
+│ ━━━━━━ FORWARD EXECUTION ━━━━━━━━━━━━━━━━━━━          │
+│                                                         │
+│ t1    T1: Create                                        │
+│       Order #123                                        │
+│       ✅ Success                                         │
+│       │                                                 │
+│ t2    │          T2: Charge                             │
+│       │          $100                                   │
+│       │          ✅ Success                              │
+│       │          (Money deducted!)                      │
+│       │          │                                      │
+│ t3    │          │          T3: Reserve                 │
+│       │          │          Items: [A, B]               │
+│       │          │          ❌ FAILED!                  │
+│       │          │          (Out of stock)              │
+│       │          │                                      │
+│ ━━━━━━ COMPENSATION (ROLLBACK) ━━━━━━━━━━━━━          │
+│       │          │                                      │
+│ t4    │          │          Trigger                     │
+│       │          │◄─────────Compensation                │
+│       │          │                                      │
+│ t5    │          C2: Refund                             │
+│       │          $100                                   │
+│       │          Card: ****1234                         │
+│       │          ✅ Refunded                             │
+│       │          (Money returned)                       │
+│       │          │                                      │
+│ t6    │          Trigger                                │
+│       │◄─────────Compensation                           │
+│       │                                                 │
+│ t7    C1: Cancel                                        │
+│       Order #123                                        │
+│       Status: CANCELLED                                 │
+│       Reason: Out of stock                              │
+│       ✅ Compensated                                     │
+│       │                                                 │
+│ t8    Notify                                            │
+│       Customer                                          │
+│       ✅ Done                                            │
+│                                                         │
+│ ❌ RESULT: Order cancelled, payment refunded            │
+│    System returned to consistent state                  │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Saga State Machine:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         SAGA STATE MACHINE                              │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│                  ┌──────────┐                           │
+│                  │  START   │                           │
+│                  └────┬─────┘                           │
+│                       │                                 │
+│                       │ Execute T1                      │
+│                       ▼                                 │
+│                  ┌──────────┐                           │
+│             ┌───→│   T1     │                           │
+│             │    │EXECUTING │                           │
+│             │    └────┬─────┘                           │
+│             │         │                                 │
+│             │    ┌────┴─────┐                           │
+│     T1 Fail │    │          │ T1 Success                │
+│             │    ▼          ▼                           │
+│             │  ┌────┐   ┌──────────┐                    │
+│             └──│FAIL│   │   T2     │───┐                │
+│                └──┬─┘   │EXECUTING │   │ T2 Fail        │
+│                   │     └────┬─────┘   │                │
+│                   │          │         │                │
+│                   │          │ T2      │                │
+│                   │          │ Success │                │
+│                   │          ▼         │                │
+│                   │     ┌──────────┐   │                │
+│                   │     │   T3     │◄──┘                │
+│                   │     │EXECUTING │                    │
+│                   │     └────┬─────┘                    │
+│                   │          │                          │
+│                   │     ┌────┴─────┐                    │
+│                   │     │          │ T3 Success         │
+│                   │     ▼          ▼                    │
+│                   │   ┌────┐   ┌──────────┐            │
+│                   │   │C2  │   │ SUCCESS  │            │
+│                   │   │EXEC│   └──────────┘            │
+│                   │   └──┬─┘                            │
+│                   │      │                              │
+│                   │      ▼                              │
+│                   │   ┌────┐                            │
+│                   │   │C1  │                            │
+│                   │   │EXEC│                            │
+│                   │   └──┬─┘                            │
+│                   │      │                              │
+│                   ▼      ▼                              │
+│              ┌──────────────┐                           │
+│              │ COMPENSATED  │                           │
+│              │  (Failed)    │                           │
+│              └──────────────┘                           │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+#### 7.3 Advantages of Saga Pattern
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         SAGA PATTERN ADVANTAGES                         │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ 1. ✅ HIGH SCALABILITY                                  │
+│    ┌──────────────────────────────────────┐            │
+│    │ • No distributed locks               │            │
+│    │ • No blocking coordination           │            │
+│    │ • Services execute independently     │            │
+│    │ • Horizontal scaling possible        │            │
+│    │ • Handles millions of transactions   │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 2. ✅ HIGH AVAILABILITY                                 │
+│    ┌──────────────────────────────────────┐            │
+│    │ • No synchronous blocking            │            │
+│    │ • Service failures isolated          │            │
+│    │ • Graceful degradation               │            │
+│    │ • Asynchronous processing            │            │
+│    │ • Better fault tolerance             │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 3. ✅ LOOSE COUPLING (Choreography)                     │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Services don't know about saga     │            │
+│    │ • Event-driven communication         │            │
+│    │ • Easy to add new services           │            │
+│    │ • Independent deployment             │            │
+│    │ • Microservices-friendly             │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 4. ✅ NO DISTRIBUTED TRANSACTIONS                       │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Local transactions only            │            │
+│    │ • Each service owns its data         │            │
+│    │ • No 2PC overhead                    │            │
+│    │ • Better performance                 │            │
+│    │ • Simpler database design            │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 5. ✅ BUSINESS-ALIGNED                                  │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Mirrors business processes         │            │
+│    │ • Clear compensation semantics       │            │
+│    │ • Matches domain workflows           │            │
+│    │ • Natural for long-running processes │            │
+│    │ • Explicit business logic            │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 6. ✅ HANDLES LONG-LIVED TRANSACTIONS                   │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Can span hours/days                │            │
+│    │ • No lock timeout issues             │            │
+│    │ • Resources released immediately     │            │
+│    │ • Good for batch processing          │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 7. ✅ CLOUD-NATIVE & MICROSERVICES                      │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Perfect for distributed systems    │            │
+│    │ • Works with event buses (Kafka)     │            │
+│    │ • Service mesh compatible            │            │
+│    │ • Serverless-friendly                │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+#### 7.4 Disadvantages of Saga Pattern
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         SAGA PATTERN DISADVANTAGES                      │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ 1. ❌ NO ISOLATION (ACID Violation)                     │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Intermediate states visible        │            │
+│    │ • Dirty reads possible               │            │
+│    │ • Concurrent sagas can interfere     │            │
+│    │ • Lost updates possible              │            │
+│    │ • Requires semantic locks            │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 2. ❌ EVENTUAL CONSISTENCY ONLY                         │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Not immediately consistent         │            │
+│    │ • Temporary inconsistencies          │            │
+│    │ • Application must handle            │            │
+│    │ • Not suitable for all use cases     │            │
+│    │ • Complex to reason about            │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 3. ❌ COMPLEX COMPENSATION LOGIC                        │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Must write compensating txns       │            │
+│    │ • Not all operations reversible      │            │
+│    │ • Semantic complexity                │            │
+│    │ • Idempotency required               │            │
+│    │ • Testing difficult                  │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 4. ❌ DIFFICULT TO DEBUG                                │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Distributed tracing needed         │            │
+│    │ • Asynchronous flows hard to track   │            │
+│    │ • Event ordering issues              │            │
+│    │ • Multiple failure modes             │            │
+│    │ • Correlation IDs essential          │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 5. ❌ CYCLIC DEPENDENCIES RISK (Choreography)           │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Services tightly coupled via events│            │
+│    │ • Circular event chains possible     │            │
+│    │ • Hard to understand flow            │            │
+│    │ • Refactoring difficult              │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 6. ❌ REQUIRES INFRASTRUCTURE                           │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Message broker needed (Kafka, etc.)│            │
+│    │ • Saga orchestrator framework        │            │
+│    │ • Distributed tracing tools          │            │
+│    │ • Event store/log                    │            │
+│    │ • Monitoring and observability       │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 7. ❌ INCREASED LATENCY                                 │
+│    ┌──────────────────────────────────────┐            │
+│    │ • Multiple async steps               │            │
+│    │ • Message queue delays               │            │
+│    │ • Network hops                       │            │
+│    │ • Can take seconds/minutes           │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+#### 7.5 Problems in Saga Pattern
+
+**Problem 1: Lack of Isolation (Anomalies)**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       PROBLEM 1: ISOLATION ANOMALIES                    │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Scenario: Two concurrent sagas modifying same data     │
+│                                                         │
+│ Anomaly 1: DIRTY READ (Reading uncommitted changes)    │
+│ ────────────────────────────────────────────────────    │
+│                                                         │
+│ Time  Saga 1 (Order A)         Saga 2 (Order B)        │
+│ ────────────────────────────────────────────────────    │
+│                                                         │
+│ t1    T1: Reserve 5 items                               │
+│       Inventory: 10 → 5                                 │
+│       ✅ Committed!                                      │
+│       (Visible to others)                               │
+│       │                                                 │
+│ t2    │                        T1: Check inventory      │
+│       │                        See: 5 items available   │
+│       │                        Reserve 5 items          │
+│       │                        Inventory: 5 → 0         │
+│       │                        ✅ Committed!             │
+│       │                        │                        │
+│ t3    T2: Payment FAILS! ❌    │                        │
+│       (Card declined)          │                        │
+│       │                        │                        │
+│ t4    C1: Release 5 items      │                        │
+│       Inventory: 0 → 5         │                        │
+│       ✅ Compensated            │                        │
+│       │                        │                        │
+│ t5    │                        T2: Ship items           │
+│       │                        But only 5 in inventory! │
+│       │                        💥 INCONSISTENCY!        │
+│                                                         │
+│ Problem:                                                │
+│ • Saga 2 read Saga 1's uncommitted state                │
+│ • Saga 1 later compensated (rolled back)                │
+│ • Saga 2 made decisions based on wrong state            │
+│ • Result: Oversold inventory! ❌                        │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Anomaly 2: Lost Updates**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       ANOMALY 2: LOST UPDATE                            │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Time  Saga 1                   Saga 2                   │
+│ ────────────────────────────────────────────────────    │
+│                                                         │
+│ t1    Read Balance: $1000                               │
+│       │                                                 │
+│ t2    │                        Read Balance: $1000      │
+│       │                        │                        │
+│ t3    Deduct $200              │                        │
+│       Balance: $1000 → $800    │                        │
+│       Commit ✅                 │                        │
+│       │                        │                        │
+│ t4    │                        Deduct $300              │
+│       │                        Balance: $1000 → $700    │
+│       │                        Commit ✅                 │
+│       │                        (Overwrites Saga 1!)     │
+│       │                        │                        │
+│ t5    Final Balance: $700 (should be $500!)             │
+│       Lost Update! ❌                                    │
+│                                                         │
+│ Problem:                                                │
+│ • No isolation between sagas                            │
+│ • Saga 2 overwrote Saga 1's changes                     │
+│ • $200 deduction lost                                   │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Problem 2: Compensation Failures**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       PROBLEM 2: COMPENSATION FAILURES                  │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Scenario: Compensation transaction fails                │
+│                                                         │
+│ Time  Order      Payment     Inventory    Shipping      │
+│ ────────────────────────────────────────────────────    │
+│                                                         │
+│ t1    T1: Create                                        │
+│       ✅                                                 │
+│       │                                                 │
+│ t2    │          T2: Charge                             │
+│       │          $100 ✅                                 │
+│       │          (Money taken!)                         │
+│       │          │                                      │
+│ t3    │          │          T3: Reserve                 │
+│       │          │          ❌ FAILED!                  │
+│       │          │                                      │
+│ t4    │          C2: Refund                             │
+│       │          $100                                   │
+│       │          ❌ REFUND FAILED!                      │
+│       │          (Network timeout)                      │
+│       │          💥 STUCK!                              │
+│       │                                                 │
+│ Problem:                                                │
+│ ┌──────────────────────────────────────────┐           │
+│ │ • Customer charged but no order          │           │
+│ │ • Refund failed                          │           │
+│ │ • Inconsistent state!                    │           │
+│ │ • Money lost for customer                │           │
+│ │ • Manual intervention needed             │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Solutions:                                              │
+│ • Retry with exponential backoff                        │
+│ • Dead letter queue for failures                        │
+│ • Manual reconciliation process                         │
+│ • Idempotent compensations                              │
+│ • Alert operators                                       │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Problem 3: Non-Compensatable Operations**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       PROBLEM 3: NON-COMPENSATABLE OPERATIONS           │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Some operations cannot be "undone":                     │
+│                                                         │
+│ 1. ❌ EMAIL SENT                                        │
+│    ┌──────────────────────────────────────┐            │
+│    │ Operation: Send confirmation email   │            │
+│    │ Compensation: ???                    │            │
+│    │ • Cannot "unsend" email              │            │
+│    │ • Can send apology email (not same)  │            │
+│    │ • Customer already saw confirmation  │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 2. ❌ THIRD-PARTY API CALL                              │
+│    ┌──────────────────────────────────────┐            │
+│    │ Operation: Book hotel via API        │            │
+│    │ Compensation: Cancel booking         │            │
+│    │ • API might not support cancellation │            │
+│    │ • Cancellation fee charged           │            │
+│    │ • Not truly reversible               │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 3. ❌ PHYSICAL WORLD ACTIONS                            │
+│    ┌──────────────────────────────────────┐            │
+│    │ Operation: Print shipping label      │            │
+│    │ Operation: Dispatch drone delivery   │            │
+│    │ Operation: Cut fabric to size        │            │
+│    │ Compensation: Impossible!            │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ 4. ❌ IRREVERSIBLE STATE CHANGES                        │
+│    ┌──────────────────────────────────────┐            │
+│    │ Operation: Increment sequence number │            │
+│    │ Operation: Delete old data           │            │
+│    │ Compensation: Not meaningful         │            │
+│    └──────────────────────────────────────┘            │
+│                                                         │
+│ Solution Patterns:                                      │
+│ • PIVOT TRANSACTION: Point of no return                 │
+│   (Make non-compensatable ops last)                     │
+│ • SEMANTIC COMPENSATION: Apologize/explain              │
+│   (Send "sorry" email)                                  │
+│ • RETRY UNTIL SUCCESS: Avoid compensation               │
+│   (Retry forward transaction)                           │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Problem 4: Ordering and Idempotency Issues**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       PROBLEM 4: MESSAGE ORDERING & IDEMPOTENCY         │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Issue 1: OUT-OF-ORDER MESSAGE DELIVERY                  │
+│ ────────────────────────────────────────────            │
+│                                                         │
+│ Sent Order:     [T1] → [T2] → [T3]                      │
+│ Received Order: [T1] → [T3] → [T2] ❌                   │
+│                                                         │
+│ Example:                                                │
+│ • T1: Create order                                      │
+│ • T2: Update address                                    │
+│ • T3: Confirm order                                     │
+│                                                         │
+│ If T3 arrives before T2:                                │
+│ • Order confirmed with old address!                     │
+│ • Update arrives too late                               │
+│                                                         │
+│ ───────────────────────────────────────────             │
+│                                                         │
+│ Issue 2: DUPLICATE MESSAGE DELIVERY                     │
+│ ────────────────────────────────────────────            │
+│                                                         │
+│ Network retry can cause duplicates:                     │
+│                                                         │
+│ T1: Charge $100                                         │
+│ T1: Charge $100 (duplicate!)                            │
+│ Result: Charged $200 instead of $100 ❌                 │
+│                                                         │
+│ Solution: IDEMPOTENCY                                   │
+│ ┌──────────────────────────────────────────┐           │
+│ │ def charge_payment(request_id, amount):  │           │
+│ │     if already_processed(request_id):    │           │
+│ │         return cached_result             │           │
+│ │     result = do_charge(amount)           │           │
+│ │     cache_result(request_id, result)     │           │
+│ │     return result                        │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Idempotency Requirements:                               │
+│ • Unique request IDs (correlation IDs)                  │
+│ • Deduplication logic                                   │
+│ • Idempotent operations                                 │
+│ • Result caching                                        │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Problem 5: Complexity in Choreography**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│       PROBLEM 5: CHOREOGRAPHY COMPLEXITY                │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ Issue: Emergent workflow from distributed events        │
+│                                                         │
+│ Simple Flow (3 services):                               │
+│ ┌──────────────────────────────────────────┐           │
+│ │ Order → Payment → Shipping               │           │
+│ │ (3 steps, easy to understand)            │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Complex Flow (10 services):                             │
+│ ┌──────────────────────────────────────────┐           │
+│ │      Order                               │           │
+│ │     /  |  \                              │           │
+│ │   Pay Inv. Fraud                         │           │
+│ │    |   |    |                            │           │
+│ │   Tax Ship Notify                        │           │
+│ │    \   |   /                             │           │
+│ │    Analytics                             │           │
+│ │       |                                  │           │
+│ │    Billing                               │           │
+│ │                                          │           │
+│ │ • 10+ event types                        │           │
+│ │ • Dozens of event handlers               │           │
+│ │ • No single view of workflow             │           │
+│ │ • Distributed state machine              │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Problems:                                               │
+│ ❌ No central place to see workflow                     │
+│ ❌ Cyclic dependencies between services                 │
+│ ❌ Difficult to change flow                             │
+│ ❌ Hard to debug failures                               │
+│ ❌ Testing requires all services                        │
+│ ❌ Tight coupling via events                            │
+│                                                         │
+│ When to use Orchestration instead:                      │
+│ • Complex business logic                                │
+│ • Many conditional branches                             │
+│ • Need clear workflow visibility                        │
+│ • Frequent changes to flow                              │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Summary: Saga Pattern Trade-offs**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         SAGA PATTERN: WHEN TO USE                       │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ ✅ USE SAGA WHEN:                                       │
+│ ┌──────────────────────────────────────────┐           │
+│ │ • Building microservices                 │           │
+│ │ • Need high scalability                  │           │
+│ │ • Long-running processes                 │           │
+│ │ • Eventual consistency acceptable        │           │
+│ │ • Services independently deployable      │           │
+│ │ • Can write compensating transactions    │           │
+│ │ • Cloud-native architecture              │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ ❌ DON'T USE SAGA WHEN:                                 │
+│ ┌──────────────────────────────────────────┐           │
+│ │ • Need strong consistency (ACID)         │           │
+│ │ • Isolation critical (finance)           │           │
+│ │ • Operations not compensatable           │           │
+│ │ • Simple monolith sufficient             │           │
+│ │ • Low transaction volume                 │           │
+│ │ • Real-time consistency required         │           │
+│ └──────────────────────────────────────────┘           │
+│                                                         │
+│ Better Alternatives:                                    │
+│ • Monolith with ACID: Simple, proven                    │
+│ • 2PC: When strong consistency needed                   │
+│ • Event Sourcing: Full audit trail                      │
+│ • CQRS: Read/write separation                           │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+---

@@ -3,11 +3,152 @@ site_url: https://abhishekghoshh.github.io/system-design-helper
 
 nav:
   - Home: index.md
-  - High Level Design: high-level-design.md
-  - Low Level Design: low-level-design.md
-  - Java Interview Helper: java-interview-helper.md
-  - Spring Boot Interview Helper: spring-boot-interview-helper.md
-  - Behavioural Interview: behavioural-interview-helper.md
+  - AI Tools: ai-tools.md
+  - Behavioural: behavioural.md
+  - Developer Experiences: developer-experiences.md
+  - Open Source Tools: open-source-tools.md
+  - Software Architect: software-architect.md
+  - Wisdom: wisdom.md
+  
+  - AI:
+    - AI: ai/ai.md
+    - AI Agent: ai/ai-agent.md
+    - Gen AI: ai/gen-ai.md
+    - LangChain: ai/langchain.md
+    - LangGraph: ai/langgraph.md
+    - MCP: ai/MCP.md
+    - RAG: ai/RAG.md
+  
+  - DevOps:
+    - Overview: devops/index.md
+  
+  - Security:
+    - Introduction: security/introduction.md
+    - Authentication & Authorization: security/authentication-and-authorization.md
+    - OAuth: security/oauth.md
+    - RBAC: security/rbac.md
+    - SSO: security/sso.md
+    - SSL: security/ssl.md
+    - DevSecOps: security/devsecops.md
+    - Firewall: security/firewall.md
+    - Certificate:
+      - Introduction: security/certificate/introduction.md
+      - Certificate Authority: security/certificate/certificate-authority.md
+      - Client Certificates: security/certificate/client-certificates.md
+      - Server Certificates: security/certificate/server-certificates.md
+      - Self-Signed Certificates: security/certificate/self-signed-certificates.md
+      - Links: security/certificate/links.md
+    - Reverse Proxy:
+      - Introduction: security/reverse-proxy/introduction.md
+      - HAProxy: security/reverse-proxy/haproxy.md
+      - Nginx: security/reverse-proxy/nginx.md
+  
+  - System Design:
+    - Courses: system-design/courses.md
+    - High Level Design:
+      - Overview: system-design/high-level/index.md
+      - Concepts:
+        - Concepts: system-design/high-level/concepts/concepts.md
+        - Adaptive Bitrate Streaming: system-design/high-level/concepts/adaptive-bitrate-streaming.md
+        - API: system-design/high-level/concepts/api.md
+        - Asynchronous Communication: system-design/high-level/concepts/asynchronus-communication.md
+        - Back of Envelope Calculation: system-design/high-level/concepts/back-of-envelope-calculation.md
+        - Bloom Filters: system-design/high-level/concepts/bloom-filters.md
+        - CAP Theorem: system-design/high-level/concepts/cap-theorm.md
+        - CDC: system-design/high-level/concepts/cdc.md
+        - CDN: system-design/high-level/concepts/cdn.md
+        - Clean Architecture: system-design/high-level/concepts/clean-architecture.md
+        - Code Documentation: system-design/high-level/concepts/code-documentation.md
+        - Consistent Hashing: system-design/high-level/concepts/consistent-hashing.md
+        - CQRS: system-design/high-level/concepts/cqrs.md
+        - Database Indexing: system-design/high-level/concepts/database-indexing.md
+        - Distributed Caches & Caching Strategies: system-design/high-level/concepts/distributed-caches-and-caching-strategies.md
+        - Distributed Transaction & Concurrency Control: system-design/high-level/concepts/ditributed-transaction-and-concurrency-control.md
+        - Event Sourcing: system-design/high-level/concepts/event-sourcing.md
+        - Hashing: system-design/high-level/concepts/hashing.md
+        - Load Balancer & Proxy Server: system-design/high-level/concepts/load-balancer-and-proxy-server.md
+        - Microservices Patterns: system-design/high-level/concepts/microservices-patterns.md
+        - Networking: system-design/high-level/concepts/networking.md
+        - Passwords: system-design/high-level/concepts/passwords.md
+        - Process: system-design/high-level/concepts/process.md
+        - Raft Consensus Algorithm: system-design/high-level/concepts/raft-consensus-algorithm.md
+        - RESTful Architecture: system-design/high-level/concepts/restfull-architecture.md
+        - S3: system-design/high-level/concepts/s3.md
+        - Scaling to One Million: system-design/high-level/concepts/scaling-to-one-million.md
+        - Sockets: system-design/high-level/concepts/sockets.md
+        - Storage: system-design/high-level/concepts/storage.md
+        - WebRTC: system-design/high-level/concepts/webrtc.md
+      - Designing:
+        - App Store: system-design/high-level/desgining/app-store.md
+        - Authentication System: system-design/high-level/desgining/authentication-system.md
+        - Chat System: system-design/high-level/desgining/chat-system.md
+        - Chess Game: system-design/high-level/desgining/chess-game.md
+        - Data Warehouse: system-design/high-level/desgining/data-warehouse.md
+        - Distributed Geospatial Data Platform: system-design/high-level/desgining/distributed-geospatial-data-platform.md
+        - Distributed Messaging Queue: system-design/high-level/desgining/distributed-messaging-queue.md
+        - DNS Server: system-design/high-level/desgining/dns-server.md
+        - E-Commerce: system-design/high-level/desgining/e-commerce.md
+        - E-Commerce Checkout: system-design/high-level/desgining/ecommerce-checkout.md
+        - Email Automation Platform: system-design/high-level/desgining/email-automation-platform.md
+        - Food Delivery: system-design/high-level/desgining/food-delivery.md
+        - Google Drive: system-design/high-level/desgining/google-drive.md
+        - Hashtag Service: system-design/high-level/desgining/hashtag-service.md
+        - How to Host Your Own X: system-design/high-level/desgining/how-to-host-your-own-x.md
+        - Image Optimisation On The Fly: system-design/high-level/desgining/Image-Optimisation-on-the-fly.md
+        - Key Value Store: system-design/high-level/desgining/key-value-store.md
+        - Large Language Model: system-design/high-level/desgining/large-language-model.md
+        - LeetCode: system-design/high-level/desgining/leetcode.md
+        - Live Comments: system-design/high-level/desgining/live-comments.md
+        - Log System: system-design/high-level/desgining/log-system.md
+        - Multiplayer Game: system-design/high-level/desgining/multiplayer-game.md
+        - Netflix: system-design/high-level/desgining/netflix.md
+        - Notification System: system-design/high-level/desgining/notification-system.md
+        - Products: system-design/high-level/desgining/products.md
+        - Rate Limiter: system-design/high-level/desgining/rate-limiter.md
+        - Recommendation Engine: system-design/high-level/desgining/recomendation-engine.md
+        - Redis: system-design/high-level/desgining/redis.md
+        - Search Engine: system-design/high-level/desgining/search-engine.md
+        - Social Media: system-design/high-level/desgining/social-media.md
+        - Spotify: system-design/high-level/desgining/spotify.md
+        - Stock Broker System: system-design/high-level/desgining/stock-broker-system.md
+        - Tiny URL: system-design/high-level/desgining/tiny-url.md
+        - Twitter: system-design/high-level/desgining/twitter.md
+        - Uber: system-design/high-level/desgining/uber.md
+        - UPI Payments: system-design/high-level/desgining/upi-payments.md
+        - Video Streaming: system-design/high-level/desgining/video-streaming.md
+        - VPN: system-design/high-level/desgining/vpn.md
+        - Webhook: system-design/high-level/desgining/webhook.md
+        - Yelp: system-design/high-level/desgining/yelp.md
+      - Links:
+        - Udemy: system-design/high-level/links/udemy.md
+        - Websites: system-design/high-level/links/websites.md
+        - YouTube: system-design/high-level/links/youtube.md
+    
+    - Low Level Design:
+      - Overview: system-design/low-level/index.md
+      - Concepts:
+        - HashMap: system-design/low-level/concepts/hashmap.md
+        - SOLID Principles: system-design/low-level/concepts/solid-principles.md
+        - Technical Debt: system-design/low-level/concepts/technical-debt.md
+      - Design Patterns:
+        - Design Pattern: system-design/low-level/design-pattern/design-pattern.md
+        - Others:
+          - Null Object Pattern: system-design/low-level/design-pattern/others/null-object-pattern.md
+      - Designing:
+        - Access Management System: system-design/low-level/designing/access-management-system.md
+        - Account Balance Tracker: system-design/low-level/designing/account-balance-tracker.md
+        - Air Traffic Controller: system-design/low-level/designing/air-traffic-controller.md
+        - ATM: system-design/low-level/designing/atm.md
+        - Cache System: system-design/low-level/designing/cache-system.md
+        - Car Rental Service: system-design/low-level/designing/car-rental-service.md
+        - Chess Game: system-design/low-level/designing/chess-game.md
+        - Elevator System: system-design/low-level/designing/elevator-system.md
+        - Locker Allocation System: system-design/low-level/designing/locker-allocation-system.md
+        - Parking Lot: system-design/low-level/designing/parking-lot.md
+        - Snake and Ladder: system-design/low-level/designing/snake-and-ladder.md
+        - Stock Exchange Book: system-design/low-level/designing/stock-exchange-book.md
+        - Tic Tac Toe: system-design/low-level/designing/tic-tac-toe.md
+        - Vending Machine: system-design/low-level/designing/vending-machine.md
 
 theme:
   name: material
