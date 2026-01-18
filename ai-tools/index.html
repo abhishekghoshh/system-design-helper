@@ -1,0 +1,5451 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://abhishekghoshh.github.io/system-design-helper/ai-tools/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../behavioural/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>AI Tools - System Design Helper</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  
+<meta property="og:type" content="website" />
+<meta property="og:title" content="AI Tools - System Design Helper" />
+<meta property="og:image" content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/ai-tools.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://abhishekghoshh.github.io/system-design-helper/ai-tools/" />
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:title" content="AI Tools - System Design Helper" />
+<meta property="twitter:image" content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/ai-tools.png" />
+</head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#web-design" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="System Design Helper" class="md-header__button md-logo" aria-label="System Design Helper" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            System Design Helper
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              AI Tools
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="lime"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  AI Tools
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../behavioural/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Behavioural
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../developer-experiences/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Developer Experiences
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../open-source-tools/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Open Source Tools
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../software-architect/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Software Architect
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../wisdom/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Wisdom
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ai/ai/" class="md-tabs__link">
+          
+  
+  
+  AI
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../devops/" class="md-tabs__link">
+          
+  
+  
+  DevOps
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../security/introduction/" class="md-tabs__link">
+          
+  
+  
+  Security
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../system-design/courses/" class="md-tabs__link">
+          
+  
+  
+  System Design
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="System Design Helper" class="md-nav__button md-logo" aria-label="System Design Helper" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    System Design Helper
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Tools
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#web-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Web Design
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ai-tool-directories" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AI Tool Directories
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#web-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Web Tools
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ai-generated-videos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AI-Generated Videos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#youtube-videos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        YouTube Videos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ai-tools-for-code-helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AI Tools for Code Helpers
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../behavioural/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Behavioural
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer-experiences/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Experiences
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../open-source-tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Source Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../software-architect/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Software Architect
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wisdom/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wisdom
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    AI
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ai/ai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ai/ai-agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ai/gen-ai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gen AI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ai/langchain/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LangChain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ai/langgraph/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LangGraph
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ai/MCP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ai/RAG/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RAG
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DevOps
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DevOps
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../devops/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Security
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/authentication-and-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authentication & Authorization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/oauth/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OAuth
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/rbac/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/sso/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SSO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/ssl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SSL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/devsecops/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DevSecOps
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/firewall/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firewall
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_10_9" id="__nav_10_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Certificate
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Certificate
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/certificate/introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/certificate/certificate-authority/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Certificate Authority
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/certificate/client-certificates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Client Certificates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/certificate/server-certificates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Server Certificates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/certificate/self-signed-certificates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Self-Signed Certificates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/certificate/links/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Links
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10_10" id="__nav_10_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reverse Proxy
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reverse Proxy
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/reverse-proxy/introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/reverse-proxy/haproxy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HAProxy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/reverse-proxy/nginx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Nginx
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Design
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    System Design
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/courses/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Courses
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_11_2" id="__nav_11_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    High Level Design
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_11_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    High Level Design
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_11_2_2" id="__nav_11_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_11_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/adaptive-bitrate-streaming/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Adaptive Bitrate Streaming
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/asynchronus-communication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asynchronous Communication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/back-of-envelope-calculation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Back of Envelope Calculation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/bloom-filters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bloom Filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/cap-theorm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CAP Theorem
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/cdc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CDC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/cdn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CDN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/clean-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Clean Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/code-documentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code Documentation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/consistent-hashing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consistent Hashing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/cqrs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CQRS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/database-indexing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database Indexing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/distributed-caches-and-caching-strategies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Distributed Caches & Caching Strategies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/ditributed-transaction-and-concurrency-control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Distributed Transaction & Concurrency Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/hashing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hashing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/load-balancer-and-proxy-server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Load Balancer & Proxy Server
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/microservices-patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Microservices Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/networking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Networking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/passwords/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Passwords
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/process/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Process
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/raft-consensus-algorithm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Raft Consensus Algorithm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/restfull-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RESTful Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/s3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/scaling-to-one-million/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scaling to One Million
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/sockets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sockets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/storage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/concepts/webrtc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WebRTC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_11_2_3" id="__nav_11_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Designing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_11_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Designing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/app-store/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    App Store
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/authentication-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authentication System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/chat-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chat System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/chess-game/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chess Game
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/data-warehouse/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Warehouse
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/distributed-geospatial-data-platform/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Distributed Geospatial Data Platform
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/distributed-messaging-queue/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Distributed Messaging Queue
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/dns-server.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS Server
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/e-commerce/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    E-Commerce
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/ecommerce-checkout/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    E-Commerce Checkout
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/email-automation-platform/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Email Automation Platform
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/food-delivery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Food Delivery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/google-drive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Google Drive
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/hashtag-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hashtag Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/how-to-host-your-own-x/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to Host Your Own X
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/Image-Optimisation-on-the-fly/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Image Optimisation On The Fly
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/key-value-store/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Key Value Store
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/large-language-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Large Language Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/leetcode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LeetCode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/live-comments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Live Comments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/log-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Log System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/multiplayer-game/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multiplayer Game
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/netflix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Netflix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/notification-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notification System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/products/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Products
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/rate-limiter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rate Limiter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/recomendation-engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recommendation Engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/redis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Redis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/search-engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Search Engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/social-media/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Social Media
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/spotify/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spotify
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/stock-broker-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stock Broker System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/tiny-url/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tiny URL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/twitter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Twitter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/uber/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Uber
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/upi-payments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UPI Payments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/video-streaming/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Video Streaming
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/vpn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VPN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/webhook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Webhook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/desgining/yelp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Yelp
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_11_2_4" id="__nav_11_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Links
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_11_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Links
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/links/udemy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Udemy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/links/websites/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Websites
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/high-level/links/youtube/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    YouTube
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_11_3" id="__nav_11_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Low Level Design
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_11_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Low Level Design
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/low-level/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_11_3_2" id="__nav_11_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_11_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/low-level/concepts/hashmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HashMap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/low-level/concepts/solid-principles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SOLID Principles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/low-level/concepts/technical-debt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical Debt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_11_3_3" id="__nav_11_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Patterns
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_11_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Patterns
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/low-level/design-pattern/design-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_3_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_11_3_3_2" id="__nav_11_3_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Others
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_11_3_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11_3_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Others
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/low-level/design-pattern/others/null-object-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Null Object Pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_11_3_4" id="__nav_11_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Designing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_11_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Designing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/low-level/designing/access-management-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access Management System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/low-level/designing/account-balance-tracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Account Balance Tracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/low-level/designing/air-traffic-controller/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Air Traffic Controller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/low-level/designing/atm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ATM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/low-level/designing/cache-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cache System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/low-level/designing/car-rental-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Car Rental Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/low-level/designing/chess-game/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chess Game
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/low-level/designing/elevator-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Elevator System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/low-level/designing/locker-allocation-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Locker Allocation System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/low-level/designing/parking-lot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parking Lot
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/low-level/designing/snake-and-ladder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Snake and Ladder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/low-level/designing/stock-exchange-book/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stock Exchange Book
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/low-level/designing/tic-tac-toe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tic Tac Toe
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-design/low-level/designing/vending-machine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vending Machine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+  <h1>AI Tools</h1>
+
+<h4 id="web-design">Web Design</h4>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=qthkkHPNAYQ">Top 2024 Web Design Trends</a></li>
+</ul>
+<h4 id="ai-tool-directories">AI Tool Directories</h4>
+<ul>
+<li><a href="https://www.thewarehouse.ai/">The Warehouse</a></li>
+</ul>
+<h4 id="web-tools">Web Tools</h4>
+<ul>
+<li><a href="https://www.eraser.io/">Eraser.io</a></li>
+<li><a href="https://www.figma.com/">Figma</a></li>
+<li><a href="https://excalidraw.com/">Excalidraw</a></li>
+<li><a href="https://www.locofy.ai/">Locofy</a></li>
+<li><a href="https://looka.com/">Looka</a></li>
+<li><a href="https://runwayml.com/">RunwayML</a></li>
+<li><a href="https://uizard.io/">Uizard</a></li>
+<li><a href="https://onlycoms.com/">Onlycoms</a></li>
+<li><a href="https://www.acorn.io/">Acorn</a></li>
+</ul>
+<p><strong>Videos</strong>
+- <a href="https://www.youtube.com/watch?v=jCd6XfWLZsg">Top 6 Tools to Turn Code into Beautiful Diagrams</a></p>
+<h4 id="ai-generated-videos">AI-Generated Videos</h4>
+<ul>
+<li><a href="https://openai.com/sora#research">Sora</a></li>
+<li><a href="https://www.youtube.com/watch?v=NXpdyAWLDas">AI Generated Videos Just Changed Forever</a></li>
+<li><a href="https://www.youtube.com/watch?v=Ld8fYInYVQo">This is Incredible</a></li>
+</ul>
+<h3 id="youtube-videos">YouTube Videos</h3>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw">23 AI Tools You Won't Believe are Free</a></li>
+<li><a href="https://www.youtube.com/watch?v=mzbuYus8bH4">28 AI Tools You'll Be Shocked Are Free</a></li>
+<li><a href="https://www.youtube.com/watch?v=H6rgeEdgpTA">7 AI Tools Will Transform Your App Idea to REALITY</a></li>
+<li><a href="https://www.youtube.com/watch?v=8I3NTE4cn5s">How to Use AI Art and ChatGPT to Create Insane Web Designs</a></li>
+<li><a href="https://www.youtube.com/watch?v=HkJjXYO2_YY">I Tested HUNDREDS of AI Design Tools... These Are the BEST!</a></li>
+<li><a href="https://www.youtube.com/watch?v=275L653HXS0">How to Get a $1000 Logo Design for FREE Using AI?</a></li>
+<li><a href="https://www.youtube.com/watch?v=cYOXNI4Gr70">I Tried 108 Free AI Tools. These Are the Best</a></li>
+<li><a href="https://www.youtube.com/watch?v=BL3qA-UmNug">Top 6 Tools to Transform Your App Idea to Reality | Low Code, AI, Design to Code, and More</a></li>
+</ul>
+<h3 id="ai-tools-for-code-helpers">AI Tools for Code Helpers</h3>
+<ul>
+<li><a href="https://chat.openai.com/">ChatGPT</a></li>
+<li><a href="https://bard.google.com/">Bard</a></li>
+<li><a href="https://www.phind.com/">Phind</a></li>
+</ul>
+<p><strong>Additional Resources</strong>
+- <a href="https://www.youtube.com/watch?v=EmQ2uzTrfU0"># All Free AI Tools. Is This Website Really Free? 🤯🤯 Free! Free! Free!</a>
+- <a href="https://10015.io/">10015.io</a></p>
+<p><strong>Marketing Resources</strong>
+- <a href="https://aimaster.shop">1000+ Marketing Prompts for ChatGPT</a></p>
+<p>https://www.youtube.com/watch?v=ZYUt4WE4Mrw</p>
+<p>Luma Labs - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbXJfV0RYUEk1OVpLdnVKaDU2dUhVdy1KcXk4QXxBQ3Jtc0ttdGE3SktTMVhUQTF5cDVicy16aDVVc3QzV0ROZy1iODdpYmhvMXpvdThQalFrTldNcjZPcWRoNV9qaDFiX1R0OG9kc3ZZTEVnSy1jdk52ZU1zN2V2OE53SmZvMF9fN184S2hkTHY4NzdqMUJHNURMdw&amp;q=https%3A%2F%2Flumalabs.ai%2F&amp;v=ZYUt4WE4Mrw">https://lumalabs.ai/</a></p>
+<p>Google Earth Studio - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbUN1WEpqREhLYlgyaVpYUmNkcGx3aDl2SXZVQXxBQ3Jtc0tsV0liWGNKSktqYURJdm1fTW1NcThrN2tWczBheEEyUkp4UDhmWXc1dk80Ymh1bF9QeUVoRlBEeThMZHBpZ09uVndibGtUWjNwQ2JKUUFsY3VxSHE3dnRKUWRSV2hmUkRmTGstYWNWNmlFSTFsa0RfYw&amp;q=https%3A%2F%2Fearth.google.com%2Fstudio%2F&amp;v=ZYUt4WE4Mrw">https://earth.google.com/studio/</a></p>
+<p>Luma Labs Genie - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbHhiOHl1Wm9mRTViU2NMc0V3d2FfTlVWbDFFQXxBQ3Jtc0ttczVMZjZRREJJOWNiVW1iN1p4bl8tNmhQcWdCYlJlVFpLYzc3VE1fbzYzbk1MUnROTk0weldSZkhKRXYtQWYwdmNYR1dUQ0RCdk83dm1TWGxwbmVDLWlCVFpHMzlkUzAxeGpXM0FfVnZCbEFHcnJNRQ&amp;q=https%3A%2F%2Flumalabs.ai%2Fdiscord&amp;v=ZYUt4WE4Mrw">https://lumalabs.ai/discord</a></p>
+<p>Perplexity - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbGJXbDNuQ0RJcC1VT3lvandYVVNTbHRXeEhDZ3xBQ3Jtc0tuSE9FTnRNWE9qc29NbzA1VE5jTlpMa0x2NGtSdC1QVEROOWF1SG45Q0V5eDRTenYwTVFZREt5UW9lcGs2Smg4X0JFaUxGMWJLM29hc2hibnh0eS1RWFpYSWl6SnBrdERBTmxpXzZ5T011c2l1QzNsMA&amp;q=https%3A%2F%2Fwww.perplexity.ai%2F&amp;v=ZYUt4WE4Mrw">https://www.perplexity.ai/</a></p>
+<p>SciSpace - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa2tWaVI3V3d2QnpQS2Q5WkxEdGNCNkxXS09md3xBQ3Jtc0tsSVBsUVYzSFh2enhaMVEtV2N4bFE2LUtoeFVSVHl5aWV1cDliZ2NGa0hzWG9XRXBiYnlMSGlxUzBpN2JLaVZNYjlaejdTY3pDTmREa1NDNDM4Vm9zVmNRNVp5d05TUDI4S082YVJaRUpyRV84OXpFUQ&amp;q=https%3A%2F%2Ftypeset.io%2F&amp;v=ZYUt4WE4Mrw">https://typeset.io/</a></p>
+<p>Google SGE - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbTVKVnNNSzRZZlNFczZiZ1dqTTVmUkt3UEZrUXxBQ3Jtc0ttcTVxeThnTE40Unl1NFJoYmNyRVVFNUsybUNxdG51dHZOVjVXVTRqLThZTTQyZmE4aUR5SjBPZU00R1g5RDJ4S3E2VUhpaDE2MFEzN2xjanUtM1R4aHJYZnlyZi1Nd2xNbVBuTTZrSXBxdDNHNVpJNA&amp;q=https%3A%2F%2Flabs.google%2F&amp;v=ZYUt4WE4Mrw">https://labs.google/</a></p>
+<p>Suno -  <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbkwyRmo1UFdyY1J0akRPbVdhNUN1b1VOTnhpd3xBQ3Jtc0tsYjhvM0NLUzFoZXpfdWRqT2dZbkctVUZ0YlRTdVVWbmVocVRvWkRhWFZ6bEd3XzFkUExFcFlFcTRrSnRIMDdmQWFSbk4zSFFPZ2VnblZxOWlGOHBCMWNuZWVnalRueVphbTRtZHJpaGNBTnFTbnd4dw&amp;q=http%3A%2F%2Fdiscord.gg%2Fsuno-ai&amp;v=ZYUt4WE4Mrw"></a></p>
+<p><a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbkwyRmo1UFdyY1J0akRPbVdhNUN1b1VOTnhpd3xBQ3Jtc0tsYjhvM0NLUzFoZXpfdWRqT2dZbkctVUZ0YlRTdVVWbmVocVRvWkRhWFZ6bEd3XzFkUExFcFlFcTRrSnRIMDdmQWFSbk4zSFFPZ2VnblZxOWlGOHBCMWNuZWVnalRueVphbTRtZHJpaGNBTnFTbnd4dw&amp;q=http%3A%2F%2Fdiscord.gg%2Fsuno-ai&amp;v=ZYUt4WE4Mrw"></a>  </p>
+<p><a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbkwyRmo1UFdyY1J0akRPbVdhNUN1b1VOTnhpd3xBQ3Jtc0tsYjhvM0NLUzFoZXpfdWRqT2dZbkctVUZ0YlRTdVVWbmVocVRvWkRhWFZ6bEd3XzFkUExFcFlFcTRrSnRIMDdmQWFSbk4zSFFPZ2VnblZxOWlGOHBCMWNuZWVnalRueVphbTRtZHJpaGNBTnFTbnd4dw&amp;q=http%3A%2F%2Fdiscord.gg%2Fsuno-ai&amp;v=ZYUt4WE4Mrw">/ discord</a>  </p>
+<p>MusicGen (WaveFormer) - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbUZkVHVaMEozM3dxYmF3cnhTNlRkZ28zd2tmQXxBQ3Jtc0tsME11dG52WXJUZVBmX1p5TmpFUGlnTFpENlhhTDlOVzBSVUlVSjE1clhxYk5JaEtRbnJmOHU3c0IzVUF1ekRIUTlDUGRrTFdtWkhvSjM5TzVBQTFtNVQwZmxsV0RtdkpYdVlWdndTemJ6Q1JrOUhSdw&amp;q=https%3A%2F%2Fwaveformer.replicate.dev%2F&amp;v=ZYUt4WE4Mrw">https://waveformer.replicate.dev/</a></p>
+<p>MusicGen (HuggingFace) - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbnRaRC1XckI4SVFaTDJyQkhkQ0tmdGtQVUJQZ3xBQ3Jtc0tuTE03TC1pRTVuazZuWUVTQzNXNXFEMW10RktSNmhwdVVYVjlsZmhSaEtRdTVJSk90VmRTdnpudncwNnZUX2dmMEphMkdwdHVwaTV6aW9ic29SbGhNRldxdFpVdEhLbGN1azk3d2Vkcm1yOUdQNzNaMA&amp;q=https%3A%2F%2Fhuggingface.co%2Fspaces%2Ffacebook%2FMusicGen&amp;v=ZYUt4WE4Mrw">https://huggingface.co/spaces/faceboo...</a></p>
+<p>textfx - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbHNQNTA5YWFjQ1hGV1NNYVhPc20yOFpCSmd5QXxBQ3Jtc0trVzQ4cF9hNjgwbVBNX0hyOVZYVFFIdUI1VGFsQUJldEpJaHU4U0tWTktzSDRpRnFGRjlpZy1GdlV1NWRYM1dqUVdGazNka0VOUVhYMFhWOXNLYUhtbk91ZXp6d0FNSUlzLVNyMUJVMlpHUUZMZXRsZw&amp;q=https%3A%2F%2Ftextfx.withgoogle.com%2F&amp;v=ZYUt4WE4Mrw">https://textfx.withgoogle.com/</a></p>
+<p>LeiaPix - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa1ZpS0NnalpDRy1xZkdjMnlnMTl6UkZXS2NaUXxBQ3Jtc0tuRVBkUEg0ZlJQMU45YVBFcnFDazFnd2FQeE5jX3Q2OVBuMzE3QzhHRFlscmlGNFJkTFBral9pUWtBVXJ0eVR5Rjh2RUtjdHZSY0dNY0tnNjB4U19nMEwzUkxydGpuQjV2OWxlMUxGSGFMUGF0eTZTQQ&amp;q=https%3A%2F%2Fconvert.leiapix.com%2F&amp;v=ZYUt4WE4Mrw">https://convert.leiapix.com/</a></p>
+<p>Insta3D - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbG5pdmdWQkxZa1pFb3NWQ2phMTktUTBIcWpTQXxBQ3Jtc0trS2xkMm8tajVya0w4cmx1dUItRkZZaXBuYUs4Q2lJMFJUa3pVOW5FMVV5QkhicmhyaWlhTXlIYklTMmdKaERaOXRWcWlKdWRobnhrYkd1Vnk5d0xOZXd6Yi0wckk4dUR0R0pRWFVOTGlEZHFRWWxmTQ&amp;q=https%3A%2F%2Fhuggingface.co%2Fspaces%2Filumine-AI%2FInsta-3D&amp;v=ZYUt4WE4Mrw">https://huggingface.co/spaces/ilumine...</a></p>
+<p>Animated Drawings - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbmhHMWIwVTZ6eC1Gb3JsVHo3VEI2ZzRNdlFid3xBQ3Jtc0tuRFZDNnA1ZUlENno3azRUbEoxZ2lHbFZMMWdGT0tyNEFkOWVJdmZCdVY3N1hMR2lCTk9LLTVSeC1kN3UxVGxOYmh2VWxTTHl1dG0zODBLLVNpUmpwTHR4M3d0Y3E3U09jUlZxZWkxVEtyWEdSSndvdw&amp;q=https%3A%2F%2Fsketch.metademolab.com%2F&amp;v=ZYUt4WE4Mrw">https://sketch.metademolab.com/</a></p>
+<p>Pika Labs -  <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqazBzQzJjYlN4c1ZGT1VDSU5wNHp0M2Jrb2hEUXxBQ3Jtc0trV2FSMW1rWnA3c0QzVjJKelZOR2lkaEY4N2twdnB4dU1mQU5wLXhaY1ZpdFZGT0d4VWZwMFMxRmJQM0duRDk3WUN3cWV0dFV5S2stcGFiTi1BRE5WaDlkcGgtZjJaWmI4a1VKZlZGc1QxcFg3VlVDNA&amp;q=http%3A%2F%2Fdiscord.gg%2Fpika&amp;v=ZYUt4WE4Mrw"></a></p>
+<p><a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqazBzQzJjYlN4c1ZGT1VDSU5wNHp0M2Jrb2hEUXxBQ3Jtc0trV2FSMW1rWnA3c0QzVjJKelZOR2lkaEY4N2twdnB4dU1mQU5wLXhaY1ZpdFZGT0d4VWZwMFMxRmJQM0duRDk3WUN3cWV0dFV5S2stcGFiTi1BRE5WaDlkcGgtZjJaWmI4a1VKZlZGc1QxcFg3VlVDNA&amp;q=http%3A%2F%2Fdiscord.gg%2Fpika&amp;v=ZYUt4WE4Mrw"></a>  </p>
+<p><a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqazBzQzJjYlN4c1ZGT1VDSU5wNHp0M2Jrb2hEUXxBQ3Jtc0trV2FSMW1rWnA3c0QzVjJKelZOR2lkaEY4N2twdnB4dU1mQU5wLXhaY1ZpdFZGT0d4VWZwMFMxRmJQM0duRDk3WUN3cWV0dFV5S2stcGFiTi1BRE5WaDlkcGgtZjJaWmI4a1VKZlZGc1QxcFg3VlVDNA&amp;q=http%3A%2F%2Fdiscord.gg%2Fpika&amp;v=ZYUt4WE4Mrw">/ discord</a>  </p>
+<p>CapCut - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa1hSZUFJOXRaMDRTd1JMVWNQcWtCZzdzM2Q0UXxBQ3Jtc0tuWkhJdFZCcThnNnh2cmkxUENSVS1QUG1sWVV0YkZaLUg3RzQ3ZEZIRTBfTldEUnBQUlRoQ2c4OERXdlZCcThMc3gyei1mR1VhVkRNbFJ0dXRwbVk2Tm51QjAwNWkzbFNuSVpsUXV4MWxVNks0SXJtMA&amp;q=https%3A%2F%2Fwww.capcut.com%2F&amp;v=ZYUt4WE4Mrw">https://www.capcut.com/</a></p>
+<p>Replicate - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbDZQRWNNMXV3d3h2V0doU0NEYlpLcGJhUzZrd3xBQ3Jtc0trYjNMamFla1d0d0VOZVMtUFhibjRkV0FsSGNHN1M5c1lrOG03WGJwN0lXdGVESWlRMWoxVEFaalRwOEUzcnRlcnVZb1lTRW05NUM5ZFRiMWZIZFRlSGZkZVVyRVUtQ3FVenByRnF2MHNud3V1WEtyYw&amp;q=https%3A%2F%2Freplicate.com%2F&amp;v=ZYUt4WE4Mrw">https://replicate.com/</a></p>
+<p>Upscayl - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbHdfdWNqUzRwT0xrVFhyZ3prTlJ6ZTZUcnhzd3xBQ3Jtc0trVTBxQS1sWkVLUFNLcEZvSFl6eXlUczJCSDZlRzlLMGhTOFU5UVBUYVVjUHJIRTNQQkFfeUxWNFBCcGI0alZNN2o4ZTNVUXA2NVJFaFF6N2VlYm5oeXpTUnZ5Y3lFcUw0LWZVUFBLRjZSdUg0TElUVQ&amp;q=https%3A%2F%2Fwww.upscayl.org%2F&amp;v=ZYUt4WE4Mrw">https://www.upscayl.org/</a></p>
+<p>Illusion Diffusion - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbjlueFNqa09WYnZTU3BkeEFUdTBJSHN1Tk04d3xBQ3Jtc0tsdHo3QWJuVG01RW1xV3VBS2xTSXVpWHdiT0VhQUxGRzA4QXNJamxBZXBuRUJheDJ3cnpSNVBwWHAzeFFtb01PN0JLTjZ3WDRRS0s1OGttXzRuVW5jMHNZTmowbVptUTAzR0M4N0tqMkRZTE02UlBhRQ&amp;q=https%3A%2F%2Fhuggingface.co%2Fspaces%2FAP123%2FIllusionDiffusion&amp;v=ZYUt4WE4Mrw">https://huggingface.co/spaces/AP123/I...</a></p>
+<p>Ideogram - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbTdJRXVoVjZseFM4cU1CT2dVQU9ISUpQT2p5UXxBQ3Jtc0tsWlZvdWJxczZJNGtGSFgyZnNySkVFd1d0TWJnNnp4TGwwTFZWTmxLV1BoSkluRGJSUzFOSVRucmxQY3VNYk0zb1ZoWTJZZkVOQ2ZSNVFZc09TU2FOVXN0VS02bEo3LWlwei1JNDdzSEd4Q0hlbFRGdw&amp;q=https%3A%2F%2Fideogram.ai%2F&amp;v=ZYUt4WE4Mrw">https://ideogram.ai/</a></p>
+<p>Dalle 3 - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbFRUcUhjS1Nzc29fWVpjbkRjdTl2QXJuZ2hFUXxBQ3Jtc0tuOFo0TTAxMGhPVVVHTlBVekU0NzVkU1BVQTVQY3VzeXFOMm1hMkF4d1Z2Y2QtdkhZUXNUSnowN25aX3hsa3E4aTFtNml1OGVaQ0lJSDkwOVRsdk93WDkzbHBTcjFYN1lMdVpEdnotVkwyZERpVzZFTQ&amp;q=https%3A%2F%2Fwww.bing.com%2Fcreate&amp;v=ZYUt4WE4Mrw">https://www.bing.com/create</a></p>
+<p>Google SGE - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbTBBQzN0dVEtd3RwRmxzRmNrX01TUFllOTRFUXxBQ3Jtc0tuUW9QMnV3em9TNGI5QVJYUGlCY0FyQ0VGQWJ3N0ZsOFowTXM5cUV1ckl3dUpxVjVsbEVGMTg4NUtTYnh2Q3F0M25STFBMdHhUejdsZ1ZneU5XWTVHc3hFOWlYOC1MbUMybWVKWmxRQXdEdGxxM2FfMA&amp;q=https%3A%2F%2Flabs.google%2F&amp;v=ZYUt4WE4Mrw">https://labs.google/</a></p>
+<p>Playground AI - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqblhBZUhkdU82alhKb2Y4MmloVVBxaWd2c25UZ3xBQ3Jtc0tuX0d4OXAzNXpOemtyaGlyVXRNRXJnZDNKazBNOHdabUgxRWFpeW9TbTdvaDc2NnpjRDR2dkNoUnAzM3cwTlBtUlE4QzBTUWFHdXVMTVUtYWxMUTg1amx4dFIxM2owdEs0MTRGNDRXYWVNYUQ3WUJNYw&amp;q=https%3A%2F%2Fplaygroundai.com%2F&amp;v=ZYUt4WE4Mrw">https://playgroundai.com/</a></p>
+<p>Frog Cyborg music video:    [• PHRÖG - Amphibious Uproar <a href="https://www.youtube.com/watch?v=J_mDHCv145k&amp;t=0s">AI Music V...</a>  </p>
+<p>Chapters:</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=0s">0:00</a> Intro</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=18s">0:18</a> Luma Labs</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=101s">1:41</a> Google Earth Studio</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=139s">2:19</a> Genie</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=194s">3:14</a> Perplexity</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=247s">4:07</a> SciSpace</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=304s">5:04</a> Google SGE</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=370s">6:10</a> Skillshare</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=451s">7:31</a> Suno</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=576s">9:36</a> MusicGen</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=682s">11:22</a> textFX</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=722s">12:02</a> LeiaPix</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=777s">12:57</a> Insta3D</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=823s">13:43</a> Animated Drawings</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=865s">14:25</a> Pika Labs</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=939s">15:39</a> CapCut</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=983s">16:23</a> Replicate</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=1017s">16:57</a> Upscayl</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=1047s">17:27</a> Illusion Diffusion</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=1171s">19:31</a> Ideogram</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=1211s">20:11</a> Dalle3</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=1242s">20:42</a> Google SGE</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=1280s">21:20</a> Playground AI</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=1410s">23:30</a> Music Video Creation</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=1438s">23:58</a> Frog Cyborg Music Video</p>
+<p><a href="https://www.youtube.com/watch?v=ZYUt4WE4Mrw&amp;t=1493s">24:53</a> Futurepedia</p>
+<p>ChatSonic AI - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqblpPdzRfWExpWnl3dkpTQkFOUW1WWVAyVEZKd3xBQ3Jtc0tuQ1RHUDFzejlJaFRsb3F3YndMS19vZ1drbU81WHFxVUZvNktRV2VyS2c5WEJtMHpFYzAzWU1PdmZEZW9sVEd0TVV0cEdGaTJRM0M0Zi10R2tZT1hPeEdDcFRHN0hqN0lsSHBFYzhUWDNCTmwxWWlZZw&amp;q=https%3A%2F%2Fwritesonic.com%2Fchat&amp;v=jb3Qxi9U4P4">https://writesonic.com/chat</a></p>
+<p>Durable AI - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbGFjcFVSaWhOMFBBVkRYZnZSZnE4T1BHRXZsd3xBQ3Jtc0ttNWpBYkdSUmk1WTZiN0IybXF6MlRvWF9zRU5JOVZIdjlIS3FjdERjQ3dyQllaSDFhQk5CUTVOdG5UM2RpYzhFRlBfVUZZU09DanN0Qk5XRE9GLUd1bDU5ZEhaUDdfeG4xTVdMaWxXTU96aFNGUzVJZw&amp;q=https%3A%2F%2Fdurable.co%2F&amp;v=jb3Qxi9U4P4">https://durable.co/</a></p>
+<p>Eightify AI - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbkI1di1mcmVxdVlUVkRlbjJqWld1QXh5b2lLUXxBQ3Jtc0ttWDVyeUJoZDFsYjlhUFdRNEUyNEw4WVJUckpxVGdKYldqWjFqbU9FdElYUHRLbk00c0dsd2t1akFWNHFoTGdPc3VWMjVaeExWLUprVXdNZ1J1VDhDSThLNkdtRXJjcGxQZkpnRGprMGhlWnFUbFozTQ&amp;q=https%3A%2F%2Feightify.app%2F&amp;v=jb3Qxi9U4P4">https://eightify.app/</a></p>
+<p>Perplexity AI - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqay1ULXY3QUV2aE9Sb0FKSnJ0TWdSY1pUSU80UXxBQ3Jtc0ttVHdUSFQwTEdqZGxqa2lybjdpa01CWDF2REs5X2hBazc5eW5Wc05oTkdEZFFZRDY0NHMzSTdTa0Y4dUNKaFVVanEtSGR6VDMxbHZrNlNXRnpkcVNHVVRjRzZoRE5rTDNaVmJleUZJeGFvT3p4eWI0TQ&amp;q=https%3A%2F%2Fwww.perplexity.ai%2F&amp;v=jb3Qxi9U4P4">https://www.perplexity.ai/</a></p>
+<p>Runway ML AI - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbXdfVnhmMkVpTThaRURHVUxqNVlSLU9yNENnQXxBQ3Jtc0trLTRkSW8xWVBUcGhGTG05ZE5IWWdiNG5JU1JpeDZRRk5va2c0UUV0ZkxaU1ZjVjdBb1RnM0FCMG9fUWtLbWRsdFlTNTV2blRGUDZwaDZ1ZEV0bi0yMXhHRXdQQU0xN3ZOb05KMm5zRTRtYXVicF9iMA&amp;q=https%3A%2F%2Frunwayml.com%2F&amp;v=jb3Qxi9U4P4">https://runwayml.com/</a></p>
+<p>Amazon Code Whisperer AI - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbXdfVnhmMkVpTThaRURHVUxqNVlSLU9yNENnQXxBQ3Jtc0trLTRkSW8xWVBUcGhGTG05ZE5IWWdiNG5JU1JpeDZRRk5va2c0UUV0ZkxaU1ZjVjdBb1RnM0FCMG9fUWtLbWRsdFlTNTV2blRGUDZwaDZ1ZEV0bi0yMXhHRXdQQU0xN3ZOb05KMm5zRTRtYXVicF9iMA&amp;q=https%3A%2F%2Faws.amazon.com%2Fcodewhisperer%2F&amp;v=jb3Qxi9U4P4">https://aws.amazon.com/codewhisperer/</a></p>
+<p>Caktus AI - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa2Y4aVRlMnRFLWd0VjNsU2ZjSy1GZzl4eVJ5d3xBQ3Jtc0tsQm50YUx3ZktaUGZWQWNxc25maXJJTk9PX04xbXFYT2ZpWHZ0VW5PV2cwWENZcWZydWtQZjBOekhaMExHcTBvR04tTjExTXNZWTF0aUJWYmIxTmRha0ZZaVAwemlwcENlOHZlNzRhc0FjQVlnaEtwTQ&amp;q=https%3A%2F%2Fwww.caktus.ai%2F&amp;v=jb3Qxi9U4P4">https://www.caktus.ai/</a></p>
+<p><a href="https://www.perplexity.ai/?utm_source=oliur_online_youtube_channel">https://www.perplexity.ai/</a></p>
+<p><a href="https://www.summarize.tech/?utm_source=oliur_online_youtube_channel">https://www.summarize.tech/</a></p>
+<p><a href="https://github.com/features/copilot?utm_source=oliur_online_youtube_channel">https://github.com/features/copilot</a></p>
+<p><a href="https://www.notion.so/product/ai?utm_source=oliur_online_youtube_channel">https://www.notion.so/product/ai</a></p>
+<p><a href="https://www.mymap.ai/?redirect=superusapp">https://www.mymap.ai/?redirect=superusapp</a></p>
+<p><a href="https://10web.io/?utm_source=oliur_online_youtube_channel">https://10web.io/</a></p>
+<p><a href="https://durable.co/?utm_source=oliur_online_youtube_channel">https://durable.co/</a></p>
+<p><a href="https://looka.com/?utm_source=oliur_online_youtube_channel">https://looka.com/</a></p>
+<p><a href="https://www.docu-ask.com/?utm_source=oliur_online_youtube_channel">https://www.docu-ask.com/</a></p>
+<p><a href="https://www.tidio.com/?utm_source=oliur_online_youtube_channel">https://www.tidio.com/</a></p>
+<p><a href="https://www.adobe.com/sensei/generative-ai/firefly.html?utm_source=oliur_online_youtube_channel">https://www.adobe.com/sensei/generative-ai/firefly.html</a></p>
+<p><a href="https://interiorai.com/?utm_source=oliur_online_youtube_channel">https://interiorai.com/</a></p>
+<p><a href="https://soundraw.io/?utm_source=oliur_online_youtube_channel">https://soundraw.io/</a></p>
+<p><a href="https://murf.ai/?utm_source=oliur_online_youtube_channel">https://murf.ai/</a></p>
+<p><a href="https://www.nvidia.com/en-us/geforce/broadcasting/broadcast-app/?utm_source=oliur_online_youtube_channel">https://www.nvidia.com/en-us/geforce/broadcasting/broadcast-app/</a></p>
+<p><a href="https://www.canva.com/ai-image-generator/?utm_source=oliur_online_youtube_channel">https://www.canva.com/ai-image-generator/</a></p>
+<p>https://www.descript.com/</p>
+<p>Lexica.art </p>
+<p><a href="http://descript.com">descript.com</a></p>
+<p>mubert.com</p>
+<p>Uberduck</p>
+<p>Nvidia Canvas Ai Painting</p>
+<p>Replicate Ai Enhance</p>
+<p>Big Colour Image color</p>
+<p>Lumalabs Ai third Dimension</p>
+<p>Chat Gpt plugins -&gt; Summary of video+ AIPRM for chatgpt</p>
+<p>Supermeme Ai Meme</p>
+<p>Kaiber Ai Video</p>
+<p>PDF GPT - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbW9TdXVlNnlpU0NpOHo5ZXNzbzFmTE5TSi15UXxBQ3Jtc0tuRTVLdVczeFB4U3pHczVySW9iN1NhSlB0WkVzVW1lbGVXZHduM2VyaFJPVk5BYk9pajMyc1FvaFdyaUJCMExSdkhpYXAtelBjRHhvM0hjN3g1Wk5aOGxKUXZWYXoyS1ZoZXZZZlU5aXBNZXJKRzZENA&amp;q=https%3A%2F%2Fpdfgpt.io%2F&amp;v=jccPQhCTmR0">https://pdfgpt.io/</a></p>
+<p>Parrot AI - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa0l0QVc0Q0xFcDdyekFPVjRfZEE2TkEyTGZpZ3xBQ3Jtc0ttazFzLWlGQjJrSHhYNnhZdXlwd2RvRGdpU2h4cHZlTk1ZNjdKc0pkclJreFRURjI4cU1lLVFraWhSQnkyS3BPdzlLdEtKZmRjZ3ZOWXE5X0F0VkN3YklPWERKb2xORGJJYURGUFVaeEpOdTRvakgxcw&amp;q=https%3A%2F%2Fparrot.ai%2F&amp;v=jccPQhCTmR0">https://parrot.ai/</a></p>
+<p>Adobe Enhance - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbmRINW15V2NHXzBndlVkSFhKRVg5R29LLTRfd3xBQ3Jtc0tsZ2VXZ3pySHdfT1NyNkg3UHR3Y0pBQzd0RjdlVDNMZ2FTekZ6YjJyNnNwUHpsazBHcUxrMDRjbHZDR0FYNXJid3JBUE5MMy1BXzMxNzh6ZUZmWDg0NzRIOWY2d0xBOUxxbU5rbGg3MXBOU2ZTM2dLdw&amp;q=https%3A%2F%2Fpodcast.adobe.com%2Fenhance&amp;v=jccPQhCTmR0">https://podcast.adobe.com/enhance</a> </p>
+<p>InVideo AI (Code "AEZ25" for 25% off) - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbEwwY2VGbFNKaXM4ZzB1ZG9JSVcweUVfdjE4Z3xBQ3Jtc0trLUhjOG00NnlnWENCVnBwSnJCbzgyOXNkUUpmYkdrUjJ6SXUxRVNjbngwQ0lSZFNoMGJOdGQ4MGVTT1UwQXRFcGpQMG5saTB3VXFVY3dYZ1RsZmo5LTRBa3djbEprbURuaC1qeDlxM1BXQjh5eW51OA&amp;q=https%3A%2F%2Finvideo.io%2F%3Fref%3Dandrewzeng3&amp;v=jccPQhCTmR0">https://invideo.io/?ref=andrewzeng3</a></p>
+<p>Perplexity - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa1p5dlhfdnhmU1Y3V0NqLS03bmhCeExaeWtYUXxBQ3Jtc0trRXYxTnpXYnp3a2pEbm1CTlNVbVBLVWZVa3hkSEpjdEVkZ245SlprSnE1YmNuSWJCYWJUQlJ3WWNMMmJ4Qm5PRHI1aGotRXNjdGFKZUhnbWd1S0lrQ1Q3XzZwZHBPUFlEWlh4eEZUdHZvVEdpWjN5bw&amp;q=https%3A%2F%2Fwww.perplexity.ai%2F&amp;v=jccPQhCTmR0">https://www.perplexity.ai/</a></p>
+<p>Stable Diffusion - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbjlGNjRzRFdHWGUzRmpjQllSZFlDTFN3YWtId3xBQ3Jtc0tsLUFlbXhEVFRfdEdwSHFsZDNaenJna0tieWhzTVpwdDFGeGtSX2Y3dG10V1dncmYzcHFoX2g4YXR2QmliN0xnQU5UajEzOEZETmtFejRnUG44UFFlOTIyMHJTQXFYWGw5S3ZTamVELUxBaVNrMTdkTQ&amp;q=https%3A%2F%2Fstablediffusionweb.com%2F&amp;v=jccPQhCTmR0">https://stablediffusionweb.com/</a></p>
+<p>Magic Eraser - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbG5UazRYeUhPZUtEdk5uRzVEMFRMWXBPUTRkd3xBQ3Jtc0trc2E1M2gzR1Rsa2lnTUxtN3I0ZlZfczdieFRlTmc5RUJWbHFXaHZMTDRCX05PSjNpMlNiWVhQN21BRUpaT0RJZEtYMl9yRXl1dXVkZDMwcXYwTm53b1k3dlU0bkwyaGQyY05FV3dTVkRaYlgwRkNWNA&amp;q=https%3A%2F%2Fmagicstudio.com%2Fmagiceraser&amp;v=jccPQhCTmR0">https://magicstudio.com/magiceraser</a></p>
+<p>Tome - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa0F1YmxwbWJNR2RkU0RYeEZvMjFMOTg1NzBXZ3xBQ3Jtc0tsSEN1d193TzB1RndobUlJVWZ2amFIRVhSbk9rUkJIRXFsZlFhYThJMm0wWEFuX2owMERTcXhGcnpwaHJ5Wi14RlF6eUFlZXdDX3JYT2VUeEJjQzl1bHFnVkhrTkFxeWx4MG4ydGlWdkpPS2hlaWZRaw&amp;q=https%3A%2F%2Ftome.app%2F&amp;v=jccPQhCTmR0">https://tome.app/</a></p>
+<p>Prime Voice - <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbVdsS3J0XzAtZ3IyOUhzaE9lZlNuSDRGS3F3UXxBQ3Jtc0trbTB2aTFmbGsxOXR3aDlZOGMwOUVxTEp2YmdIdTNvUlJzbVhCaWN6eVZ2dXBRZGtSeHBiTkQzYWJKM0h6YUFfV2poRmUzRS1ZUDJsQTBqRm5iblJZV1JUS0hvSWZDNHNPSDVwZ2R2d1NFeU9KM21kaw&amp;q=https%3A%2F%2Fbeta.elevenlabs.io%2F&amp;v=jccPQhCTmR0">https://beta.elevenlabs.io/</a> </p>
+<p>Reimagine - <a href="https://www.reimaginehome.ai/">https://www.reimaginehome.ai/</a></p>
+<p><a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa3FIczEweDJZWnV3ODB3VDBlUDl2cHdRZmFjZ3xBQ3Jtc0ttQmNoeFhSQUZnMU1IUzdmRWNNYkxyVWNidFJJV1FvcmhMaTVMdEV2ZlRtSklCRHdubGl6c2ZrR3VqXzJUQjdJeGVvMDV3WHZsNUpyUWQyQzFjeGEwR1NQeWZ2ZldSNXhHNE5xN2xwcHhHR19qMjg1NA&amp;q=https%3A%2F%2Fbard.google.com%2F&amp;v=7Y6n5zBCzMo">https://bard.google.com/</a></p>
+<p>Meet Bard (google.com)</p>
+<ol>
+<li><a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbC1GaUgzU3A0X2ZZUGhSZDVBOXh5aE1QYm5UQXxBQ3Jtc0tsTDVnbGhiRjJ5YXNfbG1HaGhoeGFuOXQ4RExlMXdibjN1cmU0OTZ1Z3psbEZMZXVoNGxid04wR2s4U3RKSXVXbk85SVYyU2MwcmdPVHMwNGV5YXZTa0FJUURXMzhhRV9ESFp4QS1ia2JuQjE0emx3UQ&amp;q=https%3A%2F%2Fvidyo.ai%2F&amp;v=7Y6n5zBCzMo">https://vidyo.ai/</a></li>
+</ol>
+<p>AI Based Content Repurposing - vidyo.ai</p>
+<ol>
+<li><a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbUhrSE5DMl8tWldBU0lDSU95VGRPdF96bUt2UXxBQ3Jtc0ttMHdTQnF2VVoxWXBHRWl0YVFOSXBwYS1jSndJLVZqLTRLc0VtUlROTGJwamVlRkJCSUZ2bGVwdTBBcUtmdC1TUWxILWNIa1o1VVlzUzd2MWw4aXkzZ3Z3OXRKZnJDYVZFTlRPbGI5cUprc28wUVJ1aw&amp;q=https%3A%2F%2Fwww.beatoven.ai%2F&amp;v=7Y6n5zBCzMo">https://www.beatoven.ai/</a></li>
+</ol>
+<p>Royalty Free Music by Beatoven | Beatoven.ai</p>
+<ol>
+<li><a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbFlMRXJqeEJ6c0FTZlN4U1loemZyVzZtRzljQXxBQ3Jtc0tsTFB0a2hucjh3d2NHQ0pjYnV0YzBLV2ZDUjNtTUZRN1dqMGYweWVOZWgwNl9IVlM1eDU3aDZrNHJEN1VPWXktbm5PSF91anRHZV9tZWR2elhlS254aEtZMWxOS01KcWNKVUNCM2VBWDd6Q2RoTmk1UQ&amp;q=https%3A%2F%2Fflair.ai%2F&amp;v=7Y6n5zBCzMo">https://flair.ai/</a></li>
+</ol>
+<p>Flair</p>
+<ol>
+<li><a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbllKZUZWX3Q3YUdNT3FBNnBSM2YyZEF3RGV2UXxBQ3Jtc0traW5EVjVleGR5SmlJOTJzZl8yMF9la2JvTE1xVm5BMVFpT3djakFFdWtfa2Q3RTFCTWxNNWhiYmdEWlhXa0pwd3phNDBmbndlNU9TT0JqMWtuZmZUOFpybWN5Z1puM1pXSjlOcGZHWThHQjB1TlJVTQ&amp;q=https%3A%2F%2Fscribblediffusion.com%2F&amp;v=7Y6n5zBCzMo">https://scribblediffusion.com/</a></li>
+</ol>
+<p>Scribble Diffusion</p>
+<ol>
+<li><a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbGZFN2pKalhROFIxTEdfNkZYRTJjTGRNYXBDUXxBQ3Jtc0ttcFVaLWIxSEdxdW83MHh1bjNtOGpmbzdwUjlNcktNbzgwUnFnM1hKb2d3U000UVpTX1N5NDhDeHp2ZEFIdGlHZ1JNWldZZkpVVmVhVmQ2REtVc1FsQ2pnZUhJN2Q0cTdlM3V3Wkk0TlVzSUxkNVNmQQ&amp;q=https%3A%2F%2Frunwayml.com%2F&amp;v=7Y6n5zBCzMo">https://runwayml.com/</a></li>
+</ol>
+<p>Runway - Advancing creativity with artificial intelligence. (runwayml.com)</p>
+<ol>
+<li><a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa2syTmFCN041NG01UE12OHBsV01XYUY0b3hyd3xBQ3Jtc0tuY1dqRlozXzlyVVNRTlVOdzRxVzJkb3c3bkUyb0hOaGhUUlNVN1BkZVU5VEtZMmFHTlUtMjd4eTd5NGlZVUcwQWMta2NFcno4aG55YmVLSXUteUh2YkpBa1VsV1BxRmJ2bDlPdnhwNUktQ0Z5YkRhcw&amp;q=https%3A%2F%2Ftome.app%2F&amp;v=7Y6n5zBCzMo">https://tome.app/</a></li>
+</ol>
+<p>Tome - The AI-powered storytelling format</p>
+<p>beatoven.ai</p>
+<p>Adobe Firefly</p>
+<p><a href="https://chat.openai.com/">https://chat.openai.com/</a> </p>
+<p>https://bard.google.com/</p>
+<p>https://www.veed.io/</p>
+<p>https://www.pexels.com/</p>
+<p>https://www.canva.com/en_gb/</p>
+<p>https://vidiq.com/</p>
+<p>https://www.tubebuddy.com/</p>
+<p>Stable diffusion AI</p>
+<p>Text to audio converter -&gt; Already built in Microsoft edge and record it with edge extension </p>
+<p>AI Music Generator -&gt; STROFE</p>
+<p>Adobe Sensei -&gt; Captions for your audio</p>
+<p>Dall-e 2</p>
+<p>NightCafe</p>
+<p>Stable Diffusion </p>
+<p>1️⃣ Browse Lexica: <a href="https://lexica.art/">https://lexica.art/</a></p>
+<p>Use NightCafe</p>
+<p><a href="https://www.youtube.com/watch?v=eLVQpTWxYys&amp;t=7s">00:07</a> - MidJourney AI Art</p>
+<p><a href="https://www.youtube.com/watch?v=eLVQpTWxYys&amp;t=84s">01:24</a> - Adobe Podcast AI Voice</p>
+<p><a href="https://www.youtube.com/watch?v=eLVQpTWxYys&amp;t=138s">02:18</a> - Nvidia Broadcast - AI Video Geforce</p>
+<p><a href="https://www.youtube.com/watch?v=eLVQpTWxYys&amp;t=190s">03:10</a> - Codedamn  - With ChatGPT Support</p>
+<p><a href="https://www.youtube.com/watch?v=eLVQpTWxYys&amp;t=259s">04:19</a> - Descript - AI Video</p>
+<p><a href="https://www.youtube.com/watch?v=eLVQpTWxYys&amp;t=312s">05:12</a> - Notion AI - AI Text Generation</p>
+<p><a href="https://www.youtube.com/watch?v=eLVQpTWxYys&amp;t=386s">06:26</a> - Synthesia - AI Avatar</p>
+<p><a href="https://www.youtube.com/watch?v=eLVQpTWxYys&amp;t=420s">07:00</a> - Resemble AI - Voice AI</p>
+<p><a href="https://www.youtube.com/watch?v=eLVQpTWxYys&amp;t=459s">07:39</a> - Soundraw AI - AI Music and Sound</p>
+<p><a href="https://www.youtube.com/watch?v=eLVQpTWxYys&amp;t=493s">08:13</a> - Futurepedia - AI Tools Database</p>
+<p>Qwak </p>
+<p>Generative AI App Builder Google</p>
+<p>Google PALM</p>
+<p>Adobe Firefly</p>
+<p>Generative AI Studio</p>
+<p>AlphaFold for protein research, Design Thinking at Standford</p>
+<p>play.ht: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbm5FYUl0ZGtHX3lQekJGYUJ3S2pMeVRoNjBtZ3xBQ3Jtc0tsYkxlRjBEcDFQWUFoanVWUElrZU1RX0pXN25wTloxTWgzaTNrT3RNTTlCZmlqeVFkUXhzWnNBT1dwRlZzVG54WjZlS3hlZG9SMVpaRHA0bk5CblVwOHBDYjlYMjdBTi1NTTNqR05sdE5wRmNhNW1jUQ&amp;q=https%3A%2F%2Fwww.play.ht%2F%3Fvia%3Dmb20&amp;v=Cv_c9nQMtSM">https://www.play.ht/?via=mb20</a></p>
+<p>canva: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa0ZiTDZmQzd4WUUyTUZWQUU1Q2J5VE82TVZHUXxBQ3Jtc0tsdEpDSzhrdG5rcFJNdTJodjhTTXViUU9ONHFyWGE2TXpiMUhlb3ZueWQzR3prVEFzNXQtcFhwdVVPQmJVbXBjVzFKUkxUSC1FaEZRbnhNMDR4M19Ma1NCelhBbnkxMG9QWlJXMmJhV2xRUUp0NlhRRQ&amp;q=https%3A%2F%2Fwww.canva.com%2F&amp;v=Cv_c9nQMtSM">https://www.canva.com/</a></p>
+<p>pexels: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbnJjUUxvWnpVRWtYWXVjMExBVHhzOXllcE50d3xBQ3Jtc0trb0k0a1BIM2gwbmRGZVRTYTlNUExESE1wbENSX3lHenc2T29QazZlYWlURnhxV3pYOVdsNXFLOXJkNmNXelJoOU5nQ01ncWlNOWg1Q2pScXdLZXkzSUkzSkRLMHpHOWlyNFBLdTVzMTFyWmhCTVVtaw&amp;q=https%3A%2F%2Fwww.pexels.com%2F&amp;v=Cv_c9nQMtSM">https://www.pexels.com/</a></p>
+<p>veed: <a href="https://www.veed.io/">https://www.veed.io/</a></p>
+<p>AutoGPT | https://github.com/Significant-Gravitas/Auto-GPT</p>
+<p>Godmode.space | https://godmode.space/</p>
+<p>midjourney</p>
+<p>miniGPT-4 | https://huggingface.co/Vision-CAIR/MiniGPT-4</p>
+<p>Adobe firefly | https://firefly.adobe.com/</p>
+<p><a href="http://ElevenLabs.io">ElevenLabs.io</a> | https://beta.elevenlabs.io/</p>
+<p>Vall-e GitHub by Microsoft</p>
+<p>Runway tool | https://research.runwayml.com/gen2</p>
+<p><a href="http://Descript.com">Descript.com</a> </p>
+<p>GitHub copilot-x | https://github.com/features/preview/copilot-x</p>
+<p>QuillBot | https://quillbot.com/</p>
+<p><a href="http://Soundraw.io">Soundraw.io</a> | https://soundraw.io/</p>
+<p>Spline AI and SkyBox labs | https://spline.design/</p>
+<p>WanderStudio  | <a href="https://wonderdynamics.com/">https://wonderdynamics.com/</a> </p>
+<p>Tool 1: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa2FmVW45NDEySlM3UDFBemdabEs2Q1dZRXdKZ3xBQ3Jtc0ttTkJUTllZaFp4VjNVVjk0ZldUSTVPbFZwOGs3WGxyODY1a1IzZmhkSzc2cHQ4VzJoMzZ1T0dKaU5qODRqeFpyTlJOWFdvcTZSV3JRSGxRbWlKM1I0bmpXQUhmT25SYWRsUWlDNVFoNDI0ai1YMGczYw&amp;q=https%3A%2F%2Fscribehow.com%2F&amp;v=xJTyPdiXNMI">https://scribehow.com/</a></p>
+<p>Tool 2: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbFZQN3NyMjVNRW9fbjh2NThrVkhvTHdmbHNRUXxBQ3Jtc0tuLTBRMjY5TFVRLWtNeFVhNVV3QlZ4UzVfQTVPbmJGeHVBa0tuNFFPVU4xOHpNSWJLN1FxcEVxRHRFQTJWb09vcDJoRDk5dUc1MFZ3VkgzY0xfVFlBYWwxcGZIWWN2YkFMUldQbXFqX1BjTzBkaW51SQ&amp;q=https%3A%2F%2Fwww.supermeme.ai%2F&amp;v=xJTyPdiXNMI">https://www.supermeme.ai/</a></p>
+<p>Tool 3: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbDdQLTVQWGVYUGFwTGZScGhpTjVhSTRZRWNkd3xBQ3Jtc0tuZndIeUpLTktPYmFwV2szSGRqam9UNTVVTE5zNzlCZTAxcEZKUEl6cW9XRG1MTzdrTVYxSFRzZTBIcExfV01Tajh5MkpEay13SjRaeWRydzM0ZjZ3MGJjQkpfTU5ldGJTWGZWbVk1cFVuWW1fLTJjSQ&amp;q=https%3A%2F%2Fwww.poised.com%2F&amp;v=xJTyPdiXNMI">https://www.poised.com/</a></p>
+<p>Tool 4: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa2JjdVluWVRnTXVsTlJrTnRSRncyM0V4M0dzZ3xBQ3Jtc0ttYnI5OVBVRmptaDlYaFQ4X0Fla3hNaW1HWXlRVGFScTh1Z25LSTNCclFXRG5XZ0s3V0xZOS11VEZfWC1reXQ1bWctS2VPcjBJUEVvWlQwaTQzZUYxZ3Y5V181VXRiMXJUWEJWVlVxZkhHYmpSemdZVQ&amp;q=https%3A%2F%2Flumen5.com%2F&amp;v=xJTyPdiXNMI">https://lumen5.com/</a></p>
+<p>Tool 5: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa1RLYXQycTFLTHVEdm1ZSU1fLWFOMFZFbEhIQXxBQ3Jtc0ttQ1VCTG02NFBpdld6eUNxLTBzdktkVnZNRGRaa0Z0RVVhak8tWTktaU1ORXdyVGQ1WnZ3eGhRRTBHZUNPaU5PWTRKeVpJaWhCeWFZTkZINVZlLXZwQUJFZDJMV2RsOXVWY1FJeTdPcUN4QkNNM3oycw&amp;q=https%3A%2F%2Fwww.lalal.ai%2F&amp;v=xJTyPdiXNMI">https://www.lalal.ai/</a></p>
+<p>Tool 6: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbVFXeTBrZm5PNVpKWFlTNEVsT3g3d3VIa013UXxBQ3Jtc0tsSDFhSzg0aXpxWUFZT0s4QTdDOUdTdTU2WjFHMzRNQ3QzWElNaXc4S3MxRzF2Z2xmdDhRaHBTalhITlFlRk0xcml0S1JaR1ktMjY4dW1oXzdqN3hma1NOWk5sX3FLczNIeWRhRTBfSkw2OUlLaTg3VQ&amp;q=https%3A%2F%2Fmagicstudio.com%2Fmagiceraser&amp;v=xJTyPdiXNMI">https://magicstudio.com/magiceraser</a></p>
+<p>Tool 7: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbHA0Q2hrR3h3S0NGRkpEZFZKelFFQ1RhN2V0Z3xBQ3Jtc0trU3dhOThwV25sTEtnMk0xQlVFSy1pQ01iT0FrZk9QT0VPWUxVd0xnM1pYVVp4QWdPMzZlQ0RYTUx2S1RyZU1mcC1NdS1oQlZOODA5TkxwZHNlaklweHo3RkVjekJSZVR5RUJfZF84Skg5NXdkSFRpaw&amp;q=http%3A%2F%2Fsoundraw.io%2F&amp;v=xJTyPdiXNMI">http://soundraw.io/</a></p>
+<p>Tool 8: <a href="https://www.copy.ai/">https://www.copy.ai/</a> | <a href="http://jasper.io">jasper.io</a> </p>
+<p>Tool 9: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqazZaWVdlMzVCZWgxSWVTcXJic1R3Wk85b0d5d3xBQ3Jtc0trWFpIOXdFWjloaEo1eW43V19UelpZZHRHXzV6ak5ONW9iZXhCRG9sZVNscGpDcWs2MEpUR0l4RTZWX21QcFpXWWVQZWp0WEg4SEpORjBRekZMT3R0VFdGbzNsNU9RSmQyWkJvQ0pNOEJGTlZKNXRkOA&amp;q=https%3A%2F%2Fwww.sembly.ai%2F&amp;v=xJTyPdiXNMI">https://www.sembly.ai/</a></p>
+<p>Tool 10: <a href="https://get.mem.ai/">https://get.mem.ai/</a></p>
+<p>1: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbWVVWGNIUXpsRWk0SGlVbnNScGxEbXJ0X0dmUXxBQ3Jtc0trZVY1blVTWHlNNkVGU1FmQlk0elRKNkRqWm5rdDRsSjhxVzhhRnZ4bzlCaEY2UGtvc25NaURIZVJ6bDB4LWZLMzFLT3g5M0dGdkNONUc4SUlVTWw0OWR3ei1SY1pqbHVJX3FGcnI5VXlyTGJpMFhWYw&amp;q=https%3A%2F%2Fwww.codeium.com%2F&amp;v=SA2ITiyj1wA">https://www.codeium.com/</a></p>
+<p>2: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbmh1RnVtYUVkZmlodk1sQ2duV3FiaXBveVpFd3xBQ3Jtc0trOTcwdENlOWtpOEhWRjZXSHJVSDI5eldLN1ppUWFvZWV2b3M4ZTVFT0FrQXFER0I3VzJJVDJ3dlhnd0lJQjJ5Y2xGSk1jVVBPNHlBTk1HLVlPV2pRNkFZakYxMFhWZ2ZPWWFvdXVsTDBUeGR4QnJQcw&amp;q=https%3A%2F%2Fbeta.elevenlabs.io%2F&amp;v=SA2ITiyj1wA">https://beta.elevenlabs.io/</a></p>
+<p>3: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa2hrUXl1REF6Sk16aGJTU1B6UkZqSERSVENBUXxBQ3Jtc0tuUHNjRGtHMlhYZVRaRkF4ZjBzQmpqYjZCcHVzcG9ETVc2cVZwZWhuemtPWkZXc2FUZUplLVJxT29TdUpjMTdJVllCYTJUeVZIQloyU3haWFZmbm9pUW9qUlhaS0tlUUF2dGNrMjZLV01nNnJka3o5Yw&amp;q=https%3A%2F%2Fwww.langotalk.org%2F&amp;v=SA2ITiyj1wA">https://www.langotalk.org/</a></p>
+<p>4: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa3lTQTA2dTVXWDdjWHF1V1pVSXJhNVNfbTdvUXxBQ3Jtc0trSVZrREd6elRRX1Z3YjBVM0NSSHdaN0syR3VlU29PM3pqaUtUaEdMakIwSlhWLVBMMDU1eVZxWWExLVl1ZTQ4cU1MNWVNWXFNanlwMGxHaWNiaENKNFY0SmNFTldVc25rX3RJZ2xJX1BMUTdwQVFCSQ&amp;q=https%3A%2F%2Fwww.humata.ai%2F&amp;v=SA2ITiyj1wA">https://www.humata.ai/</a></p>
+<p>5: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbk8zaG9scExBTlZuajFJNGtPcFpkWElhRkpTUXxBQ3Jtc0tucGVUWnMxR3g0cDF4Q1VyVm5Yby0wZGQyUTdVYlZZbUtfRS16RWlrX2lURVk3aFB4RUdYb3gwRzcxY0l6aUVkR1QtTjJZanZHTVN1WlBjdHRXV1YzYXBHZkVrV2hXR2twRkhRR3lCRWJwbzNHZ2E0SQ&amp;q=https%3A%2F%2Fcareerdekho.ai%2F&amp;v=SA2ITiyj1wA">https://careerdekho.ai/</a></p>
+<p>6: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbk93MmZ4NG5Bc3paaU9CSnJGdnRLOTFyblJqd3xBQ3Jtc0ttWmhidVdOOHFoak9wTms3MUd5ZHVBd0FJYnhqbGFPaF8ySmtqdVZxTTRDbXgzMVNKRDhNYlEyTG5tZGIyZ2NzWGpKaUNrM2JIRk1teEFMZW1vTEJmbjEtT2xMSHlEUmFXQ1l6M1MxV0NSUmlBaEJuNA&amp;q=https%3A%2F%2Fwww.bluewillow.ai%2F&amp;v=SA2ITiyj1wA">https://www.bluewillow.ai/</a></p>
+<p>7: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbVZBTHMwYmEtc1pzRW5UTmxhV1BWYUktTTFuQXxBQ3Jtc0ttTW5PVU9UWWdNMWdIRUJTbENCMXVEV0NUcnNIZ3pkVEhickQ4YUplNGcxT0hURmhkM3NybldkMElmT2ZtZnYyUDVrbzJxT2l0UjdhTkVDRmU3WmhyN2dyN182Z19hazRjX0g1VnNrcjVxc1kzamFqUQ&amp;q=https%3A%2F%2Fwww.marsx.dev%2F&amp;v=SA2ITiyj1wA">https://www.marsx.dev/</a></p>
+<p>Stable diffusion</p>
+<p>Mid journey</p>
+<p>Dall.e.2 </p>
+<p>Tools Mentioned in Order of Appearance (with links):</p>
+<p>NVIDIA Canvas: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbE9QWWlEclQ5eWt4MVMtZ1B5dVVLYUVyRFE1QXxBQ3Jtc0ttdFl3Qk4ycW45eDg3TW9iWTNuN05yUlUyTDVIN21HZERDSEVRUHY0WXdHckZIWHNVNFBOT3JYZjVWZUlFUk53MmYtU001eHF3VENNMHRhbDVxbFlXR1dSTU52UjZDTE5DN2VxbXlMcThlRFdBNm9Zaw&amp;q=https%3A%2F%2Fwww.nvidia.com%2Fen-us%2Fstudio%2Fcanvas%2F&amp;v=gpP_YEv_9jA">https://www.nvidia.com/en-us/studio/c...</a></p>
+<p>NVIDIA Broadcast: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbWtVUDQ2U3VTVmxUNEh2bm9lbWtIUWtzSFI1QXxBQ3Jtc0ttOTBqSG85ZXdVUFJROW0zQWlyNTBRelJYR0JQTEFqRVV2aXZmQ1Q3NWNTV2tNZTAzRndzSzZGUGVkMHppaW54bTVLZHdSak9ha1d5a2h1THo0WGV3d282OFRZbW9RbkNnWnNIdTFHb0Z5QTR1R01aaw&amp;q=https%3A%2F%2Fwww.nvidia.com%2Fen-us%2Fgeforce%2Fbroadcasting%2Fbroadcast-app%2F&amp;v=gpP_YEv_9jA">https://www.nvidia.com/en-us/geforce/...</a></p>
+<p>NVIDIA Omniverse: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbkFaOGtrSUJVQmRqTnA0M0ktU19MZ0J4M3RtUXxBQ3Jtc0tsUVZEQ1NlTjNMYUZiNC1UQ2MyR0ZTTTF0TmFnTVNwXy14WW5aRDRpX1NJOWdPT2ZzT055TWJRMGNKV3hUVURZTUQyWTRzS2QyODRqTmJZUi1SRjhreGQ2Q0NVVFpOY29RMDdqLUxTeWxMTnF6UnFSNA&amp;q=https%3A%2F%2Fwww.nvidia.com%2Fen-us%2Fomniverse%2F&amp;v=gpP_YEv_9jA">https://www.nvidia.com/en-us/omniverse/</a></p>
+<p>Versy: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbmlWb1A2dzNPZjBMU2NVZkgzVTBjeUpWT0ZNZ3xBQ3Jtc0trMkpkNFJ0d2U3LXdQeHFfRnZfQ1c3NkpwZE00QmVCbXR4VENmdzhNZzhxUnZiTVJZZVJzRG96eHBSckthaTBzMGRlSnd5VjBWMzJuNkFMbjFVeGlmTkpWTVVVNDk0TVB4TE9HRHI0elhxaVh5d0ZpNA&amp;q=https%3A%2F%2Fwww.versy.ai%2F&amp;v=gpP_YEv_9jA">https://www.versy.ai/</a></p>
+<p>Imagen: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqblcwdGFaVHlLcXFhNC1DVERLV24xNGNoLXdId3xBQ3Jtc0tteW1YNVc2NkR2dk1tWV9hZUI1QTBvZjVMUTlzSlFhWEwyTm13cnRWRThvRE55ZjhhOFpFQ1FzSVZDVjlhNGZIbGpLNUFuTTRpQS0zYy1FV08zNjNnNXBXZVF4N0R2cURyeWVIZWRjMHF2YWNrTWVtYw&amp;q=https%3A%2F%2Fimagen.research.google%2F&amp;v=gpP_YEv_9jA">https://imagen.research.google/</a></p>
+<p>Kaiber: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa0FWSndjZE5LaVJ6NmF4NkRVMTJacVU2X1FHUXxBQ3Jtc0trYjFVX1p4VFJyc255WDM5U3l0ZDVBbGZ6aGhpUE5nQ3Z1cXJCanR0WDZHclNyODZ4R2MxamF6UnZIOXlkUkM4b2NhUlhsOEFPRWN0RWNYM2Zlc1JCRWNNS1hmZ3hoVDZoanVZdkY1aGx1SjZrWGhoQQ&amp;q=https%3A%2F%2Fwww.kaiber.ai%2F&amp;v=gpP_YEv_9jA">https://www.kaiber.ai/</a></p>
+<p>Leia Pix: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa1Y0WThZbUlkcjdvMXIycmlLa0xOdUwxVWV0QXxBQ3Jtc0tuemcxQy1QSFFyNUFVQ3JfRXlPbDJOZGZ3M2lXbmRRTHg1NjBJbDFrYnhqVjBUb2dGMUxmV3BGV1p2UGxWUTJsZWN5emxsMU9RUlpLT2J0X1VjdElNcmtLNFAxT2RBaG9hbG94NUpncjNPeWEtblZVaw&amp;q=https%3A%2F%2Fconvert.leiapix.com%2F&amp;v=gpP_YEv_9jA">https://convert.leiapix.com/</a></p>
+<p>RunwayML Gen 2: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbHk3WFpLeXNRSlNRNThScng3OVdvXzQyZGtIZ3xBQ3Jtc0tsa2dSdTZ2Y3p0RTc1N1YxV25Ea25zaEl2QW1TUFZRaFdWMVc5Vm1yYWhnVldJT05LcHJZWkFQaHZEd3FvbXRMbDhmbWpkMzh0NUJuRVRfTHVxZjVFQkY1OFJvUW9wN2dmSERKWkFKaXhjQUlBYzNUdw&amp;q=https%3A%2F%2Fresearch.runwayml.com%2Fgen2&amp;v=gpP_YEv_9jA">https://research.runwayml.com/gen2</a></p>
+<p>Caktus: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqazhQR214cjJycFhpOXpTQlBqa0poYm8yRU1CUXxBQ3Jtc0tsTmRHTlN3TGt1Wmt2ZG1RZjdSSEpwNDlqakQ0aFFQOWVMSG1ZR3p6RThycTdWUkZXUFp5Nk5MUGdacWtGM0ZfNmRaNWNTejVqNGExSGJzTnNXcjI2V1Zjb1ZmaVdFSXlpd0lOVE9Bd0hEQlQ3MjBjbw&amp;q=https%3A%2F%2Fwww.caktus.ai%2Fcaktus_student&amp;v=gpP_YEv_9jA">https://www.caktus.ai/caktus_student</a></p>
+<p>Wisdolia: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa1pKdWdDM2ZtZHR6RWI4MFdBNWhWY0d2OFJjUXxBQ3Jtc0ttVE5tR1BDbzBFY3pBcE5mVmJEWjFKMFNEbDRVVDhZMW04ajJaMFJlQzdYY180em1hbkkxVVczMGI4X04zZ29xNGhPQnJPbmJ6WmQ2R1AzMENpYlRwNm1PTUVMY1dXLU9hU3FMbWxlcWJzVDNvTVlVRQ&amp;q=https%3A%2F%2Fchrome.google.com%2Fwebstore%2Fdetail%2Fwisdolia%2Fciknpklcipibmfbgjmdmfdfalklfdlne&amp;v=gpP_YEv_9jA">https://chrome.google.com/webstore/de...</a></p>
+<p>Rewind: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbndWaW9PZUxnS2xIdEFwTk16bnFjOXJUeGlEZ3xBQ3Jtc0trMjJpVnkyWXlCb0NFOVhBX0VBOWlmeDVERDBkZG9NSjB5ZG1hcm0ycG9sWUZoYXVzeERFR3pNLTBocmF6WmJMd3lGbjk5VVZlZEVuZVVDSzZUS0Q3Qkc5TGVzOE8tX3hLZlU1V1hSaHQ3UXJ0UXpobw&amp;q=https%3A%2F%2Fwww.rewind.ai%2F&amp;v=gpP_YEv_9jA">https://www.rewind.ai/</a></p>
+<p>Pimeyes: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqblg0eVNxSlR5aDBrNURUY0NyWHNQUFFwQTB2Z3xBQ3Jtc0ttUjExaGhGcmNhOGFkVF9helBMRDlaZ1ktVTZMVzdSTTg4SVJYbkltV3dsazk3RS03RkhHcjA2RnBsU2pYdEtzR0NzblpfRnN4Wkw5blpReHhxOVlLdmt1STBnY1VzY0V6ZTJPa01rVkJON2xXVmpJcw&amp;q=https%3A%2F%2Fpimeyes.com%2Fen&amp;v=gpP_YEv_9jA">https://pimeyes.com/en</a></p>
+<p>Deep Nostalgia: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbVlCVWVWT2tibkp6U2djRVo4RnNCd3duWm1xd3xBQ3Jtc0ttdHJ0YlFOcHNsbUZFTnhDUnAtdjJta2Vtd0k2T1F3dkFVdUJGQ1N2LWVGYVlqa2J4NWo3bERzM3hmUVJ4NndPWnFrMEZ3YUlGdHlqdnItamRaZWloTnNFR3ROTUxxNDlRQlRfRzFyOEg1UnltaV9vQQ&amp;q=https%3A%2F%2Fwww.myheritage.com%2Fdeep-nostalgia&amp;v=gpP_YEv_9jA">https://www.myheritage.com/deep-nosta...</a></p>
+<p>D-ID: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbXE5ZDBlVE9GVWNKVEU5NUdJVzd0ZjRzdzZpZ3xBQ3Jtc0tuWHBrOWR4Y3BMVVhibFFfVGxtemdzTFNoX3MwOW10REdnS0dJd3laMUpCWEpVM3loRjl1VmYzdlNnVm9OcjY0aWtsMGhucUdjUVcxUXpzVzJESUdIcC1tUVZlcGdzNU56RkNNV1N0d3JPUHBBcDFWMA&amp;q=https%3A%2F%2Fwww.d-id.com%2F&amp;v=gpP_YEv_9jA">https://www.d-id.com/</a></p>
+<p>RunwayML: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbkJlOGZfUjlUNk43Ul9TbDZtS1Yza1RDWGV4QXxBQ3Jtc0trbmtUM254bjZENGh0NXd6SERuZjcxUmtHQzAzaVFSSFp6akJlNHd4VWMtRk4zMGgzN0dtV1RGRWYwXzlZNDRtWm5rMDhJX296MnhzM1dReXhDNVhCQ083LVdubjJHanpIUGZaajd3RU5XNV95QWZYTQ&amp;q=https%3A%2F%2Frunwayml.com%2F&amp;v=gpP_YEv_9jA">https://runwayml.com/</a></p>
+<p>Luma Labs: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbng1T0dpc3pPSk13RENQT19KNVZDLVUtbEZ3QXxBQ3Jtc0tuR0tUYVVvMVQwWWdVYzJuVVZvREhnTUJPR2kwMkJRM09GU2xEX1YydWVjdkt5bDk2VDhDcTd3cy1nUjdrbkhsaXJIWE5PajJVanI4OWFmNW5RQ3hvOTBLLUlDTTVmVGVHbTRvRVR1MVlKNHhuenJQZw&amp;q=https%3A%2F%2Flumalabs.ai%2F&amp;v=gpP_YEv_9jA">https://lumalabs.ai/</a></p>
+<p>Notion: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqazBGN0cwdTU0V2pIU0ZRTk5DZnN0a3hPNUhPQXxBQ3Jtc0tuYWZjVjRmYzhiWGRuTml4OHlqeFRtamZSbTBGX3NfWHlwSG41eEFNejVfMVBnOHFweHpsbXA2akFqbTdzTDN2ejFkNlVxenUwdEhUVDhYQmZPREJOby1la0FGNGVvR1NaZExjNDQySWtKa0RocE5jNA&amp;q=https%3A%2F%2Fwww.notion.so%2Fproduct%2Fai&amp;v=gpP_YEv_9jA">https://www.notion.so/product/ai</a></p>
+<p>Wist Labs: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbXQxaHItY09HcHVTRGk5UEktalBocmRfYmpfUXxBQ3Jtc0tuQWpQOU9DUksxOEp6QjlmRWFoREVoWEpaZEEzdWJwMDh4R294NnFkUGg2VmFxaUJ5ZmxucWZvVTBSclExbHJEcTAyNnpmTV9aT2NGRHhRSGxNT1ZWUUo4dEkwdld5NXdHTFI0SW5JcWM2SllOaGVUdw&amp;q=https%3A%2F%2Fwistlabs.com%2F&amp;v=gpP_YEv_9jA">https://wistlabs.com/</a></p>
+<p>AutoDraw: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa1pyNWdGVmRsTl9wUkNVTmxGSmZtSUc0dUZkUXxBQ3Jtc0ttZFMxR2R0YkFjbGJ5dlNoTWdUZjRxdTgxNkJqd2pWcFZ0Y2d1VU5XcHVfN1dfaEhmWUVkQ002OGFCR3pZZ3FuMGgzeGN3U1UycVFxcWhhbUFIOXFaOWdqNUpkYmhyb0pJZjZrSUUyMmNEUmFsZ1REMA&amp;q=https%3A%2F%2Fwww.autodraw.com%2F&amp;v=gpP_YEv_9jA">https://www.autodraw.com/</a></p>
+<p>Reimagine Home: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa0l2MFdabGlXN281dUc1WEtLRE9lS2hJOGVrZ3xBQ3Jtc0tsdWVWSHFGbmVfMFRsS1pTeDFrSjJYbjNlSmhkVndZSW9HUjFqODVSWjhFR1VSS09hX1Z5ZWJqcjZLUENURWFvMU5HWVJJd3VrYVBJRGpIeVhSRTFUVmNINnR4cjEyNzlJRnMyWGVpbGJDaFd3UXVzMA&amp;q=https%3A%2F%2Fwww.reimaginehome.ai%2F&amp;v=gpP_YEv_9jA">https://www.reimaginehome.ai/</a></p>
+<p>Do Not Pay: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbUxHcWUxM3RxNzhNSTc4N3E5ZVJhNUF2bFN1UXxBQ3Jtc0trNHB4Q2lFeXY3N2Vwa1MxaWdTcE1sUVBlMV9LbWxmSk5VZG1aN1ZlVWFLMGhMMTZyNEZQSjgyRGxCTWF6Q3hZRE1lRWJfU3o2cXIyZDBMd2gyemZRZHVJSElNM1JVYVFqbjVFc1ZxSjhWUUtqaHBUaw&amp;q=https%3A%2F%2Fdonotpay.com%2F&amp;v=gpP_YEv_9jA">https://donotpay.com/</a></p>
+<p>Soundraw: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa0ZnVmQ5SXQ2SDJuNURPek92TVNaanZwODFBQXxBQ3Jtc0ttdWRUM19FY3dQc1lsWnpHYVp1TWdUVjRVTmdPRGtFSzVxcjJ0V1hUTXh1WXU5bVlTMUtoV3RJOHRRRWpIZEx0NjNMc1ljWDVFSlh5M0hWdzNxai1mWVVQdlEyd003Ukc0UWFNNXpRMlBmWU10dzF5bw&amp;q=https%3A%2F%2Fsoundraw.io%2F&amp;v=gpP_YEv_9jA">https://soundraw.io/</a></p>
+<p>Mubert: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbnZkNHNzcFhCazYzUG5UZVdwbVJfNDB0ZkhyUXxBQ3Jtc0tuOUVTSjMxbEI4RUFCbnVQb2VqcFgwek5qNFgtWURTN1BvendtOXJ4UENLdFJkUlZmRFBSX08zTTd1RE4zY2FPUFJTdFNPZlFCRngzMFI3Y2F2Z0RhbVBna1RBZm5kcEE4aFlISXYxZXFJdnJzY3R3OA&amp;q=https%3A%2Fmubert.com%2Frender%2Fpricing%3Fvia%3Dobscurious&amp;v=gpP_YEv_9jA">https://mubert.com/render/pricing?via...</a></p>
+<p>Eleven Labs: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa3dnZ3djeGtHWmhhTXhaUGxELWVPSWRwUzJFZ3xBQ3Jtc0tuRHlMVUJQZnkyTU9vZWE0cGJOTmRxNmFhT1VaUWpfSjdjc2ZJaFhrTDIxNFU0RVhkZmxtdnlsaDRQZFQyaGo1OVJpOFRlaXUtOTd2YTNXM3l4RlVyN1lobmlUb1RDYmNMVVpiNDZSYkFTVDhkUGRPaw&amp;q=https%3A%2F%2Fbeta.elevenlabs.io%2F&amp;v=gpP_YEv_9jA">https://beta.elevenlabs.io/</a></p>
+<p>Midjourney: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbGxuaTFWaERiSlNRS0U2YmdBa09fUExCR1BkUXxBQ3Jtc0trdzNDLTAwQi1qQ195MS1Ta2Zpc18wVkpja2ZKd0VNb3ViSF9VNkpHelBIbFpTa0JaOFF1Q1ZjNGxsc1lkOVMzRjRteEktMGtQcEdtck9MX1lOSjl5SHUtcjdmUFhhN0U0bDhRWmJJNkVyeUJDcHo0VQ&amp;q=https%3A%2F%2Fwww.midjourney.com%2Fhome%2F&amp;v=gpP_YEv_9jA">https://www.midjourney.com/home/</a></p>
+<p>Mixo: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbEF1bzZvQ0dhbk11SUZOY3B3TkpCR2tUQXpOUXxBQ3Jtc0tuV3Blbm1XNER0QUdFdzVneUQ4WGZWOXVTVDl0R1BZRjVmUGdoSGliNzl2UmoyNGJoTy1DVE1hMHYyR1dwa2J6RVRRREIyNzV2VTBDX3p3S3BIM3lkWGdkdTdDZVJUaHcyRVdPQnFxYWYxSC11dU5IZw&amp;q=https%3A%2F%2Fmixo.io%2F%3Fvia%3Dobscurious&amp;v=gpP_YEv_9jA">https://mixo.io/?via=obscurious</a></p>
+<p>Jasper: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa3YzODQwN1VfZXlURC1TVThJTnhVOGpmd0tBZ3xBQ3Jtc0trSWlTN2hxbTYyNTRMN0E5dVpheU1yMWs5LXhTbjdlcFhzdWJjODk5WTRpcFJTQnRKc25CLV9CNFZFNUZSckpkaUpGR1dUSEpsNHdwbHlSNGxZWWgzUEd2VVdkcXNuLTJkNmVLWml5VEJJeGZqM3N5aw&amp;q=https%3A%2F%2Fjasper.ai%2F&amp;v=gpP_YEv_9jA">https://jasper.ai</a>?utm_source=partner&amp;fpr=obscurious</p>
+<p>Looka: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbEY2allvYzZMRldvRWtWS3BZS3BBU3VTRUdNQXxBQ3Jtc0ttd0U2UGlDMEZzRmUzQWFaRURfZmJqT2gtNk9oUmJ3bkJZOTc3MXJ3RTNXY2p6S3hUNkdaZXpsN0Vtd1dTc1hpMzIyc3pCcjB3ZHpTRVhWYUJLeWJFTHNQU2hfU0RJLXpuRm5aNWRBSV9sTmFZc25fMA&amp;q=https%3A%2F%2Flooka.com%2F&amp;v=gpP_YEv_9jA">https://looka.com/</a></p>
+<p>Poly: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbElNQmZ0ZkdZN0ZMd29zX1dXcEdWdDRwWUJLd3xBQ3Jtc0ttb3ZpTmh6cXNpNlEwTVZUeDBuMzRfTGlnWkJpQ25uaFg2QTU4NEFMbDVVSWdIcVpSRW1zM2NIY19JVlpFLVI1bkZFMUtwX0NaRVFiRkJrWHBpelU0Tkx6OE5JMmp2V3pHa3dLNG9QYm5BbDB1dEM0OA&amp;q=https%3A%2F%2Fpoly.ai%2F&amp;v=gpP_YEv_9jA">https://poly.ai/</a></p>
+<p>Synthesia: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqa0hQQVg0cE9YRFlRWHRRMDdkUG45WkdtN3A1d3xBQ3Jtc0tudkhMQmdMYkh2LUxtOTBzYVlhU3hvT05ORUg4UEhELTlNcjVLSXAtZC1VV2hRY1Q4d1NVMHBrblFSOEhXWU1oV29tbzc3ZXR2cEQta1dhSXlURURxZjA3UkpUYkhpQ1MtdFlac0JJWERKcERvLTJ0dw&amp;q=https%3A%2F%2Fwww.synthesia.io%2F&amp;v=gpP_YEv_9jA">https://www.synthesia.io/</a></p>
+<p>Tome: <a href="https://www.youtube.com/redirect?event=video_description&amp;redir_token=QUFFLUhqbmlXNjJrUjM5VTNrR0FwVlpSMEtUUlRQTWsxQXxBQ3Jtc0tsMElOZ29UcEFaNEpkYkp6RHlibGF0SVZCYTJBZmlFWFkxQW10OUlpaVgxMmtzWC1kanpvaHBzbFNWS1hlSXVtNjJmTXF0UGRManBVWk5pdU5CT2QwaEdSbzg3WmgteFlPRDJNdzduN1Roc1VGMGtaMA&amp;q=https%3A%2F%2Fbeta.tome.app%2F&amp;v=gpP_YEv_9jA">https://beta.tome.app/</a></p>
+<p>Future Tools: <a href="https://www.futuretools.io/">https://www.futuretools.io/</a></p>
+<p>uizard.ai</p>
+<p>Seo.ai</p>
+<p>Synthesis.ai  </p>
+<p><strong>The Man Behind ChatGPT (Sam Altman) -&gt;</strong> <a href="https://www.youtube.com/watch?v=GKaVb3jc2No"><strong>https://www.youtube.com/watch?v=GKaVb3jc2No</strong></a></p>
+<p><strong>Watch ET Conversations with OpenAI CEO Sam Altman | An ET Exclusive -&gt; https://www.youtube.com/watch?v=AiE7FsdRzz8</strong></p>
+<p><strong>ET Conversations with ChatGPT founder: Sam Altman on fears from AI and more | Full video -&gt;</strong> <a href="https://www.youtube.com/watch?v=H1hdQdcM-H4"><strong>https://www.youtube.com/watch?v=H1hdQdcM-H4</strong></a></p>
+<p><strong>Sam Altman - How to Succeed with a Startup -&gt;</strong> <a href="https://www.youtube.com/watch?v=0lJKucu6HJc"><strong>https://www.youtube.com/watch?v=0lJKucu6HJc</strong></a></p>
+<p><strong>Sam Altman : How to Build the Future -&gt;</strong> <a href="https://www.youtube.com/watch?v=sYMqVwsewSg"><strong>https://www.youtube.com/watch?v=sYMqVwsewSg</strong></a></p>
+<p><strong>Sam Altman - The Man Who Owns Silicon Valley -&gt; https://www.youtube.com/watch?v=1he_Izj8AHc</strong></p>
+<p><strong>Elon Musk on Sam Altman and ChatGPT: I am the reason OpenAI exists -&gt; https://www.youtube.com/watch?v=bWr-DA5Wjfw</strong></p>
+<p><strong>ChatGPT boss Reveals Future for AI -&gt;</strong> <a href="https://www.youtube.com/watch?v=8io6zrr3JiU"><strong>https://www.youtube.com/watch?v=8io6zrr3JiU</strong></a></p>
+<p><strong>OpenAI CEO Sam Altman on the Future of AI -&gt; https://www.youtube.com/watch?v=A5uMNMAWi3E</strong></p>
+<p><strong>ChatGPT boss Sam Altman questioned on AI safety in US Congress - BBC News -&gt; https://www.youtube.com/watch?v=8l0GVXpN2q4</strong></p>
+<p><strong>GPT-4 - How does it work, and how do I build apps with it? - CS50 Tech Talk -&gt; https://www.youtube.com/watch?v=vw-KWfKwvTQ</strong></p>
+<p><strong>It’s Time to Pay Attention to A.I. (ChatGPT and Beyond) -&gt; https://www.youtube.com/watch?v=0uQqMxXoNVs</strong></p>
+<p><strong>GPT-5 Presents EXTREME RISK (Google's New Warning) -&gt;</strong> <a href="https://www.youtube.com/watch?v=JyVH4FbSwFo"><strong>https://www.youtube.com/watch?v=JyVH4FbSwFo</strong></a></p>
+<p>Microsofts New 'ORCA' Takes Everyone By SURPRISE! (Now ANNOUNCED!) -&gt; <a href="https://www.youtube.com/watch?v=AAwN2SzyNnY">https://www.youtube.com/watch?v=AAwN2SzyNnY</a></p>
+<p><strong>AI Drone Kills Operator, GPT 4.2 Leaks,Bard Gets SUPERCHARGED, And Much More [AI NEWS #5] -&gt;</strong> <a href="https://www.youtube.com/watch?v=89yPjWjss7Y"><strong>https://www.youtube.com/watch?v=89yPjWjss7Y</strong></a> </p>
+<p><strong>ChatGPT vs Google's Bard: The Ultimate AI Chatbot Showdown -&gt;</strong> <a href="https://www.youtube.com/watch?v=hEhBQLvhYoY"><strong>https://www.youtube.com/watch?v=hEhBQLvhYoY</strong></a></p>
+<p><a href="https://www.youtube.com/watch?v=p9Q5a1Vn-Hk"><strong>https://www.youtube.com/watch?v=p9Q5a1Vn-Hk</strong></a> <strong>-&gt; https://www.youtube.com/watch?v=p9Q5a1Vn-Hk</strong></p>
+<p><strong>Generative AI for business -&gt;</strong> <a href="https://www.youtube.com/watch?v=FrDnPTPgEmk"><strong>https://www.youtube.com/watch?v=FrDnPTPgEmk</strong></a></p>
+<p><strong>The AI War Rages On! Every AMD AI Announcement (Supercut) -&gt;</strong> <a href="https://www.youtube.com/watch?v=dU3xW5GcJLo"><strong>https://www.youtube.com/watch?v=dU3xW5GcJLo</strong></a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; 2025 <a href="https://github.com/abhishekghoshh"  target="_blank" rel="noopener">Abhishek Ghosh</a>
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/abhishekghoshh" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M202.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M496 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://x.com/abhishek_ghoshh" target="_blank" rel="noopener" title="x.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M459.4 151.7c.3 4.5.3 9.1.3 13.6 0 138.7-105.6 298.6-298.6 298.6-59.5 0-114.7-17.2-161.1-47.1 8.4 1 16.6 1.3 25.3 1.3 49.1 0 94.2-16.6 130.3-44.8-46.1-1-84.8-31.2-98.1-72.8 6.5 1 13 1.6 19.8 1.6 9.4 0 18.8-1.3 27.6-3.6-48.1-9.7-84.1-52-84.1-103v-1.3c14 7.8 30.2 12.7 47.4 13.3-28.3-18.8-46.8-51-46.8-87.4 0-19.5 5.2-37.4 14.3-53C87.4 130.8 165 172.4 252.1 176.9c-1.6-7.8-2.6-15.9-2.6-24C249.5 95.1 296.3 48 354.4 48c30.2 0 57.5 12.7 76.7 33.1 23.7-4.5 46.5-13.3 66.6-25.3-7.8 24.4-24.4 44.8-46.1 57.8 21.1-2.3 41.6-8.1 60.4-16.2-14.3 20.8-32.2 39.3-52.6 54.3"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/abhishek-ghosh-220679132/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,6916 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://abhishekghoshh.github.io/system-design-helper/system-design/high-level/concepts/load-balancer-and-proxy-server/">
+      
+      
+        <link rel="prev" href="../hashing/">
+      
+      
+        <link rel="next" href="../microservices-patterns/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Load Balancer & Proxy Server - System Design Helper</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Load Balancer & Proxy Server - System Design Helper" />
+<meta property="og:image" content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/system-design/high-level/concepts/load-balancer-and-proxy-server.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://abhishekghoshh.github.io/system-design-helper/system-design/high-level/concepts/load-balancer-and-proxy-server/" />
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:title" content="Load Balancer & Proxy Server - System Design Helper" />
+<meta property="twitter:image" content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/system-design/high-level/concepts/load-balancer-and-proxy-server.png" />
+</head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#load-balancers" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="System Design Helper" class="md-header__button md-logo" aria-label="System Design Helper" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            System Design Helper
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Load Balancer & Proxy Server
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="lime"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../ai-tools/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  AI Tools
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../behavioural/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Behavioural
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../developer-experiences/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Developer Experiences
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../open-source-tools/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Open Source Tools
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../software-architect/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Software Architect
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../wisdom/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Wisdom
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../ai/ai/" class="md-tabs__link">
+          
+  
+  
+  AI
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../devops/" class="md-tabs__link">
+          
+  
+  
+  DevOps
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../security/introduction/" class="md-tabs__link">
+          
+  
+  
+  Security
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../../courses/" class="md-tabs__link">
+          
+  
+  
+  System Design
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="System Design Helper" class="md-nav__button md-logo" aria-label="System Design Helper" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    System Design Helper
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../ai-tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../behavioural/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Behavioural
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../developer-experiences/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Experiences
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../open-source-tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Source Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../software-architect/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Software Architect
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../wisdom/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wisdom
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    AI
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../ai/ai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../ai/ai-agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../ai/gen-ai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gen AI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../ai/langchain/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LangChain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../ai/langgraph/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LangGraph
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../ai/MCP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../ai/RAG/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RAG
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DevOps
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DevOps
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../devops/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Security
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../security/introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../security/authentication-and-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authentication & Authorization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../security/oauth/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OAuth
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../security/rbac/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../security/sso/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SSO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../security/ssl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SSL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../security/devsecops/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DevSecOps
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../security/firewall/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firewall
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_10_9" id="__nav_10_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Certificate
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Certificate
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../security/certificate/introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../security/certificate/certificate-authority/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Certificate Authority
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../security/certificate/client-certificates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Client Certificates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../security/certificate/server-certificates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Server Certificates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../security/certificate/self-signed-certificates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Self-Signed Certificates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../security/certificate/links/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Links
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10_10" id="__nav_10_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reverse Proxy
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reverse Proxy
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../security/reverse-proxy/introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../security/reverse-proxy/haproxy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HAProxy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../security/reverse-proxy/nginx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Nginx
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Design
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    System Design
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../courses/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Courses
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_11_2" id="__nav_11_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    High Level Design
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_11_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    High Level Design
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_2_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_11_2_2" id="__nav_11_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_11_2_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adaptive-bitrate-streaming/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Adaptive Bitrate Streaming
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../asynchronus-communication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asynchronous Communication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../back-of-envelope-calculation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Back of Envelope Calculation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bloom-filters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bloom Filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cap-theorm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CAP Theorem
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cdc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CDC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cdn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CDN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clean-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Clean Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code-documentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code Documentation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../consistent-hashing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consistent Hashing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cqrs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CQRS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../database-indexing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database Indexing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../distributed-caches-and-caching-strategies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Distributed Caches & Caching Strategies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ditributed-transaction-and-concurrency-control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Distributed Transaction & Concurrency Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hashing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hashing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Load Balancer & Proxy Server
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Load Balancer & Proxy Server
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#youtube" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Youtube
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#theory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Theory
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Theory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#proxy-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proxy Server
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Proxy Server">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#forward-proxy-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Forward Proxy Server
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reverse-proxy-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reverse Proxy Server
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load-balancer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Load Balancer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Load Balancer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-network-load-balancer-nlb-layer-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Network Load Balancer (NLB) - Layer 4
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-application-load-balancer-alb-layer-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Application Load Balancer (ALB) - Layer 7
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-classic-load-balancer-clb-layer-4-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Classic Load Balancer (CLB) - Layer 4 &amp; 7
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-gateway-load-balancer-gwlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Gateway Load Balancer (GWLB)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-global-load-balancer-gslb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Global Load Balancer (GSLB)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comparison-nlb-vs-alb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparison: NLB vs ALB
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#static-load-balancing-algorithms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Static Load Balancing Algorithms
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Static Load Balancing Algorithms">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-round-robin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Round Robin
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-weighted-round-robin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Weighted Round Robin
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-ip-hash-source-ip-hash" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. IP Hash (Source IP Hash)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-url-hash" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. URL Hash
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-load-balancing-algorithms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dynamic Load Balancing Algorithms
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dynamic Load Balancing Algorithms">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-least-connections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Least Connections
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-weighted-least-connections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Weighted Least Connections
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-least-response-time-least-latency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Least Response Time (Least Latency)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-resource-based-adaptive-load-based" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Resource-Based (Adaptive / Load-Based)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-least-bandwidth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Least Bandwidth
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-random" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Random
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#algorithm-selection-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Algorithm Selection Guide
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cdn-content-delivery-network" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CDN (Content Delivery Network)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vpn-virtual-private-network" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VPN (Virtual Private Network)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#firewall" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Firewall
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparison-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparison Summary
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Comparison Summary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-differences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Differences
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-what" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When to Use What
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#can-be-used-as-alternatives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Can Be Used As Alternatives
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#complementary-use-used-together" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complementary Use (Used Together)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#osi-layer-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OSI Layer Analysis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="OSI Layer Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#application-layer-layer-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Application Layer (Layer 7)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#networktransport-layer-layer-34" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Network/Transport Layer (Layer 3/4)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#both-application-and-network-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Both Application and Network Layer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#packet-level-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Packet-Level Operations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Packet-Level Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#components-working-at-packet-level" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Components Working at Packet Level
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#components-not-working-at-packet-level" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Components NOT Working at Packet Level
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#caching-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Caching Capabilities
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Caching Capabilities">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#where-caching-is-achieved" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where Caching is Achieved
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Where Caching is Achieved">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-forward-proxy-caching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Forward Proxy (✅ Caching)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-reverse-proxy-caching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Reverse Proxy (✅ Caching)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-cdn-caching-primary-purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. CDN (✅ Caching - Primary Purpose)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-load-balancer-limited-caching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Load Balancer (⚠️ Limited Caching)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-vpn-no-caching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. VPN (❌ NO Caching)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-firewall-no-caching-traditional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Firewall (❌ NO Caching - Traditional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#caching-comparison-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Caching Comparison Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#caching-strategy-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Caching Strategy Recommendations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../microservices-patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Microservices Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../networking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Networking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../passwords/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Passwords
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../process/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Process
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../raft-consensus-algorithm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Raft Consensus Algorithm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../restfull-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RESTful Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../s3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scaling-to-one-million/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scaling to One Million
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sockets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sockets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../webrtc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WebRTC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_11_2_3" id="__nav_11_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Designing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_11_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Designing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/app-store/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    App Store
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/authentication-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authentication System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/chat-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chat System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/chess-game/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chess Game
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/data-warehouse/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Warehouse
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/distributed-geospatial-data-platform/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Distributed Geospatial Data Platform
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/distributed-messaging-queue/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Distributed Messaging Queue
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/dns-server.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS Server
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/e-commerce/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    E-Commerce
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/ecommerce-checkout/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    E-Commerce Checkout
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/email-automation-platform/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Email Automation Platform
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/food-delivery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Food Delivery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/google-drive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Google Drive
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/hashtag-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hashtag Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/how-to-host-your-own-x/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to Host Your Own X
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/Image-Optimisation-on-the-fly/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Image Optimisation On The Fly
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/key-value-store/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Key Value Store
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/large-language-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Large Language Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/leetcode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LeetCode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/live-comments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Live Comments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/log-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Log System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/multiplayer-game/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multiplayer Game
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/netflix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Netflix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/notification-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notification System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/products/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Products
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/rate-limiter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rate Limiter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/recomendation-engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recommendation Engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/redis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Redis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/search-engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Search Engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/social-media/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Social Media
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/spotify/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spotify
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/stock-broker-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stock Broker System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/tiny-url/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tiny URL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/twitter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Twitter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/uber/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Uber
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/upi-payments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UPI Payments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/video-streaming/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Video Streaming
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/vpn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VPN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/webhook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Webhook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desgining/yelp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Yelp
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_11_2_4" id="__nav_11_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Links
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_11_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Links
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../links/udemy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Udemy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../links/websites/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Websites
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../links/youtube/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    YouTube
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_11_3" id="__nav_11_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Low Level Design
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_11_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Low Level Design
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../low-level/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_11_3_2" id="__nav_11_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_11_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../low-level/concepts/hashmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HashMap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../low-level/concepts/solid-principles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SOLID Principles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../low-level/concepts/technical-debt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical Debt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_11_3_3" id="__nav_11_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Patterns
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_11_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Patterns
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../low-level/design-pattern/design-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_3_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_11_3_3_2" id="__nav_11_3_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Others
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_11_3_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11_3_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Others
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../low-level/design-pattern/others/null-object-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Null Object Pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_11_3_4" id="__nav_11_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Designing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_11_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Designing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../low-level/designing/access-management-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access Management System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../low-level/designing/account-balance-tracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Account Balance Tracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../low-level/designing/air-traffic-controller/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Air Traffic Controller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../low-level/designing/atm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ATM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../low-level/designing/cache-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cache System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../low-level/designing/car-rental-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Car Rental Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../low-level/designing/chess-game/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chess Game
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../low-level/designing/elevator-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Elevator System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../low-level/designing/locker-allocation-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Locker Allocation System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../low-level/designing/parking-lot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parking Lot
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../low-level/designing/snake-and-ladder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Snake and Ladder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../low-level/designing/stock-exchange-book/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stock Exchange Book
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../low-level/designing/tic-tac-toe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tic Tac Toe
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../low-level/designing/vending-machine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vending Machine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="load-balancers">Load Balancers</h1>
+<h2 id="youtube">Youtube</h2>
+<ul>
+<li>
+<p><a href="https://www.youtube.com/watch?v=xo5V9g9joFs">Proxy vs Reverse Proxy vs Load Balancer | Simply Explained</a></p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/watch?v=yeaPUFaXgdA">17. Proxy vs Reverse Proxy (Example) | How Proxy differs from VPN, LoadBalancer | SystemDesign</a></p>
+</li>
+<li><a href="https://www.youtube.com/watch?v=vJYycNWAYZU">18. Load Balancer &amp; Different Algorithms - System Design | Static &amp; Dynamic Load Balancing Algorithm</a></li>
+</ul>
+<h2 id="theory">Theory</h2>
+<h3 id="proxy-server">Proxy Server</h3>
+<p>A proxy server is an intermediary server that sits between clients and other servers, forwarding client requests and server responses. It acts as a gateway or middleman in network communications.</p>
+<p><strong>Key Characteristics:</strong>
+- Acts as an intermediary for requests
+- Can cache responses to improve performance
+- Can filter and modify requests/responses
+- Provides anonymity and access control</p>
+<h4 id="forward-proxy-server">Forward Proxy Server</h4>
+<p>A forward proxy sits between client devices and the internet, forwarding client requests to external servers.</p>
+<p><strong>How it works:</strong>
+1. Client sends request to the forward proxy
+2. Forward proxy forwards the request to the destination server (on behalf of the client)
+3. Destination server responds to the proxy
+4. Proxy returns the response to the client</p>
+<p><strong>Use Cases:</strong>
+- <strong>Corporate networks</strong>: Control and monitor employee internet access
+- <strong>Content filtering</strong>: Block access to specific websites
+- <strong>Anonymity</strong>: Hide client IP addresses from destination servers
+- <strong>Caching</strong>: Store frequently accessed content to reduce bandwidth
+- <strong>Access control</strong>: Bypass geo-restrictions</p>
+<p><strong>Example Tools:</strong>
+- Squid
+- Apache HTTP Server (mod_proxy)
+- HAProxy (can function as forward proxy)</p>
+<p><strong>Connection to Other Concepts:</strong>
+- <strong>Different from Reverse Proxy</strong>: Forward proxy protects clients, reverse proxy protects servers
+- <strong>Similar to VPN</strong>: Both provide anonymity, but VPN encrypts all traffic while forward proxy works at application layer
+- <strong>Can work with Firewall</strong>: Often deployed together for network security</p>
+<h4 id="reverse-proxy-server">Reverse Proxy Server</h4>
+<p>A reverse proxy sits in front of backend servers, receiving client requests and forwarding them to appropriate backend servers.</p>
+<p><strong>How it works:</strong>
+1. Client sends request to what appears to be the final server (actually the reverse proxy)
+2. Reverse proxy forwards request to one of the backend servers
+3. Backend server processes and responds to the proxy
+4. Proxy returns the response to the client</p>
+<p><strong>Use Cases:</strong>
+- <strong>Load distribution</strong>: Distribute traffic across multiple servers
+- <strong>SSL termination</strong>: Handle SSL/TLS encryption/decryption
+- <strong>Caching</strong>: Cache static content to reduce backend load
+- <strong>Security</strong>: Hide backend server details, protect from DDoS
+- <strong>Compression</strong>: Compress responses before sending to clients
+- <strong>Web acceleration</strong>: Optimize content delivery</p>
+<p><strong>Example Tools:</strong>
+- Nginx
+- Apache HTTP Server (mod_proxy)
+- HAProxy
+- Traefik
+- Envoy</p>
+<p><strong>Connection to Other Concepts:</strong>
+- <strong>Different from Forward Proxy</strong>: Protects servers instead of clients; clients don't need configuration
+- <strong>Often functions as Load Balancer</strong>: Many reverse proxies include load balancing features
+- <strong>Can be part of CDN</strong>: CDN edge servers act as reverse proxies
+- <strong>Works with Firewall</strong>: Provides additional security layer</p>
+<h3 id="load-balancer">Load Balancer</h3>
+<p>A load balancer distributes incoming network traffic across multiple backend servers to ensure no single server bears too much load, improving application availability and responsiveness.</p>
+<p><strong>How it works:</strong>
+1. Client sends request to the load balancer's IP address
+2. Load balancer selects a backend server using a specific algorithm
+3. Request is forwarded to the selected server
+4. Server processes and responds through the load balancer
+5. Load balancer returns response to the client</p>
+<p><strong>Types of Load Balancers:</strong></p>
+<p>Load balancers can be categorized based on the OSI layer they operate on and their deployment model.</p>
+<h4 id="1-network-load-balancer-nlb-layer-4">1. Network Load Balancer (NLB) - Layer 4</h4>
+<p><strong>Description:</strong>
+- Operates at the Transport Layer (Layer 4) of the OSI model
+- Routes traffic based on IP protocol data (IP address and TCP/UDP ports)
+- Does NOT inspect application content (HTTP headers, URLs, cookies)
+- Extremely fast and can handle millions of requests per second</p>
+<p><strong>How it works:</strong>
+1. Receives TCP/UDP packets
+2. Examines source/destination IP and port
+3. Uses hash or connection tracking to select backend server
+4. Forwards packets to selected server (NAT or DSR mode)
+5. Maintains minimal state, often just connection table</p>
+<p><strong>Characteristics:</strong>
+- <strong>Performance</strong>: Ultra-low latency (microseconds), high throughput
+- <strong>Protocol Support</strong>: Any TCP/UDP protocol (HTTP, HTTPS, SMTP, FTP, custom protocols)
+- <strong>Static IP</strong>: Provides static IP address (important for DNS)
+- <strong>Connection-based</strong>: Preserves client IP address
+- <strong>TLS Termination</strong>: Can do TLS passthrough or termination (limited)</p>
+<p><strong>Use Cases:</strong>
+- High-performance applications requiring millions of requests/second
+- Non-HTTP protocols (databases, gaming servers, IoT)
+- Volatile workloads with sudden traffic spikes
+- When you need static IP addresses
+- WebSocket connections and long-lived TCP connections</p>
+<p><strong>Examples:</strong>
+- AWS Network Load Balancer (NLB)
+- Azure Load Balancer
+- Google Cloud Network Load Balancer
+- HAProxy in TCP mode</p>
+<p><strong>Advantages:</strong>
+- ✅ Extremely fast and high throughput
+- ✅ Lower cost (less processing)
+- ✅ Protocol-agnostic (works with any TCP/UDP)
+- ✅ Preserves source IP address
+- ✅ Lower latency</p>
+<p><strong>Disadvantages:</strong>
+- ❌ No content-based routing
+- ❌ No URL-based routing or host-based routing
+- ❌ Limited SSL/TLS capabilities
+- ❌ No HTTP header manipulation
+- ❌ Cannot make intelligent decisions based on application data</p>
+<h4 id="2-application-load-balancer-alb-layer-7">2. Application Load Balancer (ALB) - Layer 7</h4>
+<p><strong>Description:</strong>
+- Operates at the Application Layer (Layer 7) of the OSI model
+- Understands HTTP/HTTPS protocols and can inspect request content
+- Makes routing decisions based on URL paths, hostnames, headers, methods, query strings
+- Terminates and re-creates connections (proxy mode)</p>
+<p><strong>How it works:</strong>
+1. Receives HTTP/HTTPS request
+2. Terminates client connection (SSL offloading if HTTPS)
+3. Inspects URL path, headers, cookies, query parameters
+4. Routes to appropriate target group based on routing rules
+5. Creates new connection to backend server
+6. Returns response to client</p>
+<p><strong>Characteristics:</strong>
+- <strong>Content-aware</strong>: Routes based on URL, headers, methods
+- <strong>SSL Termination</strong>: Handles SSL/TLS encryption/decryption
+- <strong>HTTP/2 &amp; WebSocket</strong>: Full support for modern protocols
+- <strong>Sticky Sessions</strong>: Cookie-based session affinity
+- <strong>Health Checks</strong>: Application-level health checks (HTTP status codes)</p>
+<p><strong>Routing Capabilities:</strong>
+- <strong>Path-based</strong>: Route <code>/api/*</code> to API servers, <code>/images/*</code> to image servers
+- <strong>Host-based</strong>: Route <code>api.example.com</code> and <code>www.example.com</code> to different targets
+- <strong>Header-based</strong>: Route based on User-Agent (mobile vs desktop)
+- <strong>Query-based</strong>: Route based on query parameters
+- <strong>Method-based</strong>: Different routing for GET, POST, PUT, DELETE</p>
+<p><strong>Use Cases:</strong>
+- Microservices architectures (route to different services based on path)
+- Multi-tenant applications (route by hostname)
+- A/B testing (route based on headers/cookies)
+- Mobile vs web traffic routing
+- API gateways
+- Modern web applications with complex routing needs</p>
+<p><strong>Examples:</strong>
+- AWS Application Load Balancer (ALB)
+- Azure Application Gateway
+- Google Cloud HTTP(S) Load Balancer
+- HAProxy in HTTP mode
+- Nginx</p>
+<p><strong>Advantages:</strong>
+- ✅ Advanced routing based on application content
+- ✅ SSL/TLS termination (reduces backend load)
+- ✅ Better for microservices and containerized apps
+- ✅ Cookie-based sticky sessions
+- ✅ HTTP/2 and WebSocket support
+- ✅ Application-level health checks
+- ✅ WAF integration for security</p>
+<p><strong>Disadvantages:</strong>
+- ❌ Higher latency than NLB (content inspection overhead)
+- ❌ Lower throughput compared to NLB
+- ❌ More expensive (more processing required)
+- ❌ HTTP/HTTPS only (not for other protocols)
+- ❌ Doesn't preserve client IP (uses X-Forwarded-For header)</p>
+<h4 id="3-classic-load-balancer-clb-layer-4-7">3. Classic Load Balancer (CLB) - Layer 4 &amp; 7</h4>
+<p><strong>Description:</strong>
+- Legacy load balancer type (AWS specific, but concept exists elsewhere)
+- Can operate at both Layer 4 and Layer 7
+- Basic load balancing across EC2 instances
+- Being replaced by NLB and ALB in modern architectures</p>
+<p><strong>Characteristics:</strong>
+- Simple round-robin or least-connections routing
+- Basic health checks
+- SSL termination support
+- Less features than ALB/NLB</p>
+<p><strong>Use Cases:</strong>
+- Legacy applications
+- Simple load balancing needs
+- When migrating from older infrastructure</p>
+<p><strong>Status:</strong>
+- AWS recommends migrating to ALB or NLB
+- Not recommended for new deployments</p>
+<h4 id="4-gateway-load-balancer-gwlb">4. Gateway Load Balancer (GWLB)</h4>
+<p><strong>Description:</strong>
+- Operates at Layer 3 (Network Layer)
+- Designed for deploying, scaling, and managing third-party virtual appliances
+- Combines transparent network gateway + load balancer</p>
+<p><strong>How it works:</strong>
+1. Traffic enters GWLB
+2. Distributes traffic to fleet of virtual appliances (firewalls, IDS/IPS)
+3. Appliances inspect/process traffic
+4. GWLB returns traffic to original flow</p>
+<p><strong>Use Cases:</strong>
+- Deploy firewalls, IDS/IPS, DPI tools at scale
+- Network security appliances
+- Traffic inspection and monitoring</p>
+<p><strong>Examples:</strong>
+- AWS Gateway Load Balancer
+- Used with Palo Alto, Fortinet, Check Point appliances</p>
+<h4 id="5-global-load-balancer-gslb">5. Global Load Balancer (GSLB)</h4>
+<p><strong>Description:</strong>
+- DNS-based load balancing across geographic regions
+- Routes users to nearest or best-performing data center
+- Disaster recovery and multi-region failover</p>
+<p><strong>How it works:</strong>
+1. User queries DNS for <code>www.example.com</code>
+2. GSLB returns IP of nearest/healthiest data center
+3. User connects to that data center
+4. Local load balancer distributes within data center</p>
+<p><strong>Use Cases:</strong>
+- Multi-region deployments
+- Global applications
+- Disaster recovery
+- Geographic traffic steering</p>
+<p><strong>Examples:</strong>
+- AWS Route 53 with health checks
+- Azure Traffic Manager
+- Google Cloud Global Load Balancer
+- Cloudflare Load Balancing
+- F5 BIG-IP DNS</p>
+<p><strong>Advantages:</strong>
+- ✅ Geographic distribution
+- ✅ Disaster recovery
+- ✅ Reduced latency (route to nearest region)
+- ✅ Cross-region failover</p>
+<p><strong>Disadvantages:</strong>
+- ❌ DNS caching can delay failover
+- ❌ Less granular than application-level LB
+- ❌ Depends on DNS TTL</p>
+<h3 id="comparison-nlb-vs-alb">Comparison: NLB vs ALB</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Network LB (L4)</th>
+<th>Application LB (L7)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Layer</strong></td>
+<td>Transport (Layer 4)</td>
+<td>Application (Layer 7)</td>
+</tr>
+<tr>
+<td><strong>Protocols</strong></td>
+<td>TCP, UDP, TLS</td>
+<td>HTTP, HTTPS, HTTP/2, WebSocket</td>
+</tr>
+<tr>
+<td><strong>Routing</strong></td>
+<td>IP + Port</td>
+<td>URL, headers, cookies, query params</td>
+</tr>
+<tr>
+<td><strong>Performance</strong></td>
+<td>Ultra-high (millions RPS)</td>
+<td>High (thousands RPS)</td>
+</tr>
+<tr>
+<td><strong>Latency</strong></td>
+<td>Microseconds</td>
+<td>Milliseconds</td>
+</tr>
+<tr>
+<td><strong>SSL Termination</strong></td>
+<td>TLS passthrough</td>
+<td>Full SSL offloading</td>
+</tr>
+<tr>
+<td><strong>Sticky Sessions</strong></td>
+<td>IP-based</td>
+<td>Cookie-based</td>
+</tr>
+<tr>
+<td><strong>Health Checks</strong></td>
+<td>TCP/UDP ping</td>
+<td>HTTP status codes, response content</td>
+</tr>
+<tr>
+<td><strong>Client IP</strong></td>
+<td>Preserved</td>
+<td>Via X-Forwarded-For header</td>
+</tr>
+<tr>
+<td><strong>Use Cases</strong></td>
+<td>Gaming, IoT, databases</td>
+<td>Web apps, microservices, APIs</td>
+</tr>
+<tr>
+<td><strong>Cost</strong></td>
+<td>Lower</td>
+<td>Higher</td>
+</tr>
+</tbody>
+</table>
+<p><strong>When to use NLB:</strong>
+- Need extreme performance (millions of connections)
+- Non-HTTP protocols
+- Require static IP
+- Minimal latency critical
+- Preserve source IP address</p>
+<p><strong>When to use ALB:</strong>
+- HTTP/HTTPS applications
+- Microservices architecture
+- Content-based routing needed
+- SSL termination required
+- Modern web applications</p>
+<p><strong>Load Balancing Algorithms:</strong></p>
+<p>Load balancing algorithms determine how traffic is distributed across backend servers. They fall into two categories: <strong>Static</strong> (predetermined logic) and <strong>Dynamic</strong> (runtime decisions based on server state).</p>
+<h3 id="static-load-balancing-algorithms">Static Load Balancing Algorithms</h3>
+<p>Static algorithms use predetermined logic without considering current server state or load.</p>
+<h4 id="1-round-robin">1. Round Robin</h4>
+<p><strong>How it works:</strong>
+- Distributes requests sequentially across all servers in circular order
+- Server 1 → Server 2 → Server 3 → Server 1 → Server 2...
+- Maintains a pointer to track the next server</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Request 1 → Server A
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Request 2 → Server B
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>Request 3 → Server C
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>Request 4 → Server A
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>Request 5 → Server B
+</code></pre></div></p>
+<p><strong>Best for:</strong>
+- Servers with identical specifications
+- Requests with similar processing time
+- Simple, predictable distribution</p>
+<p><strong>Advantages:</strong>
+- ✅ Simple to implement
+- ✅ Equal distribution across servers
+- ✅ No complex calculations needed
+- ✅ Predictable behavior
+- ✅ Works well with identical servers</p>
+<p><strong>Disadvantages:</strong>
+- ❌ Doesn't consider server capacity differences
+- ❌ Ignores current server load
+- ❌ Can overload slower servers
+- ❌ No consideration for request complexity
+- ❌ Poor for heterogeneous server environments
+- ❌ Doesn't handle server failures well initially</p>
+<p><strong>Use Case:</strong>
+- Homogeneous server cluster with similar request patterns
+- Stateless applications
+- When simplicity is priority</p>
+<h4 id="2-weighted-round-robin">2. Weighted Round Robin</h4>
+<p><strong>How it works:</strong>
+- Assigns weight to each server based on capacity
+- Higher weight = receives more requests
+- Server with weight 3 receives 3x more traffic than server with weight 1</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Server A: weight = 3
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>Server B: weight = 2
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>Server C: weight = 1
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>Distribution:
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>Request 1 → Server A
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>Request 2 → Server A
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>Request 3 → Server A
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>Request 4 → Server B
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>Request 5 → Server B
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>Request 6 → Server C
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>(Then repeats)
+</code></pre></div></p>
+<p><strong>Best for:</strong>
+- Servers with different capacities (CPU, RAM, network)
+- Heterogeneous infrastructure
+- Gradual server rollouts (new server gets low weight initially)</p>
+<p><strong>Advantages:</strong>
+- ✅ Handles servers with different capacities
+- ✅ Better utilization of powerful servers
+- ✅ Can phase in new servers gradually
+- ✅ Simple to configure and understand
+- ✅ Predictable distribution based on weights</p>
+<p><strong>Disadvantages:</strong>
+- ❌ Requires manual weight configuration
+- ❌ Doesn't adapt to runtime conditions
+- ❌ Weights may become outdated as server performance changes
+- ❌ Doesn't consider current server load
+- ❌ Still distributes requests even if server is overloaded</p>
+<p><strong>Use Case:</strong>
+- Mixed server environment (e.g., some servers with 16GB RAM, others with 32GB)
+- Blue-green deployments (old version weight=1, new version weight=9)
+- Canary releases</p>
+<h4 id="3-ip-hash-source-ip-hash">3. IP Hash (Source IP Hash)</h4>
+<p><strong>How it works:</strong>
+- Hashes client's IP address to determine which server handles request
+- Same client always routed to same server (session persistence)
+- Hash function: <code>hash(client_IP) % number_of_servers</code></p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Client IP: 192.168.1.100 → hash() → Server A
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>Client IP: 192.168.1.101 → hash() → Server C
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>Client IP: 192.168.1.102 → hash() → Server B
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>All future requests from 192.168.1.100 go to Server A
+</code></pre></div></p>
+<p><strong>Best for:</strong>
+- Session persistence without cookies
+- Stateful applications
+- Applications with server-side caching per user</p>
+<p><strong>Advantages:</strong>
+- ✅ Session persistence (no need for sticky sessions configuration)
+- ✅ Simple implementation
+- ✅ No session store required
+- ✅ Good for applications with user-specific server state
+- ✅ Deterministic routing</p>
+<p><strong>Disadvantages:</strong>
+- ❌ Uneven distribution if client IPs are not uniformly distributed
+- ❌ Adding/removing servers changes hash distribution (session loss)
+- ❌ Doesn't consider server load
+- ❌ Multiple users behind same NAT go to same server
+- ❌ No failover for user's designated server
+- ❌ Can create hotspots if many users share IP range</p>
+<p><strong>Use Case:</strong>
+- Shopping carts stored in server memory
+- WebSocket connections requiring persistent connections
+- Applications with server-side user sessions</p>
+<h4 id="4-url-hash">4. URL Hash</h4>
+<p><strong>How it works:</strong>
+- Hashes the requested URL to determine server
+- Same URL always goes to same server
+- Enables effective caching per server</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>URL: /images/logo.png → hash() → Server A
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>URL: /api/users → hash() → Server B
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>URL: /static/style.css → hash() → Server C
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>All requests for logo.png go to Server A (cached there)
+</code></pre></div></p>
+<p><strong>Best for:</strong>
+- Cache optimization
+- Content-based distribution
+- CDN origin selection</p>
+<p><strong>Advantages:</strong>
+- ✅ Maximizes cache hit ratio
+- ✅ Same content always on same server
+- ✅ Reduces redundant caching across servers
+- ✅ Good for content servers</p>
+<p><strong>Disadvantages:</strong>
+- ❌ Can create uneven load distribution
+- ❌ Popular URLs create hotspots
+- ❌ Adding/removing servers disrupts caching
+- ❌ Not suitable for dynamic content</p>
+<p><strong>Use Case:</strong>
+- Proxy caching servers
+- Static content distribution
+- CDN origin server selection</p>
+<h3 id="dynamic-load-balancing-algorithms">Dynamic Load Balancing Algorithms</h3>
+<p>Dynamic algorithms make real-time decisions based on current server state and performance metrics.</p>
+<h4 id="1-least-connections">1. Least Connections</h4>
+<p><strong>How it works:</strong>
+- Tracks active connections to each server
+- Routes new request to server with fewest active connections
+- Updates connection count as connections are established/closed</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Server A: 5 active connections
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>Server B: 3 active connections  ← New request goes here
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>Server C: 7 active connections
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>Next request goes to server with least connections at that moment
+</code></pre></div></p>
+<p><strong>Best for:</strong>
+- Requests with varying processing times
+- Long-lived connections (WebSockets, SSE)
+- Heterogeneous request complexity</p>
+<p><strong>Advantages:</strong>
+- ✅ Better distribution than round-robin for variable request times
+- ✅ Prevents overloading servers with long requests
+- ✅ Adapts to server performance automatically
+- ✅ Good for applications with mixed quick/slow requests
+- ✅ Real-time load awareness</p>
+<p><strong>Disadvantages:</strong>
+- ❌ More complex than static algorithms
+- ❌ Requires connection tracking overhead
+- ❌ Doesn't consider request complexity (1 heavy request = 1 light request)
+- ❌ Connection count doesn't always reflect actual load
+- ❌ May not work well if all requests are very short</p>
+<p><strong>Use Case:</strong>
+- Chat applications (long-lived WebSocket connections)
+- Streaming services
+- Database connection pooling
+- Applications with mixed request durations</p>
+<h4 id="2-weighted-least-connections">2. Weighted Least Connections</h4>
+<p><strong>How it works:</strong>
+- Combines server weights with connection counts
+- Routes to server with lowest ratio of <code>(current_connections / weight)</code>
+- Accounts for both capacity and current load</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Server A: 10 connections, weight = 3 → ratio = 10/3 = 3.33
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>Server B: 5 connections, weight = 2  → ratio = 5/2 = 2.50  ← New request
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>Server C: 8 connections, weight = 1  → ratio = 8/1 = 8.00
+</code></pre></div></p>
+<p><strong>Advantages:</strong>
+- ✅ Combines benefits of weighted round-robin and least connections
+- ✅ Handles heterogeneous servers with varying loads
+- ✅ Better than least connections for different server capacities
+- ✅ Adaptive to both static capacity and runtime load</p>
+<p><strong>Disadvantages:</strong>
+- ❌ Requires weight configuration
+- ❌ More complex tracking
+- ❌ Still doesn't measure actual CPU/memory usage</p>
+<p><strong>Use Case:</strong>
+- Mixed server environments with variable request durations</p>
+<h4 id="3-least-response-time-least-latency">3. Least Response Time (Least Latency)</h4>
+<p><strong>How it works:</strong>
+- Monitors response time from each server
+- Routes to server with fastest average response time
+- May combine response time with active connections</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Server A: avg response = 50ms, 5 connections
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>Server B: avg response = 30ms, 8 connections  ← New request (fastest)
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>Server C: avg response = 80ms, 3 connections
+</code></pre></div></p>
+<p><strong>Best for:</strong>
+- Geographically distributed servers
+- Servers with varying performance
+- Applications where latency is critical</p>
+<p><strong>Advantages:</strong>
+- ✅ Routes to fastest/healthiest server
+- ✅ Automatically detects server performance issues
+- ✅ Excellent user experience (lowest latency)
+- ✅ Geographic optimization
+- ✅ Adapts to network conditions</p>
+<p><strong>Disadvantages:</strong>
+- ❌ Requires continuous response time monitoring
+- ❌ Higher overhead (tracking and calculations)
+- ❌ Can create positive feedback loop (fast server gets more traffic, becomes slow)
+- ❌ Sensitive to temporary spikes
+- ❌ May need smoothing algorithms to prevent oscillation</p>
+<p><strong>Use Case:</strong>
+- Multi-region deployments
+- CDN origin selection
+- Real-time applications requiring low latency</p>
+<h4 id="4-resource-based-adaptive-load-based">4. Resource-Based (Adaptive / Load-Based)</h4>
+<p><strong>How it works:</strong>
+- Monitors actual server resources: CPU, memory, disk I/O, network
+- Routes to server with most available resources
+- Requires agent or monitoring system on each server</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>Server A: CPU 80%, Memory 60%, Score = Low
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>Server B: CPU 40%, Memory 30%, Score = High  ← New request
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>Server C: CPU 70%, Memory 85%, Score = Low
+</code></pre></div></p>
+<p><strong>Best for:</strong>
+- Compute-intensive applications
+- Servers with varying workload types
+- Cloud environments with auto-scaling</p>
+<p><strong>Advantages:</strong>
+- ✅ Most accurate representation of server load
+- ✅ Prevents resource exhaustion
+- ✅ Works well for diverse workload types
+- ✅ Can consider multiple metrics (CPU, memory, custom)
+- ✅ Best for complex applications</p>
+<p><strong>Disadvantages:</strong>
+- ❌ Most complex to implement
+- ❌ Requires monitoring agents on servers
+- ❌ Higher overhead
+- ❌ Latency in metric collection
+- ❌ Requires careful tuning of metrics and thresholds</p>
+<p><strong>Use Case:</strong>
+- Video encoding servers (CPU-intensive)
+- Data processing pipelines
+- Machine learning inference servers
+- Batch processing systems</p>
+<h4 id="5-least-bandwidth">5. Least Bandwidth</h4>
+<p><strong>How it works:</strong>
+- Tracks bandwidth usage per server
+- Routes to server consuming least bandwidth (Mbps)
+- Good for content delivery</p>
+<p><strong>Advantages:</strong>
+- ✅ Optimizes network utilization
+- ✅ Good for bandwidth-constrained environments
+- ✅ Prevents network saturation</p>
+<p><strong>Disadvantages:</strong>
+- ❌ Requires bandwidth monitoring
+- ❌ Doesn't reflect server CPU/memory load
+- ❌ Less common in modern deployments</p>
+<p><strong>Use Case:</strong>
+- Video/media streaming
+- Large file downloads
+- Bandwidth-limited servers</p>
+<h4 id="6-random">6. Random</h4>
+<p><strong>How it works:</strong>
+- Selects server randomly
+- Simple probabilistic distribution</p>
+<p><strong>Advantages:</strong>
+- ✅ Extremely simple
+- ✅ No state tracking
+- ✅ Works well with large server pools</p>
+<p><strong>Disadvantages:</strong>
+- ❌ No load awareness
+- ❌ Uneven distribution possible
+- ❌ Not optimal for most use cases</p>
+<p><strong>Use Case:</strong>
+- Large, homogeneous server pools
+- Stateless microservices with auto-scaling</p>
+<h3 id="algorithm-selection-guide">Algorithm Selection Guide</h3>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Recommended Algorithm</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Identical servers, simple requests</td>
+<td>Round Robin</td>
+<td>Simple, equal distribution</td>
+</tr>
+<tr>
+<td>Different server capacities</td>
+<td>Weighted Round Robin</td>
+<td>Accounts for capacity differences</td>
+</tr>
+<tr>
+<td>Session persistence needed</td>
+<td>IP Hash</td>
+<td>Maintains user-server affinity</td>
+</tr>
+<tr>
+<td>Long-lived connections</td>
+<td>Least Connections</td>
+<td>Prevents connection buildup</td>
+</tr>
+<tr>
+<td>Variable request complexity</td>
+<td>Least Connections</td>
+<td>Adapts to request duration</td>
+</tr>
+<tr>
+<td>Different servers + variable load</td>
+<td>Weighted Least Connections</td>
+<td>Best of both worlds</td>
+</tr>
+<tr>
+<td>Latency-critical applications</td>
+<td>Least Response Time</td>
+<td>Routes to fastest server</td>
+</tr>
+<tr>
+<td>CPU/memory-intensive work</td>
+<td>Resource-Based</td>
+<td>Monitors actual resource usage</td>
+</tr>
+<tr>
+<td>Multi-region deployment</td>
+<td>Least Response Time / GSLB</td>
+<td>Geographic optimization</td>
+</tr>
+<tr>
+<td>Content caching</td>
+<td>URL Hash</td>
+<td>Maximizes cache hits</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Layers of Load Balancing:</strong>
+- <strong>Layer 4 (Transport)</strong>: Operates at TCP/UDP level, routes based on IP and port
+- <strong>Layer 7 (Application)</strong>: Operates at HTTP level, routes based on content, headers, cookies</p>
+<p><strong>Use Cases:</strong>
+- Distribute traffic across multiple servers
+- Ensure high availability through redundancy
+- Enable horizontal scaling
+- Perform health checks and remove failed servers
+- Implement session persistence (sticky sessions)</p>
+<p><strong>Example Tools:</strong>
+- HAProxy
+- Nginx
+- AWS ELB/ALB/NLB
+- Google Cloud Load Balancing
+- F5 BIG-IP
+- Envoy
+- Traefik</p>
+<p><strong>Connection to Other Concepts:</strong>
+- <strong>Type of Reverse Proxy</strong>: Load balancer is a specialized reverse proxy focused on distribution
+- <strong>Different from Reverse Proxy</strong>: Load balancer specifically focuses on distributing load; reverse proxy has broader capabilities
+- <strong>Can be used instead of</strong>: Simple reverse proxy when you need traffic distribution
+- <strong>Works with</strong>: CDN (load balancing can happen at CDN edge), Firewall (for security)</p>
+<h3 id="cdn-content-delivery-network">CDN (Content Delivery Network)</h3>
+<p>A CDN is a geographically distributed network of proxy servers and data centers that deliver content to users based on their geographic location, ensuring faster content delivery and reduced latency.</p>
+<p><strong>How it works:</strong>
+1. Origin server stores the original content
+2. CDN caches content at multiple edge locations worldwide
+3. Client request is routed to nearest edge server
+4. Edge server serves cached content (if available) or fetches from origin
+5. Content is cached at edge for future requests</p>
+<p><strong>Components:</strong>
+- <strong>Origin Server</strong>: The source of truth for content
+- <strong>Edge Servers</strong>: Distributed servers that cache content
+- <strong>PoP (Point of Presence)</strong>: Physical locations of edge servers</p>
+<p><strong>Use Cases:</strong>
+- Deliver static content (images, CSS, JavaScript)
+- Stream video/audio content
+- Reduce origin server load
+- Improve website performance globally
+- DDoS protection through distributed architecture
+- Handle traffic spikes</p>
+<p><strong>Example Tools/Services:</strong>
+- Cloudflare
+- AWS CloudFront
+- Akamai
+- Fastly
+- Azure CDN
+- Google Cloud CDN</p>
+<p><strong>Connection to Other Concepts:</strong>
+- <strong>Uses Reverse Proxy</strong>: Each edge server is a reverse proxy
+- <strong>Different from Load Balancer</strong>: CDN focuses on geographic distribution and caching; load balancer focuses on traffic distribution across servers in same location
+- <strong>Can replace</strong>: Load balancer for static content delivery
+- <strong>Works with</strong>: Load balancer (CDN for static, LB for dynamic content)
+- <strong>Includes</strong>: Caching, which reverse proxies can also do</p>
+<h3 id="vpn-virtual-private-network">VPN (Virtual Private Network)</h3>
+<p>A VPN creates a secure, encrypted tunnel between client and server (or network), ensuring privacy and security of data transmission over public networks.</p>
+<p><strong>How it works:</strong>
+1. Client initiates VPN connection to VPN server
+2. Encrypted tunnel is established
+3. All client traffic is routed through this tunnel
+4. VPN server forwards traffic to destination
+5. Responses return through the encrypted tunnel</p>
+<p><strong>Types:</strong>
+- <strong>Remote Access VPN</strong>: Individual users connect to corporate network
+- <strong>Site-to-Site VPN</strong>: Connect entire networks (e.g., office branches)
+- <strong>SSL/TLS VPN</strong>: Browser-based VPN access
+- <strong>IPSec VPN</strong>: Protocol-level encryption for network traffic</p>
+<p><strong>Use Cases:</strong>
+- Secure remote access to corporate resources
+- Encrypt internet traffic on public WiFi
+- Bypass geo-restrictions and censorship
+- Hide IP address and location
+- Connect multiple office locations securely</p>
+<p><strong>Example Tools:</strong>
+- OpenVPN
+- WireGuard
+- Cisco AnyConnect
+- IPSec
+- PPTP/L2TP</p>
+<p><strong>Connection to Other Concepts:</strong>
+- <strong>Different from Forward Proxy</strong>: VPN encrypts ALL traffic at network layer; forward proxy works at application layer without encryption
+- <strong>Different from Reverse Proxy</strong>: VPN focuses on secure tunneling; reverse proxy on request forwarding
+- <strong>Can be used instead of</strong>: Forward proxy when encryption and privacy are critical
+- <strong>Similar to</strong>: SSH tunneling (both create encrypted tunnels)
+- <strong>Works with</strong>: Firewall (VPN often integrated with firewall policies)</p>
+<h3 id="firewall">Firewall</h3>
+<p>A firewall is a network security system that monitors and controls incoming and outgoing network traffic based on predetermined security rules, acting as a barrier between trusted and untrusted networks.</p>
+<p><strong>How it works:</strong>
+1. Traffic attempts to enter or leave the network
+2. Firewall examines packets against configured rules
+3. Allowed traffic passes through; blocked traffic is denied
+4. Logs security events for monitoring</p>
+<p><strong>Types:</strong>
+- <strong>Packet Filtering Firewall</strong>: Examines packets in isolation based on IP, port, protocol
+- <strong>Stateful Inspection Firewall</strong>: Tracks connection state, examines packet context
+- <strong>Application Layer Firewall (WAF)</strong>: Inspects application-level data (HTTP, FTP)
+- <strong>Next-Generation Firewall (NGFW)</strong>: Deep packet inspection, IPS, application awareness
+- <strong>Proxy Firewall</strong>: Acts as intermediary, no direct connection between networks</p>
+<p><strong>Levels:</strong>
+- <strong>Network Firewall</strong>: Protects entire network perimeter
+- <strong>Host-based Firewall</strong>: Protects individual devices
+- <strong>Cloud Firewall</strong>: Protects cloud infrastructure</p>
+<p><strong>Use Cases:</strong>
+- Block unauthorized access
+- Filter malicious traffic
+- Implement security policies
+- Segment network zones
+- Prevent data exfiltration
+- Comply with security regulations</p>
+<p><strong>Example Tools:</strong>
+- iptables/nftables (Linux)
+- pfSense
+- Cisco ASA
+- Palo Alto Networks
+- Fortinet FortiGate
+- AWS Security Groups
+- Azure Firewall</p>
+<p><strong>Connection to Other Concepts:</strong>
+- <strong>Can include Proxy</strong>: Proxy firewalls combine both technologies
+- <strong>Different from Proxy</strong>: Firewall focuses on security rules; proxy on request forwarding
+- <strong>Works with</strong>: Load balancers, reverse proxies (deployed in layers)
+- <strong>Can be used with</strong>: VPN (firewall rules control VPN access)
+- <strong>Different from WAF</strong>: Traditional firewall works at network layer; WAF at application layer</p>
+<h2 id="comparison-summary">Comparison Summary</h2>
+<h3 id="key-differences">Key Differences</h3>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Primary Purpose</th>
+<th>Layer</th>
+<th>Direction</th>
+<th>Client Awareness</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Forward Proxy</td>
+<td>Protect clients, control access</td>
+<td>Application (L7)</td>
+<td>Client → Internet</td>
+<td>Client configured</td>
+</tr>
+<tr>
+<td>Reverse Proxy</td>
+<td>Protect servers, optimize delivery</td>
+<td>Application (L7)</td>
+<td>Internet → Servers</td>
+<td>Transparent to client</td>
+</tr>
+<tr>
+<td>Load Balancer</td>
+<td>Distribute traffic</td>
+<td>L4 or L7</td>
+<td>Internet → Servers</td>
+<td>Transparent to client</td>
+</tr>
+<tr>
+<td>CDN</td>
+<td>Geographic content delivery</td>
+<td>Application (L7)</td>
+<td>Internet → Edge Servers</td>
+<td>Transparent to client</td>
+</tr>
+<tr>
+<td>VPN</td>
+<td>Secure encrypted tunnel</td>
+<td>Network (L3)</td>
+<td>Bidirectional</td>
+<td>Client configured</td>
+</tr>
+<tr>
+<td>Firewall</td>
+<td>Security filtering</td>
+<td>L3-L7</td>
+<td>Bidirectional</td>
+<td>Transparent</td>
+</tr>
+</tbody>
+</table>
+<h3 id="when-to-use-what">When to Use What</h3>
+<p><strong>Use Forward Proxy when:</strong>
+- You need to control outbound traffic
+- You want to cache external content
+- You need to provide anonymity for clients
+- You want to filter employee internet access</p>
+<p><strong>Use Reverse Proxy when:</strong>
+- You need to hide backend infrastructure
+- You want to handle SSL termination
+- You need request routing based on content
+- You want to cache responses from backend</p>
+<p><strong>Use Load Balancer when:</strong>
+- You have multiple servers handling same service
+- You need high availability and fault tolerance
+- You want to scale horizontally
+- You need session persistence</p>
+<p><strong>Use CDN when:</strong>
+- You serve content to global audience
+- You have large amounts of static content
+- You need to reduce origin server load
+- You want to improve page load times</p>
+<p><strong>Use VPN when:</strong>
+- You need secure remote access
+- You want to encrypt all traffic
+- You need to connect remote offices
+- Privacy and security are top priorities</p>
+<p><strong>Use Firewall when:</strong>
+- You need to enforce security policies
+- You want to block unauthorized access
+- You need to segment your network
+- Compliance requires traffic filtering</p>
+<h3 id="can-be-used-as-alternatives">Can Be Used As Alternatives</h3>
+<ol>
+<li><strong>Load Balancer ↔ Reverse Proxy</strong>: For simple traffic distribution, reverse proxy can replace load balancer</li>
+<li><strong>Forward Proxy ↔ VPN</strong>: For basic anonymity, but VPN provides encryption</li>
+<li><strong>CDN ↔ Reverse Proxy with Caching</strong>: For local deployments, reverse proxy can cache like CDN</li>
+<li><strong>Firewall ↔ Proxy</strong>: Application-layer proxy can provide some firewall functionality</li>
+</ol>
+<h3 id="complementary-use-used-together">Complementary Use (Used Together)</h3>
+<ul>
+<li><strong>Firewall + Load Balancer</strong>: Firewall filters traffic before load balancer distributes it</li>
+<li><strong>CDN + Load Balancer</strong>: CDN handles static content, load balancer handles dynamic</li>
+<li><strong>Reverse Proxy + Firewall</strong>: Layered security and optimization</li>
+<li><strong>VPN + Firewall</strong>: Secure remote access with access control</li>
+<li><strong>Load Balancer + Reverse Proxy</strong>: Load balancer distributes, reverse proxy handles SSL/caching</li>
+</ul>
+<h2 id="osi-layer-analysis">OSI Layer Analysis</h2>
+<h3 id="application-layer-layer-7">Application Layer (Layer 7)</h3>
+<p>Components that operate at the application layer understand and can manipulate the content of requests/responses:</p>
+<p><strong>Forward Proxy:</strong>
+- <strong>Layer</strong>: Application Layer (L7)
+- <strong>How</strong>: Interprets HTTP/HTTPS requests, understands URLs, headers, cookies
+- <strong>Capabilities</strong>: Can modify request headers, block specific URLs, authenticate users, cache based on content
+- <strong>Example</strong>: Squid proxy parsing HTTP requests, filtering based on URL patterns</p>
+<p><strong>Reverse Proxy:</strong>
+- <strong>Layer</strong>: Application Layer (L7)
+- <strong>How</strong>: Inspects HTTP requests, routes based on URL paths, headers, methods
+- <strong>Capabilities</strong>: SSL termination, URL rewriting, header manipulation, content-based routing
+- <strong>Example</strong>: Nginx routing <code>/api/*</code> to API servers and <code>/static/*</code> to static file servers</p>
+<p><strong>Layer 7 Load Balancer:</strong>
+- <strong>Layer</strong>: Application Layer (L7)
+- <strong>How</strong>: Deep packet inspection, understands HTTP/HTTPS, can read request content
+- <strong>Capabilities</strong>: Route based on URL, cookies, headers; sticky sessions based on cookies; advanced health checks
+- <strong>Example</strong>: AWS ALB routing based on URL path <code>/users/*</code> to user service, <code>/orders/*</code> to order service</p>
+<p><strong>CDN:</strong>
+- <strong>Layer</strong>: Application Layer (L7)
+- <strong>How</strong>: Understands HTTP/HTTPS, caches based on content type, headers (Cache-Control, ETag)
+- <strong>Capabilities</strong>: Smart caching, content compression, image optimization, HTTP/2 and HTTP/3 support
+- <strong>Example</strong>: CloudFlare caching static assets, respecting HTTP cache headers</p>
+<p><strong>Web Application Firewall (WAF):</strong>
+- <strong>Layer</strong>: Application Layer (L7)
+- <strong>How</strong>: Deep packet inspection, parses HTTP requests/responses, understands SQL, XSS patterns
+- <strong>Capabilities</strong>: SQL injection detection, XSS prevention, OWASP Top 10 protection
+- <strong>Example</strong>: AWS WAF inspecting POST body for malicious SQL patterns</p>
+<h3 id="networktransport-layer-layer-34">Network/Transport Layer (Layer 3/4)</h3>
+<p>Components that operate at network or transport layer work with IP addresses, ports, and protocols:</p>
+<p><strong>Layer 4 Load Balancer:</strong>
+- <strong>Layer</strong>: Transport Layer (L4)
+- <strong>How</strong>: Operates on TCP/UDP packets, routes based on IP address and port
+- <strong>Capabilities</strong>: Faster than L7 (no content inspection), lower latency, protocol-agnostic
+- <strong>Example</strong>: AWS NLB routing TCP connections on port 443 without inspecting HTTPS content</p>
+<p><strong>VPN:</strong>
+- <strong>Layer</strong>: Network Layer (L3) - primarily, can also use L4
+- <strong>How</strong>: Encapsulates IP packets, creates encrypted tunnels at IP level
+- <strong>Types by Layer</strong>:
+  - IPSec VPN: Layer 3 (Network)
+  - OpenVPN: Can use Layer 3 (tun) or Layer 2 (tap)
+  - WireGuard: Layer 3
+- <strong>Capabilities</strong>: Encrypts all traffic regardless of protocol, routes entire network segments
+- <strong>Example</strong>: IPSec encrypting IP packets, creating site-to-site tunnels</p>
+<p><strong>Traditional Firewall (Packet Filter):</strong>
+- <strong>Layer</strong>: Network (L3) and Transport (L4)
+- <strong>How</strong>: Inspects IP headers (source/dest IP) and TCP/UDP headers (ports)
+- <strong>Capabilities</strong>: Fast filtering based on IP, port, protocol; maintains connection state
+- <strong>Example</strong>: iptables blocking incoming traffic on port 22 from specific IP ranges</p>
+<p><strong>Stateful Firewall:</strong>
+- <strong>Layer</strong>: Network (L3) and Transport (L4)
+- <strong>How</strong>: Tracks TCP connection states (SYN, ACK, FIN), maintains session tables
+- <strong>Capabilities</strong>: Understands connection lifecycle, prevents half-open attacks, allows return traffic
+- <strong>Example</strong>: pfSense tracking established connections, auto-allowing response packets</p>
+<h3 id="both-application-and-network-layer">Both Application and Network Layer</h3>
+<p><strong>Next-Generation Firewall (NGFW):</strong>
+- <strong>Layers</strong>: L3, L4, and L7
+- <strong>How</strong>: Multi-layer inspection - packet headers, connection state, AND application content
+- <strong>Capabilities</strong>: IPS/IDS, application awareness, user identity, malware detection
+- <strong>Example</strong>: Palo Alto firewall identifying and blocking BitTorrent traffic regardless of port</p>
+<p><strong>Advanced Load Balancers:</strong>
+- <strong>Layers</strong>: Can operate at both L4 and L7
+- <strong>How</strong>: HAProxy, F5 can do simple L4 routing or deep L7 inspection based on configuration
+- <strong>Capabilities</strong>: Flexibility to choose performance (L4) vs features (L7)
+- <strong>Example</strong>: HAProxy using L4 mode for high-throughput video streaming, L7 for API routing</p>
+<h2 id="packet-level-operations">Packet-Level Operations</h2>
+<h3 id="components-working-at-packet-level">Components Working at Packet Level</h3>
+<p><strong>Packet Filtering Firewall:</strong>
+- <strong>Operation</strong>: Examines each packet individually
+- <strong>What it sees</strong>: IP header (source IP, dest IP, protocol), TCP/UDP header (ports, flags)
+- <strong>Decisions</strong>: Allow/deny based on rules matching packet attributes
+- <strong>Limitation</strong>: No context about connection state or application data
+- <strong>Example</strong>: Blocking all packets from IP 192.168.1.100 to port 3389 (RDP)</p>
+<p><strong>Stateful Firewall:</strong>
+- <strong>Operation</strong>: Examines packets AND tracks connection state
+- <strong>What it maintains</strong>: Connection table (5-tuple: src IP, src port, dst IP, dst port, protocol)
+- <strong>State Tracking</strong>: NEW, ESTABLISHED, RELATED, INVALID states
+- <strong>Advantage</strong>: Allows return traffic automatically, detects anomalies
+- <strong>Example</strong>: Allowing outbound HTTPS (NEW), auto-allowing return packets (ESTABLISHED)</p>
+<p><strong>Layer 4 Load Balancer:</strong>
+- <strong>Operation</strong>: Examines IP and TCP/UDP headers of packets
+- <strong>Packet Modification</strong>: Changes destination IP (from LB IP to backend server IP), maintains source IP or uses NAT
+- <strong>Session Tracking</strong>: Ensures all packets from same connection go to same backend server
+- <strong>Performance</strong>: Minimal packet inspection = high throughput
+- <strong>Example</strong>: AWS NLB forwarding TCP packets based on 5-tuple hash</p>
+<p><strong>VPN (IPSec):</strong>
+- <strong>Operation</strong>: Encapsulates and encrypts IP packets
+- <strong>Packet Structure</strong>:
+  - Original: <code>[IP Header][TCP Header][Data]</code>
+  - After IPSec: <code>[New IP Header][IPSec Header][Encrypted: IP Header + TCP Header + Data]</code>
+- <strong>Modes</strong>:
+  - <strong>Transport Mode</strong>: Encrypts only payload
+  - <strong>Tunnel Mode</strong>: Encrypts entire original packet
+- <strong>Example</strong>: Site-to-site VPN encrypting all packets between office networks</p>
+<p><strong>Deep Packet Inspection (DPI):</strong>
+- <strong>Who uses it</strong>: NGFW, WAF, IDS/IPS, some ISPs
+- <strong>Operation</strong>: Examines packet payload (actual data content), not just headers
+- <strong>What it finds</strong>: Malware signatures, protocol violations, encrypted traffic patterns, application types
+- <strong>Use cases</strong>: Detecting malware, identifying applications (Skype, BitTorrent), enforcing policies
+- <strong>Example</strong>: NGFW detecting SSH tunnel inside HTTPS traffic based on packet patterns</p>
+<h3 id="components-not-working-at-packet-level">Components NOT Working at Packet Level</h3>
+<p><strong>Application Layer Proxies (L7):</strong>
+- <strong>Operation</strong>: Terminates connections, works with complete HTTP requests/responses
+- <strong>What it sees</strong>: Full HTTP request with headers, body, cookies - NOT individual packets
+- <strong>Difference</strong>: Reassembles TCP stream into HTTP message before processing
+- <strong>Example</strong>: Nginx receives complete HTTP request, makes decisions, creates new request to backend</p>
+<p><strong>Layer 7 Load Balancer:</strong>
+- <strong>Operation</strong>: Processes complete HTTP requests, not packets
+- <strong>Buffer</strong>: Receives and buffers entire request before routing
+- <strong>Latency Trade-off</strong>: Slightly higher latency than L4, but enables content-based routing
+- <strong>Example</strong>: ALB waits for complete HTTP request to read URL path before routing</p>
+<h2 id="caching-capabilities">Caching Capabilities</h2>
+<h3 id="where-caching-is-achieved">Where Caching is Achieved</h3>
+<h4 id="1-forward-proxy-caching">1. Forward Proxy (✅ Caching)</h4>
+<p><strong>What is cached:</strong>
+- External website content (HTML, CSS, JS, images)
+- API responses from external services
+- Software packages, updates, downloads</p>
+<p><strong>How it works:</strong>
+- Client requests <code>example.com/image.jpg</code>
+- Proxy checks local cache for this URL
+- If cached and fresh: Returns cached copy (cache HIT)
+- If not cached or stale: Fetches from origin, stores in cache, returns to client (cache MISS)</p>
+<p><strong>Cache Validation:</strong>
+- <strong>TTL (Time To Live)</strong>: Cache for N seconds/minutes
+- <strong>HTTP Headers</strong>: Respects <code>Cache-Control</code>, <code>Expires</code>, <code>ETag</code>, <code>Last-Modified</code>
+- <strong>Revalidation</strong>: Asks origin "Is this still valid?" using <code>If-None-Match</code>, <code>If-Modified-Since</code></p>
+<p><strong>Benefits:</strong>
+- Reduced bandwidth usage (don't re-download same files)
+- Faster response for frequently accessed content
+- Reduced load on external servers</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Squid caching configuration:
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>- Cache all images for 7 days
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>- Cache CSS/JS for 24 hours
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>- Never cache dynamic content (URLs with query params)
+</code></pre></div></p>
+<p><strong>Use Case:</strong> Corporate proxy caching Windows updates - download once, serve to 1000 employees</p>
+<h4 id="2-reverse-proxy-caching">2. Reverse Proxy (✅ Caching)</h4>
+<p><strong>What is cached:</strong>
+- Static files (images, CSS, JS, fonts)
+- API responses (especially GET requests)
+- Rendered HTML pages
+- Database query results (application-level caching)</p>
+<p><strong>How it works:</strong>
+- Client requests <code>/api/products</code>
+- Reverse proxy checks cache for this endpoint
+- If cached: Returns immediately (backend not touched)
+- If not cached: Forwards to backend, caches response, returns to client</p>
+<p><strong>Cache Strategies:</strong>
+- <strong>Cache Key</strong>: URL, query params, headers (User-Agent, Accept-Language)
+- <strong>Cache Invalidation</strong>: Time-based (TTL), event-based (purge on update), LRU (Least Recently Used)
+- <strong>Selective Caching</strong>: Only cache GET requests, specific paths, or response codes (200, 301, 404)</p>
+<p><strong>Benefits:</strong>
+- Dramatically reduced backend load
+- Sub-millisecond response times for cached content
+- Better handling of traffic spikes</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Nginx caching configuration</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">proxy_cache_path</span><span class="w"> </span><span class="s">/var/cache/nginx</span><span class="w"> </span><span class="s">levels=1:2</span><span class="w"> </span><span class="s">keys_zone=my_cache:10m</span><span class="w"> </span><span class="s">max_size=1g</span><span class="p">;</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="k">proxy_cache</span><span class="w"> </span><span class="s">my_cache</span><span class="p">;</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="k">proxy_cache_valid</span><span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="s">1h</span><span class="p">;</span><span class="w">  </span><span class="c1"># Cache successful responses for 1 hour</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="k">proxy_cache_valid</span><span class="w"> </span><span class="mi">404</span><span class="w"> </span><span class="mi">5m</span><span class="p">;</span><span class="w">  </span><span class="c1"># Cache 404s for 5 minutes</span>
+</code></pre></div></p>
+<p><strong>Use Case:</strong> E-commerce site caching product images and static product details, reducing database queries by 90%</p>
+<h4 id="3-cdn-caching-primary-purpose">3. CDN (✅ Caching - Primary Purpose)</h4>
+<p><strong>What is cached:</strong>
+- Static assets (images, videos, CSS, JavaScript)
+- Downloadable files (PDFs, software installers)
+- Streaming media chunks
+- API responses (at edge locations)</p>
+<p><strong>How it works:</strong>
+- User in Tokyo requests <code>cdn.example.com/logo.png</code>
+- Request goes to nearest CDN edge server (Tokyo PoP)
+- Edge server checks local cache
+- If cached: Serves immediately (&lt; 10ms latency)
+- If not cached: Fetches from origin (or parent cache), stores locally, serves to user
+- Subsequent requests from Tokyo users served from edge cache</p>
+<p><strong>Cache Hierarchy:</strong>
+- <strong>Edge Servers</strong>: Closest to users, cache most popular content
+- <strong>Regional Caches</strong>: Mid-tier, cache less popular content
+- <strong>Origin Shield</strong>: Optional layer before origin, reduces origin load</p>
+<p><strong>Advanced Caching:</strong>
+- <strong>Geo-specific caching</strong>: Different content for different regions
+- <strong>Device-specific caching</strong>: Mobile vs desktop versions
+- <strong>Dynamic content caching</strong>: Cache personalized content with cache keys based on cookies/headers</p>
+<p><strong>Benefits:</strong>
+- Global performance - low latency worldwide
+- Massive bandwidth offload from origin (95%+ cache hit rates possible)
+- Handles traffic spikes (viral content)</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>CloudFlare Page Rules:
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>- Cache Everything for *.jpg, *.png, *.css (1 month TTL)
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>- Cache API responses for /api/public/* (5 minutes TTL)
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>- Bypass cache for /api/user/* (personalized data)
+</code></pre></div></p>
+<p><strong>Use Case:</strong> Netflix using CDN to cache movie chunks - origin serves each chunk once, CDN serves millions of times</p>
+<h4 id="4-load-balancer-limited-caching">4. Load Balancer (⚠️ Limited Caching)</h4>
+<p><strong>Layer 4 Load Balancer:</strong>
+- <strong>Caching</strong>: ❌ NO - only forwards packets, doesn't cache
+- <strong>Reason</strong>: Works at transport layer, doesn't see application content</p>
+<p><strong>Layer 7 Load Balancer:</strong>
+- <strong>Caching</strong>: ⚠️ POSSIBLE but not primary purpose
+- <strong>What can be cached</strong>: Similar to reverse proxy (static responses, API responses)
+- <strong>Reality</strong>: Most L7 LBs don't cache by default; use dedicated reverse proxy/CDN instead</p>
+<p><strong>Connection Caching (Different):</strong>
+- <strong>Persistent Connections</strong>: LB maintains connection pools to backend servers
+- <strong>Benefit</strong>: Reduces TCP handshake overhead for backend connections
+- <strong>Not content caching</strong>: Caches connections, not data</p>
+<p><strong>Example:</strong>
+- HAProxy: Primarily routes, but can be configured with caching using cache plugin
+- AWS ALB: No native caching (use CloudFront in front of ALB)
+- F5 BIG-IP: Advanced models have content caching feature</p>
+<p><strong>Recommendation:</strong> Use dedicated caching layer (reverse proxy or CDN) instead of relying on LB caching</p>
+<h4 id="5-vpn-no-caching">5. VPN (❌ NO Caching)</h4>
+<p><strong>Why no caching:</strong>
+- Operates at network layer (L3), doesn't understand application content
+- All traffic is encrypted - cannot inspect or cache
+- Purpose is secure tunnel, not performance optimization
+- Tunnels packets as-is without modification</p>
+<p><strong>Exception:</strong>
+- VPN concentrator might cache DNS responses
+- But not HTTP content or application data</p>
+<h4 id="6-firewall-no-caching-traditional">6. Firewall (❌ NO Caching - Traditional)</h4>
+<p><strong>Traditional Firewall:</strong>
+- <strong>Caching</strong>: ❌ NO
+- <strong>Reason</strong>: Filters packets based on rules, doesn't store content
+- <strong>Purpose</strong>: Security, not performance</p>
+<p><strong>Exception - Application Firewall/WAF:</strong>
+- <strong>Connection state caching</strong>: Maintains state tables (not content)
+- <strong>DNS caching</strong>: Some firewalls cache DNS responses
+- <strong>Not content caching</strong>: Doesn't cache HTTP responses or files</p>
+<p><strong>Next-Gen Firewall (NGFW):</strong>
+- <strong>Threat signature caching</strong>: Caches malware signatures, URL categories
+- <strong>Still not content caching</strong>: For security purposes only</p>
+<h3 id="caching-comparison-table">Caching Comparison Table</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Caches Content?</th>
+<th>What is Cached</th>
+<th>Cache Location</th>
+<th>Primary Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Forward Proxy</td>
+<td>✅ YES</td>
+<td>External content, downloads</td>
+<td>Proxy server</td>
+<td>Reduce outbound bandwidth</td>
+</tr>
+<tr>
+<td>Reverse Proxy</td>
+<td>✅ YES</td>
+<td>Static files, API responses</td>
+<td>Reverse proxy server</td>
+<td>Reduce backend load</td>
+</tr>
+<tr>
+<td>CDN</td>
+<td>✅ YES (Primary)</td>
+<td>Static assets, media</td>
+<td>Edge servers globally</td>
+<td>Global performance</td>
+</tr>
+<tr>
+<td>L4 Load Balancer</td>
+<td>❌ NO</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>Traffic distribution</td>
+</tr>
+<tr>
+<td>L7 Load Balancer</td>
+<td>⚠️ Limited</td>
+<td>Possible but uncommon</td>
+<td>LB server</td>
+<td>Traffic distribution</td>
+</tr>
+<tr>
+<td>VPN</td>
+<td>❌ NO</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>Secure tunnel</td>
+</tr>
+<tr>
+<td>Firewall</td>
+<td>❌ NO</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>Security filtering</td>
+</tr>
+<tr>
+<td>WAF</td>
+<td>❌ NO*</td>
+<td>*Only threat signatures</td>
+<td>WAF server</td>
+<td>Security</td>
+</tr>
+</tbody>
+</table>
+<h3 id="caching-strategy-recommendations">Caching Strategy Recommendations</h3>
+<p><strong>For Static Content Globally:</strong>
+- <strong>Use CDN</strong> - Purpose-built for this, best performance</p>
+<p><strong>For API Responses (Same Region):</strong>
+- <strong>Use Reverse Proxy</strong> - Nginx, Varnish, built-in app cache</p>
+<p><strong>For Corporate Outbound Traffic:</strong>
+- <strong>Use Forward Proxy</strong> - Squid, cache downloads and updates</p>
+<p><strong>For Dynamic Content:</strong>
+- <strong>Application-level caching</strong> - Redis, Memcached
+- <strong>Reverse proxy</strong> for rendered output</p>
+<p><strong>Don't Use for Caching:</strong>
+- Load balancers (use CDN/reverse proxy instead)
+- VPN (wrong purpose, encrypted traffic)
+- Firewalls (security focus, not performance)</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; 2025 <a href="https://github.com/abhishekghoshh"  target="_blank" rel="noopener">Abhishek Ghosh</a>
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/abhishekghoshh" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M202.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M496 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://x.com/abhishek_ghoshh" target="_blank" rel="noopener" title="x.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M459.4 151.7c.3 4.5.3 9.1.3 13.6 0 138.7-105.6 298.6-298.6 298.6-59.5 0-114.7-17.2-161.1-47.1 8.4 1 16.6 1.3 25.3 1.3 49.1 0 94.2-16.6 130.3-44.8-46.1-1-84.8-31.2-98.1-72.8 6.5 1 13 1.6 19.8 1.6 9.4 0 18.8-1.3 27.6-3.6-48.1-9.7-84.1-52-84.1-103v-1.3c14 7.8 30.2 12.7 47.4 13.3-28.3-18.8-46.8-51-46.8-87.4 0-19.5 5.2-37.4 14.3-53C87.4 130.8 165 172.4 252.1 176.9c-1.6-7.8-2.6-15.9-2.6-24C249.5 95.1 296.3 48 354.4 48c30.2 0 57.5 12.7 76.7 33.1 23.7-4.5 46.5-13.3 66.6-25.3-7.8 24.4-24.4 44.8-46.1 57.8 21.1-2.3 41.6-8.1 60.4-16.2-14.3 20.8-32.2 39.3-52.6 54.3"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/abhishek-ghosh-220679132/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
