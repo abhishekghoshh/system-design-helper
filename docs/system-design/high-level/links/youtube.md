@@ -2,7 +2,6 @@
 
 ## Short videos
 
-- [Backend Development Roadmap 2026: Zero to 100](https://www.youtube.com/watch?v=JYTfLCuq9cA)
 - [Why I focus on patterns instead of technologies](https://www.youtube.com/watch?v=F1tuoMobTfQ)
 - [Adding a cache is not as simple as it may seem...](https://www.youtube.com/watch?v=bFf-A27Rc9s)
 - [5 Types of Testing Software Every Developer Needs to Know!](https://www.youtube.com/watch?v=YaXJeUkBe4Y)
@@ -32,6 +31,7 @@
 
 - [Master Microservices & Event-Driven Architecture: Complete 6-Hour Guide for Beginners to Advanced](https://www.youtube.com/watch?v=FDjmWxETjn8)
 
+- [System Design Explained APIs, Databases, Caching, CDNs, Load Balancing & Production Infra](https://www.youtube.com/watch?v=Y-xBxnqaF4Y)
 - [System Design](https://www.youtube.com/playlist?list=PLi0P3bAJieri71WhnLs1esOCr27hpvFBZ)
 - [System Design for Beginners](https://www.youtube.com/watch?v=lFeYU31TnQ8)
 - [System Design Crash Course - Part 2](https://www.youtube.com/watch?v=YuB3OuF3MUE)
@@ -68,10 +68,18 @@
 - [ByteMonk](https://www.youtube.com/@ByteMonk/playlists)
 - [Arpit Bhayani](https://www.youtube.com/@AsliEngineering/playlists)
 - [Jordan has no life](https://www.youtube.com/@jordanhasnolife5163/playlists)
-- [Mehul - Codedamn](https://www.youtube.com/@codedamn/playlists)
 - [TechPrep](https://www.youtube.com/@TechPrepYT/playlists)
 - [Piyush Garg](https://www.youtube.com/@piyushgargdev/playlists)
 - [Exponent](https://www.youtube.com/@tryexponent/playlists)
+
+- [Mehul - Codedamn](https://www.youtube.com/@codedamn/playlists)
+    - [Backend 2026 Roadmap: Everything you need to know](https://www.youtube.com/watch?v=JYTfLCuq9cA)
+    - [Doing system design engineering like senior backend developers](https://www.youtube.com/watch?v=YLNfA_bqKDQ)
+    - [How to design APIs like a senior engineer](https://www.youtube.com/watch?v=rU2T0Y--LG4)
+    - [Web Application Firewall - Complete Guide](https://www.youtube.com/watch?v=-Q4fpgEUqfs)
+    - [You're using JWT the wrong way](https://www.youtube.com/watch?v=L3A-76OXJB8)
+
+
 
 
 ### Other Channels

@@ -13,3 +13,6 @@
 
 
 - [CORS Explained - Cross-Origin Resource Sharing](https://www.youtube.com/watch?v=WWnR4xptSRk)
+
+- [Understand Attacks: CSRF, XSS, CORS, SQL Injection with DEMO | Spring Security](https://www.youtube.com/watch?v=3pYioNIPj84)
+

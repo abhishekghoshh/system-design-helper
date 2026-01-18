@@ -6,6 +6,16 @@
 
 - [3. Microservices Design Patterns | Part1: Introduction and Decomposition Pattern | HLD](https://www.youtube.com/watch?v=l1OCmsBnQ3g)
 - [4. SAGA Pattern | Strangler Pattern | CQRS | Microservices Design Patterns | System Design](https://www.youtube.com/watch?v=qGlUKtjqaEQ)
+- [In How many Microservices we should divide Monolithic System | How Many Microservices are too many?](https://www.youtube.com/watch?v=NE_LPGHYrMc)
+
+
+
+- [Rate Limiter: Fault Tolerance in Distributed Microservices | Rate Limiter Implementation](https://www.youtube.com/watch?v=o9uCQHdh4DU)
+- [Bulkhead Pattern: Fault Tolerance in Distributed Microservices](https://www.youtube.com/watch?v=Ax0ycLJvvfc)
+- [Retry Pattern: Fault Tolerance in Distributed Microservices](https://www.youtube.com/watch?v=oOFnyUpUDtg)
+- [Circuit Breaker : Fault Tolerance in Distributed Microservices](https://www.youtube.com/watch?v=_kCWAf8kEYI)
+
+
 
 
 

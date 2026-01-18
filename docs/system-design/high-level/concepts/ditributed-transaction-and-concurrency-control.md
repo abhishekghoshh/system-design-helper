@@ -6,6 +6,7 @@
 - [20. Handle Distributed Transactions | Two-Phase Commit (2PC), Three-Phase Commit (3PC), SAGA Pattern](https://www.youtube.com/watch?v=ET_DnJgfplY)
 - [System Design: Concurrency Control in Distributed System | Optimistic & Pessimistic Concurrency Lock](https://www.youtube.com/watch?v=D3XhDu--uoI)
 - [23. Two Phase Locking (2PL) | System Design](https://www.youtube.com/watch?v=lceenm34m-w)
+- [Dual Write Problem | Designing Event-Driven Microservices](https://www.youtube.com/watch?v=QaH7r4V4RmE)
 
 
 

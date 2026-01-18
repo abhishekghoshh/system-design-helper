@@ -1,7 +1,5 @@
 # Websites
 
-
-
 ## Courses ans websites
 
 - [Hello Interview](https://www.hellointerview.com/learn/system-design/in-a-hurry/introduction)
@@ -41,48 +39,6 @@
 ## DEV.io
 
 - [The Complete Guide to System Design in 2026](https://dev.to/fahimulhaq/complete-guide-to-system-design-oc7)
-
-
-
-## Github
-
-### System Design
-
-- [donnemartin/system-design-primer](https://github.com/donnemartin/system-design-primer)
-- [binhnguyennus/awesome-scalability](https://github.com/binhnguyennus/awesome-scalability)
-- [System Design Interview - An Insider's Guide (vol 1 & 2)](https://github.com/presmihaylov/booknotes/blob/master/system-design/system-design-interview/README.md)
-- [javabuddy/best-system-design-resources](https://github.com/javabuddy/best-system-design-resources)
-- [mehdihadeli/awesome-software-architecture](https://github.com/mehdihadeli/awesome-software-architecture)
-- [Software Engineering Blogs](https://github.com/kilimchoi/engineering-blogs)
-
-
-### Build something
-
-- [Build your own <insert-technology-here>x](https://github.com/codecrafters-io/build-your-own-x)
-- [The Algorithms](https://github.com/thealgorithms)
-- [roadmap.sh](https://github.com/kamranahmedse/developer-roadmap)
-  - [Developer Roadmaps](https://roadmap.sh/)
-- [Papers We Love](https://github.com/papers-we-love/papers-we-love)
-- [awesome](https://github.com/sindresorhus/awesome)
-
-
-### Free and open source
-
-- [sdmg15/Best-websites-a-programmer-should-visit](https://github.com/sdmg15/Best-websites-a-programmer-should-visit)
-- [free-for.dev](https://github.com/ripienaar/free-for-dev)
-- [List of Free Learning Resources In Many Languages](https://github.com/EbookFoundation/free-programming-books)
-  - [free-programming-books](https://ebookfoundation.github.io/free-programming-books/)
-- [Try Public APIs for free](https://github.com/public-apis/public-apis)
-  - [API Layer](https://apilayer.com/)
-- [Open source alternatives](https://github.com/btw-so/open-source-alternatives)
-- [Open Source Society University](https://github.com/ossu/computer-science)
-
-
-### AI
-
-- [Build a Large Language Model (From Scratch)](https://github.com/rasbt/LLMs-from-scratch)
-- [Machine Learning From Scratch](https://github.com/eriklindernoren/ML-From-Scratch)
-- [Made With ML](https://github.com/GokuMohandas/Made-With-ML)
 
 
 
@@ -140,3 +96,44 @@
 - [General Coding Knowledge](https://eddiebarth.medium.com/list/general-coding-knowledge-f2d429d4f0cd)
 - [Coding & Development](https://medium.com/@jscribes/list/coding-development-e360d380bb82)
 
+
+
+## Github
+
+### System Design
+
+- [donnemartin/system-design-primer](https://github.com/donnemartin/system-design-primer)
+- [binhnguyennus/awesome-scalability](https://github.com/binhnguyennus/awesome-scalability)
+- [System Design Interview - An Insider's Guide (vol 1 & 2)](https://github.com/presmihaylov/booknotes/blob/master/system-design/system-design-interview/README.md)
+- [javabuddy/best-system-design-resources](https://github.com/javabuddy/best-system-design-resources)
+- [mehdihadeli/awesome-software-architecture](https://github.com/mehdihadeli/awesome-software-architecture)
+- [Software Engineering Blogs](https://github.com/kilimchoi/engineering-blogs)
+
+
+### Build something
+
+- [Build your own <insert-technology-here>x](https://github.com/codecrafters-io/build-your-own-x)
+- [The Algorithms](https://github.com/thealgorithms)
+- [roadmap.sh](https://github.com/kamranahmedse/developer-roadmap)
+  - [Developer Roadmaps](https://roadmap.sh/)
+- [Papers We Love](https://github.com/papers-we-love/papers-we-love)
+- [awesome](https://github.com/sindresorhus/awesome)
+
+
+### Free and open source
+
+- [sdmg15/Best-websites-a-programmer-should-visit](https://github.com/sdmg15/Best-websites-a-programmer-should-visit)
+- [free-for.dev](https://github.com/ripienaar/free-for-dev)
+- [List of Free Learning Resources In Many Languages](https://github.com/EbookFoundation/free-programming-books)
+  - [free-programming-books](https://ebookfoundation.github.io/free-programming-books/)
+- [Try Public APIs for free](https://github.com/public-apis/public-apis)
+  - [API Layer](https://apilayer.com/)
+- [Open source alternatives](https://github.com/btw-so/open-source-alternatives)
+- [Open Source Society University](https://github.com/ossu/computer-science)
+
+
+### AI
+
+- [Build a Large Language Model (From Scratch)](https://github.com/rasbt/LLMs-from-scratch)
+- [Machine Learning From Scratch](https://github.com/eriklindernoren/ML-From-Scratch)
+- [Made With ML](https://github.com/GokuMohandas/Made-With-ML)
