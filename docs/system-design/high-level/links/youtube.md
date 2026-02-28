@@ -12,6 +12,8 @@
 - [5 System Design Misconceptions Even Senior Engineers Make](https://www.youtube.com/watch?v=UovsPd8fDfc)
 - [6 Backend Mistakes Keeping You Stuck at Junior Level](https://www.youtube.com/watch?v=Wp7HjH8AunU)
 - [How is this Website so fast!?](https://www.youtube.com/watch?v=-Ln-8QM8KhQ)
+- [100+ Web Development Things you Should Know](https://www.youtube.com/watch?v=erEgovG9WBs)
+
 
 
 ### Single videos
@@ -29,7 +31,10 @@
 
 #### System Design Crash Course
 
+- [30 System Design Concepts in just 50 minutes. The Fastest Way to Learn System Design!](https://www.youtube.com/watch?v=umdwWa2PP2I)
+- [System Design](https://www.youtube.com/playlist?list=PL_c9BZzLwBRLSs6x50D5WIH76VCUxJs9E)
 - [Master Microservices & Event-Driven Architecture: Complete 6-Hour Guide for Beginners to Advanced](https://www.youtube.com/watch?v=FDjmWxETjn8)
+  - [Microservices Ultimate Concepts Course](https://whimsical.com/microservices-ultimate-concepts-course-2RP37RsKnbWV932WNSsTsT)
 
 - [System Design Explained APIs, Databases, Caching, CDNs, Load Balancing & Production Infra](https://www.youtube.com/watch?v=Y-xBxnqaF4Y)
 - [System Design](https://www.youtube.com/playlist?list=PLi0P3bAJieri71WhnLs1esOCr27hpvFBZ)
@@ -60,25 +65,48 @@
 
 ### Channels and Playlists
 
-- [Concept && Coding - by Shrayansh](https://www.youtube.com/@ConceptandCoding)
+- [Concept && Coding - by Shrayansh](https://www.youtube.com/@ConceptAndCodingByShrayansh/playlists)
   - [InterviewCodingPractise](https://gitlab.com/shrayansh8/interviewcodingpractise)
 - [Hello Interview - SWE Interview Preparation](https://www.youtube.com/@hello_interview/playlists)
 - [sudoCODE](https://www.youtube.com/@sudocode/playlists)
 - [ByteByteGo](https://www.youtube.com/@ByteByteGo/playlists)
 - [ByteMonk](https://www.youtube.com/@ByteMonk/playlists)
-- [Arpit Bhayani](https://www.youtube.com/@AsliEngineering/playlists)
 - [Jordan has no life](https://www.youtube.com/@jordanhasnolife5163/playlists)
-- [TechPrep](https://www.youtube.com/@TechPrepYT/playlists)
+- [Arpit Bhayani](https://www.youtube.com/@AsliEngineering/playlists)
+  - [System Design](https://www.youtube.com/playlist?list=PLsdq-3Z1EPT27BuTnJ_trF7BsaTpYLqst)
+  - [Database Engineering](https://www.youtube.com/playlist?list=PLsdq-3Z1EPT2C-Da7Jscr7NptGcIZgQ2l)
 - [Piyush Garg](https://www.youtube.com/@piyushgargdev/playlists)
-- [Exponent](https://www.youtube.com/@tryexponent/playlists)
-
 - [Mehul - Codedamn](https://www.youtube.com/@codedamn/playlists)
     - [Backend 2026 Roadmap: Everything you need to know](https://www.youtube.com/watch?v=JYTfLCuq9cA)
     - [Doing system design engineering like senior backend developers](https://www.youtube.com/watch?v=YLNfA_bqKDQ)
     - [How to design APIs like a senior engineer](https://www.youtube.com/watch?v=rU2T0Y--LG4)
     - [Web Application Firewall - Complete Guide](https://www.youtube.com/watch?v=-Q4fpgEUqfs)
     - [You're using JWT the wrong way](https://www.youtube.com/watch?v=L3A-76OXJB8)
+- [Hayk Simonyan](https://www.youtube.com/@hayk.simonyan/playlists)
+- [Caleb Curry](https://www.youtube.com/@codebreakthrough)
+  - [System Design](https://www.youtube.com/playlist?list=PL_c9BZzLwBRLSs6x50D5WIH76VCUxJs9E)
+- [Riti Kumari](https://www.youtube.com/@RitiKumari/playlists)
+- [The Coding Gopher](https://www.youtube.com/@TheCodingGopher/playlists)
+- [Exponent](https://www.youtube.com/@tryexponent/playlists)
+- [TechPrep](https://www.youtube.com/@TechPrepYT/playlists)
 
+
+- [CodeHead](https://www.youtube.com/@codehead01/videos)
+- [Fireship](https://www.youtube.com/@Fireship)
+- [Core Dumped](https://www.youtube.com/@CoreDumpped/videos)
+- [Tech With Nikola](https://www.youtube.com/@TechWithNikola/videos)
+- [FAANG Senior Engineer](https://www.youtube.com/@SeniorEngineer10x)
+
+
+## System Design books walk through
+
+- [50 hours of Mid-Level System Design in One Hour](https://www.youtube.com/watch?v=ZaLSwhciSfs)
+- [Ben Dicken](https://www.youtube.com/@benjdicken/playlists)
+  - [Designing Data Intensive Applications](https://www.youtube.com/playlist?list=PLhgFs9q2EVg_rB-XT1zaJ3k9z0KVGrR2h)
+  - [Database Internals](https://www.youtube.com/playlist?list=PLhgFs9q2EVg91l17UXoPdzsEhJrokLiMx)
+- [Martin Kleppmann](https://www.youtube.com/@kleppmann/playlists)
+  - [Distributed Systems lecture series](https://www.youtube.com/playlist?list=PLeKd45zvjcDFUEv_ohr_HdUFe97RItdiB)
+- [Designing Data Intensive Application](https://www.youtube.com/playlist?list=PLmp4AHm0u1g0Adn8HwWIe-G_xTn_jqOvf)
 
 
 
@@ -89,7 +117,7 @@
 - [Interview Pen](https://www.youtube.com/@interviewpen/playlists)
 - [Think Software](https://www.youtube.com/@ThinkSoftware/playlists)
 - [Kiki's Bytes](https://www.youtube.com/@kikisbytes/videos)
-- [Martin Kleppmann](https://www.youtube.com/@kleppmann/playlists)
+
 
 - [Cloud With Raj](https://www.youtube.com/@cloudwithraj/playlists)
 - [Gaurav Sen](https://www.youtube.com/@gkcs/playlists)

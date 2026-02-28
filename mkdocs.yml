@@ -132,6 +132,33 @@ nav:
         - Technical Debt: system-design/low-level/concepts/technical-debt.md
       - Design Patterns:
         - Design Pattern: system-design/low-level/design-pattern/design-pattern.md
+        - Creational:
+          - All Creational Patterns: system-design/low-level/design-pattern/creational/creational.md
+          - Singleton: system-design/low-level/design-pattern/creational/singleton.md
+          - Factory: system-design/low-level/design-pattern/creational/factory.md
+          - Builder: system-design/low-level/design-pattern/creational/builder.md
+        - Structural:
+          - All Structural Patterns: system-design/low-level/design-pattern/structural/structural.md
+          - Adapter: system-design/low-level/design-pattern/structural/adapter.md
+          - Bridge: system-design/low-level/design-pattern/structural/bridge.md
+          - Composite: system-design/low-level/design-pattern/structural/composite.md
+          - Decorator: system-design/low-level/design-pattern/structural/decorator.md
+          - Facade: system-design/low-level/design-pattern/structural/facade.md
+          - Flyweight: system-design/low-level/design-pattern/structural/flyweight.md
+          - Proxy: system-design/low-level/design-pattern/structural/proxy.md
+        - Behavioral:
+          - All Behavioral Patterns: system-design/low-level/design-pattern/behavioral/behavioral.md
+          - Chain of Responsibility: system-design/low-level/design-pattern/behavioral/chain-of-responsibility.md
+          - Command: system-design/low-level/design-pattern/behavioral/command.md
+          - Interpreter: system-design/low-level/design-pattern/behavioral/interpreter.md
+          - Iterator: system-design/low-level/design-pattern/behavioral/iterator.md
+          - Mediator: system-design/low-level/design-pattern/behavioral/mediator.md
+          - Memento: system-design/low-level/design-pattern/behavioral/memento.md
+          - Observer: system-design/low-level/design-pattern/behavioral/observer.md
+          - State: system-design/low-level/design-pattern/behavioral/state.md
+          - Strategy: system-design/low-level/design-pattern/behavioral/strategy.md
+          - Template: system-design/low-level/design-pattern/behavioral/template.md
+          - Visitor: system-design/low-level/design-pattern/behavioral/visitor.md
         - Others:
           - Null Object Pattern: system-design/low-level/design-pattern/others/null-object-pattern.md
       - Designing:

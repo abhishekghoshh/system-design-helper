@@ -41,12 +41,16 @@
 - [The Complete Guide to System Design in 2026](https://dev.to/fahimulhaq/complete-guide-to-system-design-oc7)
 
 
+## Bytebytego
+
+- [Algorithms you should know before you take system design interviews](https://blog.bytebytego.com/p/algorithms-you-should-know-before)
+
 
 ## Linked-In
 
 - [30 Blogs to Learn 30 System Design Fundamentals](https://www.linkedin.com/posts/ashishps1_30-blogs-to-learn-30-system-design-fundamentals-activity-7328659612201549827-8m7C/)
 - [30 Blogs to Learn 30 System Design Concepts](https://www.linkedin.com/posts/ashishps1_30-blogs-to-learn-30-system-design-concepts-activity-7368132950321786881-4LpD/)
-- [System Design was HARD until I Learned these 30 Concepts](https://www.linkedin.com/posts/ashishps1_system-design-was-hard-until-i-learned-these-activity-7388786598798135296-6xj4)
+- [System Design was HARD until I Learned these 30 Concepts](https://www.linkedin.com/posts/ashishps1_system-design-was-hard-until-i-learned-these-activity-7388786598798135296-6xj4/)
 - [𝟯𝟬 𝗕𝗹𝗼𝗴𝘀 𝘁𝗼 𝗟𝗲𝗮𝗿𝗻 𝟯𝟬 𝗦𝘆𝘀𝘁𝗲𝗺 𝗗𝗲𝘀𝗶𝗴𝗻 𝗖𝗼𝗻𝗰𝗲𝗽𝘁𝘀:](https://www.linkedin.com/posts/aishwarya-pani-63a476167_%F0%9D%9F%AF%F0%9D%9F%AC-%F0%9D%97%95%F0%9D%97%B9%F0%9D%97%BC%F0%9D%97%B4%F0%9D%98%80-%F0%9D%98%81%F0%9D%97%BC-%F0%9D%97%9F%F0%9D%97%B2%F0%9D%97%AE%F0%9D%97%BF%F0%9D%97%BB-%F0%9D%9F%AF%F0%9D%9F%AC-%F0%9D%97%A6%F0%9D%98%86-activity-7371361343645413377-btjP/)
 - [9 Software Design Principles Every Developer Should Know](https://www.linkedin.com/posts/ashishps1_9-software-design-principles-every-developer-activity-7368855265099599872-J9oZ/)
 
@@ -65,9 +69,9 @@
     - [Interview Experiences and Learnings](https://medium.com/@shivamsrivastava.iec/list/interview-experiences-and-learnings-b859fb631e28)
 - [Pudari Madhavi](https://medium.com/@pudarimadhavi99)
 - [ByteByteBoot](https://medium.com/@bytebyteboot)
+- [Oleksandr Klymenko](https://medium.com/@alxkm)
 - [Agil](https://medium.com/@aqilzeka99)
 - [Soma](https://medium.com/@somasharma_81597)
-- [Oleksandr Klymenko](https://medium.com/@alxkm)
 - [Ali Zeynalli](https://azeynalli1990.medium.com/)
 - [Mohamed Enn](https://medium.com/@mohamed.enn)
 - [SureshR](https://medium.com/@sureshkrishna75525)
@@ -79,10 +83,10 @@
 
 ### Channels
 
+- [Java Interview](https://medium.com/@kaurharjeet122)
 - [ScalaBrix](https://scalabrix.medium.com/)
 - [Career Drill](https://medium.com/career-drill)
 - [javarevisited](https://medium.com/javarevisited)
-- [Java Interview](https://medium.com/@kaurharjeet122)
 - [Lets Learn Now](https://medium.com/@letslearnnow)
 - [AKCoding.com](https://akcoding.medium.com/)
 - [Byte Wise 010](https://medium.com/@bytewise010)
@@ -95,6 +99,14 @@
 
 - [General Coding Knowledge](https://eddiebarth.medium.com/list/general-coding-knowledge-f2d429d4f0cd)
 - [Coding & Development](https://medium.com/@jscribes/list/coding-development-e360d380bb82)
+
+
+### Single Blog
+
+- [System Design 101 — Module 6: Caching Fundamentals](https://medium.com/thesystemdesign/system-design-101-module-6-caching-fundamentals-388e2c446b84)
+- [50 Scenario-Based System Design Questions for Senior Developer Interviews — Part 1/5](https://medium.com/thesystemdesign/50-scenario-based-system-design-questions-for-senior-developer-interviews-part-1-5-667c85cf32b1)
+- [Fresh From the Field: Complex System Design Scenarios in 2024-2025 Interviews](https://medium.com/thesystemdesign/fresh-from-the-field-complex-system-design-scenarios-in-2024-2025-interviews-9cfec9b1836a)
+
 
 
 

@@ -4,6 +4,8 @@
 
 - [Rate Limiter System Design: Token Bucket, Leaky Bucket, Scaling](https://www.youtube.com/watch?v=YXkOdWBwqaA)
 
+- [Rate Limiter - System Design Interview Question](https://www.youtube.com/watch?v=dpEOhfEEoyw)
+
 - [7: Design a Rate Limiter | Systems Design Interview Questions With Ex-Google SWE](https://www.youtube.com/watch?v=VzW41m4USGs)
 
 - [How to Implement Rate Limiting | Rate Limiting Strategies - System Design](https://www.youtube.com/watch?v=eR66m7TaV5A)
@@ -19,6 +21,7 @@
 - [Rate Limiting system design | TOKEN BUCKET, Leaky Bucket, Sliding Logs](https://www.youtube.com/watch?v=mhUQe4BKZXs)
 
 - [12. Design Rate Limiter | API Rate Limiter System Design | Rate Limiting Algorithms | Rate Limiter](https://www.youtube.com/watch?v=X5daFTDfy2g)
+
 
 
 ## Website

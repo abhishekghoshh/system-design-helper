@@ -16,3 +16,9 @@
 ### Course
 
 - [Agentic AI Tutorial for Beginners | Langgraph Tutorial](https://www.youtube.com/watch?v=CnXdddeZ4tQ)
+
+
+### Internal
+
+- [How AI Works Technically (Must Watch As A Developer)](https://www.youtube.com/watch?v=CwTeSDZSUxM)
+- [LLM Tokenizer Explained In Depth](https://www.youtube.com/watch?v=mRcf5qQSYws)

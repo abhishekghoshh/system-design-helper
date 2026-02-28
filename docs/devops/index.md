@@ -1,8 +1,24 @@
 # DevOps
 
+
+## Github
+
+- [marcel-dempers/docker-development-youtube-series](https://github.com/marcel-dempers/docker-development-youtube-series)
+
+
+## Blogs and Websites
+
+- [Master DevOps If You Master it : System Design !!](https://dev.to/aws-builders/system-design-for-devops-engineers-45lh)
+- [Top 110+ DevOps Interview Questions and Answers for 2025](https://dev.to/aws-builders/top-110-devops-interview-questions-and-answers-for-2025-4h4n)
+- [NotHarshhaa/DevOps-Interview-Questions](https://github.com/NotHarshhaa/DevOps-Interview-Questions)
+- [Learn DevSecOps and API Security](https://www.freecodecamp.org/news/learn-devsecops-and-api-security/)
+
+
 ## Youtube
 
 ### Channels and playlists
+
+- [TechWorld with Nana](https://www.youtube.com/@TechWorldwithNana)
 
 - [Abhishek.Veeramalla](https://www.youtube.com/@AbhishekVeeramalla/playlists)
   - [DEVOPS ZERO TO HERO COURSE](https://www.youtube.com/playlist?list=PLdpzxOOAlwvIKMhk8WhzN1pYoJ1YU8Csa)
@@ -19,11 +35,18 @@
     - [Ultimate DevOps Project Implementation](https://udemy.com/course/ultimate-devops-project-with-resume-preparation/)
     - [AWS EKS Kubernetes Tutorial [Full Course]](https://www.youtube.com/playlist?list=PLiMWaCMwGJXnKY6XmeifEpjIfkWRo9v2l)
 
+- [Rayan Labs](https://www.youtube.com/@RayanLabs/playlists)
+  - [DevOps Training](https://www.youtube.com/playlist?list=PLZv1rlQ0kEKh99f1AWdpG0ZQM-4VGaQN5)
 
+- [TrainWithShubham](https://www.youtube.com/@TrainWithShubham)
+  - [2-Tier Application Deployment Series](https://www.youtube.com/playlist?list=PLlfy9GnSVerRpz3u8casjjv1eNJr9tlR9)
+  - [DevSecOps End to End CICD Project | DevOps Engineer | SonarQube + OWASP + Trivy + Docker + Jenkins](https://www.youtube.com/watch?v=CoU38rJIjRY)
+  - [Deploying MERN stack Application on Kubernetes using Kubeadm | DevOps Bootcamp](https://www.youtube.com/watch?v=h-ul8l5ekPg)
 
-## Blogs and Websites
+- [Tech Tutorials with Piyush](https://www.youtube.com/@TechTutorialswithPiyush/playlists)
 
-- [Master DevOps If You Master it : System Design !!](https://dev.to/aws-builders/system-design-for-devops-engineers-45lh)
-- [Top 110+ DevOps Interview Questions and Answers for 2025](https://dev.to/aws-builders/top-110-devops-interview-questions-and-answers-for-2025-4h4n)
-- [NotHarshhaa/DevOps-Interview-Questions](https://github.com/NotHarshhaa/DevOps-Interview-Questions)
-- [Learn DevSecOps and API Security](https://www.freecodecamp.org/news/learn-devsecops-and-api-security/)
+- [Kubesimplify](https://www.youtube.com/@kubesimplify/playlists)
+
+- [That DevOps Guy](https://www.youtube.com/@MarcelDempers/playlists)
+
+- [KodeKloud](https://www.youtube.com/@KodeKloud)

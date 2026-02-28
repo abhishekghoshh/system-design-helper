@@ -3,9 +3,7 @@
 ## Youtube
 
 - [Consistent Hashing - System Design](https://www.youtube.com/watch?v=IC5Y1EE-aj4)
-
 - [6. Consistent Hashing in Hindi with Example | System Design - Consistent Hashing | High Level design](https://www.youtube.com/watch?v=jqUNbqfsnuw)
-- [Consistent Hashing (English Dubbed) | Better with 1.25x playback speed](https://www.youtube.com/watch?v=NHvGbXB46qU)
 
 
 ## Website

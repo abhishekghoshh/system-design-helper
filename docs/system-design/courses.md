@@ -11,6 +11,7 @@
 
 - [codecrafters](https://app.codecrafters.io/catalog)
 - [boot.dev](https://www.boot.dev/courses)
+- [scrimba](https://scrimba.com/home?via=codehead)
 
 - [Coursera](https://www.coursera.org/my-learning)
 - [Udacity](https://www.udacity.com/catalog?price=free)
