@@ -6,3 +6,4 @@
 
 - [14. LLD of BookMyShow (Hindi) | Design MovieTicketBooking | Low Level System Design & Concurrency](https://www.youtube.com/watch?v=wCyzvDn3Pp8)
 
+- [System Design 2: Design Ticket Booking System like BookMyShow, District / HLD / LLD](https://www.youtube.com/watch?v=uamf0wRMx5o)

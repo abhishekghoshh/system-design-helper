@@ -83,6 +83,8 @@
     - [Web Application Firewall - Complete Guide](https://www.youtube.com/watch?v=-Q4fpgEUqfs)
     - [You're using JWT the wrong way](https://www.youtube.com/watch?v=L3A-76OXJB8)
 - [Hayk Simonyan](https://www.youtube.com/@hayk.simonyan/playlists)
+- [System Design Fight Club](https://www.youtube.com/@SDFC/playlists)
+    - [Amazon System Design Interview Questions](https://www.youtube.com/playlist?list=PLlvnxKilk3aI9oLVKS0m6-X6Q2TZFuh4O)
 - [Caleb Curry](https://www.youtube.com/@codebreakthrough)
   - [System Design](https://www.youtube.com/playlist?list=PL_c9BZzLwBRLSs6x50D5WIH76VCUxJs9E)
 - [Riti Kumari](https://www.youtube.com/@RitiKumari/playlists)
