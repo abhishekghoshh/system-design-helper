@@ -5,9 +5,13 @@
 ## Youtube
 
 - [Proxy vs Reverse Proxy vs Load Balancer | Simply Explained](https://www.youtube.com/watch?v=xo5V9g9joFs)
+- [Layer 4 vs Layer 7 Load Balancer | Stop Guessing in Interviews](https://www.youtube.com/watch?v=O_DfHBPYLTA)
 
 - [17. Proxy vs Reverse Proxy (Example) | How Proxy differs from VPN, LoadBalancer | SystemDesign](https://www.youtube.com/watch?v=yeaPUFaXgdA)
 - [18. Load Balancer & Different Algorithms - System Design | Static & Dynamic Load Balancing Algorithm](https://www.youtube.com/watch?v=vJYycNWAYZU)
+
+
+- [Stop Paying for Load Balancers (Use This Instead)](https://www.youtube.com/watch?v=FNP_p_Z4BGk)
 
 
 

@@ -15,6 +15,13 @@
 - [100+ Web Development Things you Should Know](https://www.youtube.com/watch?v=erEgovG9WBs)
 
 
+- [The Day a Google L7 Engineer Tore My System Design to Shreds](https://www.youtube.com/watch?v=Ml7iKTmH5n8)
+    - [The Day a Google L7 Engineer Tore My System Design to Shreds](https://medium.com/expocomputing/google-l7-system-design-interview-lessons-0b3834fded07)
+
+
+- [Never Build Servers With Node.js Again](https://www.youtube.com/watch?v=8cwZYMV-vaw)
+- [We Lost Users Because of Node.js](https://www.youtube.com/watch?v=BLW2DWZrIAU)
+
 
 ### Single videos
 
@@ -27,6 +34,7 @@
 - [How to Master System Design (Step-by-Step for FAANG-Level Interviews)](https://www.youtube.com/watch?v=ZNiNYOJE4yI)
 - [Step-by-Step Roadmap to Mastering System Design for Interviews](https://www.youtube.com/watch?v=Ooy-KpRH66M)
 - [Complete System Design Roadmap 2025 | HLD & LLD by Shradha Ma'am](https://www.youtube.com/watch?v=CuQmQpvw04I)
+- [System Design Patterns you should Master Right Now](https://www.youtube.com/watch?v=OdNpY3WQniQ)
 
 
 #### System Design Crash Course
@@ -63,6 +71,11 @@
 - [Build backends like a senior engineer - Here's how](https://www.youtube.com/watch?v=RtucdRlGv1o)
 
 
+- [System Design Course For Beginners | HLD Of Tinder, Uber and Twitter X | LLD | Interviews | @SCALER](https://www.youtube.com/watch?v=8telu1SoCKM)
+- [System Design Full Course (High Level Design)](https://www.youtube.com/watch?v=W8kg8h-uIC8)
+- [System Design Course – APIs, Databases, Caching, CDNs, Load Balancing & Production Infra](https://www.youtube.com/watch?v=C842vFY5kRo)
+
+
 ### Channels and Playlists
 
 - [Concept && Coding - by Shrayansh](https://www.youtube.com/@ConceptAndCodingByShrayansh/playlists)
@@ -82,6 +95,7 @@
     - [How to design APIs like a senior engineer](https://www.youtube.com/watch?v=rU2T0Y--LG4)
     - [Web Application Firewall - Complete Guide](https://www.youtube.com/watch?v=-Q4fpgEUqfs)
     - [You're using JWT the wrong way](https://www.youtube.com/watch?v=L3A-76OXJB8)
+
 - [Hayk Simonyan](https://www.youtube.com/@hayk.simonyan/playlists)
 - [System Design Fight Club](https://www.youtube.com/@SDFC/playlists)
     - [Amazon System Design Interview Questions](https://www.youtube.com/playlist?list=PLlvnxKilk3aI9oLVKS0m6-X6Q2TZFuh4O)
@@ -90,29 +104,19 @@
 - [Riti Kumari](https://www.youtube.com/@RitiKumari/playlists)
 - [The Coding Gopher](https://www.youtube.com/@TheCodingGopher/playlists)
 - [Exponent](https://www.youtube.com/@tryexponent/playlists)
+
 - [TechPrep](https://www.youtube.com/@TechPrepYT/playlists)
-
-
+    - [System Design](https://www.youtube.com/playlist?list=PLRtLu6rCuAlkO-HiER3AKoKkSG5DPp9TX)
 - [CodeHead](https://www.youtube.com/@codehead01/videos)
 - [Fireship](https://www.youtube.com/@Fireship)
 - [Core Dumped](https://www.youtube.com/@CoreDumpped/videos)
 - [Tech With Nikola](https://www.youtube.com/@TechWithNikola/videos)
-- [FAANG Senior Engineer](https://www.youtube.com/@SeniorEngineer10x)
+- [FAANG Senior Engineer](https://www.youtube.com/@SeniorEngineer10x) **Very Good**
+    - [System design from First Principle Series](https://www.youtube.com/playlist?list=PLA12lriZjwUO6AGEZK1JhyVWaWnG7dDEK)
+    - [System Design Challenge](https://www.youtube.com/playlist?list=PLA12lriZjwUOpC98pndP6O86TzSe1AqNK)
+- [Manware](https://www.youtube.com/@IAmManware)
+- [Pascal Esc](https://www.youtube.com/@pascal_esc/videos)
 
-
-## System Design books walk through
-
-- [50 hours of Mid-Level System Design in One Hour](https://www.youtube.com/watch?v=ZaLSwhciSfs)
-- [Ben Dicken](https://www.youtube.com/@benjdicken/playlists)
-  - [Designing Data Intensive Applications](https://www.youtube.com/playlist?list=PLhgFs9q2EVg_rB-XT1zaJ3k9z0KVGrR2h)
-  - [Database Internals](https://www.youtube.com/playlist?list=PLhgFs9q2EVg91l17UXoPdzsEhJrokLiMx)
-- [Martin Kleppmann](https://www.youtube.com/@kleppmann/playlists)
-  - [Distributed Systems lecture series](https://www.youtube.com/playlist?list=PLeKd45zvjcDFUEv_ohr_HdUFe97RItdiB)
-- [Designing Data Intensive Application](https://www.youtube.com/playlist?list=PLmp4AHm0u1g0Adn8HwWIe-G_xTn_jqOvf)
-
-
-
-### Other Channels
 
 - [System Design School](https://www.youtube.com/@SystemDesignSchool)
 - [Himanshu Goyal](https://www.youtube.com/@himanshugoyal91/playlists)
@@ -127,6 +131,10 @@
 - [Tushar Roy - Coding Made Simple](https://www.youtube.com/@tusharroy2525)
   - [System Design](https://www.youtube.com/playlist?list=PLrmLmBdmIlps7GJJWW9I7N0P0rB0C3eY2)
 - [Scortier](https://www.youtube.com/@scortierHQ/playlists)
+
+- [Mayank Joshi](https://www.youtube.com/@9to5dude)
+    - [System Design Full Course by Microsoft SWE](https://www.youtube.com/playlist?list=PLtUBJBQF5VJgSzegWtlFiNTWehra8eSHU)
+- [Milan Jovanović](https://www.youtube.com/@MilanJovanovicTech)
 
 
 ### Other Playlist

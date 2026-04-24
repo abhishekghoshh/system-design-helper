@@ -11,6 +11,7 @@
 
 ### Video Streaming internals
 
+- [Netflix Doesn't Want You To Know This Architecture](https://www.youtube.com/watch?v=naQ-E1rzYv0)
 - [HLS Adaptive Bitrate Streaming - System Design](https://www.youtube.com/watch?v=6JTV4PwisoQ)
   - [piyushgarg-dev/hls-streaming](https://github.com/piyushgarg-dev/hls-streaming)
 - [How I Built Video Transcoding Service From Scratch | System Design](https://www.youtube.com/watch?v=wcdaIQjtWQI)

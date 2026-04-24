@@ -9,3 +9,5 @@
 ## Youtube
 
 - [7 Authentication Concepts Every Developer Should Know](https://www.youtube.com/watch?v=iX8g4LqF8p8)
+
+- [Authentication Concepts for Developers | OAuth2 vs JWT vs Basic Auth | Every Dev should Master](https://www.youtube.com/watch?v=az5Nppk-Hs0)
