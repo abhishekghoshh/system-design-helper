@@ -1,4 +1,25 @@
 # Service Discovery
+Mechanism for services to find and communicate with each other.
+
+**Patterns:**
+- **Client-side**: Client queries registry (Eureka, Consul)
+- **Server-side**: Load balancer queries registry (Kubernetes)
+
+**Components:**
+- **Service Registry**: Database of service instances
+- **Health Checking**: Monitor service availability
+- **Load Balancing**: Distribute requests
+
+**Tools:**
+- Consul
+- Eureka (Netflix)
+- Zookeeper
+- etcd
+- Kubernetes DNS
+
+---
+
+# Service Discovery
 
 
 ## Youtube

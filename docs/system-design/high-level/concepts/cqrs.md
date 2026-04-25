@@ -1,4 +1,19 @@
 # CQRS (Command Query Responsibility Segregation)
+Separate read and write models.
+
+**Benefits:**
+- Optimized read/write separately
+- Scalability
+- Different data models
+
+**Challenges:**
+- Complexity
+- Eventual consistency
+- Data synchronization
+
+---
+
+# CQRS (Command Query Responsibility Segregation)
 
 
 ## Youtube

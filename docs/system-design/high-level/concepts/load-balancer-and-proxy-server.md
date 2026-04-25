@@ -1,3 +1,661 @@
+# Forward Proxy
+Server that sits between clients and the internet.
+
+**Functions:**
+- Anonymizes client IP
+- Content filtering
+- Caching
+- Access control
+
+**Use Cases:**
+- Corporate networks
+- VPN services
+- Bypassing geo-restrictions
+
+# Reverse Proxy
+Server that sits between clients and backend servers.
+
+**Functions:**
+- Load balancing
+- SSL termination
+- Caching
+- Request routing
+- Security (hides backend)
+
+**Popular Tools:**
+- Nginx
+- HAProxy
+- Apache
+- Envoy
+
+# Load Balancer
+
+## The Traffic Conductor of Modern Infrastructure
+
+A load balancer is far more than a "traffic splitter"—it's the **central nervous system** of scalable architectures. It's the component that transforms a cluster of fragile, individual servers into a single, resilient, high-performance system. Without load balancers, horizontal scaling would be practically impossible.
+
+## The Deep Theory: Why Load Balancing Exists
+
+**The Fundamental Problem:**
+A single server has finite capacity:
+- **CPU**: Can process only so many requests/second
+- **Memory**: Can hold only so much data
+- **Network**: Can handle only so much bandwidth
+- **Reliability**: Single point of failure
+
+**The Solution: Distribute the Load**
+```
+                     ┌─────────────┐
+                     │             │
+Clients ──────────► │Load Balancer│ ◄──── Single entry point
+(thousands)         │             │
+                     └──────┬──────┘
+                           │
+        ┌──────────────────┼──────────────────┐
+        │                  │                  │
+        ▼                  ▼                  ▼
+    ┌────────┐        ┌────────┐        ┌────────┐
+    │Server 1│        │Server 2│        │Server 3│
+    └────────┘        └────────┘        └────────┘
+```
+
+**The Magic:**
+Clients see **one system**, but you have **many servers**. This abstraction enables:
+- **Scalability**: Add servers without changing client code
+- **Reliability**: One server fails, others continue
+- **Performance**: Distribute load for better response times
+- **Flexibility**: Deploy/update servers independently
+
+## The Algorithms: Different Strategies for Different Needs
+
+Each algorithm embodies a different **philosophy** about fairness and optimization.
+
+### 1. Round Robin (The Democrat)
+
+```
+Request 1 → Server A
+Request 2 → Server B  
+Request 3 → Server C
+Request 4 → Server A  (repeat)
+```
+
+**Philosophy**: Everyone gets equal turns.
+
+**Pros:**
+- Simple, fair, predictable
+- Even distribution over time
+- No state needed (stateless)
+- Works well when servers are equal
+
+**Cons:**
+- Ignores server load (busy servers get same share)
+- Ignores request complexity (all requests treated equal)
+- Poor if servers have different capacity
+
+**When to Use:**
+- Homogeneous servers (same hardware)
+- Similar request complexity
+- Stateless applications
+- Simple deployments
+
+**Real-World:**
+Default choice for most web applications. Simple, works surprisingly well.
+
+### 2. Weighted Round Robin (The Meritocrat)
+
+```
+Server A: Weight 3 (powerful)
+Server B: Weight 2 (medium)
+Server C: Weight 1 (weak)
+
+Sequence: A, A, A, B, B, C, repeat
+```
+
+**Philosophy**: Distribute according to capacity.
+
+**When to Use:**
+- Heterogeneous servers (different hardware)
+- Phased rollouts (send 10% to new version)
+- Testing (canary deployments)
+
+**Configuration Example:**
+```yaml
+servers:
+  - server1: weight=5  # 50% of traffic
+  - server2: weight=3  # 30% of traffic  
+  - server3: weight=2  # 20% of traffic
+```
+
+### 3. Least Connections (The Optimizer)
+
+```
+Server A: 5 active connections
+Server B: 3 active connections  ← Route here
+Server C: 7 active connections
+```
+
+**Philosophy**: Route to least busy server right now.
+
+**How It Works:**
+1. Track active connections per server
+2. Route new request to server with fewest connections
+3. Update count on connection open/close
+
+**Pros:**
+- Better for long-lived connections
+- Adapts to actual load
+- Handles varying request times well
+
+**Cons:**
+- Requires state (connection counts)
+- More complex than round robin
+- Overhead of tracking
+
+**When to Use:**
+- Long-lived connections (WebSockets, streaming)
+- Variable request processing time
+- Real-time applications
+
+**Example: WebSocket Chat**
+Some users chat more (long connections), some less. Least connections ensures even distribution of active users.
+
+### 4. Least Response Time (The Perfectionist)
+
+```
+Server A: 50ms avg response time  ← Route here (fastest)
+Server B: 150ms avg response time
+Server C: 200ms avg response time
+```
+
+**Philosophy**: Route to the fastest server.
+
+**How It Works:**
+1. Continuously measure response times
+2. Calculate moving average per server
+3. Route to server with lowest latency
+
+**Pros:**
+- Optimal user experience
+- Adapts to server performance
+- Handles degraded servers
+
+**Cons:**
+- Complex implementation
+- Requires active monitoring
+- Can create feedback loops (fast gets more load)
+
+**When to Use:**
+- Performance-critical applications
+- User-facing services where latency matters
+- When you have monitoring infrastructure
+
+### 5. IP Hash (The Consistent Router)
+
+```
+Client IP: 192.168.1.100
+Hash: hash(192.168.1.100) % 3 = 1
+Result: Always route to Server B
+```
+
+**Philosophy**: Same client, same server.
+
+**How It Works:**
+```python
+server_index = hash(client_ip) % num_servers
+```
+
+**Pros:**
+- **Session affinity**: Client always hits same server
+- No need for shared session storage
+- Cache locality (server caches client-specific data)
+
+**Cons:**
+- **Uneven distribution**: Hash may not distribute evenly
+- **Server changes break routing**: Adding/removing servers changes hash
+- **No failover**: If server down, client sessions lost
+
+**When to Use:**
+- Stateful applications (legacy apps with local sessions)
+- Caching benefits from affinity
+- Can't use sticky sessions (cookies)
+
+**Modern Alternative: Consistent Hashing**
+- Adding/removing servers affects minimal clients
+- Better distribution
+- Used by Cassandra, DynamoDB, Redis Cluster
+
+### 6. Random (The Gambler)
+
+```
+Request 1 → Random: Server C
+Request 2 → Random: Server A
+Request 3 → Random: Server A
+Request 4 → Random: Server B
+```
+
+**Philosophy**: Trust in probability.
+
+**Pros:**
+- Extremely simple (one line of code)
+- No state needed
+- Surprisingly effective
+- Avoids pathological cases
+
+**Cons:**
+- Short-term imbalance possible
+- Less predictable
+
+**When to Use:**
+- Stateless applications
+- Simple setups
+- Microservices (service mesh)
+
+**Surprising Truth:**
+Random works better than you'd think. Over time, distribution evens out.
+
+### 7. Least Bandwidth (The Bandwidth Manager)
+
+**Philosophy**: Route to server using least bandwidth.
+
+**When to Use:**
+- Media streaming
+- File downloads
+- Bandwidth-intensive applications
+
+## Layer 4 vs Layer 7: The Fundamental Choice
+
+This choice defines **what the load balancer can see** and **how it makes decisions**.
+
+### Layer 4 (Transport Layer) Load Balancing
+
+**What It Sees:**
+- IP addresses (source, destination)
+- Ports (source, destination)
+- TCP/UDP protocol
+
+**What It Can't See:**
+- HTTP headers
+- URLs
+- Cookies
+- Application data
+
+**How It Works:**
+```
+1. Client connects to LB
+2. LB chooses server based on IP/Port
+3. LB forwards TCP packets to server
+4. Server responds, LB forwards back
+```
+
+**Modes:**
+- **NAT Mode**: LB rewrites IPs
+- **Direct Server Return (DSR)**: Server responds directly to client
+- **Tunnel Mode**: LB encapsulates packets
+
+**Pros:**
+- **Fast**: Minimal processing (just forward packets)
+- **Protocol agnostic**: Works with any TCP/UDP application
+- **Low latency**: Nanoseconds of overhead
+- **High throughput**: Millions of connections/sec
+- **Low resource usage**: Minimal CPU/memory
+
+**Cons:**
+- **Limited routing**: Can't route by URL, headers
+- **No content-based decisions**: Treat all traffic equally
+- **Basic health checks**: Just TCP connectivity
+
+**When to Use:**
+- Ultra-high performance required
+- Non-HTTP protocols (databases, SSH, SMTP)
+- Simple routing sufficient
+- Minimizing latency critical
+
+**Examples:**
+- AWS Network Load Balancer (NLB)
+- HAProxy (L4 mode)
+- LVS (Linux Virtual Server)
+
+### Layer 7 (Application Layer) Load Balancing
+
+**What It Sees:**
+- Everything Layer 4 sees, PLUS:
+- HTTP methods (GET, POST)
+- URLs and paths
+- Headers (cookies, user-agent)
+- Request body (can inspect)
+- SSL/TLS content (after termination)
+
+**How It Works:**
+```
+1. Client connects to LB
+2. LB terminates TCP connection
+3. LB reads HTTP request completely
+4. LB makes routing decision based on content
+5. LB opens new connection to server
+6. LB proxies request/response
+```
+
+**Routing Examples:**
+```nginx
+# Route by path
+/api/*       → API servers
+/images/*    → Image servers
+/static/*    → CDN
+
+# Route by header
+User-Agent: Mobile  → Mobile backend
+User-Agent: Desktop → Desktop backend
+
+# Route by cookie
+Session: premium  → Premium tier servers
+Session: free     → Standard servers
+
+# Route by query param
+?version=2  → New version servers
+?version=1  → Old version servers
+```
+
+**Advanced Features:**
+- **SSL Termination**: LB handles HTTPS, talks HTTP to servers
+- **Content Modification**: Rewrite headers, inject content
+- **Compression**: Gzip responses
+- **Caching**: Serve cached responses
+- **WAF**: Block malicious requests
+- **Rate Limiting**: Throttle clients
+- **Authentication**: Validate JWT, OAuth
+
+**Pros:**
+- **Intelligent routing**: Content-aware decisions
+- **Better health checks**: HTTP status, response content
+- **Security**: WAF, DDoS protection, SSL
+- **Observability**: Full request logging
+- **Flexibility**: Transform requests/responses
+
+**Cons:**
+- **Slower**: Must parse HTTP (microseconds vs nanoseconds)
+- **Higher resource usage**: CPU for parsing, memory for buffering
+- **Lower throughput**: Thousands of connections/sec (vs millions)
+- **HTTP only**: Won't work for other protocols
+- **Complexity**: More to configure and maintain
+
+**When to Use:**
+- HTTP/HTTPS applications (most web apps)
+- Need content-based routing
+- Want SSL termination
+- Security features required
+- Microservices with path-based routing
+
+**Examples:**
+- AWS Application Load Balancer (ALB)
+- Nginx
+- HAProxy (L7 mode)
+- Envoy
+- Traefik
+
+### The Decision Matrix
+
+| Need | Layer 4 | Layer 7 |
+|------|---------|----------|
+| **Maximum Performance** | ✓ | |
+| **Non-HTTP Protocols** | ✓ | |
+| **Path-based Routing** | | ✓ |
+| **SSL Termination** | | ✓ |
+| **Content Inspection** | | ✓ |
+| **WAF/Security** | | ✓ |
+| **Simple Setup** | ✓ | |
+| **Microservices** | | ✓ |
+
+**Hybrid Approach (Common):**
+```
+Internet
+  ↓
+Layer 4 LB (high performance, DDoS protection)
+  ↓
+Layer 7 LB (intelligent routing, SSL termination)
+  ↓
+Application Servers
+```
+
+## Health Checks: Detecting Failure
+
+A load balancer must know which servers are healthy. Dead servers get no traffic.
+
+### Active Health Checks (Proactive)
+
+**How It Works:**
+```
+Every 5 seconds:
+  For each server:
+    Send HTTP GET /health
+    If response 200 OK: Server healthy
+    If timeout or 5xx: Mark unhealthy
+    After 3 consecutive failures: Remove from pool
+    After 2 consecutive successes: Add back to pool
+```
+
+**Types:**
+- **TCP check**: Can establish connection?
+- **HTTP check**: Returns 200 OK?
+- **HTTPS check**: TLS + HTTP success?
+- **Custom check**: Application-specific endpoint
+
+**Configuration Example:**
+```yaml
+health_check:
+  path: /health
+  interval: 5s
+  timeout: 2s
+  healthy_threshold: 2
+  unhealthy_threshold: 3
+```
+
+**Health Check Endpoint Best Practices:**
+```python
+# Good health check
+GET /health
+Response:
+{
+  "status": "healthy",
+  "database": "connected",
+  "cache": "connected",
+  "timestamp": "2026-01-25T10:30:00Z"
+}
+```
+
+**What to Check:**
+- ✓ Process is running
+- ✓ Database connection alive
+- ✓ Critical dependencies available
+- ✗ Disk space (might remove all servers)
+- ✗ Slow checks (should be fast <100ms)
+
+### Passive Health Checks (Reactive)
+
+**How It Works:**
+```
+Monitor real traffic:
+  If 5xx error → Increment failure count
+  If success → Decrement failure count
+  If failures > threshold → Mark unhealthy
+```
+
+**Pros:**
+- No extra traffic
+- Detects real-world issues
+- Faster detection (using actual requests)
+
+**Cons:**
+- Requires real traffic
+- Some requests fail before detection
+
+**Modern Approach: Both**
+- Active checks: Baseline health
+- Passive checks: Faster reaction to real issues
+
+## Load Balancer Deployment Patterns
+
+### Pattern 1: Single Load Balancer
+```
+Clients → Load Balancer → Servers
+```
+- **Problem**: Load balancer is SPOF
+- **Use**: Development, small deployments
+
+### Pattern 2: Active-Passive (HA Pair)
+```
+Clients → VIP (Virtual IP)
+         ↙        ↘
+LB 1 (Active)    LB 2 (Standby)
+         ↘        ↙
+          Servers
+```
+- **Heartbeat**: LBs monitor each other
+- **Failover**: Standby takes VIP if active fails
+- **Eliminates SPOF**, wastes standby resources
+
+### Pattern 3: Active-Active (Equal Cost Multi-Path)
+```
+       DNS Round Robin
+      ↙              ↘
+LB 1 (50%)          LB 2 (50%)
+      ↘              ↙
+          Servers
+```
+- **Both serving**: No wasted resources
+- **Failover**: DNS removes failed LB
+- **Problem**: DNS caching delays failover
+
+### Pattern 4: Cloud Native (Managed Service)
+```
+Clients → AWS ALB/NLB (managed, auto-scaled)
+              ↓
+          Servers
+```
+- **HA built-in**: Multiple availability zones
+- **Auto-scaling**: Handles any load
+- **Managed**: No server maintenance
+- **Cost**: Pay for service
+
+## Advanced Scenarios
+
+### Global Load Balancing (GSLB)
+
+Route users to nearest datacenter:
+```
+User in US → US Load Balancer → US Servers
+User in EU → EU Load Balancer → EU Servers
+User in Asia → Asia Load Balancer → Asia Servers
+```
+
+**How:**
+- **DNS-based**: Return different IPs by location (AWS Route 53, Cloudflare)
+- **Anycast**: Same IP, routed to nearest datacenter
+
+**Benefits:**
+- Lower latency (geographic proximity)
+- Higher availability (datacenter failover)
+- Compliance (data residency)
+
+### Session Persistence (Sticky Sessions)
+
+Ensure user hits same server:
+```
+Request 1 → Server A (set cookie: server=A)
+Request 2 (cookie: server=A) → Server A (same)
+Request 3 (cookie: server=A) → Server A (same)
+```
+
+**Methods:**
+- **Cookie-based**: LB inserts cookie
+- **IP-based**: Hash client IP
+- **Application session**: App sets cookie, LB reads
+
+**When Needed:**
+- Legacy apps with local sessions
+- WebSocket connections
+- Upload progress tracking
+
+**Modern Alternative:**
+- Store sessions in Redis/Memcached
+- Any server can handle any request
+- **Better**: Scales horizontally, survives server failure
+
+### Zero-Downtime Deployments
+
+**Blue-Green Deployment:**
+```
+1. Blue (old version) serving 100%
+2. Deploy Green (new version)
+3. Test Green
+4. Switch LB: 100% → Green
+5. Keep Blue for rollback
+```
+
+**Rolling Deployment:**
+```
+1. Server 1: v1 → v2 (remove from LB, update, add back)
+2. Server 2: v1 → v2 (repeat)
+3. Server 3: v1 → v2 (repeat)
+```
+
+**Canary Deployment:**
+```
+1. 95% → old version
+2. 5% → new version (canary)
+3. Monitor metrics
+4. If good: 50% → new
+5. If good: 100% → new
+```
+
+## The Critical Trade-offs
+
+**Performance vs Features:**
+- L4: Fast, simple
+- L7: Slower, powerful
+
+**Simplicity vs Intelligence:**
+- Round robin: Simple, good enough
+- Least response time: Complex, optimal
+
+**Consistency vs Availability:**
+- Session affinity: Consistent (same server)
+- Any server: Available (survives failures)
+
+**Cost vs Reliability:**
+- Single LB: Cheap, SPOF
+- HA LBs: Expensive, reliable
+
+## The Wisdom
+
+**Start Simple:**
+1. Single load balancer (AWS ALB/NLB)
+2. Round robin algorithm
+3. Active health checks
+4. Stateless application (no sticky sessions)
+
+**Add Complexity When:**
+- Traffic exceeds single LB capacity → Multiple LBs
+- Different server capacities → Weighted round robin
+- Long connections → Least connections
+- Need content routing → Layer 7
+- Global users → GSLB
+
+**The Golden Rule:**
+*"Your load balancer should be the most reliable component in your system. If it fails, everything fails. Invest in HA load balancers before optimizing algorithms."*
+
+**Modern Best Practice:**
+- Use managed load balancers (AWS ALB, GCP Load Balancer)
+- Layer 7 for HTTP (intelligent routing worth the cost)
+- Round robin or least connections (simple, effective)
+- Active health checks (fast detection)
+- No sticky sessions (use external state store)
+- Multiple availability zones (HA built-in)
+
+**The Reality:**
+Most applications are perfectly served by: **Layer 7 ALB + Round Robin + Health Checks**. The fancy algorithms matter only at scale or with specific workload characteristics.
+
+---
+
 # Load Balancers
 
 

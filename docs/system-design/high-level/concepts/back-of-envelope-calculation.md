@@ -1,3 +1,24 @@
+# Back-of-the-Envelope Calculations
+Quick estimations for system design.
+
+**Key Numbers:**
+- 1 million requests/day ≈ 12 requests/second
+- 86,400 seconds in a day
+- 1 KB = 1,000 bytes
+- 1 MB = 1,000 KB
+- 1 GB = 1,000 MB
+
+**Latency Numbers:**
+- L1 cache: 0.5 ns
+- L2 cache: 7 ns
+- RAM: 100 ns
+- SSD: 150 μs
+- HDD: 10 ms
+- Network (same datacenter): 0.5 ms
+- Network (cross-country): 150 ms
+
+---
+
 # Back of Envelope Calculation
 
 

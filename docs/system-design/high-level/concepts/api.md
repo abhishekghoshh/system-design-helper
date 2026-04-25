@@ -1,3 +1,31 @@
+# API (Application Programming Interface)
+Interface that allows different software systems to communicate.
+
+**Types:**
+- **REST**: Resource-based, uses HTTP
+- **GraphQL**: Query language for APIs
+- **gRPC**: High-performance RPC framework
+- **SOAP**: XML-based protocol (legacy)
+
+# Content Negotiation
+Client and server agree on response format.
+
+**HTTP Headers:**
+- `Accept`: Preferred content type
+- `Accept-Language`: Preferred language
+- `Accept-Encoding`: Compression support
+
+# API Versioning
+Managing changes to APIs.
+
+**Strategies:**
+- **URI**: `/v1/users`, `/v2/users`
+- **Header**: `API-Version: 2`
+- **Query**: `/users?version=2`
+- **Content Negotiation**: `Accept: application/vnd.api.v2+json`
+
+---
+
 # API related things
 
 

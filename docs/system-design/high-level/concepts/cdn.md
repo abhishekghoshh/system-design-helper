@@ -1,3 +1,33 @@
+# CDN (Content Delivery Network)
+Distributed network of servers that deliver content based on user location.
+
+**How it Works:**
+1. User requests content
+2. DNS routes to nearest edge server
+3. Edge server returns cached content or fetches from origin
+4. Content cached for future requests
+
+**Benefits:**
+- Reduced latency
+- Lower bandwidth costs
+- Improved availability
+- DDoS protection
+- Offload origin servers
+
+**Use Cases:**
+- Static assets (images, CSS, JS)
+- Video streaming
+- Software downloads
+- Gaming assets
+
+**Popular CDNs:**
+- Cloudflare
+- Akamai
+- AWS CloudFront
+- Fastly
+
+---
+
 # Design Content Delivery Network
 
 
