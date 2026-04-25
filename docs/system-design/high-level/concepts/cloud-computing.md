@@ -1,4 +1,16 @@
 # Cloud Computing
+
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
+## Theory
+
 On-demand delivery of computing resources over the internet.
 
 **Service Models:**

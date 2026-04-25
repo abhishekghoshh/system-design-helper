@@ -1,5 +1,14 @@
 # HTTP / HTTPS (HyperText Transfer Protocol)
 
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
 ## Theory
 
 ### HTTP and REST Fundamentals
@@ -132,7 +141,7 @@ HTTP/1.1 400 Bad Request
 {"error": "email is required"}
 ```
 
-## HTTPS: Security Through Encryption
+### HTTPS: Security Through Encryption
 
 **HTTP vs HTTPS:**
 ```
@@ -226,7 +235,7 @@ curl -vI https://example.com
 # Browser: Click padlock icon in address bar
 ```
 
-## HTTP/1.1 vs HTTP/2 vs HTTP/3
+### HTTP/1.1 vs HTTP/2 vs HTTP/3
 
 **HTTP/1.1 (1997-2015):**
 ```
@@ -333,7 +342,7 @@ Major sites using HTTP/3:
 - Netflix
 ```
 
-## HTTP: Advantages & Disadvantages
+### HTTP: Advantages & Disadvantages
 
 **Advantages:**
 ```
@@ -401,7 +410,7 @@ Major sites using HTTP/3:
   - Server resources per connection
 ```
 
-## Alternatives to HTTP
+### Alternatives to HTTP
 
 **1. WebSockets**
 ```
@@ -564,7 +573,7 @@ Example:
   File download: TCP (every byte matters)
 ```
 
-## Decision Matrix: Which Protocol?
+### Decision Matrix: Which Protocol?
 
 | Need | Best Choice | Why |
 |------|-------------|-----|
@@ -578,7 +587,7 @@ Example:
 | **File upload** | HTTP multipart | Simple, standard |
 | **Bulk data transfer** | HTTP/2 or gRPC | Streaming, efficient |
 
-## When NOT to Use HTTP
+### When NOT to Use HTTP
 
 ```
 ✗ Real-time gaming
@@ -600,7 +609,7 @@ Example:
   → Consider BitTorrent/custom (P2P, resumable)
 ```
 
-## HTTP Best Practices
+### HTTP Best Practices
 
 **Do's:**
 ```

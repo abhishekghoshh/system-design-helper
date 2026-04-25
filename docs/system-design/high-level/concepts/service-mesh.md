@@ -1,4 +1,17 @@
 # Service Mesh
+
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+- [Service Mesh and its Architecture | How Microservices Communicate?](https://www.youtube.com/watch?v=eIxdHepOeHw)
+
+## Theory
+
 Infrastructure layer for managing service-to-service communication.
 
 **Features:**
@@ -16,11 +29,3 @@ Infrastructure layer for managing service-to-service communication.
 - Consul Connect
 
 ---
-
-# Service Mesh
-
-
-## Youtube
-
-- [Service Mesh and its Architecture | How Microservices Communicate?](https://www.youtube.com/watch?v=eIxdHepOeHw)
-

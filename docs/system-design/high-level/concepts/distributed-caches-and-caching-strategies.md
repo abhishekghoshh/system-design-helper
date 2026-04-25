@@ -1,10 +1,14 @@
 # Distributed Cache and Caching Strategies
 
+## Blogs and websites
+
+
+## Medium
+
 
 ## Youtube
 
 - [19. System Design: Distributed Cache and Caching Strategies | Cache-Aside, Write-Through, Write-Back](https://www.youtube.com/watch?v=RtOyBwBICRs)
-
 
 ## Theory
 

@@ -1,4 +1,17 @@
 # Event Sourcing
+
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+- [System Design - Event Sourcing](https://www.youtube.com/watch?v=JTmgi0vO5Ug)
+
+## Theory
+
 Store state changes as sequence of events.
 
 **Benefits:**
@@ -13,10 +26,3 @@ Store state changes as sequence of events.
 - Complexity
 
 ---
-
-# Event Sourcing
-
-
-## Youtube
-
-- [System Design - Event Sourcing](https://www.youtube.com/watch?v=JTmgi0vO5Ug)

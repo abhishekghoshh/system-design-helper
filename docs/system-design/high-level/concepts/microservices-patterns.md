@@ -1,5 +1,9 @@
 # Microservices patterns
 
+## Blogs and websites
+
+
+## Medium
 
 
 ## Youtube
@@ -9,18 +13,10 @@
 - [In How many Microservices we should divide Monolithic System | How Many Microservices are too many?](https://www.youtube.com/watch?v=NE_LPGHYrMc)
 
 
-
 - [Rate Limiter: Fault Tolerance in Distributed Microservices | Rate Limiter Implementation](https://www.youtube.com/watch?v=o9uCQHdh4DU)
 - [Bulkhead Pattern: Fault Tolerance in Distributed Microservices](https://www.youtube.com/watch?v=Ax0ycLJvvfc)
 - [Retry Pattern: Fault Tolerance in Distributed Microservices](https://www.youtube.com/watch?v=oOFnyUpUDtg)
 - [Circuit Breaker : Fault Tolerance in Distributed Microservices](https://www.youtube.com/watch?v=_kCWAf8kEYI)
-
-
-
-
-
-
-
 
 ## Theory
 
@@ -166,4 +162,3 @@
 - **Challenges:**
     - Maintaining consistency between the read and write models.
     - Ensuring the read model is up-to-date with changes in the write model.
-

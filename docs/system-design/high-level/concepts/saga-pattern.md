@@ -1,4 +1,16 @@
 # Saga Pattern
+
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
+## Theory
+
 Manage distributed transactions across services.
 
 **Types:**

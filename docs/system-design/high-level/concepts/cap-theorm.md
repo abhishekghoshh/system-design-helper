@@ -1,6 +1,19 @@
 # CAP Theorem
 
-## The Immutable Law of Distributed Systems
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+- [2. CAP Theorem (Hindi) | High Level Design for Beginners | CAP Partition Tolerance explained](https://www.youtube.com/watch?v=3qRBeZsUa18)
+- [CAP Theorem (English Dubbed) | Better with 1.25x playback speed](https://www.youtube.com/watch?v=SckoiQefVEE)
+
+## Theory
+
+### The Immutable Law of Distributed Systems
 
 The CAP Theorem is not a guideline or best practice—it's a **fundamental law of physics** for distributed systems, as immutable as the laws of thermodynamics. Formulated by Eric Brewer in 2000 and proven by Seth Gilbert and Nancy Lynch in 2002, it states an impossible choice:
 
@@ -10,7 +23,7 @@ The CAP Theorem is not a guideline or best practice—it's a **fundamental law o
 2. **Availability (A)**: Every request receives a response (success or failure)
 3. **Partition Tolerance (P)**: System continues operating despite network failures
 
-## The Deep Theory: Why CAP is Inevitable
+### The Deep Theory: Why CAP is Inevitable
 
 **The Impossibility Proof (Simplified):**
 
@@ -53,9 +66,9 @@ Result: System breaks during partition (❌ P)
 **The Revelation:**
 There is **no fourth option**. Network partitions will happen (hardware fails, cables cut, routers crash). Therefore, P is not optional—you must tolerate partitions. The real choice is **C vs A during a partition**.
 
-## The Three Properties: Deep Dive
+### The Three Properties: Deep Dive
 
-### Consistency (C)
+#### Consistency (C)
 
 **Formal Definition:**
 Linearizability—every read receives the most recent write or an error.
@@ -87,7 +100,7 @@ read_balance()  # Must see 50
 ```
 Wrong balance = overdraft = lost money. Consistency is mandatory.
 
-### Availability (A)
+#### Availability (A)
 
 **Formal Definition:**
 Every request receives a response, without guarantee it contains the most recent write.
@@ -118,7 +131,7 @@ read_feed()  # Might not see "Hello" yet
 ```
 Missing a tweet briefly = acceptable. Being down = unacceptable.
 
-### Partition Tolerance (P)
+#### Partition Tolerance (P)
 
 **Formal Definition:**
 System continues operating despite arbitrary message loss between nodes.
@@ -142,11 +155,11 @@ Partitions are not theoretical—they happen:
 **The Conclusion:**
 Partition tolerance is **not optional** in distributed systems. Networks fail. You must handle it.
 
-## The Real Choice: CP vs AP
+### The Real Choice: CP vs AP
 
 Since P is mandatory, you choose between C and A **during a partition**.
 
-### CP Systems (Consistency over Availability)
+#### CP Systems (Consistency over Availability)
 
 **Philosophy**: "Better to be unavailable than wrong."
 
@@ -190,7 +203,7 @@ ATM displays: "Service temporarily unavailable"
 Better than dispensing cash twice or showing wrong balance
 ```
 
-### AP Systems (Availability over Consistency)
+#### AP Systems (Availability over Consistency)
 
 **Philosophy**: "Better to be approximately right than unavailable."
 
@@ -236,7 +249,7 @@ Items might appear differently on different nodes briefly
 Eventually syncs (user doesn't notice)
 ```
 
-## CA Systems: The Myth
+### CA Systems: The Myth
 
 **Traditional RDBMS (Single Node):**
 - **C**: Strong ACID guarantees
@@ -249,11 +262,11 @@ CA systems are **not distributed**. They're single nodes. The moment you add a s
 **CA Distributed Systems Don't Exist in Real Networks:**
 If you try to build one, any partition breaks it entirely.
 
-## The Spectrum: It's Not Binary
+### The Spectrum: It's Not Binary
 
 Real systems don't make a hard choice—they offer **tunable consistency**.
 
-### Cassandra: The Exemplar
+#### Cassandra: The Exemplar
 
 **Tunable Consistency Levels:**
 
@@ -300,7 +313,7 @@ Choose C vs A **per request**:
 - Write post: QUORUM (data important)
 - Page view count: ONE (approximate OK)
 
-## PACELC: The CAP Extension
+### PACELC: The CAP Extension
 
 **CAP Only Discusses Partitions. What About Normal Operation?**
 
@@ -323,7 +336,7 @@ Even without partitions, there's a trade-off:
 - **PC/EL**: Consistent during partition, Low latency normally (???—rare)  
 - **PC/EC**: Consistent during partition, Consistent normally (Traditional DBs)
 
-## Real-World Examples: Who Chose What?
+### Real-World Examples: Who Chose What?
 
 **Google Spanner (PC/EC):**
 - CP during partitions
@@ -346,7 +359,7 @@ Even without partitions, there's a trade-off:
 - Can achieve CP with QUORUM reads/writes
 - **Trade-off**: Maximum flexibility, maximum complexity
 
-## The Wisdom: How to Choose
+### The Wisdom: How to Choose
 
 **Ask These Questions:**
 
@@ -390,7 +403,7 @@ db.users.update(query, write_concern="majority")
 db.page_views.insert(data, write_concern="acknowledged")
 ```
 
-## The Fundamental Insight
+### The Fundamental Insight
 
 CAP is not about databases or technologies—it's about **the nature of distributed systems**. It's a consequence of:
 - The finite speed of light
@@ -402,25 +415,15 @@ You can't engineer around CAP. You can only make informed choices about which tr
 **The Meta-Lesson:**
 *"In distributed systems, you can't have everything. Understanding what you can sacrifice is the key to good design."*
 
-# PACELC Theorem
+### PACELC Theorem
+
 Extension of CAP:
 - **If Partition**: Choose between Availability and Consistency
 - **Else**: Choose between Latency and Consistency
 
 ---
 
-# CAP Theorm
-
-
-## Youtube
-
-- [2. CAP Theorem (Hindi) | High Level Design for Beginners | CAP Partition Tolerance explained](https://www.youtube.com/watch?v=3qRBeZsUa18)
-- [CAP Theorem (English Dubbed) | Better with 1.25x playback speed](https://www.youtube.com/watch?v=SckoiQefVEE)
-
-
-
-
-## Theory
+### CAP Theorm
 
 ### *Introduction:*
 

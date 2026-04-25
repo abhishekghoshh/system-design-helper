@@ -1,5 +1,16 @@
 # Availability & Reliability
 
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
+## Theory
+
 **Availability**: Percentage of time system is operational
 - Measured in "nines": 99.9% = 3 nines = ~8.76 hours downtime/year
 - **99.9% (3 nines)**: 8.76 hours/year
@@ -17,7 +28,8 @@
 - Health checks
 - Geographic distribution
 
-# Single Point of Failure (SPOF)
+### Single Point of Failure (SPOF)
+
 Component whose failure brings down entire system.
 
 **Examples:**

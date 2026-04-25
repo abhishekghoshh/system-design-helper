@@ -1,4 +1,18 @@
 # REST API (Representational State Transfer)
+
+## Blogs and websites
+
+- [REST Architectural Constraints](https://restfulapi.net/rest-architectural-constraints/)
+- [REST API Architectural Constraints](https://www.geeksforgeeks.org/javascript/rest-api-architectural-constraints/)
+
+## Medium
+
+
+## Youtube
+
+
+## Theory
+
 Architectural style using HTTP for web services.
 
 **Principles:**
@@ -25,7 +39,7 @@ PUT    /api/v1/users/{id}     # Update user
 DELETE /api/v1/users/{id}     # Delete user
 ```
 
-## REST API: Advantages
+### REST API: Advantages
 
 ```
 ✓ Simple & Intuitive
@@ -73,7 +87,7 @@ Typical REST API:
   Throughput: 1000-5000 req/sec (single server)
 ```
 
-## REST API: Disadvantages
+### REST API: Disadvantages
 
 ```
 ✗ Over-fetching
@@ -131,7 +145,7 @@ Typical REST API:
   - Not event-driven
 ```
 
-## Alternatives to REST
+### Alternatives to REST
 
 **1. GraphQL**
 ```
@@ -285,7 +299,7 @@ Limitation:
   - Not for public APIs
 ```
 
-## REST API Best Practices
+### REST API Best Practices
 
 **URL Design:**
 ```
@@ -414,7 +428,7 @@ Recommendation: URL versioning (/v1/, /v2/)
 ✓ Implement request timeout
 ```
 
-## When to Use REST vs Alternatives
+### When to Use REST vs Alternatives
 
 | Scenario | Use This | Why |
 |----------|----------|-----|
@@ -431,32 +445,20 @@ Recommendation: URL versioning (/v1/, /v2/)
 
 ---
 
-# REST Architectural Constraints
+### REST Architectural Constraints
 
-
-## Blogs and websites
-
-- [REST Architectural Constraints](https://restfulapi.net/rest-architectural-constraints/)
-- [REST API Architectural Constraints](https://www.geeksforgeeks.org/javascript/rest-api-architectural-constraints/)
-
-
-## Youtube
-
-
-## Introduction
+### Introduction
 
 - [REST API Best Practices](https://www.youtube.com/watch?v=8XK2o5MfxkE)
 - [The Right Way To Build REST APIs](https://www.youtube.com/watch?v=CVBpYfPKGlE)
 - [Everything You NEED to Know About WEB APP Architecture](https://www.youtube.com/watch?v=sDlCSIDwpDs)
 
 
-
-### Comparisions
+#### Comparisions
 
 - [HTTP vs WebSockets: Performance (Latency - CPU - Memory - Network)](https://www.youtube.com/watch?v=UtyxjO8LJQs)
 
 
-### Idempotent API design
+#### Idempotent API design
 
 - [14. Design Idempotent POST API | System Design to Handle Duplicate Request by Idempotency Handler](https://www.youtube.com/watch?v=mI73eTlSqeU)
-

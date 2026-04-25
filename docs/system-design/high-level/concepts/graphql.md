@@ -1,4 +1,16 @@
 # GraphQL
+
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
+## Theory
+
 Query language that allows clients to request exactly what they need.
 
 **Advantages:**

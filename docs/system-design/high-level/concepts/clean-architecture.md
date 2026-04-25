@@ -1,6 +1,5 @@
 # Clean Architecture
 
-
 ## Blogs and websites
 
 - [A quick introduction to clean architecture](https://www.freecodecamp.org/news/a-quick-introduction-to-clean-architecture-990c014448d2/)
@@ -11,14 +10,13 @@
 - [What is Inversion of Control?](https://stackoverflow.com/questions/3058/what-is-inversion-of-control)
 - [What is dependency injection?](https://stackoverflow.com/questions/130794/what-is-dependency-injection)
 
-
-
 ## Medium
 
 - [The S.O.L.I.D Principles in Pictures](https://medium.com/backticks-tildes/the-s-o-l-i-d-principles-in-pictures-b34ce2f1e898)
 - [The 7 Most Important Software Design Patterns](https://learningdaily.dev/the-7-most-important-software-design-patterns-d60e546afb0e)
 - [Understanding Inversion of Control (IoC) Principle](https://medium.com/@amitkma/understanding-inversion-of-control-ioc-principle-163b1dc97454)
 
+## Youtube
 
 
 ## Theory

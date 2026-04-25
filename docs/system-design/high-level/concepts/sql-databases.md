@@ -1,4 +1,16 @@
 # SQL (Relational Databases)
+
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
+## Theory
+
 Structured data with predefined schema.
 
 **Characteristics:**
@@ -21,7 +33,7 @@ Structured data with predefined schema.
 - Data integrity critical
 - Structured data
 
-## SQL Databases: Advantages
+### SQL Databases: Advantages
 
 ```
 ✓ ACID Guarantees
@@ -86,7 +98,7 @@ Structured data with predefined schema.
   - Prevents data corruption
 ```
 
-## SQL Databases: Disadvantages
+### SQL Databases: Disadvantages
 
 ```
 ✗ Scaling Challenges
@@ -141,7 +153,7 @@ Structured data with predefined schema.
   - Monitoring required
 ```
 
-## SQL vs NoSQL: The Complete Comparison
+### SQL vs NoSQL: The Complete Comparison
 
 | Aspect | SQL | NoSQL |
 |--------|-----|-------|
@@ -157,7 +169,7 @@ Structured data with predefined schema.
 | **Cost at Scale** | High (bigger machines) | Lower (commodity hardware) |
 | **Complexity** | Lower (mature tools) | Higher (newer, distributed) |
 
-## When to Choose SQL
+### When to Choose SQL
 
 ```
 ✓ Financial Applications
@@ -191,7 +203,7 @@ Structured data with predefined schema.
   - Data warehousing
 ```
 
-## Alternatives to Traditional SQL
+### Alternatives to Traditional SQL
 
 **1. NewSQL (Distributed SQL)**
 ```

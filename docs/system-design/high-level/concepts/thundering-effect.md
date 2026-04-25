@@ -1,11 +1,14 @@
 # Design Book My Show
 
+## Blogs and websites
+
+
+## Medium
 
 
 ## Youtube
 
 - [27. Thundering Herd Effect on Ticket Booking App | System Design](https://www.youtube.com/watch?v=1aamH7sA8FY)
-
 
 ## Theory
 
@@ -244,4 +247,3 @@ def get_seat_availability(show_id):
 | Virtual Waiting Room | User management | ⭐⭐⭐⭐ |
 | Distributed Lock | Prevent cache stampede | ⭐⭐⭐⭐ |
 | Circuit Breaker | Fail fast protection | ⭐⭐⭐⭐ |
-

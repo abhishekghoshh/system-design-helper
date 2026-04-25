@@ -1,6 +1,18 @@
 # Observability
 
-## Logging
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
+## Theory
+
+### Logging
+
 Recording application events.
 
 **Log Levels:**
@@ -24,7 +36,8 @@ Recording application events.
 - Datadog
 - CloudWatch
 
-## Monitoring
+### Monitoring
+
 Collecting and analyzing metrics.
 
 **Types:**
@@ -48,7 +61,8 @@ Collecting and analyzing metrics.
 - New Relic
 - CloudWatch
 
-## Tracing
+### Tracing
+
 Track requests across distributed systems.
 
 **Distributed Tracing:**
@@ -63,7 +77,8 @@ Track requests across distributed systems.
 - AWS X-Ray
 - OpenTelemetry
 
-## Alerting
+### Alerting
+
 Notify team of issues.
 
 **Best Practices:**

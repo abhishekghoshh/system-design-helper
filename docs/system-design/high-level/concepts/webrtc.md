@@ -1,10 +1,15 @@
 # WebRTC
 
+## Blogs and websites
+
+
+## Medium
+
+
 ## Youtube
 
 - [WebRTC | Video Calling](https://www.youtube.com/playlist?list=PLinedj3B30sDxXVu4VXdFx678W2pJmORa)
 - [System Design Behind Multi-Conference Video Calls - WebRTC vs SFU vs MCU](https://www.youtube.com/watch?v=Zaz6hYVm-WE)
-
 
 ## Theory
 
@@ -39,9 +44,9 @@ Each has different trade-offs in terms of scalability, bandwidth, CPU usage, and
 
 ---
 
-## 1. WebRTC (Peer-to-Peer Mesh)
+### 1. WebRTC (Peer-to-Peer Mesh)
 
-### Description
+#### Description
 
 In a **peer-to-peer (P2P) mesh** architecture, each participant establishes direct connections with every other participant in the call. Every user sends their media streams to all other users and receives streams from all other users.
 
@@ -136,7 +141,7 @@ Most home internet:
 Result: Call fails due to insufficient upload bandwidth
 ```
 
-### How It Works
+#### How It Works
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -187,7 +192,7 @@ Media Encoding/Decoding:
 │                                         (VP8/H.264)
 ```
 
-### Advantages
+#### Advantages
 
 ```
 ✅ BENEFITS:
@@ -220,7 +225,7 @@ Media Encoding/Decoding:
    • No quality degradation from server processing
 ```
 
-### Disadvantages
+#### Disadvantages
 
 ```
 ❌ LIMITATIONS:
@@ -263,7 +268,7 @@ Mobile: 2-3 participants
 Recommended: 1-on-1 calls only
 ```
 
-### Use Cases
+#### Use Cases
 
 ```
 ✅ IDEAL FOR:
@@ -284,9 +289,9 @@ Recommended: 1-on-1 calls only
 
 ---
 
-## 2. SFU (Selective Forwarding Unit)
+### 2. SFU (Selective Forwarding Unit)
 
-### Description
+#### Description
 
 An **SFU** is a media server that receives video/audio streams from each participant and selectively forwards them to other participants. Unlike P2P, each client only sends one stream to the SFU, which then distributes it to others.
 
@@ -383,7 +388,7 @@ Per User Bandwidth (optimized):
 ✅ Scales to 100+ participants!
 ```
 
-### How It Works
+#### How It Works
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -484,7 +489,7 @@ SFU monitors each recipient's connection:
 └────────────────────────────────────┘
 ```
 
-### Advantages
+#### Advantages
 
 ```
 ✅ BENEFITS:
@@ -531,7 +536,7 @@ SFU monitors each recipient's connection:
    • Can use cheaper servers
 ```
 
-### Disadvantages
+#### Disadvantages
 
 ```
 ❌ LIMITATIONS:
@@ -579,7 +584,7 @@ SFU monitors each recipient's connection:
    • Triples encoding bandwidth (3 qualities)
 ```
 
-### Use Cases
+#### Use Cases
 
 ```
 ✅ IDEAL FOR:
@@ -602,9 +607,9 @@ SFU monitors each recipient's connection:
 
 ---
 
-## 3. MCU (Multipoint Control Unit)
+### 3. MCU (Multipoint Control Unit)
 
-### Description
+#### Description
 
 An **MCU** is a media server that receives all participant streams, **decodes them**, **mixes/composes them** into a single unified stream, and **re-encodes** it before sending to each participant. Each participant receives one combined video layout.
 
@@ -722,7 +727,7 @@ Per User Bandwidth:
 ❌ Extremely expensive for server!
 ```
 
-### How It Works
+#### How It Works
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -856,7 +861,7 @@ MCU (4 users):
     But MCU handles heavy lifting on server!
 ```
 
-### Advantages
+#### Advantages
 
 ```
 ✅ BENEFITS:
@@ -909,7 +914,7 @@ MCU (4 users):
    • Recording/compliance
 ```
 
-### Disadvantages
+#### Disadvantages
 
 ```
 ❌ LIMITATIONS:
@@ -968,7 +973,7 @@ vs SFU:             0 CPU cores (forwarding only)
 vs P2P:             0 server cost
 ```
 
-### Use Cases
+#### Use Cases
 
 ```
 ✅ IDEAL FOR:
@@ -994,9 +999,9 @@ vs P2P:             0 server cost
 
 ---
 
-## Comparison: WebRTC vs SFU vs MCU
+### Comparison: WebRTC vs SFU vs MCU
 
-### Architecture Comparison
+#### Architecture Comparison
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -1044,7 +1049,7 @@ Characteristics:
 • Single output
 ```
 
-### Feature Comparison Table
+#### Feature Comparison Table
 
 | Feature | P2P (Mesh) | SFU | MCU |
 |---------|-----------|-----|-----|
@@ -1063,7 +1068,7 @@ Characteristics:
 | **Works on Mobile** | 2-3 users | Yes | Yes (best) |
 | **Works on Poor Network** | No | Medium | ✅ Best |
 
-### Bandwidth Comparison (10 Participants, 2 Mbps per stream)
+#### Bandwidth Comparison (10 Participants, 2 Mbps per stream)
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -1114,7 +1119,7 @@ SFU: 200 Mbps server + (10 × 2 uploads) = 220 Mbps
 MCU: 40 Mbps server + (10 × 2 uploads) = 60 Mbps ✅ Lowest
 ```
 
-### Cost Comparison (100 Participants)
+#### Cost Comparison (100 Participants)
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -1148,7 +1153,7 @@ Total: ~$5,100/month
 ⚠️ Expensive but best quality
 ```
 
-### When to Use Each Architecture
+#### When to Use Each Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -1213,7 +1218,7 @@ Many modern platforms use combinations:
    └─ Better scalability
 ```
 
-### Real-World Examples
+#### Real-World Examples
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -1293,7 +1298,7 @@ Features:
 Architecture: Hybrid P2P/SFU
 ```
 
-### Summary & Best Practices
+#### Summary & Best Practices
 
 ```
 KEY TAKEAWAYS:
@@ -1339,4 +1344,3 @@ Large (50-100):  SFU + optimizations
 Huge (100+):     SFU + MCU hybrid
 Broadcast:       MCU or CDN streaming
 ```
-

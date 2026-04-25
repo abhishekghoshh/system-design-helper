@@ -1,5 +1,14 @@
 # Performance & Resilience Patterns
 
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
 ## Theory
 
 ### What is Rate Limiting?
@@ -44,7 +53,8 @@ Client sends request
 
 ---
 
-## Rate Limiting
+### Rate Limiting
+
 Control number of requests in time window.
 
 **Algorithms:**
@@ -65,7 +75,8 @@ Control number of requests in time window.
 - Nginx
 - Application code
 
-## Throttling
+### Throttling
+
 Deliberately slow down processing to protect system.
 
 **Types:**
@@ -77,7 +88,8 @@ Deliberately slow down processing to protect system.
 - Rate limiting: Hard limits, reject excess
 - Throttling: Slow down, queue excess
 
-## Backpressure
+### Backpressure
+
 Downstream component signals upstream to slow down.
 
 **Mechanisms:**
@@ -91,7 +103,8 @@ Downstream component signals upstream to slow down.
 - Graceful degradation
 - Resource protection
 
-## Idempotency
+### Idempotency
+
 Multiple identical requests have same effect as single request.
 
 **HTTP Idempotent Methods:**
@@ -109,7 +122,8 @@ Multiple identical requests have same effect as single request.
 - Order submission
 - Retry logic
 
-## Circuit Breaker
+### Circuit Breaker
+
 Prevent cascading failures by failing fast.
 
 **States:**
@@ -128,7 +142,8 @@ Prevent cascading failures by failing fast.
 - Resilience4j
 - Polly (.NET)
 
-## Retry Mechanisms
+### Retry Mechanisms
+
 Automatically retry failed operations.
 
 **Strategies:**
@@ -142,7 +157,8 @@ Automatically retry failed operations.
 - Use exponential backoff
 - Implement idempotency
 
-## Bulkhead Pattern
+### Bulkhead Pattern
+
 Isolate resources to prevent cascading failures.
 
 **Example:**
@@ -155,7 +171,8 @@ Isolate resources to prevent cascading failures.
 - Resource protection
 - Prevent total system failure
 
-## Health Checks
+### Health Checks
+
 Monitor service health and availability.
 
 **Types:**

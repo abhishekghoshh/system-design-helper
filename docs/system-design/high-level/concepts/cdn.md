@@ -1,4 +1,23 @@
 # CDN (Content Delivery Network)
+
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+### Introduction
+
+- [How a CDN Works | System Design](https://www.youtube.com/watch?v=5mYSQvflpKA)
+- [How does Netflix's CDN scale to over 100TB/s? | System Design](https://www.youtube.com/watch?v=pdPSLm629yk)
+
+- [Building YouTube-Scale Content Infrastructure (It's EASY)](https://www.youtube.com/watch?v=HT1-3bIOT2w)
+- [Anycast vs Unicast Architecture Explained](https://www.youtube.com/watch?v=HT1-3bIOT2w)
+
+## Theory
+
 Distributed network of servers that deliver content based on user location.
 
 **How it Works:**
@@ -28,21 +47,7 @@ Distributed network of servers that deliver content based on user location.
 
 ---
 
-# Design Content Delivery Network
-
-
-## Youtube
-
-### Introduction
-
-- [How a CDN Works | System Design](https://www.youtube.com/watch?v=5mYSQvflpKA)
-- [How does Netflix's CDN scale to over 100TB/s? | System Design](https://www.youtube.com/watch?v=pdPSLm629yk)
-
-- [Building YouTube-Scale Content Infrastructure (It's EASY)](https://www.youtube.com/watch?v=HT1-3bIOT2w)
-- [Anycast vs Unicast Architecture Explained](https://www.youtube.com/watch?v=HT1-3bIOT2w)
-
-
-## Theory
+### Design Content Delivery Network
 
 ### What Is a CDN?
 

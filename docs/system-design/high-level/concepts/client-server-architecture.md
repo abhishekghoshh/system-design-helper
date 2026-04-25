@@ -1,10 +1,21 @@
 # Client-Server Architecture
 
-## The Foundational Paradigm of Distributed Computing
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
+## Theory
+
+### The Foundational Paradigm of Distributed Computing
 
 Client-Server architecture is not merely a pattern—it's the **fundamental organizing principle** of modern computing. It represents the first great abstraction in distributed systems: the separation of **concerns** (what you want) from **capabilities** (how it's provided).
 
-## The Deep Theory
+### The Deep Theory
 
 **Philosophical Foundation:**
 At its core, client-server embodies the principle of **asymmetric responsibility**. The client owns the **interface and experience**, while the server owns the **truth and capability**. This separation allows:
@@ -20,7 +31,7 @@ The client-server split creates the first **trust boundary** in your system. Eve
 - Sensitive operations require server-side execution
 - Client-side validations are for UX, not security
 
-## The State Problem
+### The State Problem
 
 **Stateless Servers (The Ideal):**
 - Each request contains all needed context
@@ -40,7 +51,7 @@ The client-server split creates the first **trust boundary** in your system. Eve
 - State stored in external systems (Redis, databases)
 - Best of both worlds: scalable servers + persistent state
 
-## Architectural Tiers: Evolution of Separation
+### Architectural Tiers: Evolution of Separation
 
 **Two-Tier (Client-Server):**
 ```
@@ -71,7 +82,7 @@ The client-server split creates the first **trust boundary** in your system. Eve
 - **Cons**: Operational complexity, debugging challenges, network overhead
 - **When**: Only when scale or complexity demands it
 
-## The Communication Contract: APIs
+### The Communication Contract: APIs
 
 The client-server boundary is defined by **contracts** (APIs):
 - **Syntax**: How to format requests (HTTP, gRPC, GraphQL)
@@ -85,7 +96,7 @@ Think of the API as an **interface** in object-oriented programming:
 - Allows implementation to change
 - Version carefully (breaking changes hurt)
 
-## Request-Response Patterns
+### Request-Response Patterns
 
 **Synchronous (Request-Response):**
 ```
@@ -116,7 +127,7 @@ Server: (later) "New message arrived!"
 - **Use**: Real-time updates, live data, notifications
 - **Technologies**: WebSockets, Server-Sent Events, Long Polling
 
-## The Scalability Implications
+### The Scalability Implications
 
 **Scaling Clients:**
 - Essentially unlimited (users bring their own devices)
@@ -127,7 +138,7 @@ Server: (later) "New message arrived!"
 - **Horizontal**: More machines (requires stateless design)
 - **The Pattern**: Start vertical, go horizontal when needed
 
-## Modern Evolutions
+### Modern Evolutions
 
 **Thin Client (Web/Mobile Apps):**
 - Client is mostly UI rendering
@@ -146,7 +157,7 @@ Server: (later) "New message arrived!"
 - Syncs when connected
 - **Best of Both**: Online performance, offline capability
 
-## The Fundamental Trade-offs
+### The Fundamental Trade-offs
 
 | Aspect | Client-Heavy | Server-Heavy |
 |--------|-------------|-------------|
@@ -157,7 +168,7 @@ Server: (later) "New message arrived!"
 | **Offline** | Possible with caching | Not possible |
 | **Consistency** | Harder (client versions) | Easier (single source) |
 
-## The Wisdom
+### The Wisdom
 
 **Start Server-Heavy:**
 - Business logic on server (security, consistency)

@@ -1,5 +1,14 @@
 # Indexing
 
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
 ## Theory
 
 ### Database Indexes Basics
@@ -66,7 +75,7 @@ The database traverses the tree from root to leaf, narrowing the search at each 
 
 ---
 
-## Quick Reference
+### Quick Reference
 
 Data structure to speed up query performance.
 

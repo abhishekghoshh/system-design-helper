@@ -1,4 +1,16 @@
 # Fault Tolerance
+
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
+## Theory
+
 System continues operating despite failures.
 
 **Techniques:**
@@ -9,7 +21,8 @@ System continues operating despite failures.
 - Circuit breakers
 - Retry mechanisms
 
-# Disaster Recovery
+### Disaster Recovery
+
 Plan for recovering from catastrophic failures.
 
 **Metrics:**

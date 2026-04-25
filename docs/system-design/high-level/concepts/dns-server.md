@@ -1,10 +1,27 @@
 # Domain Name System (DNS)
 
-## The Internet's Phone Book
+## Blogs and websites
+
+- [DNS Record Types: Defined and Explained](https://www.site24x7.com/learn/dns-record-types.html)
+
+## Medium
+
+
+## Youtube
+
+- [How DNS works? | System Design of Domain Name System](https://www.youtube.com/watch?v=QVdX34quUgU)
+
+- [Build Your Own DNS Server - Beginner Friendly](https://www.youtube.com/watch?v=Ui66W7zeAbI)
+- [Build Your Own DNS Server](https://www.youtube.com/watch?v=52wnTsBI_HE)
+- [I created an AI Based DNS Server - Toying with DNS](https://www.youtube.com/watch?v=Sgk0yy8rJ8M)
+
+## Theory
+
+### The Internet's Phone Book
 
 DNS translates human-readable domain names (www.example.com) to machine-readable IP addresses (93.184.216.34). Without DNS, you'd need to memorize IP addresses for every website.
 
-## How DNS Resolution Works: The Complete Journey
+### How DNS Resolution Works: The Complete Journey
 
 **The 8-Step Resolution Process:**
 
@@ -86,9 +103,9 @@ Second Visit (cached):
   Total:             0ms (instant)
 ```
 
-## DNS Record Types: The Complete Reference
+### DNS Record Types: The Complete Reference
 
-### A Record (Address Record)
+#### A Record (Address Record)
 **Purpose**: Map domain to IPv4 address
 
 ```
@@ -116,7 +133,7 @@ www.example.com → 93.184.216.35
 www.example.com → 93.184.216.36
 ```
 
-### AAAA Record (IPv6 Address)
+#### AAAA Record (IPv6 Address)
 **Purpose**: Map domain to IPv6 address
 
 ```
@@ -134,7 +151,7 @@ Browser behavior:
 2. Falls back to A (IPv4) if unavailable
 ```
 
-### CNAME Record (Canonical Name)
+#### CNAME Record (Canonical Name)
 **Purpose**: Alias one domain to another
 
 ```
@@ -172,7 +189,7 @@ www.example.com.     IN  CNAME  lb-12345.us-east-1.elb.amazonaws.com.
   www.example.com. CNAME other.com.  ← Valid
 ```
 
-### MX Record (Mail Exchange)
+#### MX Record (Mail Exchange)
 **Purpose**: Specify mail servers for domain
 
 ```
@@ -197,7 +214,7 @@ example.com.  IN  MX  10  alt3.aspmx.l.google.com.
 example.com.  IN  MX  10  alt4.aspmx.l.google.com.
 ```
 
-### TXT Record (Text Information)
+#### TXT Record (Text Information)
 **Purpose**: Store arbitrary text, verification, security policies
 
 **SPF (Sender Policy Framework) - Prevent Email Spoofing:**
@@ -234,7 +251,7 @@ example.com.  IN  TXT  "google-site-verification=abc123..."
 _acme-challenge.example.com.  IN  TXT  "validation-token-here"
 ```
 
-### NS Record (Name Server)
+#### NS Record (Name Server)
 **Purpose**: Delegate domain to specific DNS servers
 
 ```
@@ -254,7 +271,7 @@ blog.example.com. IN  NS  ns1.wordpress.com.
                            ns2.wordpress.com.
 ```
 
-### Other Important Records
+#### Other Important Records
 
 **SRV Record (Service Location):**
 ```
@@ -273,7 +290,7 @@ example.com.  IN  CAA  0 issue "letsencrypt.org"
 Meaning: "Only Let's Encrypt can issue SSL certs for this domain"
 ```
 
-## DNS Caching: The Speed Secret
+### DNS Caching: The Speed Secret
 
 **TTL (Time To Live):**
 ```
@@ -306,7 +323,7 @@ After migration:   3600   (1 hour)   ← Stable
 └─────────────────┘
 ```
 
-## Real-World Use Cases
+### Real-World Use Cases
 
 **Use Case 1: Multi-Region Setup**
 ```
@@ -382,7 +399,7 @@ www.example.com
   Secondary: 10.0.2.100 (used if primary fails)
 ```
 
-## DNS Commands & Tools
+### DNS Commands & Tools
 
 **Query DNS Records:**
 ```bash
@@ -444,7 +461,7 @@ dig @208.67.222.222 example.com  # OpenDNS (US)
 # https://dnschecker.org
 ```
 
-## DNS Security
+### DNS Security
 
 **DNSSEC (DNS Security Extensions):**
 ```
@@ -478,7 +495,7 @@ Benefits:
   ✓ Bypasses censorship
 ```
 
-## Common DNS Issues
+### Common DNS Issues
 
 **Issue 1: Propagation Delay**
 ```
@@ -521,7 +538,7 @@ Solution:
   Use A records when possible
 ```
 
-## Best Practices
+### Best Practices
 
 ```
 ✓ Use low TTL (300s) before making changes
@@ -540,19 +557,4 @@ Solution:
 
 ---
 
-# Design DNS server
-
-## Youtube
-
-- [How DNS works? | System Design of Domain Name System](https://www.youtube.com/watch?v=QVdX34quUgU)
-
-- [Build Your Own DNS Server - Beginner Friendly](https://www.youtube.com/watch?v=Ui66W7zeAbI)
-- [Build Your Own DNS Server](https://www.youtube.com/watch?v=52wnTsBI_HE)
-- [I created an AI Based DNS Server - Toying with DNS](https://www.youtube.com/watch?v=Sgk0yy8rJ8M)
-
-
-
-
-## Websites
-
-- [DNS Record Types: Defined and Explained](https://www.site24x7.com/learn/dns-record-types.html)
+### Design DNS server

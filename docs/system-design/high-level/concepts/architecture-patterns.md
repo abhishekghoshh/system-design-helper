@@ -1,6 +1,18 @@
 # Architecture Patterns
 
-## Monolith Architecture
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
+## Theory
+
+### Monolith Architecture
+
 Single unified codebase and deployment.
 
 **Pros:**
@@ -20,7 +32,8 @@ Single unified codebase and deployment.
 - Simple applications
 - Startups (MVP stage)
 
-## Microservices Architecture
+### Microservices Architecture
+
 Application composed of small, independent services.
 
 **Characteristics:**
@@ -51,7 +64,8 @@ Application composed of small, independent services.
 - Service mesh
 - Circuit breakers
 
-## Event-Driven Architecture
+### Event-Driven Architecture
+
 Components communicate through events.
 
 **Components:**
@@ -77,7 +91,8 @@ Components communicate through events.
 - Debugging difficulty
 - Schema evolution
 
-## Serverless Architecture
+### Serverless Architecture
+
 Run code without managing servers (FaaS).
 
 **Characteristics:**

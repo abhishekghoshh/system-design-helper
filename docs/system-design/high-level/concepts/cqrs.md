@@ -1,4 +1,17 @@
 # CQRS (Command Query Responsibility Segregation)
+
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+- [CQRS System Design Pattern](https://www.youtube.com/watch?v=vNplj9LwQSw)
+
+## Theory
+
 Separate read and write models.
 
 **Benefits:**
@@ -12,10 +25,3 @@ Separate read and write models.
 - Data synchronization
 
 ---
-
-# CQRS (Command Query Responsibility Segregation)
-
-
-## Youtube
-
-- [CQRS System Design Pattern](https://www.youtube.com/watch?v=vNplj9LwQSw)

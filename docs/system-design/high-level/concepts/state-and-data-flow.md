@@ -1,5 +1,14 @@
 # State and Data Flow
 
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
 ## Theory
 
 ### What is State and Data Flow?

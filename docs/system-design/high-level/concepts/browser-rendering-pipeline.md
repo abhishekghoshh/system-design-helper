@@ -1,5 +1,14 @@
 # Browser Rendering Pipeline
 
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
 ## Theory
 
 ### What is The Browser Rendering Pipeline?

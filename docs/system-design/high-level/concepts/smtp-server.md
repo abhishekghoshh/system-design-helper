@@ -1,11 +1,14 @@
 # SMTP Server
 
+## Blogs and websites
+
+
+## Medium
+
 
 ## Youtube
 
 - [Build Your Own MAIL Server | SMTP Server](https://www.youtube.com/watch?v=l3htAzOAx7c)
-
-
 
 ## Theory
 
@@ -1098,4 +1101,3 @@ Complete flow when sending email from `user@gmail.com` to `recipient@outlook.com
 5. **Server-to-server**: Port 25, Client-to-server: Port 587
 6. **Queuing**: Emails queued at multiple stages for reliability
 7. **Retry logic**: If delivery fails, retry with exponential backoff
-

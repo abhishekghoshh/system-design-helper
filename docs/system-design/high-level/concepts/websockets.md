@@ -1,6 +1,23 @@
 # WebSockets
 
-## The Real-Time Communication Channel
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+- [How to horizontally scale up websocket servers](https://www.youtube.com/watch?v=hl3_MANBiyc)
+- [Scaling Websockets Horizontally | SocketIo | Redis Pub\Sub | HandsOn](https://www.youtube.com/watch?v=dcroxRr8uJc)
+- [How to scale WebSockets to millions of connections](https://www.youtube.com/watch?v=vXJsJ52vwAA)
+- [Scaling Websockets with Redis, HAProxy and Node JS - High-availability Group Chat Application](https://www.youtube.com/watch?v=gzIcGhJC8hA)
+- [WebSockets Aren’t as Reliable as You Think.. Here's Why](https://www.youtube.com/watch?v=ImzYxO3Lsvc)
+- [How I would SCALE WebSocket system in 2026 (Architecture deep dive) | Hindi](https://www.youtube.com/watch?v=ORupgrqr3R0)
+
+## Theory
+
+### The Real-Time Communication Channel
 
 Full-duplex, persistent connection for real-time communication.
 
@@ -47,7 +64,7 @@ Full-duplex, persistent connection for real-time communication.
 - Online gaming
 - Stock trading platforms
 
-## Advantages of WebSockets
+### Advantages of WebSockets
 
 ```
 ✓ Real-Time Bidirectional Communication
@@ -101,7 +118,7 @@ Data Savings: ~80-90%
 Latency Improvement: ~100x faster
 ```
 
-## Disadvantages of WebSockets
+### Disadvantages of WebSockets
 
 ```
 ✗ Complex Implementation
@@ -150,7 +167,7 @@ Latency Improvement: ~100x faster
   - DDoS risk (connection exhaustion)
 ```
 
-## Alternatives to WebSockets
+### Alternatives to WebSockets
 
 **1. HTTP Long Polling**
 ```
@@ -263,7 +280,7 @@ When to use:
   → Not for client connections
 ```
 
-## When to Use WebSockets vs Alternatives
+### When to Use WebSockets vs Alternatives
 
 | Use Case | Best Choice | Reason |
 |----------|-------------|--------|
@@ -278,7 +295,7 @@ When to use:
 | **Live sports scores** | SSE | One-way updates |
 | **IoT device control** | WebSocket/MQTT | Bidirectional control |
 
-## WebSocket Implementation Examples
+### WebSocket Implementation Examples
 
 **Client (JavaScript):**
 ```javascript
@@ -362,7 +379,7 @@ wss.on('connection', (ws) => {
 });
 ```
 
-## WebSocket Best Practices
+### WebSocket Best Practices
 
 **Do's:**
 ```
@@ -390,7 +407,7 @@ wss.on('connection', (ws) => {
 ✗ Don't ignore backpressure
 ```
 
-## Scaling WebSocket Servers
+### Scaling WebSocket Servers
 
 **The Problem:**
 ```
@@ -459,7 +476,7 @@ Pros:
   + Easier to manage
 ```
 
-## WebSocket vs HTTP: The Decision
+### WebSocket vs HTTP: The Decision
 
 **Use WebSocket when:**
 ```
@@ -491,15 +508,4 @@ Pros:
 
 ---
 
-# Websockets
-
-
-
-## Youtube
-
-- [How to horizontally scale up websocket servers](https://www.youtube.com/watch?v=hl3_MANBiyc)
-- [Scaling Websockets Horizontally | SocketIo | Redis Pub\Sub | HandsOn](https://www.youtube.com/watch?v=dcroxRr8uJc)
-- [How to scale WebSockets to millions of connections](https://www.youtube.com/watch?v=vXJsJ52vwAA)
-- [Scaling Websockets with Redis, HAProxy and Node JS - High-availability Group Chat Application](https://www.youtube.com/watch?v=gzIcGhJC8hA)
-- [WebSockets Aren’t as Reliable as You Think.. Here's Why](https://www.youtube.com/watch?v=ImzYxO3Lsvc)
-- [How I would SCALE WebSocket system in 2026 (Architecture deep dive) | Hindi](https://www.youtube.com/watch?v=ORupgrqr3R0)
+### Websockets

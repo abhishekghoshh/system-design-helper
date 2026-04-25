@@ -1,4 +1,17 @@
 # Service Discovery
+
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+- [Service Discovery in Microservices | Eureka & its SpringBoot Implementation](https://www.youtube.com/watch?v=h1mrflwF6Lc)
+
+## Theory
+
 Mechanism for services to find and communicate with each other.
 
 **Patterns:**
@@ -18,17 +31,6 @@ Mechanism for services to find and communicate with each other.
 - Kubernetes DNS
 
 ---
-
-# Service Discovery
-
-
-## Youtube
-
-- [Service Discovery in Microservices | Eureka & its SpringBoot Implementation](https://www.youtube.com/watch?v=h1mrflwF6Lc)
-
-
-
-## Theory
 
 1. Eureka Server and Eureka Client
 2. Consul

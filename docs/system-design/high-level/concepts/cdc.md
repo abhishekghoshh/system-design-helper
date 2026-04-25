@@ -1,25 +1,6 @@
 # Change Data Capture
 
-
-## Youtube
-
-- [What Is Change Data Capture - Understanding Data Engineering 101](https://www.youtube.com/watch?v=hNJCxF3IWC4)
-- [Change Data Capture (CDC) | Why & How | Use case | System Design](https://www.youtube.com/watch?v=dN_11nBcv_A)
-
-- [Change Data Capture (CDC) Explained (with examples)](https://www.youtube.com/watch?v=5KN_feUhtTM)
-- [Stream your PostgreSQL changes into Kafka with Debezium](https://www.youtube.com/watch?v=YZRHqRznO-o)
-  - [irtiza07/postgres_debezium_cdc](https://github.com/irtiza07/postgres_debezium_cdc)
-- [Set up Debezium, Apache Kafka and Postgres for real time Data Streaming | Real Time ETL | ETL](https://www.youtube.com/watch?v=9yP_75OBWis)
-  - [hnawaz007/pythondataanalysis/tree/main/kafka](https://github.com/hnawaz007/pythondataanalysis/tree/main/kafka)
-- [How to Stream Data from PostgreSQL to Kafka](https://www.youtube.com/watch?v=Uoas9E8Luo8)
-
-
-- [Why use Change Data Capture | Batch Data vs Streaming Data](https://www.youtube.com/watch?v=ppB_GLbfFHo)
-- [Debezium - Change Data Capture Made Easy | Distributed Systems Deep Dives With Ex-Google SWE](https://www.youtube.com/watch?v=6VbRlQ0rL3I)
-
-
-
-> Read the blogs later again and apply
+## Blogs and websites
 
 
 ## Medium
@@ -39,3 +20,24 @@
   - [Part 5: Tuning & Hardening Your CDC Pipeline](https://medium.com/@vamcrulz09/part5-tuning-7e07f2d7017a)
 
 - [Kafka + Debezium CDC vs. Cron ETL (Trade-offs, Cost, and When to Choose Which)](https://medium.com/@balaji.rajan.ts/kafka-debezium-cdc-vs-cron-etl-trade-offs-cost-and-when-to-choose-which-c53ae8d18c4f)
+
+## Youtube
+
+- [What Is Change Data Capture - Understanding Data Engineering 101](https://www.youtube.com/watch?v=hNJCxF3IWC4)
+- [Change Data Capture (CDC) | Why & How | Use case | System Design](https://www.youtube.com/watch?v=dN_11nBcv_A)
+
+- [Change Data Capture (CDC) Explained (with examples)](https://www.youtube.com/watch?v=5KN_feUhtTM)
+- [Stream your PostgreSQL changes into Kafka with Debezium](https://www.youtube.com/watch?v=YZRHqRznO-o)
+  - [irtiza07/postgres_debezium_cdc](https://github.com/irtiza07/postgres_debezium_cdc)
+- [Set up Debezium, Apache Kafka and Postgres for real time Data Streaming | Real Time ETL | ETL](https://www.youtube.com/watch?v=9yP_75OBWis)
+  - [hnawaz007/pythondataanalysis/tree/main/kafka](https://github.com/hnawaz007/pythondataanalysis/tree/main/kafka)
+- [How to Stream Data from PostgreSQL to Kafka](https://www.youtube.com/watch?v=Uoas9E8Luo8)
+
+
+- [Why use Change Data Capture | Batch Data vs Streaming Data](https://www.youtube.com/watch?v=ppB_GLbfFHo)
+- [Debezium - Change Data Capture Made Easy | Distributed Systems Deep Dives With Ex-Google SWE](https://www.youtube.com/watch?v=6VbRlQ0rL3I)
+
+
+> Read the blogs later again and apply
+
+## Theory

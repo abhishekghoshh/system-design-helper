@@ -1,12 +1,23 @@
 # Caching
 
-## What is Caching?
+## Blogs and websites
 
-### The Art of Remembering: The Most Powerful Optimization
+
+## Medium
+
+
+## Youtube
+
+
+## Theory
+
+### What is Caching?
+
+#### The Art of Remembering: The Most Powerful Optimization
 
 Caching is arguably the **single most impactful** optimization in system design. It's based on a profound observation about data access patterns: **locality of reference**—the same data is accessed repeatedly, and recently accessed data is likely to be accessed again soon.
 
-### The Deep Theory: Why Caching Works
+#### The Deep Theory: Why Caching Works
 
 **The Fundamental Principle:**
 Accessing data has a cost—in time, money, and resources. That cost varies wildly:
@@ -37,11 +48,11 @@ Redis: $100/month for 100,000 QPS
 - Result: Handle 10x traffic at same cost
 ```
 
-### The Cache Hierarchy: Layers Upon Layers
+#### The Cache Hierarchy: Layers Upon Layers
 
 Caching exists at every level of the stack. Understanding where each tier belongs is critical.
 
-#### Browser Cache (Client-Side)
+##### Browser Cache (Client-Side)
 ```
 User requests logo.png
   ↓
@@ -73,7 +84,7 @@ ETag: "v1.23"  # Version-based validation
 - Infrequently changing content
 - User-specific data (after login)
 
-#### CDN Cache (Edge)
+##### CDN Cache (Edge)
 ```
 User in Tokyo requests image
   ↓
@@ -109,7 +120,7 @@ Cache-Control: max-age=60, s-maxage=300
 # Browser caches 60s, CDN caches 300s
 ```
 
-#### Application Cache (In-Memory)
+##### Application Cache (In-Memory)
 ```
 User requests user profile
   ↓
@@ -183,7 +194,7 @@ def get_user(user_id):
 - Session management
 - Rate limiting counters
 
-#### Database Cache (Query Cache)
+##### Database Cache (Query Cache)
 ```sql
 SELECT * FROM users WHERE id = 123;
   ↓
@@ -203,7 +214,7 @@ Invalidates on ANY write to table (too aggressive)
 **Better Approach:**
 Manual caching at application layer (more control)
 
-### The Cache Hierarchy Strategy
+#### The Cache Hierarchy Strategy
 
 **The Cascade Pattern:**
 ```
@@ -233,7 +244,8 @@ Result:
 Average: 5.05ms (vs 50ms without caching)
 ```
 
-## Cache Aside (Lazy Loading)
+### Cache Aside (Lazy Loading)
+
 Application manages cache explicitly.
 
 **Flow:**
@@ -245,7 +257,8 @@ Application manages cache explicitly.
 **Pros:** Only cache what's needed
 **Cons:** Cache misses add latency
 
-## Read Through Strategy
+### Read Through Strategy
+
 Cache sits between application and database.
 
 **Flow:**
@@ -256,25 +269,29 @@ Cache sits between application and database.
 **Pros:** Simplified application logic
 **Cons:** Initial miss penalty
 
-## Write Through Strategy
+### Write Through Strategy
+
 Write to cache and database simultaneously.
 
 **Pros:** Data consistency
 **Cons:** Write latency
 
-## Write Behind (Write Back)
+### Write Behind (Write Back)
+
 Write to cache first, asynchronously to database.
 
 **Pros:** Fast writes
 **Cons:** Risk of data loss
 
-## Write Around
+### Write Around
+
 Write directly to database, cache on read.
 
 **Pros:** Reduces cache pollution
 **Cons:** Read misses after writes
 
-## Cache Invalidation
+### Cache Invalidation
+
 Removing stale data from cache.
 
 **Strategies:**

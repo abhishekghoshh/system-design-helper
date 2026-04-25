@@ -1,5 +1,7 @@
 # NATS — A message broker for scale
 
+## Blogs and websites
+
 
 ## Medium
 
@@ -8,3 +10,8 @@
 - [Lightweight, Cloud-Native Messaging with NATS](https://medium.com/capital-one-tech/lightweight-cloud-native-messaging-with-nats-ad730ca2becf)
 - [NATS: The Real-Time Backbone That Beats Kafka, RabbitMQ & REST APIs](https://medium.com/@lakshayaggarwal9/nats-the-real-time-backbone-that-beats-kafka-rabbitmq-rest-apis-67711868ddf7)
 - [NATS Cluster Architectures: Regional Clusters — Building Reliable Messaging Foundations](https://medium.concurrentflows.com/nats-cluster-architectures-regional-clusters-building-reliable-messaging-foundations-47acfa6c807e)
+
+## Youtube
+
+
+## Theory

@@ -1,6 +1,12 @@
 # Gossip Protocol
 
+## Blogs and websites
 
+- [Gossip Protocol Explained](https://highscalability.com/gossip-protocol-explained/)
+
+## Medium
+
+- [Gossip Protocol in distributed systems](https://medium.com/nerd-for-tech/gossip-protocol-in-distributed-systems-e2b0665c7135)
 
 ## Youtube
 
@@ -8,21 +14,6 @@
 
 - [Gossip Protocol System Design](https://www.youtube.com/watch?v=TUc_hPtxyf8)
 - [Implementing Gossip Protocol in JavaScript - System Design](https://www.youtube.com/watch?v=FioXLLl7TkY)
-
-
-
-
-## Blogs
-
-- [Gossip Protocol Explained](https://highscalability.com/gossip-protocol-explained/)
-
-
-## Medium
-
-- [Gossip Protocol in distributed systems](https://medium.com/nerd-for-tech/gossip-protocol-in-distributed-systems-e2b0665c7135)
-
-
-## Theory
 
 ## Theory
 
@@ -370,4 +361,3 @@ func main() {
 	}
 }
 ```
-

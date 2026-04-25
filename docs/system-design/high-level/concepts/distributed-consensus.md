@@ -1,4 +1,16 @@
 # Distributed Consensus
+
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
+## Theory
+
 Agreement among distributed nodes.
 
 **Algorithms:**

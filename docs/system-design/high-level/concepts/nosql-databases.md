@@ -1,34 +1,51 @@
 # NoSQL
+
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
+## Theory
+
 Flexible schema databases for unstructured/semi-structured data.
 
 **Types:**
 
-## Key-Value Stores
+### Key-Value Stores
+
 - **Structure**: Key → Value pairs
 - **Examples**: Redis, DynamoDB, Riak
 - **Use Cases**: Caching, session storage, user preferences
 
-## Document Databases
+### Document Databases
+
 - **Structure**: JSON-like documents
 - **Examples**: MongoDB, CouchDB, Firestore
 - **Use Cases**: Content management, user profiles, catalogs
 
-## Graph Databases
+### Graph Databases
+
 - **Structure**: Nodes, edges, properties
 - **Examples**: Neo4j, Amazon Neptune, ArangoDB
 - **Use Cases**: Social networks, recommendation engines, fraud detection
 
-## Wide Column Databases
+### Wide Column Databases
+
 - **Structure**: Column families
 - **Examples**: Cassandra, HBase, ScyllaDB
 - **Use Cases**: Time-series data, IoT, analytics
 
-## Time-Series Databases
+### Time-Series Databases
+
 - **Structure**: Timestamp-indexed data
 - **Examples**: InfluxDB, TimescaleDB, Prometheus
 - **Use Cases**: Metrics, monitoring, IoT sensor data
 
-## NoSQL: Advantages
+### NoSQL: Advantages
 
 ```
 ✓ Horizontal Scalability
@@ -92,7 +109,7 @@ Flexible schema databases for unstructured/semi-structured data.
   - Real-time (Firebase)
 ```
 
-## NoSQL: Disadvantages
+### NoSQL: Disadvantages
 
 ```
 ✗ Limited Query Flexibility
@@ -162,7 +179,7 @@ Flexible schema databases for unstructured/semi-structured data.
   - Monitoring more complex
 ```
 
-## When to Choose NoSQL
+### When to Choose NoSQL
 
 ```
 ✓ High Volume, High Velocity
@@ -196,7 +213,7 @@ Flexible schema databases for unstructured/semi-structured data.
   - Eventual consistency acceptable
 ```
 
-## NoSQL Database Comparison
+### NoSQL Database Comparison
 
 **MongoDB vs Cassandra vs Redis vs Neo4j:**
 
@@ -212,7 +229,7 @@ Flexible schema databases for unstructured/semi-structured data.
 | **Complexity** | Low | High | Low | Medium |
 | **Use Case** | Apps, CMS | Analytics, IoT | Cache, real-time | Relationships |
 
-## Hybrid Approach: Polyglot Persistence
+### Hybrid Approach: Polyglot Persistence
 
 ```
 Modern architectures use multiple databases:
@@ -242,7 +259,7 @@ Example E-commerce App:
 ✓ Neo4j: Recommendations (graph relationships)
 ```
 
-## Decision Framework: SQL vs NoSQL
+### Decision Framework: SQL vs NoSQL
 
 **Choose SQL when:**
 ```
@@ -296,7 +313,7 @@ Don't use NoSQL if:
 ✗ Ad-hoc queries needed frequently
 ```
 
-# SQL vs NoSQL
+### SQL vs NoSQL
 
 | Aspect | SQL | NoSQL |
 |--------|-----|-------|

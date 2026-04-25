@@ -1,6 +1,18 @@
 # Data Processing
 
-## Batch Processing
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
+## Theory
+
+### Batch Processing
+
 Process large volumes of data at scheduled intervals.
 
 **Characteristics:**
@@ -18,7 +30,8 @@ Process large volumes of data at scheduled intervals.
 - Report generation
 - ETL pipelines
 
-## Stream Processing
+### Stream Processing
+
 Process data in real-time as it arrives.
 
 **Characteristics:**
@@ -36,7 +49,8 @@ Process data in real-time as it arrives.
 - Fraud detection
 - IoT data processing
 
-## Text-Based Search & Indexing
+### Text-Based Search & Indexing
+
 Full-text search capabilities.
 
 **Features:**

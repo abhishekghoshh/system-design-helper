@@ -1,5 +1,14 @@
 # Consistency
 
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
 ## Theory
 
 In distributed systems, **consistency** refers to whether all nodes in the system see the same data at the same time. It's one of the most important (and most misunderstood) concepts in system design.
@@ -40,7 +49,7 @@ Linearizable → Sequential → Causal → Eventual
 
 ---
 
-## Quick Reference
+### Quick Reference
 
 **Strong Consistency:**
 - Read returns most recent write

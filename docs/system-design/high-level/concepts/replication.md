@@ -1,4 +1,16 @@
 # Replication
+
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
+## Theory
+
 Copying data across multiple database servers.
 
 **Types:**

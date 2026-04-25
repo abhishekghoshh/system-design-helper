@@ -1,10 +1,21 @@
 # IP Addresses & Ports
 
-## IP Addresses: The Internet's Postal System
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
+## Theory
+
+### IP Addresses: The Internet's Postal System
 
 **IP Address**: Unique identifier for devices on a network - like a street address for computers.
 
-### IPv4 Architecture
+#### IPv4 Architecture
 
 **Format**: 32-bit address (4 bytes), written as dotted decimal
 ```
@@ -70,7 +81,7 @@ Public (203.0.113.45:5000)
   → Internet
 ```
 
-### IPv6: The Future (and Present)
+#### IPv6: The Future (and Present)
 
 **Format**: 128-bit address (16 bytes), written in hexadecimal
 ```
@@ -101,7 +112,7 @@ Global Unicast Address:
 └────┴───┴────────────────────────── Network Prefix
 ```
 
-## Ports: Doorways to Applications
+### Ports: Doorways to Applications
 
 **Concept**: IP gets you to the building (server), port gets you to the right apartment (application).
 
@@ -117,7 +128,7 @@ Server: 192.168.1.100
 └──────────────────────────┘
 ```
 
-### Port Ranges and Their Purposes
+#### Port Ranges and Their Purposes
 
 **Well-Known Ports (0-1023):** System/privileged services
 ```
@@ -155,7 +166,7 @@ Client connects:
   (ephemeral)            (well-known)
 ```
 
-### Real-World Use Cases
+#### Real-World Use Cases
 
 **Use Case 1: Web Server**
 ```
@@ -214,7 +225,7 @@ read_db = [
 ]
 ```
 
-### Code Example: Socket Programming
+#### Code Example: Socket Programming
 
 **Python Server (Listens on IP:Port):**
 ```python
@@ -264,7 +275,7 @@ print(response.decode())
 client_socket.close()
 ```
 
-### Network Address Translation (NAT)
+#### Network Address Translation (NAT)
 
 **The Problem:**
 Private IPs can't communicate with public internet directly.
@@ -309,7 +320,7 @@ NAT Translation Table:
 8. PC1 receives response
 ```
 
-### Common Networking Commands
+#### Common Networking Commands
 
 **Find your IP address:**
 ```bash
@@ -353,7 +364,7 @@ curl http://192.168.1.100:8080/health
 nmap 192.168.1.100 -p 80,443,8080
 ```
 
-### Security Considerations
+#### Security Considerations
 
 **Firewall Rules:**
 ```bash

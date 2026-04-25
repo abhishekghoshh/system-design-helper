@@ -1,5 +1,14 @@
 # Environment Configuration and Secrets
 
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
 ## Theory
 
 ### What is Environment Configuration?

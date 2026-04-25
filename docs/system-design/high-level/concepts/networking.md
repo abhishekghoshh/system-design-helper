@@ -1,5 +1,9 @@
 # Networking
 
+## Blogs and websites
+
+
+## Medium
 
 
 ## Youtube
@@ -9,8 +13,6 @@
 - [WebSockets vs Polling vs Server Sent Events](https://www.youtube.com/watch?v=WS352jTTkPU)
 - [Webhooks for Beginners - From Polling to Real‑Time Events](https://www.youtube.com/watch?v=bXY7899m6M8)
 
-
-
 ## Theory
 
 ### WebSockets vs Polling vs Server-Sent Events
@@ -19,12 +21,12 @@ These are three different approaches for real-time client-server communication, 
 
 ---
 
-## 1. Polling (Short Polling)
+### 1. Polling (Short Polling)
 
-### Description
+#### Description
 The client repeatedly sends HTTP requests to the server at regular intervals to check for new data, regardless of whether data is available.
 
-### How It Works
+#### How It Works
 
 ```
 ┌─────────┐                                           ┌─────────┐
@@ -60,7 +62,7 @@ The client repeatedly sends HTTP requests to the server at regular intervals to 
      Process repeats indefinitely...
 ```
 
-### Python Implementation
+#### Python Implementation
 
 **Server (Flask):**
 ```python
@@ -139,14 +141,14 @@ if __name__ == '__main__':
     poll_server()
 ```
 
-### Advantages
+#### Advantages
 1. ✅ **Simple to implement** - Uses standard HTTP requests
 2. ✅ **Stateless** - No connection state to maintain
 3. ✅ **Works everywhere** - Compatible with all browsers and proxies
 4. ✅ **Firewall friendly** - Standard HTTP traffic
 5. ✅ **Easy to debug** - Can test with curl or browser
 
-### Disadvantages
+#### Disadvantages
 1. ❌ **High latency** - Updates delayed by polling interval
 2. ❌ **Resource wasteful** - Many empty requests when no data
 3. ❌ **Server load** - Continuous requests even without updates
@@ -156,12 +158,12 @@ if __name__ == '__main__':
 
 ---
 
-## 2. Long Polling
+### 2. Long Polling
 
-### Description
+#### Description
 The client sends a request to the server, and the server holds the request open until new data is available or a timeout occurs. Once data is sent or timeout happens, the client immediately makes another request.
 
-### How It Works
+#### How It Works
 
 ```
 ┌─────────┐                                           ┌─────────┐
@@ -199,7 +201,7 @@ The client sends a request to the server, and the server holds the request open 
      └──────────────────────────────────────────────────────┘
 ```
 
-### Python Implementation
+#### Python Implementation
 
 **Server (Flask with Threading):**
 ```python
@@ -305,14 +307,14 @@ if __name__ == '__main__':
     long_poll_client()
 ```
 
-### Advantages
+#### Advantages
 1. ✅ **Near real-time** - Minimal delay when data arrives
 2. ✅ **Reduced requests** - Only reconnects when data received or timeout
 3. ✅ **Lower server load** - Fewer requests than short polling
 4. ✅ **Works with proxies** - Standard HTTP
 5. ✅ **Better than short polling** - More efficient resource usage
 
-### Disadvantages
+#### Disadvantages
 1. ❌ **Server resources** - Holds connections open (threads/memory)
 2. ❌ **Scalability issues** - Limited concurrent connections per server
 3. ❌ **Complex implementation** - Requires threading/async on server
@@ -322,12 +324,12 @@ if __name__ == '__main__':
 
 ---
 
-## 3. Server-Sent Events (SSE)
+### 3. Server-Sent Events (SSE)
 
-### Description
+#### Description
 A unidirectional channel from server to client over a single HTTP connection. The server can push data to the client whenever new data is available. Client only listens.
 
-### How It Works
+#### How It Works
 
 ```
 ┌─────────┐                                           ┌─────────┐
@@ -369,7 +371,7 @@ A unidirectional channel from server to client over a single HTTP connection. Th
      └──────────────────────────────────────────────────────┘
 ```
 
-### SSE Event Format
+#### SSE Event Format
 
 ```
 event: message
@@ -386,7 +388,7 @@ data: ping
 
 ```
 
-### Python Implementation
+#### Python Implementation
 
 **Server (Flask with streaming):**
 ```python
@@ -562,7 +564,7 @@ eventSource.onerror = (error) => {
 // eventSource.close();
 ```
 
-### Advantages
+#### Advantages
 1. ✅ **Real-time** - Instant server-to-client push
 2. ✅ **Efficient** - Single long-lived connection
 3. ✅ **Auto-reconnection** - Browser handles reconnection automatically
@@ -571,7 +573,7 @@ eventSource.onerror = (error) => {
 6. ✅ **Native browser support** - EventSource API built-in
 7. ✅ **Less overhead** - No repeated HTTP headers
 
-### Disadvantages
+#### Disadvantages
 1. ❌ **Unidirectional** - Only server → client (client uses HTTP for server)
 2. ❌ **HTTP/1.1 limitation** - Max 6 connections per domain in browsers
 3. ❌ **Text only** - Binary data needs encoding (Base64)
@@ -580,12 +582,12 @@ eventSource.onerror = (error) => {
 
 ---
 
-## 4. WebSockets
+### 4. WebSockets
 
-### Description
+#### Description
 Full-duplex bidirectional communication channel over a single TCP connection. Both client and server can send messages to each other at any time after the initial handshake.
 
-### How It Works
+#### How It Works
 
 ```
 ┌─────────┐                                           ┌─────────┐
@@ -642,7 +644,7 @@ Full-duplex bidirectional communication channel over a single TCP connection. Bo
      └──────────────────────────────────────────────────────┘
 ```
 
-### WebSocket Frame Structure
+#### WebSocket Frame Structure
 
 ```
  0                   1                   2                   3
@@ -671,7 +673,7 @@ MASK: 1 bit - Is payload masked? (client→server must be masked)
 Payload length: 7 bits, 7+16 bits, or 7+64 bits
 ```
 
-### Python Implementation
+#### Python Implementation
 
 **Server (using `websockets` library):**
 ```python
@@ -839,7 +841,7 @@ function closeConnection() {
 }
 ```
 
-### Advantages
+#### Advantages
 1. ✅ **Full-duplex** - Bidirectional communication
 2. ✅ **Real-time** - Extremely low latency
 3. ✅ **Efficient** - Minimal overhead after handshake
@@ -848,7 +850,7 @@ function closeConnection() {
 6. ✅ **Native browser support** - WebSocket API built-in
 7. ✅ **Push from both sides** - Both client and server can initiate
 
-### Disadvantages
+#### Disadvantages
 1. ❌ **Stateful** - Connection state must be maintained
 2. ❌ **Complex scaling** - Sticky sessions or message broker needed
 3. ❌ **Proxy issues** - Some corporate proxies block WebSockets
@@ -858,7 +860,7 @@ function closeConnection() {
 
 ---
 
-## Comparison Table
+### Comparison Table
 
 | Feature | Polling | Long Polling | Server-Sent Events | WebSockets |
 |---------|---------|--------------|-------------------|------------|
@@ -878,9 +880,9 @@ function closeConnection() {
 
 ---
 
-## Bandwidth & Overhead Comparison
+### Bandwidth & Overhead Comparison
 
-### Example: Sending 100 bytes of data
+#### Example: Sending 100 bytes of data
 
 **Short Polling (every 5 seconds):**
 ```
@@ -931,9 +933,9 @@ Efficiency:       ~27% (500/1830)
 
 ---
 
-## Use Cases
+### Use Cases
 
-### Short Polling
+#### Short Polling
 - **Dashboard updates** (not critical, every 30-60 seconds)
 - **Email checking** (every few minutes)
 - **Weather updates** (periodic data)
@@ -942,7 +944,7 @@ Efficiency:       ~27% (500/1830)
 
 **Example:** Email client checking for new mail every 5 minutes
 
-### Long Polling
+#### Long Polling
 - **Chat applications** (before WebSockets)
 - **Notifications** (when SSE not supported)
 - **Order status updates**
@@ -951,7 +953,7 @@ Efficiency:       ~27% (500/1830)
 
 **Example:** Facebook notifications (used long polling before switching to other methods)
 
-### Server-Sent Events
+#### Server-Sent Events
 - **Live news feeds**
 - **Stock price tickers**
 - **Social media feeds**
@@ -962,7 +964,7 @@ Efficiency:       ~27% (500/1830)
 
 **Example:** Twitter live feed, stock market tickers
 
-### WebSockets
+#### WebSockets
 - **Chat applications** (Slack, Discord)
 - **Real-time gaming** (multiplayer games)
 - **Collaborative editing** (Google Docs)
@@ -975,7 +977,7 @@ Efficiency:       ~27% (500/1830)
 
 ---
 
-## Decision Matrix
+### Decision Matrix
 
 ```
                     Short Polling  Long Polling    SSE      WebSockets
@@ -993,28 +995,28 @@ Scales well           ❌            ⚠️            ✅          ✅
 
 ---
 
-## When to Use What?
+### When to Use What?
 
-### Use Short Polling When:
+#### Use Short Polling When:
 - Updates are infrequent (> 30 seconds)
 - Real-time not critical
 - Simplest implementation needed
 - Working with very old systems
 
-### Use Long Polling When:
+#### Use Long Polling When:
 - Need better than short polling
 - SSE/WebSockets not available
 - Moderate real-time requirements
 - Need to support all browsers/proxies
 
-### Use Server-Sent Events When:
+#### Use Server-Sent Events When:
 - Only server → client push needed
 - Client doesn't need to send much data
 - Need automatic reconnection
 - Broadcasting events to many clients
 - Modern browser environment
 
-### Use WebSockets When:
+#### Use WebSockets When:
 - Need bidirectional communication
 - Real-time is critical (< 100ms latency)
 - High message frequency
@@ -1023,7 +1025,7 @@ Scales well           ❌            ⚠️            ✅          ✅
 
 ---
 
-## Evolution Timeline
+### Evolution Timeline
 
 ```
 2000s: Short Polling
@@ -1051,7 +1053,7 @@ Future: HTTP/3 + QUIC
 
 ---
 
-## Performance Comparison (Real-World Scenario)
+### Performance Comparison (Real-World Scenario)
 
 **Scenario:** 1000 users, 1 message per second per user
 
@@ -1066,9 +1068,9 @@ Future: HTTP/3 + QUIC
 
 ---
 
-## Best Practices
+### Best Practices
 
-### For Polling:
+#### For Polling:
 ```python
 # Use exponential backoff on errors
 def poll_with_backoff():
@@ -1085,7 +1087,7 @@ def poll_with_backoff():
             delay = min(delay * 2, max_delay)  # Exponential backoff
 ```
 
-### For SSE:
+#### For SSE:
 ```python
 # Include heartbeats to detect dead connections
 def sse_with_heartbeat():
@@ -1097,7 +1099,7 @@ def sse_with_heartbeat():
         time.sleep(15)
 ```
 
-### For WebSockets:
+#### For WebSockets:
 ```javascript
 // Implement reconnection logic
 class WebSocketClient {
@@ -1114,7 +1116,7 @@ class WebSocketClient {
 
 ---
 
-## Summary
+### Summary
 
 1. **Short Polling**: Simplest but wasteful - use only for very infrequent updates
 2. **Long Polling**: Better than short polling - good fallback when SSE/WS unavailable
@@ -1125,4 +1127,3 @@ class WebSocketClient {
 - **Primary:** WebSockets for bidirectional, SSE for unidirectional
 - **Fallback:** Long polling for old browser/proxy support
 - **Avoid:** Short polling unless absolutely necessary
-

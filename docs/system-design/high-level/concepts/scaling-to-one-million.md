@@ -1,5 +1,9 @@
 # Scaling to One Million
 
+## Blogs and websites
+
+
+## Medium
 
 
 ## Youtube
@@ -10,10 +14,6 @@
 
 - [5. Scale from ZERO to MILLION Users (Hindi) | System design interview: Scale to 1million users](https://www.youtube.com/watch?v=rExh5cPMZcI)
 - [15. Design High Availability & Resilience System, HLD | Active Passive & Active Active Architecture](https://www.youtube.com/watch?v=iL7_8TmrePM)
-
-
-
-
 
 ## Theory
 

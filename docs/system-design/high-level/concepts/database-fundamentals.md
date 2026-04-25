@@ -1,5 +1,14 @@
 # Database Fundamentals
 
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
 ## Theory
 
 ### Transactions and ACID Overview
@@ -61,7 +70,7 @@ What if the system crashes after Step 1 but before Step 2?
 
 ---
 
-## Quick Reference
+### Quick Reference
 
 Organized collection of structured data.
 

@@ -1,5 +1,16 @@
 # Data Partitioning
 
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
+## Theory
+
 Split data for scalability.
 
 **Types:**
@@ -7,7 +18,8 @@ Split data for scalability.
 - **Vertical**: Split columns
 - **Functional**: By business domain
 
-# Cold Start Problem
+### Cold Start Problem
+
 Initial delay when starting serverless functions or services.
 
 **Mitigation:**
@@ -16,7 +28,8 @@ Initial delay when starting serverless functions or services.
 - Optimize initialization
 - Use lighter runtimes
 
-# Blue-Green Deployment
+### Blue-Green Deployment
+
 Two identical environments for zero-downtime deploys.
 
 **Process:**
@@ -25,7 +38,8 @@ Two identical environments for zero-downtime deploys.
 3. Switch traffic to green
 4. Keep blue as fallback
 
-# Canary Deployment
+### Canary Deployment
+
 Gradual rollout to subset of users.
 
 **Process:**
@@ -34,7 +48,8 @@ Gradual rollout to subset of users.
 3. Gradually increase %
 4. Rollback if issues
 
-# Feature Flags
+### Feature Flags
+
 Toggle features on/off without deployment.
 
 **Benefits:**

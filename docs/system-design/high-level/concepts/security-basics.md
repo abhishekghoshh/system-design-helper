@@ -1,5 +1,14 @@
 # Security
 
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
 ## Theory
 
 ### Authentication vs Authorization Explained
@@ -59,7 +68,7 @@ Admin logs in (Authentication)
 
 ---
 
-## Authentication vs Authorization
+### Authentication vs Authorization
 
 **Authentication**: Verify identity (Who are you?)
 - Username/password
@@ -73,7 +82,8 @@ Admin logs in (Authentication)
 - Attribute-based (ABAC)
 - Access control lists (ACL)
 
-## OAuth
+### OAuth
+
 Open standard for delegated authorization.
 
 **Flow (Authorization Code):**
@@ -91,7 +101,8 @@ Open standard for delegated authorization.
 - Resource Owner Password (legacy)
 - PKCE (mobile/SPA apps)
 
-## JWT (JSON Web Token)
+### JWT (JSON Web Token)
+
 Compact, self-contained token for secure information transfer.
 
 **Structure:**

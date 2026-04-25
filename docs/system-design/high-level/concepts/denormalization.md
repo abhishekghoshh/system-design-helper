@@ -1,4 +1,16 @@
 # Denormalization
+
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
+## Theory
+
 Adding redundant data to optimize read performance.
 
 **Techniques:**

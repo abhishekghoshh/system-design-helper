@@ -1,13 +1,24 @@
 # TCP Protocol (Transmission Control Protocol)
 
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
+## Theory
+
 > **Network Protocols** are rules and standards for network communication.
 > **Layer Models:** OSI Model (7 layers) | TCP/IP Model (4 layers: Network Access, Internet, Transport, Application)
 
-## The Reliable Foundation of the Internet
+### The Reliable Foundation of the Internet
 
 TCP is one of the **crown jewels of computer science**—a protocol so elegant and robust that it has powered the internet for over 40 years. It represents the solution to one of computing's hardest problems: **how to guarantee reliable, ordered delivery over an unreliable network**.
 
-## The Deep Theory: Solving the Impossible
+### The Deep Theory: Solving the Impossible
 
 **The Problem TCP Solves:**
 The internet is fundamentally **unreliable**:
@@ -23,7 +34,7 @@ Yet applications need **reliability**:
 
 TCP creates **reliability from unreliability**—an almost magical transformation.
 
-## The Three-Way Handshake: Establishing Truth
+### The Three-Way Handshake: Establishing Truth
 
 ```
 Client                                Server
@@ -52,7 +63,7 @@ The handshake embodies **mutual agreement**. Both parties must explicitly agree 
 - Resource exhaustion
 - Ambiguous connection state
 
-## Guaranteed Delivery: The Acknowledgment Dance
+### Guaranteed Delivery: The Acknowledgment Dance
 
 **How It Works:**
 ```
@@ -89,7 +100,7 @@ Sender                               Receiver
    - **Adaptive timeout**: Learn network RTT, adjust timeout
    - **Fast retransmit**: Three duplicate ACKs trigger immediate resend
 
-## Flow Control: Respecting the Receiver
+### Flow Control: Respecting the Receiver
 
 **The Problem:**
 Sender can produce data faster than receiver can consume it.
@@ -113,7 +124,7 @@ Sender: "OK, I can send 5KB more"
 **The Elegance:**
 Flow control is **receiver-driven**. The receiver controls the pace, ensuring it's never overwhelmed.
 
-## Congestion Control: Respecting the Network
+### Congestion Control: Respecting the Network
 
 **The Problem:**
 Sending too fast causes network congestion:
@@ -163,7 +174,7 @@ TCP dynamically adjusts sending rate based on network conditions.
 **The Philosophy:**
 Congestion control is **network-respectful**. TCP backs off when it senses congestion, preventing collapse and ensuring fairness.
 
-## Ordered Delivery: Sequence Numbers Save the Day
+### Ordered Delivery: Sequence Numbers Save the Day
 
 **The Challenge:**
 Packets take different routes, arrive out of order.
@@ -180,7 +191,7 @@ Sequence numbers allow TCP to:
 - **Detect gaps**: Know when packets are missing
 - **Remove duplicates**: Ignore packets we've already seen
 
-## Connection Termination: Graceful Goodbye
+### Connection Termination: Graceful Goodbye
 
 **Four-Way Handshake:**
 ```
@@ -207,7 +218,7 @@ Client                              Server
 - **Why**: Ensure final ACK arrives; handle delayed packets
 - **Trade-off**: Sockets remain in use temporarily
 
-## TCP Header: Every Bit Matters
+### TCP Header: Every Bit Matters
 
 ```
  0                   1                   2                   3
@@ -234,7 +245,7 @@ Client                              Server
 - **Flags**: SYN, ACK, FIN, RST, PSH
 - **Checksum**: Data integrity
 
-## Performance Characteristics
+### Performance Characteristics
 
 **Latency Components:**
 - **Connection Setup**: 1 RTT (Round Trip Time) for handshake
@@ -258,7 +269,7 @@ BDP = Bandwidth × RTT
 - **Problem**: Default windows too small for high-speed, long-distance links
 - **Solution**: TCP Window Scaling (negotiate larger windows)
 
-## When TCP Shines
+### When TCP Shines
 
 **Perfect For:**
 - **Web browsing**: Every byte matters, order critical
@@ -271,7 +282,7 @@ BDP = Bandwidth × RTT
 **The Pattern:**
 When **correctness** is more important than **speed**, TCP is your friend.
 
-## When TCP Struggles
+### When TCP Struggles
 
 **Problems:**
 
@@ -296,7 +307,7 @@ When **correctness** is more important than **speed**, TCP is your friend.
    - Short flows starved by long flows
    - **Impact**: Unfair resource allocation
 
-## TCP Variants and Evolution
+### TCP Variants and Evolution
 
 **Classic Versions:**
 - **TCP Tahoe** (1988): First congestion control
@@ -314,7 +325,7 @@ When **correctness** is more important than **speed**, TCP is your friend.
 - **TCP Window Scaling**: Support windows > 64KB
 - **Selective Acknowledgment (SACK)**: Acknowledge non-contiguous blocks
 
-## The Trade-offs
+### The Trade-offs
 
 | Aspect | TCP | UDP |
 |--------|-----|-----|
@@ -325,7 +336,7 @@ When **correctness** is more important than **speed**, TCP is your friend.
 | **Connection** | Required (3-way handshake) | Connectionless |
 | **Use Case** | Correctness critical | Speed critical |
 
-## The Wisdom
+### The Wisdom
 
 **Why TCP Won the Internet:**
 1. **Reliability**: Just works, hides network complexity

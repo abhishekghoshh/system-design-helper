@@ -1,5 +1,14 @@
 # Data Serialization
 
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
 ## Theory
 
 ### What is Data Serialization?

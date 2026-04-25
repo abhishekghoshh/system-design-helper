@@ -1,4 +1,16 @@
 # Sharding (Horizontal Partitioning)
+
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
+## Theory
+
 Splitting data across multiple databases.
 
 **Sharding Strategies:**
@@ -18,7 +30,8 @@ Splitting data across multiple databases.
 - Joins become difficult
 - Transactions across shards
 
-# Vertical Partitioning
+### Vertical Partitioning
+
 Splitting table columns across multiple tables/databases.
 
 **Example:**

@@ -1,5 +1,14 @@
 # Scalability & Performance
 
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
 ## Theory
 
 Scalability is the ability of a system to handle a growing amount of work by adding resources. Performance is how well the system responds under a given load. Together they determine whether your system can serve 100 users or 100 million.
@@ -36,7 +45,7 @@ Optimize in this order — each level has the highest ROI at the top:
 
 ---
 
-## Latency & Bandwidth
+### Latency & Bandwidth
 
 **Latency**: Time for data to travel from source to destination
 - Network latency
@@ -55,7 +64,8 @@ Optimize in this order — each level has the highest ROI at the top:
 - Optimize queries
 - Use caching
 
-## Scalability
+### Scalability
+
 Ability to handle increased load.
 
 **Vertical Scaling (Scale Up):**
@@ -75,7 +85,8 @@ Ability to handle increased load.
 - Caching
 - Async processing
 
-## Throughput
+### Throughput
+
 Number of operations completed per unit time.
 
 **Metrics:**
@@ -90,7 +101,8 @@ Number of operations completed per unit time.
 - Batch processing
 - Async operations
 
-## Performance Optimization
+### Performance Optimization
+
 - **Database**: Indexing, query optimization, connection pooling
 - **Application**: Code optimization, caching, lazy loading
 - **Network**: CDN, compression, HTTP/2

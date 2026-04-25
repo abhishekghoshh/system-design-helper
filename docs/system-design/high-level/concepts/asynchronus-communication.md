@@ -1,5 +1,22 @@
 # Message Queue
 
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+### Single Videos
+
+- [Message Queues vs Pub/Sub | System Design](https://www.youtube.com/watch?v=XvnppkWqJbs)
+
+
+### Playlists
+
+- [Data Architecture Basics with Adam Bellemare](https://www.youtube.com/playlist?list=PLa7VYi0yPIH0QypJnW0OXOnbLvzJRP34C)
+
 ## Theory
 
 ### Message Queues for Async Tasks
@@ -66,7 +83,7 @@ Asynchronous (with message queue):
 
 ---
 
-## Quick Reference
+### Quick Reference
 
 Asynchronous communication pattern for decoupling services.
 
@@ -99,16 +116,4 @@ Asynchronous communication pattern for decoupling services.
 
 ---
 
-# Asynchronus communication related things
-
-
-## Youtube
-
-### Single Videos
-
-- [Message Queues vs Pub/Sub | System Design](https://www.youtube.com/watch?v=XvnppkWqJbs)
-
-
-### Playlists
-
-- [Data Architecture Basics with Adam Bellemare](https://www.youtube.com/playlist?list=PLa7VYi0yPIH0QypJnW0OXOnbLvzJRP34C)
+### Asynchronus communication related things

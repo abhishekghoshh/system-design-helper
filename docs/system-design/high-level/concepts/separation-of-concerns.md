@@ -1,5 +1,14 @@
 # Separation of Concerns
 
+## Blogs and websites
+
+
+## Medium
+
+
+## Youtube
+
+
 ## Theory
 
 ### What is Separation of Concerns?
