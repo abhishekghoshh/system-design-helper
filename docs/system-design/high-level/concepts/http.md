@@ -5,6 +5,7 @@
 
 ## Medium
 
+- [Understanding CORS](https://itnext.io/understanding-cors-4157bf640e11)
 
 ## Youtube
 

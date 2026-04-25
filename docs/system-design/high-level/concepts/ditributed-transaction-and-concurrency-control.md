@@ -5,6 +5,7 @@
 
 ## Medium
 
+- [Concurrent Writes in Distributed Systems](https://medium.com/the-developers-diary/concurrent-writes-in-distributed-systems-601782e4797f)
 
 ## Youtube
 

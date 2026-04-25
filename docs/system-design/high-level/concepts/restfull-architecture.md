@@ -7,6 +7,7 @@
 
 ## Medium
 
+- [REST API Design Best Practices](https://medium.com/@techworldwithmilan/rest-api-design-best-practices-2eb5e749d428)
 
 ## Youtube
 

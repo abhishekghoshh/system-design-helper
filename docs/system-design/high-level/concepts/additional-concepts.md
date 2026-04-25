@@ -5,6 +5,7 @@
 
 ## Medium
 
+- [Top 15 Software Development Trends in 2024](https://serokell.medium.com/top-15-software-development-trends-in-2024-5a4526653004)
 
 ## Youtube
 

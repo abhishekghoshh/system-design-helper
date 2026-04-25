@@ -5,6 +5,7 @@
 
 ## Medium
 
+- [Introduction to API Rate Limiting: Understanding the Basics and Its Importance](https://medium.com/the-developers-diary/introduction-to-api-rate-limiting-understanding-the-basics-and-its-importance-fde0b5af995b)
 
 ## Youtube
 

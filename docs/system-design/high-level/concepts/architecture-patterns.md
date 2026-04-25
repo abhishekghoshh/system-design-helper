@@ -5,6 +5,12 @@
 
 ## Medium
 
+- [Most Common Software Architecture Styles](https://medium.com/@techworldwithmilan/most-common-software-architecture-styles-86881d779683)
+- [23 Must-Know Principles in Software Architecture](https://azeynalli1990.medium.com/23-must-know-principles-in-software-architecture-62d1cf73df7c)
+- [10 Fundamental Cloud-Native Architecture Patterns](https://azeynalli1990.medium.com/10-fundamental-cloud-native-architecture-patterns-859021b0716d)
+- [Mastering Software Architecture Patterns: A Comprehensive Guide](https://heyizzy.me/mastering-software-architecture-patterns-a-comprehensive-guide-0a66e1498da9)
+- [Mastering Software Complexity: Object-Oriented vs. Process-Oriented Approaches](https://experiencestack.co/mastering-software-complexity-object-oriented-vs-process-oriented-approaches-in-development-f414335fea6d)
+- [Adopting Domain-First Thinking in Modular Monolith with Hexagonal Architecture](https://itnext.io/adopting-domain-first-thinking-in-modular-monolith-with-hexagonal-architecture-f9e4921ac18d)
 
 ## Youtube
 

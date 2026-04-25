@@ -5,6 +5,8 @@
 
 ## Medium
 
+- [6 System Design Interview Concepts](https://levelup.gitconnected.com/6-system-design-interview-concepts-1b1882506766)
+- [System Design Interview Question: Design Spotify](https://levelup.gitconnected.com/system-design-interview-question-design-spotify-4a8a79697dda)
 
 ## Youtube
 

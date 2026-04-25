@@ -5,6 +5,8 @@
 
 ## Medium
 
+- [How I Redesigned The Backend To Quickly Handle Millions Of Reads (And Writes)](https://blog.bitsrc.io/how-i-redesigned-the-backend-to-quickly-handle-millions-of-reads-and-writes-58cfe989e6f8)
+- [Horizontal vs Vertical Scaling: Scalability (System Design)](https://medium.com/@ayush_mittal/horizontal-vs-vertical-scaling-scalability-system-design-d10658b7f94e)
 
 ## Youtube
 

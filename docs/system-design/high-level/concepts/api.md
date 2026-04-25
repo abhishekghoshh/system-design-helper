@@ -5,6 +5,7 @@
 
 ## Medium
 
+- [API Design 101: From Basics to Best Practices](https://levelup.gitconnected.com/api-design-101-from-basics-to-best-practices-a0261cdf8886)
 
 ## Youtube
 

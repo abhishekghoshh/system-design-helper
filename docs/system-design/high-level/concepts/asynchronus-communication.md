@@ -5,6 +5,9 @@
 
 ## Medium
 
+- [Message Queueing versus Event Streaming](https://azeynalli1990.medium.com/message-queueing-versus-event-streaming-ab5758dc88b3)
+- [Event Driven Systems-Lessons from the Trenches](https://medium.com/sids-tech-cafe/event-driven-systems-lessons-from-the-trenches-107c07b3fc1d)
+- [Event Driven Architecture, The Hard Parts: Events Vs Messages](https://medium.com/simpplr-technology/event-driven-architecture-the-hard-parts-events-vs-messages-0fcfc7243703)
 
 ## Youtube
 

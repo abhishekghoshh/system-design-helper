@@ -5,6 +5,8 @@
 
 ## Medium
 
+- [Load Balancer vs Reverse Proxy vs API Gateway](https://medium.com/codenx/load-balancer-vs-reverse-proxy-vs-api-gateway-fcb79912abbf)
+- [Load Balancing: System Design Fundamentals](https://medium.com/@abhirup.acharya009/load-balancing-system-design-fundamentals-d64674227c36)
 
 ## Youtube
 

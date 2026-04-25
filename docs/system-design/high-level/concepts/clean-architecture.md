@@ -15,6 +15,7 @@
 - [The S.O.L.I.D Principles in Pictures](https://medium.com/backticks-tildes/the-s-o-l-i-d-principles-in-pictures-b34ce2f1e898)
 - [The 7 Most Important Software Design Patterns](https://learningdaily.dev/the-7-most-important-software-design-patterns-d60e546afb0e)
 - [Understanding Inversion of Control (IoC) Principle](https://medium.com/@amitkma/understanding-inversion-of-control-ioc-principle-163b1dc97454)
+- [Free E-BOOK on Design Patterns In Use](https://medium.com/@techworldwithmilan/how-to-select-a-design-pattern-567181b90e8c)
 
 ## Youtube
 

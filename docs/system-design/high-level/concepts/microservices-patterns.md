@@ -5,6 +5,9 @@
 
 ## Medium
 
+- [10 microservices design patterns for better architecture](https://medium.com/capital-one-tech/10-microservices-design-patterns-for-better-architecture-befa810ca44e)
+- [Top 10 Microservice Anti-Patterns](https://blog.bitsrc.io/10-microservice-anti-patterns-278bcb7f385d)
+- [Saga, CDC with Transactional Inbox/Outbox](https://ishansoninitj.medium.com/saga-cdc-with-transactional-inbox-outbox-d15507868c7f)
 
 ## Youtube
 

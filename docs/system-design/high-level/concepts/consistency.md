@@ -5,6 +5,7 @@
 
 ## Medium
 
+- [Strong Consistency vs Eventual Consistency](https://medium.com/@abhirup.acharya009/strong-consistency-vs-eventual-consistency-19ce6f87c112)
 
 ## Youtube
 
