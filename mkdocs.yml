@@ -237,6 +237,7 @@ nav:
     - Low Level Design:
       - Overview: system-design/low-level/index.md
       - Concepts:
+        - Overview: system-design/low-level/concepts/0-introduction.md
         - HashMap: system-design/low-level/concepts/hashmap.md
         - MVC: system-design/low-level/concepts/mvc.md
         - Null Object Pattern: system-design/low-level/concepts/null-object-pattern.md
@@ -246,10 +247,12 @@ nav:
         - Design Pattern: system-design/low-level/design-pattern/design-pattern.md
         - Creational:
           - All Creational Patterns: system-design/low-level/design-pattern/creational/creational.md
+          - Singleton: system-design/low-level/design-pattern/creational/singleton.md
+          - Prototype: system-design/low-level/design-pattern/creational/prototype.md
           - Builder: system-design/low-level/design-pattern/creational/builder.md
           - Factory: system-design/low-level/design-pattern/creational/factory.md
+          - Abstract Factory: system-design/low-level/design-pattern/creational/abstract-factory.md
           - Object Pool: system-design/low-level/design-pattern/creational/object-pool.md
-          - Singleton: system-design/low-level/design-pattern/creational/singleton.md
         - Structural:
           - All Structural Patterns: system-design/low-level/design-pattern/structural/structural.md
           - Adapter: system-design/low-level/design-pattern/structural/adapter.md
@@ -273,6 +276,7 @@ nav:
           - Template: system-design/low-level/design-pattern/behavioral/template.md
           - Visitor: system-design/low-level/design-pattern/behavioral/visitor.md
       - Designing:
+        - Overview: system-design/low-level/designing/0-introduction.md
         - Access Management System: system-design/low-level/designing/access-management-system.md
         - Account Balance Tracker: system-design/low-level/designing/account-balance-tracker.md
         - Air Traffic Controller: system-design/low-level/designing/air-traffic-controller.md
