@@ -5,6 +5,12 @@ The hardest part: **stateful connections (WebSockets) in a stateless backend wor
 
 ---
 
+## Blogs and websites
+
+## Medium
+
+## Youtube
+
 ## High-Level Architecture
 
 ```

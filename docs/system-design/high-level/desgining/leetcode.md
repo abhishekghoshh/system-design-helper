@@ -1,5 +1,9 @@
 # Leetcode Design
 
+## Blogs and websites
+
+## Medium
+
 ## Youtube
 
 - [System Design Interview: Design LeetCode w/ a Google Engineer](https://www.youtube.com/watch?v=hRnJxPeoZyg)
@@ -7,13 +11,9 @@
 
 - [Design a Code Execution System | System Design](https://www.youtube.com/watch?v=TOyD-5QgpuE)
 
-
 ## Problems
 
 - [Design LeetCode](https://systemdesignschool.io/problems/leetcode)
-
-
-
 
 ## Scratchpad
 
@@ -26,4 +26,3 @@ for code evaluation service there can be 2 possible ways
 
 
 ```
-

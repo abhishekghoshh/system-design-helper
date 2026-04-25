@@ -1,7 +1,8 @@
 # Amazon/Flipkart System Design
 
+## Blogs and websites
 
-
+## Medium
 
 ## Youtube
 
@@ -12,6 +13,4 @@
 - [✅ System Design 3: E-Commerce Platform like Amazon / Flipkart Architecture Design | HLD / LLD](https://www.youtube.com/watch?v=-wJuExkI97s)
 - [16: Amazon/Flipkart | Systems Design Interview Questions With Ex-Google SWE](https://www.youtube.com/watch?v=F9lcK1jnAcs)
 
-
 ## Theory
-

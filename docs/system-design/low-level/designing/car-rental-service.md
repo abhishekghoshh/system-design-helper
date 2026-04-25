@@ -1,5 +1,9 @@
 # Design Car Rental Service
 
+## Blogs and websites
+
+## Medium
+
 ## Youtube
 
 - [9. LLD of Car Rental System (Hindi) | ZoomCar Low Level Design | System Design Interview Question](https://www.youtube.com/watch?v=J4GO6hmR6TA)

@@ -1,5 +1,8 @@
 # Design a Multiplayer Game (pubg)
 
+## Blogs and websites
+
+## Medium
 
 ## Youtube
 

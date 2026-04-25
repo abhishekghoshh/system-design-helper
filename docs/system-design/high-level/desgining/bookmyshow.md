@@ -1,6 +1,8 @@
 # Design Ticket master
 
+## Blogs and websites
 
+## Medium
 
 ## Youtube
 

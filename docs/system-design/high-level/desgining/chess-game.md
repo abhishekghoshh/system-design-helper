@@ -1,6 +1,8 @@
 # Build a game of Chess
 
+## Blogs and websites
 
+## Medium
 
 ## Youtube
 

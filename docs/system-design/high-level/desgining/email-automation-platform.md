@@ -1,7 +1,8 @@
 # Design an Email Automation Platform (Klaviyo, Mailchimp)
 
+## Blogs and websites
 
-
+## Medium
 
 ## Youtube
 

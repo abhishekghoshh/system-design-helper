@@ -1,5 +1,8 @@
 # Design a Distributed Geospatial Data Platform
 
+## Blogs and websites
+
+## Medium
 
 ## Youtube
 

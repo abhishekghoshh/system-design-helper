@@ -1,13 +1,6 @@
 # Design UPI Payments System
 
-
-## YouTube
-
-- [System Design of UPI Payments](https://www.youtube.com/watch?v=fqySz1Me2pI)
-
----
-
-## Blogs
+## Blogs and websites
 
 - [Designing UPI - System Design](https://www.geeksforgeeks.org/system-design/designing-upi-system-design/)
 - [System Design: UPI (Unified Payment Interface)](https://dev.to/zeeshanali0704/system-design-upi-unified-payment-interface-2ng3)
@@ -20,6 +13,12 @@
 
 - [UPI System Design](https://medium.com/career-drill/upi-system-design-f310d881b33d)
 - [Technical Flow of Unified Payment Interface P2P Payments](https://medium.com/@vansh7uppal/technical-flow-of-united-payment-interface-p2p-payments-f553f49eae14)
+
+---
+
+## Youtube
+
+- [System Design of UPI Payments](https://www.youtube.com/watch?v=fqySz1Me2pI)
 
 ---
 

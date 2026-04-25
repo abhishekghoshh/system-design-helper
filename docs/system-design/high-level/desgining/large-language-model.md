@@ -1,5 +1,8 @@
 # Design Large Language Model (ChatGPT)
 
+## Blogs and websites
+
+## Medium
 
 ## Youtube
 

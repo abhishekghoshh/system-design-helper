@@ -1,9 +1,10 @@
+# Design Yelp
 
-## Website
+## Blogs and websites
 
 - [Design a Local Business Review Site Like Yelp](https://www.hellointerview.com/learn/system-design/problem-breakdowns/yelp)
 
-
+## Medium
 
 ## Youtube
 

@@ -1,5 +1,9 @@
 # Design a system like Vercel
 
+## Blogs and websites
+
+## Medium
+
 ## Youtube
 
 - [Code along - I built Vercel in 4 Hours (System Design, AWS, Redis, S3)](https://www.youtube.com/watch?v=c8_tafixiAs)

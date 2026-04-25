@@ -1,6 +1,8 @@
 # Design An Authentication System
 
+## Blogs and websites
 
+## Medium
 
 ## Youtube
 

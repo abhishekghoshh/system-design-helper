@@ -1,5 +1,8 @@
 # Design Log System Data
 
+## Blogs and websites
+
+## Medium
 
 ## Youtube
 

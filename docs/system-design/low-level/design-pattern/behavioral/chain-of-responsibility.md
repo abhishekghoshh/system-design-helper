@@ -1,7 +1,9 @@
 # Chain of Responsibility Design Pattern
 
+## Blogs and websites
+
+## Medium
 
 ## Youtube
 
 - [10. Design Logging System (Hindi) | Chain of Responsibility Design Pattern | System Design interview](https://www.youtube.com/watch?v=gvIn5QBdGDk)
-

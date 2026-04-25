@@ -1,5 +1,9 @@
 # Design a Elevator System
 
+## Blogs and websites
+
+## Medium
+
 ## Youtube
 
 - [Elevator System | Google SWE Teaches Low Level Design Episode 3](https://www.youtube.com/watch?v=4OjHA-BcJhw)

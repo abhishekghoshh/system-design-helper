@@ -1,5 +1,8 @@
 # Design an App Store (Apple Store/Google Playstore)
 
+## Blogs and websites
+
+## Medium
 
 ## Youtube
 

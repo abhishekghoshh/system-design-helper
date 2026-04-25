@@ -1,5 +1,17 @@
 # Design Rate Limiter
 
+## Blogs and websites
+
+- [Rate Limiter](https://www.techprep.app/system-design/high-level-design/rate-limiter/solution)
+- [Design A Rate Limiter](https://bytebytego.com/courses/system-design-interview/design-a-rate-limiter)
+
+
+
+- [Rate Limiting Fundamentals](https://blog.bytebytego.com/p/rate-limiting-fundamentals)
+- [Rate Limiter For The Real World](https://blog.bytebytego.com/p/rate-limiter-for-the-real-world)
+
+## Medium
+
 ## Youtube
 
 - [Rate Limiter System Design: Token Bucket, Leaky Bucket, Scaling](https://www.youtube.com/watch?v=YXkOdWBwqaA)
@@ -24,21 +36,6 @@
 
 
 - [API Throttling vs Rate Limiting | Most important backend concept in Hindi](https://www.youtube.com/watch?v=2XGa0sfU-f0)
-
-
-## Website
-
-- [Rate Limiter](https://www.techprep.app/system-design/high-level-design/rate-limiter/solution)
-- [Design A Rate Limiter](https://bytebytego.com/courses/system-design-interview/design-a-rate-limiter)
-
-
-## Blogs
-
-- [Rate Limiting Fundamentals](https://blog.bytebytego.com/p/rate-limiting-fundamentals)
-- [Rate Limiter For The Real World](https://blog.bytebytego.com/p/rate-limiter-for-the-real-world)
-
-
-
 
 ## Designing
 

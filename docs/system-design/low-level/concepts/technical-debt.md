@@ -1,9 +1,10 @@
 # How to Handle Technical Debt
 
+## Blogs and websites
 
+## Medium
 
-
-## YouTube
+## Youtube
 
 - [Everything You NEED to Know About TECH DEBT](https://www.youtube.com/watch?v=ukgmp6uxQJc)
 

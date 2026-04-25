@@ -1,6 +1,10 @@
 # Design Tiny Url or bit.ly
 
+## Blogs and websites
 
+- [Tiny URL (URL Shortener)](https://www.techprep.app/system-design/high-level-design/tiny-url/solution)
+
+## Medium
 
 ## Youtube
 
@@ -20,16 +24,7 @@
 
 - [Create a Custom URL Shortener using Node.JS and MongoDB](https://www.youtube.com/watch?v=4WvX9dBjiJo)
 
-
-
-## Website
-
-- [Tiny URL (URL Shortener)](https://www.techprep.app/system-design/high-level-design/tiny-url/solution)
-
-
-
 ## Theory
-
 
 ### Approach 1
 

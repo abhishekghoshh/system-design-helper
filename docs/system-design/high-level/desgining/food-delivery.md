@@ -1,5 +1,8 @@
 # Design Content Delivery Network
 
+## Blogs and websites
+
+## Medium
 
 ## Youtube
 

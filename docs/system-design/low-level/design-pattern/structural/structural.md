@@ -1,12 +1,12 @@
 # All Structural Design Patterns
 
+## Blogs and websites
 
-
+## Medium
 
 ## Youtube
 
 - [32. All Structural Design Patterns | Decorator, Proxy, Composite, Adapter, Bridge, Facade, FlyWeight](https://www.youtube.com/watch?v=WxGtmIBZszk)
-
 
 ## Theory
 

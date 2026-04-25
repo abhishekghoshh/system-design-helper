@@ -1,5 +1,9 @@
 # How to host your own X
 
+## Blogs and websites
+
+## Medium
+
 ## Youtube
 
 - [Host Your Own Browser and OS](https://www.youtube.com/watch?v=sXMCzsCfopQ)

@@ -1,6 +1,8 @@
 # Proxy Design Pattern
 
+## Blogs and websites
 
+## Medium
 
 ## Youtube
 

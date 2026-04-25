@@ -1,6 +1,8 @@
 # Design Payment Gateway
 
+## Blogs and websites
 
+## Medium
 
 ## Youtube
 

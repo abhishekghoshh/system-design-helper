@@ -1,5 +1,8 @@
 # Design Airbnb/Booking.com
 
+## Blogs and websites
+
+## Medium
 
 ## Youtube
 
@@ -15,8 +18,6 @@
 - [System Design 5: Design Hotel Booking App like AirBnb / Booking.com | Proximity | HLD | LLD](https://www.youtube.com/watch?v=mH2Ye3_vErw)
 
 - [Design Scalable Hotel Booking System Like Airbnb or MakeMyTrip | Backend Architecture Explained](https://www.youtube.com/watch?v=lA24q8x2cT4)
-
-
 
 ## Theory
 

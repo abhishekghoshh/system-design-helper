@@ -1,5 +1,8 @@
 # Design Tagging Service Or HashTag Service
 
+## Blogs and websites
+
+## Medium
 
 ## Youtube
 

@@ -1,5 +1,8 @@
 # Design a Video Streaming Platform (Youtube)
 
+## Blogs and websites
+
+## Medium
 
 ## Youtube
 

@@ -1,6 +1,8 @@
 # Apply Coupons on Shopping Cart products
 
+## Blogs and websites
 
+## Medium
 
 ## Youtube
 

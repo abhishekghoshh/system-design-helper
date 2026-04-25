@@ -1,6 +1,10 @@
 # Design FB Live comments
 
+## Blogs and websites
 
+## Medium
+
+## Youtube
 
 ## Youtbe
 

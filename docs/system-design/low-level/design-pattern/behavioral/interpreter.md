@@ -1,7 +1,8 @@
 # Interpreter Design Pattern
 
+## Blogs and websites
 
-
+## Medium
 
 ## Youtube
 

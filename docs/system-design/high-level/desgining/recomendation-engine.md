@@ -1,5 +1,8 @@
 # Design a Recommendation System
 
+## Blogs and websites
+
+## Medium
 
 ## Youtube
 

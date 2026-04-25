@@ -1,5 +1,8 @@
 # Distributed Messaging Queue like Kafka, RabbitMQ
 
+## Blogs and websites
+
+## Medium
 
 ## Youtube
 

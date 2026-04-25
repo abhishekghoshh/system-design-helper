@@ -1,5 +1,8 @@
 # Design a Chat System
 
+## Blogs and websites
+
+## Medium
 
 ## Youtube
 

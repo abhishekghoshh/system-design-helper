@@ -1,5 +1,8 @@
 # Design a VPN
 
+## Blogs and websites
+
+## Medium
 
 ## Youtube
 

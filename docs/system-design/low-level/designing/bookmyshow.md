@@ -1,6 +1,8 @@
 # Design BookMyShow
 
+## Blogs and websites
 
+## Medium
 
 ## Youtube
 

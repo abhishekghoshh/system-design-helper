@@ -1,13 +1,12 @@
 # Flyweight Design Pattern
 
+## Blogs and websites
 
-
+## Medium
 
 ## Youtube
 
 - [30. Design Word Processor using Flyweight Design Pattern | Low Level System Design FlyWeight Pattern](https://www.youtube.com/watch?v=Mwm6tB3x1do)
-
-
 
 ## Theory
 

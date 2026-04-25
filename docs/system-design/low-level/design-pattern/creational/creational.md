@@ -1,12 +1,12 @@
 # All Creational Design Patterns 
 
+## Blogs and websites
 
+## Medium
 
 ## Youtube
 
 - [27. All Creational Design Patterns | Prototype, Singleton, Factory, AbstractFactory, Builder Pattern](https://www.youtube.com/watch?v=OuNOyFg942)
-
-
 
 ## Theory
 

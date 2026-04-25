@@ -1,6 +1,8 @@
 # Design File sharing application (DropBox/Google Drive)
 
+## Blogs and websites
 
+## Medium
 
 ## Youtube
 

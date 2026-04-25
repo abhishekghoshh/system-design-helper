@@ -1,8 +1,12 @@
 # Netflix Design Choices
 
+## Blogs and websites
+
+## Medium
+
+## Youtube
 
 ## Architechture choices
-
 
 ### Youtube
 

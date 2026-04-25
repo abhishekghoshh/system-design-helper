@@ -2,12 +2,9 @@
 
 ## Blogs and websites
 
-
 ## Medium
 
-
 ## Youtube
-
 
 ## Theory
 

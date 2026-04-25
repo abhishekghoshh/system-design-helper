@@ -1,7 +1,8 @@
 # Design Twitter
 
+## Blogs and websites
 
-
+## Medium
 
 ## Youtube
 

@@ -1,12 +1,12 @@
 # Mediator Design Pattern
 
+## Blogs and websites
 
+## Medium
 
 ## Youtube
 
 - [34. Design Online Auction System with Mediator Design Pattern | Low Level System Design](https://www.youtube.com/watch?v=bKM2lFPPmmY)
-
-
 
 ## Theory
 

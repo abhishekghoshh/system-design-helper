@@ -1,14 +1,12 @@
 # Behavioral Design Pattern
 
+## Blogs and websites
 
-
+## Medium
 
 ## Youtube
 
 - [41. All Behavioral Design Patterns | Strategy, Observer, State, Template, Command, Visitor, Memento](https://www.youtube.com/watch?v=DBDnUkTobaE)
-
-
-
 
 ## Theory
 
