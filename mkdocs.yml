@@ -60,7 +60,7 @@ nav:
     - Interview: system-design/interview.md
     - High Level Design:
       - Concepts:
-        - System Design Concepts: system-design/high-level/concepts/0-introduction.md
+        - Overview: system-design/high-level/concepts/0-introduction.md
         # Philosophy & Foundations
         - Philosophy of System Design: system-design/high-level/concepts/philosophy-of-system-design.md
         - Client-Server Architecture: system-design/high-level/concepts/client-server-architecture.md
@@ -155,69 +155,80 @@ nav:
         - Additional Concepts: system-design/high-level/concepts/additional-concepts.md
       - Designing:
         - Overview: system-design/high-level/desgining/0-introduction.md
-        - Amazon/Flipkart: system-design/high-level/desgining/amazon-flipkart.md
-        - App Store: system-design/high-level/desgining/app-store.md
+        # Core Infrastructure & Platform Services
+        - URL Shortener: system-design/high-level/desgining/url-shortner.md
+        - Key Value Store: system-design/high-level/desgining/key-value-store.md
+        - Rate Limiter: system-design/high-level/desgining/rate-limiter.md
+        - Notification System: system-design/high-level/desgining/notification-system.md
+        - Log System: system-design/high-level/desgining/log-system.md
+        - Search Engine: system-design/high-level/desgining/search-engine.md
         - Authentication System: system-design/high-level/desgining/authentication-system.md
-        - Autocomplete: system-design/high-level/desgining/autocomplete.md
-        - BookMyShow: system-design/high-level/desgining/bookmyshow.md
-        - CDN: system-design/high-level/desgining/cdn.md
-        - Chat System: system-design/high-level/desgining/chat-system.md
-        - Chess Game: system-design/high-level/desgining/chess-game.md
-        - Data Warehouse: system-design/high-level/desgining/data-warehouse.md
-        - Digital Wallet: system-design/high-level/desgining/digital-wallet.md
-        - Distributed Cache: system-design/high-level/desgining/distributed-cache.md
+        - Webhook: system-design/high-level/desgining/webhook.md
         - Distributed Counter: system-design/high-level/desgining/distributed-counter.md
-        - Distributed Geospatial Data Platform: system-design/high-level/desgining/distributed-geospatial-data-platform.md
-        - Distributed Job Scheduler: system-design/high-level/desgining/distributed-job-scheduler.md
+        - Distributed Cache: system-design/high-level/desgining/distributed-cache.md
         - Distributed Locking Service: system-design/high-level/desgining/distributed-locking-service.md
+        - Distributed Job Scheduler: system-design/high-level/desgining/distributed-job-scheduler.md
+        - CDN: system-design/high-level/desgining/cdn.md
+        - Autocomplete: system-design/high-level/desgining/autocomplete.md
+        - Pastebin: system-design/high-level/desgining/pastebin.md
+        - Leaderboard: system-design/high-level/desgining/leaderboard.md
+        # Messaging & Real-Time Communication
+        - Chat System: system-design/high-level/desgining/chat-system.md
+        - WhatsApp: system-design/high-level/desgining/whatspp.md
+        - Live Comments: system-design/high-level/desgining/live-comments.md
         - Distributed Messaging Queue: system-design/high-level/desgining/distributed-messaging-queue.md
+        - Slack: system-design/high-level/desgining/slack.md
+        # Media & Streaming
+        - Video Streaming: system-design/high-level/desgining/video-streaming.md
+        - Netflix: system-design/high-level/desgining/netflix.md
+        - Spotify: system-design/high-level/desgining/spotify.md
+        - Live Streaming: system-design/high-level/desgining/live-streaming.md
+        - Image Optimisation On The Fly: system-design/high-level/desgining/Image-Optimisation-on-the-fly.md
+        # E-Commerce & Payments
+        - Amazon/Flipkart: system-design/high-level/desgining/amazon-flipkart.md
         - E-Commerce: system-design/high-level/desgining/e-commerce.md
         - E-Commerce Checkout: system-design/high-level/desgining/ecommerce-checkout.md
-        - Email Automation Platform: system-design/high-level/desgining/email-automation-platform.md
-        - Facebook: system-design/high-level/desgining/facebook.md
-        - Flight Booking: system-design/high-level/desgining/flight-booking.md
-        - Food Delivery: system-design/high-level/desgining/food-delivery.md
-        - Google Docs: system-design/high-level/desgining/google-docs.md
-        - Google Drive: system-design/high-level/desgining/google-drive.md
-        - Google Maps: system-design/high-level/desgining/google-maps.md
-        - Hashtag Service: system-design/high-level/desgining/hashtag-service.md
-        - Hotel Booking: system-design/high-level/desgining/hotel-booking.md
-        - How to Host Your Own X: system-design/high-level/desgining/how-to-host-your-own-x.md
-        - Image Optimisation On The Fly: system-design/high-level/desgining/Image-Optimisation-on-the-fly.md
-        - Instagram: system-design/high-level/desgining/instagram.md
-        - Key Value Store: system-design/high-level/desgining/key-value-store.md
-        - Large Language Model: system-design/high-level/desgining/large-language-model.md
-        - Leaderboard: system-design/high-level/desgining/leaderboard.md
-        - LeetCode: system-design/high-level/desgining/leetcode.md
-        - Live Comments: system-design/high-level/desgining/live-comments.md
-        - Live Streaming: system-design/high-level/desgining/live-streaming.md
-        - Log System: system-design/high-level/desgining/log-system.md
-        - Multiplayer Game: system-design/high-level/desgining/multiplayer-game.md
-        - Netflix: system-design/high-level/desgining/netflix.md
-        - Notification System: system-design/high-level/desgining/notification-system.md
-        - Online Code Editor: system-design/high-level/desgining/online-code-editor.md
-        - Pastebin: system-design/high-level/desgining/pastebin.md
         - Payment Gateway: system-design/high-level/desgining/payment-gateway.md
-        - Rate Limiter: system-design/high-level/desgining/rate-limiter.md
-        - Recommendation Engine: system-design/high-level/desgining/recomendation-engine.md
-        - Redis: system-design/high-level/desgining/redis.md
-        - Search Engine: system-design/high-level/desgining/search-engine.md
-        - Slack: system-design/high-level/desgining/slack.md
-        - Social Media: system-design/high-level/desgining/social-media.md
-        - Spotify: system-design/high-level/desgining/spotify.md
-        - Stock Broker System: system-design/high-level/desgining/stock-broker-system.md
-        - TikTok: system-design/high-level/desgining/tiktok.md
-        - Twitter: system-design/high-level/desgining/twitter.md
-        - Uber: system-design/high-level/desgining/uber.md
         - UPI Payments: system-design/high-level/desgining/upi-payments.md
-        - URL Shortener: system-design/high-level/desgining/url-shortner.md
-        - Vercel: system-design/high-level/desgining/vercel.md
+        - Digital Wallet: system-design/high-level/desgining/digital-wallet.md
         - Vending Machine: system-design/high-level/desgining/vending-machine.md
-        - Video Streaming: system-design/high-level/desgining/video-streaming.md
-        - VPN: system-design/high-level/desgining/vpn.md
-        - Webhook: system-design/high-level/desgining/webhook.md
-        - WhatsApp: system-design/high-level/desgining/whatspp.md
+        # Social Media & Content
+        - Twitter: system-design/high-level/desgining/twitter.md
+        - Social Media: system-design/high-level/desgining/social-media.md
+        - Hashtag Service: system-design/high-level/desgining/hashtag-service.md
+        - Recommendation Engine: system-design/high-level/desgining/recomendation-engine.md
+        - Facebook: system-design/high-level/desgining/facebook.md
+        - Instagram: system-design/high-level/desgining/instagram.md
+        - TikTok: system-design/high-level/desgining/tiktok.md
+        # Booking & Marketplace
+        - BookMyShow: system-design/high-level/desgining/bookmyshow.md
+        - Uber: system-design/high-level/desgining/uber.md
+        - Food Delivery: system-design/high-level/desgining/food-delivery.md
+        - Hotel Booking: system-design/high-level/desgining/hotel-booking.md
+        - App Store: system-design/high-level/desgining/app-store.md
         - Yelp: system-design/high-level/desgining/yelp.md
+        - Flight Booking: system-design/high-level/desgining/flight-booking.md
+        - Google Maps: system-design/high-level/desgining/google-maps.md
+        # Storage & Data
+        - Google Drive: system-design/high-level/desgining/google-drive.md
+        - Data Warehouse: system-design/high-level/desgining/data-warehouse.md
+        - Distributed Geospatial Data Platform: system-design/high-level/desgining/distributed-geospatial-data-platform.md
+        - Redis: system-design/high-level/desgining/redis.md
+        # AI & Developer Tools
+        - Large Language Model: system-design/high-level/desgining/large-language-model.md
+        - LeetCode: system-design/high-level/desgining/leetcode.md
+        - Vercel: system-design/high-level/desgining/vercel.md
+        - Email Automation Platform: system-design/high-level/desgining/email-automation-platform.md
+        - Google Docs: system-design/high-level/desgining/google-docs.md
+        - Online Code Editor: system-design/high-level/desgining/online-code-editor.md
+        # Networking & Security
+        - VPN: system-design/high-level/desgining/vpn.md
+        - Stock Broker System: system-design/high-level/desgining/stock-broker-system.md
+        # Gaming
+        - Chess Game: system-design/high-level/desgining/chess-game.md
+        - Multiplayer Game: system-design/high-level/desgining/multiplayer-game.md
+        # Other
+        - How to Host Your Own X: system-design/high-level/desgining/how-to-host-your-own-x.md
       - Links:
         - Udemy: system-design/high-level/links/udemy.md
         - Websites: system-design/high-level/links/websites.md
