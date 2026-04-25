@@ -59,7 +59,7 @@ nav:
     - High Level Design:
       - Overview: system-design/high-level/index.md
       - Concepts:
-        - System Design Concepts: system-design/high-level/concepts/system-design-concepts.md
+        - System Design Concepts: system-design/high-level/concepts/introduction.md
         - Adaptive Bitrate Streaming: system-design/high-level/concepts/adaptive-bitrate-streaming.md
         - API: system-design/high-level/concepts/api.md
         - API Gateway: system-design/high-level/concepts/api-gateway.md
