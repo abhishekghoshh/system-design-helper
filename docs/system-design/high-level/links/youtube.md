@@ -74,6 +74,7 @@
 - [System Design Course For Beginners | HLD Of Tinder, Uber and Twitter X | LLD | Interviews | @SCALER](https://www.youtube.com/watch?v=8telu1SoCKM)
 - [System Design Full Course (High Level Design)](https://www.youtube.com/watch?v=W8kg8h-uIC8)
 - [System Design Course – APIs, Databases, Caching, CDNs, Load Balancing & Production Infra](https://www.youtube.com/watch?v=C842vFY5kRo)
+- [Learn System Design Fundamentals in One Video | From Basics to Advanced | FAANG Interview Prep 2026](https://www.youtube.com/watch?v=AA24OlKrRfo)
 
 
 ### Channels and Playlists
