@@ -6,6 +6,7 @@ services:
     image: abhishek1009/system-design-helper:latest
     build:
       context: .  # Set the build context to the docs directory
+      dockerfile: Dockerfile.docs.slim  # Specify the Dockerfile to use
     ports:
       - "8000:8000"
     # volume mount so that it will get the local changes automatically

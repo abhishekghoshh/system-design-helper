@@ -2,17 +2,53 @@
 
 ## Blogs and websites
 
+## Blogs
+
+- [Life beyond Distributed Transactions: an Apostate’s Opinion](https://ics.uci.edu/~cs223/papers/cidr07p15.pdf)
 
 ## Medium
 
 - [Concurrent Writes in Distributed Systems](https://medium.com/the-developers-diary/concurrent-writes-in-distributed-systems-601782e4797f)
+- [Optimistic Locking vs Pessimistic Locking: Managing Concurrent Access](https://medium.com/@abhirup.acharya009/managing-concurrent-access-optimistic-locking-vs-pessimistic-locking-0f6a64294db7)
+- [Concurrency Challenges in Database Transactions: Isolation Levels and Locking Mechanisms](https://dip-mazumder.medium.com/concurrency-challenges-in-database-transactions-isolation-levels-and-locking-mechanisms-9672d335d432)
 
 ## Youtube
 
-- [20. Handle Distributed Transactions | Two-Phase Commit (2PC), Three-Phase Commit (3PC), SAGA Pattern](https://www.youtube.com/watch?v=ET_DnJgfplY)
-- [System Design: Concurrency Control in Distributed System | Optimistic & Pessimistic Concurrency Lock](https://www.youtube.com/watch?v=D3XhDu--uoI)
-- [23. Two Phase Locking (2PL) | System Design](https://www.youtube.com/watch?v=lceenm34m-w)
-- [Dual Write Problem | Designing Event-Driven Microservices](https://www.youtube.com/watch?v=QaH7r4V4RmE)
+- [Hello Interview - SWE Interview Preparation](https://www.youtube.com/@hello_interview/playlists)
+    - [Distributed Transactions](https://www.youtube.com/watch?v=DOFflggE_0Q)
+
+- [Arpit Bhayani](https://www.youtube.com/@AsliEngineering/videos)
+    - [Distributed Transactions: Two-Phase Commit Protocol](https://www.youtube.com/watch?v=7FgU1D4EnpQ)
+
+- [Concept && Coding - by Shrayansh](https://www.youtube.com/@ConceptAndCodingByShrayansh/playlists)
+    - [20. Handle Distributed Transactions | Two-Phase Commit (2PC), Three-Phase Commit (3PC), SAGA Pattern](https://www.youtube.com/watch?v=ET_DnJgfplY)
+    - [System Design: Concurrency Control in Distributed System | Optimistic & Pessimistic Concurrency Lock](https://www.youtube.com/watch?v=D3XhDu--uoI)
+    - [23. Two Phase Locking (2PL) | System Design](https://www.youtube.com/watch?v=lceenm34m-w)
+    - [Dual Write Problem | Designing Event-Driven Microservices](https://www.youtube.com/watch?v=QaH7r4V4RmE)
+
+- [NDC Conferences](https://www.youtube.com/@NDC/playlists)
+    - [Life Beyond Distributed Transactions: An Apostate's Implementation - Jimmy Bogard](https://www.youtube.com/watch?v=1fjGPG-v76s)
+    - [Life Beyond Distributed Transactions: An Apostate's Implementation - Jimmy Bogard](https://www.youtube.com/watch?v=AUrKofVRHV4)
+    - [Life Beyond Distributed Transactions: An Apostate's Implementation - Jimmy Bogard](https://www.youtube.com/watch?v=3HidYKjiAqQ)
+    - [Consistency and Agreements in Distributed Systems - Jimmy Bogard - NDC London 2025](https://www.youtube.com/watch?v=FZ-1dbtQXYY)
+    - [Six Little Lines of Fail - Jimmy Bogard](https://www.youtube.com/watch?v=LGG3IIHUG_w)
+    - [Six Little Lines of Fail - Jimmy Bogard](https://www.youtube.com/watch?v=VvUdvte1V3s)
+    - [At Least Once - Ian Cooper - NDC Oslo 2022](https://www.youtube.com/watch?v=_9ULo-F4nmE)
+
+- [PapersWeLove](https://www.youtube.com/@PapersWeLove)
+    - [Life Beyond Distributed Transactions / Space-efficient Static Trees and Graphs [PWL NYC]](https://www.youtube.com/watch?v=bbr67HUNBVI)
+    - [Sean T. Allen on Life Beyond Distributed Transactions: An Apostate’s Opinion [PWL SF] 07/2018](https://www.youtube.com/watch?v=xI56ox7dcRQ)
+
+- [CMU Database Group](https://www.youtube.com/@CMUDatabaseGroup/playlists)
+    - [F2023 #22 - Distributed Transaction Processing Databases (CMU Intro to Database Systems)](https://www.youtube.com/watch?v=QRJs_57Pung)
+
+- [MIT 6.824: Distributed Systems](https://www.youtube.com/@6.824/playlists)
+    - [MIT 6.824 Distributed Systems (Spring 2020)](https://www.youtube.com/playlist?list=PLrw6a1wE39_tb2fErI4-WkMbsvGQk9_UB)
+
+- [Build Stuff - #1 Software Dev Conf](https://www.youtube.com/@BuildStuff/playlists)
+    - [Ian Cooper - At Least Once | BUILD STUFF CONFERENCE 2022](https://www.youtube.com/watch?v=d9ilc_gLwFA)
+ 
+
 
 ## Theory
 

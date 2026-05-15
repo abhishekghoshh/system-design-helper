@@ -1,5 +1,20 @@
-#### Web Design
+# AI Tools
+
+### YouTube 
+
 - [Top 2024 Web Design Trends](https://www.youtube.com/watch?v=qthkkHPNAYQ)
+- [23 AI Tools You Won't Believe are Free](https://www.youtube.com/watch?v=ZYUt4WE4Mrw)
+- [28 AI Tools You'll Be Shocked Are Free](https://www.youtube.com/watch?v=mzbuYus8bH4)
+- [7 AI Tools Will Transform Your App Idea to REALITY](https://www.youtube.com/watch?v=H6rgeEdgpTA)
+- [How to Use AI Art and ChatGPT to Create Insane Web Designs](https://www.youtube.com/watch?v=8I3NTE4cn5s)
+- [I Tested HUNDREDS of AI Design Tools... These Are the BEST!](https://www.youtube.com/watch?v=HkJjXYO2_YY)
+- [How to Get a $1000 Logo Design for FREE Using AI?](https://www.youtube.com/watch?v=275L653HXS0)
+- [I Tried 108 Free AI Tools. These Are the Best](https://www.youtube.com/watch?v=cYOXNI4Gr70)
+- [Top 6 Tools to Transform Your App Idea to Reality | Low Code, AI, Design to Code, and More](https://www.youtube.com/watch?v=BL3qA-UmNug)
+
+
+### Tools
+
 
 #### AI Tool Directories
 - [The Warehouse](https://www.thewarehouse.ai/)
@@ -23,15 +38,7 @@
   - [AI Generated Videos Just Changed Forever](https://www.youtube.com/watch?v=NXpdyAWLDas)
   - [This is Incredible](https://www.youtube.com/watch?v=Ld8fYInYVQo)
 
-### YouTube Videos
-- [23 AI Tools You Won't Believe are Free](https://www.youtube.com/watch?v=ZYUt4WE4Mrw)
-- [28 AI Tools You'll Be Shocked Are Free](https://www.youtube.com/watch?v=mzbuYus8bH4)
-- [7 AI Tools Will Transform Your App Idea to REALITY](https://www.youtube.com/watch?v=H6rgeEdgpTA)
-- [How to Use AI Art and ChatGPT to Create Insane Web Designs](https://www.youtube.com/watch?v=8I3NTE4cn5s)
-- [I Tested HUNDREDS of AI Design Tools... These Are the BEST!](https://www.youtube.com/watch?v=HkJjXYO2_YY)
-- [How to Get a $1000 Logo Design for FREE Using AI?](https://www.youtube.com/watch?v=275L653HXS0)
-- [I Tried 108 Free AI Tools. These Are the Best](https://www.youtube.com/watch?v=cYOXNI4Gr70)
-- [Top 6 Tools to Transform Your App Idea to Reality | Low Code, AI, Design to Code, and More](https://www.youtube.com/watch?v=BL3qA-UmNug)
+
 
 ### AI Tools for Code Helpers
 - [ChatGPT](https://chat.openai.com/)

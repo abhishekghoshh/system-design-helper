@@ -3,11 +3,10 @@
 
 ## Youtube
 
+### General
+
 - [GenAI For Developers Roadmap 2025](https://www.youtube.com/watch?v=v1pj9XrJ_Lw)
-
-
 - [Gen AI Course | Gen AI Tutorial For Beginners](https://www.youtube.com/watch?v=d4yCWBGFCEs)
-
 - [GenAI Full Course](http://youtube.com/playlist?list=PLd7PleJR_EFfRYiLdagOsv4FczMl1Cxt_)
 - [Generative AI using LangChain](https://www.youtube.com/playlist?list=PLKnIA16_RmvaTbihpo4MtzVm4XOQa0ER0)
 - [The Only GenAI Roadmap You'll Ever Need | Map of Generative AI for Everyone | CampusX](https://www.youtube.com/watch?v=WzvURhaDZqI)

@@ -17,17 +17,19 @@ nav:
   - AI:
     - AI: ai/ai.md
     - AI Tools: ai/ai-tools.md
-    - AI Agent: ai/ai-agent.md
+    - Agentic AI: ai/agentic-ai.md
     - Gen AI: ai/gen-ai.md
-    - LangChain: ai/langchain.md
-    - LangGraph: ai/langgraph.md
+    - LangChain and LangGraph: ai/langchain-and-langgraph.md
     - MCP: ai/MCP.md
     - RAG: ai/RAG.md
+    - LLM Wiki: ai/llm-wiki.md
+    - Vector Embeddings: ai/vector-embeddings.md
+    - Vibe Coding: ai/vibe-coding.md
     - Courses: ai/courses.md
 
   - DevOps:
     - Overview: devops/index.md
-    - Deployment Strategies: devops/deplyment-strategies.md
+    - Deployment Strategies: devops/deployment-strategies.md
 
   - Security:
     - Introduction: security/introduction.md
@@ -98,17 +100,8 @@ nav:
         # Data Fundamentals
         - Hashing: system-design/high-level/concepts/hashing.md
         - Consistent Hashing: system-design/high-level/concepts/consistent-hashing.md
-        - Database Fundamentals: system-design/high-level/concepts/database-fundamentals.md
-        - SQL Databases: system-design/high-level/concepts/sql-databases.md
-        - NoSQL Databases: system-design/high-level/concepts/nosql-databases.md
         - Storage: system-design/high-level/concepts/storage.md
         - S3: system-design/high-level/concepts/s3.md
-        # Database Optimization
-        - Indexing: system-design/high-level/concepts/indexing.md
-        - Replication: system-design/high-level/concepts/replication.md
-        - Sharding: system-design/high-level/concepts/sharding.md
-        - Denormalization: system-design/high-level/concepts/denormalization.md
-        - Database Migration: system-design/high-level/concepts/database-migration.md
         # Caching
         - Caching: system-design/high-level/concepts/caching.md
         - Distributed Caches & Caching Strategies: system-design/high-level/concepts/distributed-caches-and-caching-strategies.md
@@ -127,7 +120,6 @@ nav:
         - Clean Architecture: system-design/high-level/concepts/clean-architecture.md
         - Microservices Patterns: system-design/high-level/concepts/microservices-patterns.md
         # Distributed Systems
-        - Distributed Consensus: system-design/high-level/concepts/distributed-consensus.md
         - Raft Consensus Algorithm: system-design/high-level/concepts/raft-consensus-algorithm.md
         - Gossip Protocol: system-design/high-level/concepts/gossip-protocol.md
         - Distributed Transaction & Concurrency Control: system-design/high-level/concepts/ditributed-transaction-and-concurrency-control.md

@@ -7,10 +7,15 @@
 
 - [Model Context Protocol (MCP) Explained for Beginners: AI Flight Booking Demo!](https://www.youtube.com/watch?v=E2DEHOEbzks)
 - [MCP Tutorial: Build Your First MCP Server and Client from Scratch (Free Labs)](https://www.youtube.com/watch?v=RhTiAOGwbYE)
-
+-
+-
 - [MCP Servers - Next Big Thing in AI](https://www.youtube.com/watch?v=vYelTr1uQmA)
 - [Tool Calling VS MCP in AI Agents | Model Context Protocol Explained](https://www.youtube.com/watch?v=TlIOk8VuEBU)
-
+-
+-
+- [Building MCP Server From Scratch (Complete Tutorial)](https://www.youtube.com/watch?v=OmWjC_M44Ss)
+-
+-
 - [Why Everyone's Talking About MCP?](https://www.youtube.com/watch?v=_d0duu3dED4)
 - [99% of Developers Don't Get MCP](https://www.youtube.com/watch?v=rCBSQxQr9Xg)
 - [Why MCP really is a big deal | Model Context Protocol with Tim Berglund](https://www.youtube.com/watch?v=FLpS7OfD5-s)

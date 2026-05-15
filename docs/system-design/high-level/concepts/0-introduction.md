@@ -54,19 +54,9 @@ A comprehensive guide to understanding core system design concepts and principle
 
 - [Hashing](hashing.md)
 - [Consistent Hashing](consistent-hashing.md)
-- [Database Fundamentals](database-fundamentals.md)
-- [SQL Databases](sql-databases.md)
-- [NoSQL Databases](nosql-databases.md)
 - [Object / Blob Storage](storage.md)
 - [S3 (Simple Storage Service)](s3.md)
 
-### Database Optimization
-
-- [Indexing](indexing.md)
-- [Replication](replication.md)
-- [Sharding & Partitioning](sharding.md)
-- [Denormalization](denormalization.md)
-- [Database Migration](database-migration.md)
 
 ### Caching
 
@@ -95,7 +85,6 @@ A comprehensive guide to understanding core system design concepts and principle
 
 ### Distributed Systems
 
-- [Distributed Consensus](distributed-consensus.md)
 - [Raft Consensus Algorithm](raft-consensus-algorithm.md)
 - [Gossip Protocol](gossip-protocol.md)
 - [Distributed Transactions & Concurrency Control](ditributed-transaction-and-concurrency-control.md)

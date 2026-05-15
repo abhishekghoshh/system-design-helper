@@ -39,6 +39,8 @@
 
 #### System Design Crash Course
 
+- [13 strange laws for building modern software](https://www.youtube.com/watch?v=TI-QdJ64g8k)
+- [8 Most Important System Design Concepts You Should Know](https://www.youtube.com/watch?v=BTjxUS_PylA)
 - [30 System Design Concepts in just 50 minutes. The Fastest Way to Learn System Design!](https://www.youtube.com/watch?v=umdwWa2PP2I)
 - [System Design](https://www.youtube.com/playlist?list=PL_c9BZzLwBRLSs6x50D5WIH76VCUxJs9E)
 - [Master Microservices & Event-Driven Architecture: Complete 6-Hour Guide for Beginners to Advanced](https://www.youtube.com/watch?v=FDjmWxETjn8)
@@ -113,11 +115,11 @@
 - [Core Dumped](https://www.youtube.com/@CoreDumpped/videos)
 - [Tech With Nikola](https://www.youtube.com/@TechWithNikola/videos)
 - [FAANG Senior Engineer](https://www.youtube.com/@SeniorEngineer10x) **Very Good**
-    - [System design from First Principle Series](https://www.youtube.com/playlist?list=PLA12lriZjwUO6AGEZK1JhyVWaWnG7dDEK)
-    - [System Design Challenge](https://www.youtube.com/playlist?list=PLA12lriZjwUOpC98pndP6O86TzSe1AqNK)
+    - [System Design 101 - The Fundamentals](https://www.youtube.com/playlist?list=PLA12lriZjwUPVPywuMZ-z9BRDbfnXGotQ)
+    - [System Design from First Principal](https://www.youtube.com/playlist?list=PLA12lriZjwUOHcm2HHO3OQznvfZOBjRzn)
 - [Manware](https://www.youtube.com/@IAmManware)
 - [Pascal Esc](https://www.youtube.com/@pascal_esc/videos)
-
+- [The Desi Architect](https://www.youtube.com/@DesiArchitect)
 
 - [System Design School](https://www.youtube.com/@SystemDesignSchool)
 - [Himanshu Goyal](https://www.youtube.com/@himanshugoyal91/playlists)

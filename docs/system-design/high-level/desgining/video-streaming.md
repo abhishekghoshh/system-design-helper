@@ -8,6 +8,7 @@
 
 ### Introduction
 
+- [How Does Live Streaming Platform Work? (YouTube live, Twitch, TikTok Live)](https://www.youtube.com/watch?v=7AMRfNKwuYo)
 - [Design a Video Streaming Protocol (HLS, DASH) | System Design](https://www.youtube.com/watch?v=v6qvrIY5Tgs)
 - [How Video Streaming Works on Scale - System Design](https://www.youtube.com/watch?v=-JtjQ-OA7XE)
 
@@ -20,8 +21,23 @@
 - [How I Built Video Transcoding Service From Scratch | System Design](https://www.youtube.com/watch?v=wcdaIQjtWQI)
 
 
+### Design Toktok
+
+- [System Design: How TikTok serves Viral video to 1B Users ?](https://www.youtube.com/watch?v=LSPjhWBTAlY)
+
+
+
+### Design Hotstar
+
+- [How Hotstar Application Scaled 25 Million Concurrent Users | Performance Testing | Load Testing](https://www.youtube.com/watch?v=9b7HNzBB3OQ)
+- [The CRAZIEST Livestream Architecture Ever Built](https://www.youtube.com/watch?v=Q9LC-WN9X4k)
+- [How JioCinema live streams IPL to 20 million concurrent devices w/ Prachi Sharma | Ep 7](https://www.youtube.com/watch?v=36N1Bz7qW0A)
+- [How Disney Hotstar Captures One Billion Emojis!](https://www.youtube.com/watch?v=UN1kW5AHid4)
+
+
 ### Design youtube
 
+- [No One Can Build a Second YouTube (Why?!)](https://www.youtube.com/watch?v=xSkAzr7VyTI)
 - [System Design: Design YouTube](https://www.youtube.com/watch?v=jWRW2xGMqSw)
 - [Design Youtube - System Design Interview](https://www.youtube.com/watch?v=jPKTo1iGQiE)
 - [System Design Interview: Design YouTube w/ a Ex-Meta Staff Engineer](https://www.youtube.com/watch?v=IUrQ5_g3XKs)

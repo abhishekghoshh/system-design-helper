@@ -12,6 +12,9 @@
 
 - [Let’s Handle 1 Million Requests per Second, It’s Scarier Than You Think!](https://www.youtube.com/watch?v=W4EwfEU8CGA)
 
+
+- [Scaling from 1 User to 1M Users: Real Architecture Journey | System Design in Hindi](https://www.youtube.com/watch?v=sXohJ3pYAfI)
+
 - [5. Scale from ZERO to MILLION Users (Hindi) | System design interview: Scale to 1million users](https://www.youtube.com/watch?v=rExh5cPMZcI)
 - [15. Design High Availability & Resilience System, HLD | Active Passive & Active Active Architecture](https://www.youtube.com/watch?v=iL7_8TmrePM)
 
