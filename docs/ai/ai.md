@@ -5,6 +5,7 @@
 
 ### Roadmap
 
+- [7 Tools Every AI Engineer Should Learn](https://www.youtube.com/watch?v=aFkImxIcIoA)
 - [How to Learn AI Engineering in 5 Minutes (NO PRIOR KNOWLEDGE)](https://www.youtube.com/watch?v=DtE5KogIj8k)
 - [Fastest way to become an AI Engineer in 2026](https://www.youtube.com/watch?v=aPpvAYp0xDc)
 - [I reviewed 20 AI engineering courses, here are my top 5](https://www.youtube.com/watch?v=HFmoNVx6vTA)

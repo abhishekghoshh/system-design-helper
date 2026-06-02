@@ -20,6 +20,8 @@
 -
 - [Stop Paying for Load Balancers (Use This Instead)](https://www.youtube.com/watch?v=FNP_p_Z4BGk)
 - [Load Balancer is Dead!](https://www.youtube.com/watch?v=kqQfdOoOXc4)
+- [Nginx is Dead!](https://www.youtube.com/watch?v=uPjzRN6lakg)
+    - [Celebrating 20 Years of NGINX](https://blog.nginx.org/blog/celebrating-20-years-of-nginx)
 
 ## Theory
 

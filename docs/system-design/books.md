@@ -46,6 +46,8 @@
 - Refactoring Book by Kent Beck and Martin Fowler
 - Code Complete Book by Steve McConnell
 - Thinking in Systems: A Primer Book by Donella Meadows
+- Linux in Action Book by Ben Piper
+
 
 
 ### C books
