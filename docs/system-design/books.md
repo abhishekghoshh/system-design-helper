@@ -53,9 +53,9 @@
 ### C books
 
 - The C Programming Language. 2nd Edition Book by Brian Kernighan and Dennis Ritchie
+- [Beej's Guide](https://beej.us/guide/)
 - Operating Systems: Three Easy Pieces Book by Andrea Arpaci-Dusseau and Remzi Arpaci-Dusseau (OSTEP) – A fantastic, accessible deep dive into how operating systems actually work.
 - Computer Systems: A Programmer’s Perspective (CS:APP) – The perfect guide for understanding how your C programs interact with hardware, memory, and the OS.
-
-
-
+    - [Computer Systems](https://www.cs.sfu.ca/~ashriram/Courses/CS295/assets/books/CSAPP_2016.pdf)
+    - [Computer Systems A Programmers Perspective 2nd Edition---Randal Bryant David Hallaron.pdf](https://github.com/lighthousand/books/blob/master/Computer%20Systems%20A%20Programmers%20Perspective%202nd%20Edition---Randal%20Bryant%20David%20Hallaron.pdf)
 

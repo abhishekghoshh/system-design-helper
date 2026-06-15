@@ -6,6 +6,13 @@
 - [Nightmare](https://guyinatuxedo.github.io/)
 
 
+## Open Sourced Github Projects
+
+- [OpenRCT2](https://github.com/openrct2/openrct2)
+- [OpenGoal](https://github.com/open-goal/jak-project)
+
+
+
 ## Youtube
 
 - [How to 10x your programming skills](https://www.youtube.com/watch?v=cLpfcn_dPEo)

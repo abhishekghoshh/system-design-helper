@@ -13,6 +13,7 @@
 - [6 Backend Mistakes Keeping You Stuck at Junior Level](https://www.youtube.com/watch?v=Wp7HjH8AunU)
 - [How is this Website so fast!?](https://www.youtube.com/watch?v=-Ln-8QM8KhQ)
 - [100+ Web Development Things you Should Know](https://www.youtube.com/watch?v=erEgovG9WBs)
+- [900+ hours of Learning System Design in 9 Minutes](https://www.youtube.com/watch?v=3Pusamd6BO4)
 
 
 - [The Day a Google L7 Engineer Tore My System Design to Shreds](https://www.youtube.com/watch?v=Ml7iKTmH5n8)
@@ -77,13 +78,17 @@
 - [System Design Full Course (High Level Design)](https://www.youtube.com/watch?v=W8kg8h-uIC8)
 - [System Design Course – APIs, Databases, Caching, CDNs, Load Balancing & Production Infra](https://www.youtube.com/watch?v=C842vFY5kRo)
 - [Learn System Design Fundamentals in One Video | From Basics to Advanced | FAANG Interview Prep 2026](https://www.youtube.com/watch?v=AA24OlKrRfo)
+- [System Design One Shot Full Course](https://www.youtube.com/watch?v=Vnm-ycSfJx4)
 
 
 ### Channels and Playlists
 
 - [Concept && Coding - by Shrayansh](https://www.youtube.com/@ConceptAndCodingByShrayansh/playlists)
-  - [InterviewCodingPractise](https://gitlab.com/shrayansh8/interviewcodingpractise)
+    - [InterviewCodingPractise](https://gitlab.com/shrayansh8/interviewcodingpractise)
 - [Hello Interview - SWE Interview Preparation](https://www.youtube.com/@hello_interview/playlists)
+- [Akhil Sharma](https://www.youtube.com/@AkhilSharmaTech/playlists)
+    - [Ultimate System Design For Beginners](https://www.youtube.com/playlist?list=PL5dTjWUk_cPalgtp3VPizNl8yaMQa_AE2)
+    - [Intermediate System Design](https://www.youtube.com/playlist?list=PL5dTjWUk_cPZs57nmMsNokMeq6PVorYyQ)
 - [sudoCODE](https://www.youtube.com/@sudocode/playlists)
 - [ByteByteGo](https://www.youtube.com/@ByteByteGo/playlists)
 - [ByteMonk](https://www.youtube.com/@ByteMonk/playlists)

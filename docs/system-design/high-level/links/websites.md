@@ -27,6 +27,7 @@
 
 - [eraser.io/decision-node](https://www.eraser.io/decision-node)
 
+- [Addy Osmani](https://addyosmani.com/)
 
 
 ## freecodecamp
@@ -149,3 +150,16 @@
 - [Build a Large Language Model (From Scratch)](https://github.com/rasbt/LLMs-from-scratch)
 - [Machine Learning From Scratch](https://github.com/eriklindernoren/ML-From-Scratch)
 - [Made With ML](https://github.com/GokuMohandas/Made-With-ML)
+
+
+### Open Sourced best projects
+
+- [10 weird OSS projects you need right now...](https://www.youtube.com/watch?v=qPuzWFvRajk)
+    - [Ratty: A GPU-rendered terminal emulator with inline 3D graphics](https://github.com/orhun/ratty)
+    - [TerminalPhone](https://gitlab.com/here_forawhile/terminalphone)
+    - [They Live Adblocker](https://github.com/davmlaw/they_live_adblocker)
+    - [cuda-oxide](https://github.com/NVlabs/cuda-oxide)
+    - [Wario Synthesis Engine 8-Bit Midi](https://github.com/b1rdmania/motif)
+    - [xikipedia Wikipedia as a social media feed](https://github.com/rebane2001/xikipedia)
+    - [Puter The Open-Source Internet Computer!](https://github.com/heyputer/puter)
+    - [honker is a SQLite extension + language bindings that add Postgres-style NOTIFY/LISTEN semantics to SQLite](https://github.com/russellromney/honker)

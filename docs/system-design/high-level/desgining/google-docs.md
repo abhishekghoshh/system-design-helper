@@ -1,17 +1,25 @@
 # Design Google Docs
 
+
 ## Blogs and websites
+
 
 ## Medium
 
+
 ## Youtube
+
+- [How Collaborative Text Editors Don't Break](https://www.youtube.com/watch?v=EL-VoBcUIJk)
+
 
 ## Theory
 
 ### Problem Statement
+
 Design a real-time collaborative document editing system like Google Docs where multiple users can simultaneously edit the same document with changes appearing instantly for all participants.
 
 ### Functional Requirements
+
 - Create, edit, delete documents (rich text)
 - Real-time collaborative editing (multiple cursors)
 - See other users' cursors and selections
@@ -21,11 +29,13 @@ Design a real-time collaborative document editing system like Google Docs where 
 - Offline editing with sync on reconnect
 
 ### Non-Functional Requirements
+
 - **Latency**: Keystroke-to-screen < 50ms for local, < 200ms for remote users
 - **Consistency**: All users converge to same document state
 - **Scale**: 100M+ documents, 10M+ concurrent editing sessions
 - **Availability**: 99.99%
 - **Durability**: Zero document loss
+
 
 ### The Core Challenge: Conflict Resolution
 
@@ -40,6 +50,7 @@ Two approaches:
   1. OT (Operational Transformation) — Google Docs' original approach
   2. CRDT (Conflict-free Replicated Data Types) — Modern approach
 ```
+
 
 ### Operational Transformation (OT)
 
@@ -63,6 +74,7 @@ Server architecture:
 Pro: Well-proven (Google Docs uses this)
 Con: Central server required, complex transformation functions
 ```
+
 
 ### CRDT Approach
 
@@ -148,6 +160,7 @@ Storage: Keep recent ops in hot storage, archive old snapshots
 | Permissions | Document-level ACL | Share with view/comment/edit |
 
 ### Scaling Considerations
+
 - **Session stickiness**: All edits for a document route to same server (partition by doc_id)
 - **Hot documents**: Single doc with 100+ editors → single server bottleneck → CRDT helps here
 - **Storage**: Compact old operations into snapshots periodically
