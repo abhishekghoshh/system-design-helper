@@ -68,6 +68,7 @@
 
 - [Shivam Srivastava](https://medium.com/@shivamsrivastava.iec)
     - [Interview Experiences and Learnings](https://medium.com/@shivamsrivastava.iec/list/interview-experiences-and-learnings-b859fb631e28)
+- [Abhinav Thakur](https://blog.singhabhinav.in/)
 - [Pudari Madhavi](https://medium.com/@pudarimadhavi99)
 - [ByteByteBoot](https://medium.com/@bytebyteboot)
 - [Oleksandr Klymenko](https://medium.com/@alxkm)
