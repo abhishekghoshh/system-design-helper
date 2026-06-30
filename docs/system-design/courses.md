@@ -17,6 +17,7 @@
 - [Udacity](https://www.udacity.com/catalog?price=free)
 - [Free Programming Courses with Certification](https://www.scaler.com/topics/courses/)
 
+- [Reading, without the wall.](https://freedium-mirror.cfd/)
 
 ## Udemy
 

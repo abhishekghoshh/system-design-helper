@@ -79,6 +79,8 @@
 - [System Design Course – APIs, Databases, Caching, CDNs, Load Balancing & Production Infra](https://www.youtube.com/watch?v=C842vFY5kRo)
 - [Learn System Design Fundamentals in One Video | From Basics to Advanced | FAANG Interview Prep 2026](https://www.youtube.com/watch?v=AA24OlKrRfo)
 - [System Design One Shot Full Course](https://www.youtube.com/watch?v=Vnm-ycSfJx4)
+- [Fundamentals of Backend Architecture - How to Design Scalable Software](https://www.youtube.com/watch?v=Qa-7iWxDz1A)
+- [System Design Explained: APIs, Databases, Caching, CDNs, Load Balancing & Production Infra](https://www.youtube.com/watch?v=oYxTTirKY8M)
 
 
 ### Channels and Playlists
@@ -86,6 +88,8 @@
 - [Concept && Coding - by Shrayansh](https://www.youtube.com/@ConceptAndCodingByShrayansh/playlists)
     - [InterviewCodingPractise](https://gitlab.com/shrayansh8/interviewcodingpractise)
 - [Hello Interview - SWE Interview Preparation](https://www.youtube.com/@hello_interview/playlists)
+- [NeetCodeIO](https://www.youtube.com/@NeetCodeIO/playlists)
+- [Anubhav Sethi](https://www.youtube.com/@anubhavintech/playlists)
 - [Akhil Sharma](https://www.youtube.com/@AkhilSharmaTech/playlists)
     - [Ultimate System Design For Beginners](https://www.youtube.com/playlist?list=PL5dTjWUk_cPalgtp3VPizNl8yaMQa_AE2)
     - [Intermediate System Design](https://www.youtube.com/playlist?list=PL5dTjWUk_cPZs57nmMsNokMeq6PVorYyQ)

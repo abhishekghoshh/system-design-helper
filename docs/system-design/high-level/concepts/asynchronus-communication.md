@@ -9,16 +9,21 @@
 - [Event Driven Systems-Lessons from the Trenches](https://medium.com/sids-tech-cafe/event-driven-systems-lessons-from-the-trenches-107c07b3fc1d)
 - [Event Driven Architecture, The Hard Parts: Events Vs Messages](https://medium.com/simpplr-technology/event-driven-architecture-the-hard-parts-events-vs-messages-0fcfc7243703)
 
+
 ## Youtube
 
 ### Single Videos
 
 - [Message Queues vs Pub/Sub | System Design](https://www.youtube.com/watch?v=XvnppkWqJbs)
 
+- [Why Your Event-Driven Design Is Failing](https://www.youtube.com/watch?v=Zqvre6dWRw4)
 
 ### Playlists
 
 - [Data Architecture Basics with Adam Bellemare](https://www.youtube.com/playlist?list=PLa7VYi0yPIH0QypJnW0OXOnbLvzJRP34C)
+
+
+
 
 ## Theory
 

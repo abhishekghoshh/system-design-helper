@@ -8,14 +8,8 @@ Star Method
 
 ## Medium
 
-### Topics
-
 - [Stories to Help You Grow as a Software Developer](https://medium.com/@MediumStaff/list/stories-to-help-you-grow-as-a-software-developer-b1d913188c20)
 - [Leadership](https://eddiebarth.medium.com/list/leadership-0cc0d07e2706)
-
-
-### Blogs
-
 - [Top 10 best practices for code review](https://medium.com/beyond-the-code-by-typo/top-10-best-practices-for-code-review-a05a7d1ce480)
 - [What I learned from the book Software Architecture: The Hard Parts](https://medium.com/@techworldwithmilan/what-i-learned-from-the-software-architecture-the-hard-parts-0498c9eae88e)
 - [How to Accumulate Domain Knowledge Like a Senior Engineer](https://medium.com/career-paths/how-to-accumulate-domain-knowledge-like-a-senior-engineer-8dd3924e2c70)
@@ -28,3 +22,4 @@ Star Method
 - [10 Lead Software Developer Principles](https://medium.com/mjukvare/10-lead-software-developer-principles-7e056d0e9c9c)
 - [Good Developer / Great Developer / Exceptional Developer](https://medium.com/@mike.s.chambers/good-developer-great-developer-exceptional-developer-ec4213565938)
 - [12 Microservices Design Patterns every Software Engineer needs to know](https://medium.com/@mrahmedkhan019/12-microservices-design-patterns-every-software-engineer-needs-to-know-f2daae212647)
+- [7 Coding Patterns I Stole From Senior Engineers](https://medium.com/skillstuff/7-coding-patterns-i-stole-from-senior-engineers-c95f757e52a6)

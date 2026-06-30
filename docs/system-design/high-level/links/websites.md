@@ -58,7 +58,9 @@
 - [Still asking "how to start system design"](https://www.linkedin.com/posts/akashsinnghh_still-asking-how-to-start-system-design-activity-7331280170336571394-bwPi/)
 - [Caching Mega Thread !](https://www.linkedin.com/posts/arpit-adlakha-30691a101_caching-mega-thread-caching-concepts-activity-7332340830382317568-SUdH/)
 - [If I had only 1 week to revise for coding interviews, these are the 35 problems I'd solve.](https://www.linkedin.com/posts/akashsinnghh_if-i-had-only-1-week-to-revise-for-coding-activity-7342439587874525185-dipt/)
+- [If you want to become good at system design, then learn these 15 case studies:](https://www.linkedin.com/posts/nk-systemdesign-one_if-you-want-to-become-good-at-system-design-share-7470091796757422082-YCgF)
 - [Alex Xu](https://www.linkedin.com/in/alexxubyte/recent-activity/all/)
+
 
 
 ## Medium
@@ -69,6 +71,7 @@
 - [Shivam Srivastava](https://medium.com/@shivamsrivastava.iec)
     - [Interview Experiences and Learnings](https://medium.com/@shivamsrivastava.iec/list/interview-experiences-and-learnings-b859fb631e28)
 - [Abhinav Thakur](https://blog.singhabhinav.in/)
+- [Alina Kovtun](https://medium.com/@akovtun)
 - [Pudari Madhavi](https://medium.com/@pudarimadhavi99)
 - [ByteByteBoot](https://medium.com/@bytebyteboot)
 - [Oleksandr Klymenko](https://medium.com/@alxkm)

@@ -82,6 +82,7 @@ nav:
         - WebSockets: system-design/high-level/concepts/websockets.md
         - WebRTC: system-design/high-level/concepts/webrtc.md
         - SMTP Server: system-design/high-level/concepts/smtp-server.md
+        - VoIP (Voice Over Internet Protocol): system-design/high-level/concepts/voice-over-internet-protocol.md
         # APIs & Communication Patterns
         - API: system-design/high-level/concepts/api.md
         - RESTful Architecture: system-design/high-level/concepts/restfull-architecture.md

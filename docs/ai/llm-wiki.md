@@ -18,3 +18,6 @@
 - [Build a Personal Knowledge Base (Using Andrej Karpathy's LLM Wiki)](https://www.youtube.com/watch?v=PPr3BTSlMwY)
 - [Andrej Karpathy Just 10x’d Everyone’s Claude Code](https://www.youtube.com/watch?v=sboNwYmH3AY)
 
+
+## Medium
+

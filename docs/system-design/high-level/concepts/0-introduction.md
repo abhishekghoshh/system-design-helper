@@ -30,6 +30,7 @@ A comprehensive guide to understanding core system design concepts and principle
 - [WebSockets](websockets.md)
 - [WebRTC](webrtc.md)
 - [SMTP Server](smtp-server.md)
+- [VoIP (Voice Over Internet Protocol)](voice-over-internet-protocol.md)
 
 ### APIs & Communication Patterns
 

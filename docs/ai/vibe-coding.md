@@ -9,3 +9,7 @@
 
 
 - [ChatGPT Just Killed Vibe Coding Apps](https://www.youtube.com/watch?v=zg7Rkjo2TaA)
+
+
+
+- [5 Claude Code skills I use every single day (Senior Engineer Tips)](https://www.youtube.com/watch?v=AG2BxDXt2po)
