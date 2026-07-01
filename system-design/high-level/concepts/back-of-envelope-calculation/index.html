@@ -1,0 +1,3299 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="https://abhishekghoshh.github.io/system-design-helper/system-design/high-level/concepts/back-of-envelope-calculation/" rel="canonical"/>
+<link href="../state-and-data-flow/" rel="prev"/>
+<link href="../cloud-computing/" rel="next"/>
+<link href="../../../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.50" name="generator"/>
+<title>Back of Envelope Calculation - System Design Helper</title>
+<link href="../../../../assets/stylesheets/main.a40c8224.min.css" rel="stylesheet"/>
+<link href="../../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+<meta content="website" property="og:type"/>
+<meta content="Back of Envelope Calculation - System Design Helper" property="og:title"/>
+<meta content="None" property="og:description"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/system-design/high-level/concepts/back-of-envelope-calculation.png" property="og:image"/>
+<meta content="image/png" property="og:image:type"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/system-design/high-level/concepts/back-of-envelope-calculation/" property="og:url"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Back of Envelope Calculation - System Design Helper" name="twitter:title"/>
+<meta content="None" name="twitter:description"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/system-design/high-level/concepts/back-of-envelope-calculation.png" name="twitter:image"/>
+</head>
+<body data-md-color-accent="purple" data-md-color-primary="teal" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#back-of-the-envelope-calculations">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="System Design Helper" class="md-header__button md-logo" data-md-component="logo" href="../../../.." title="System Design Helper">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            System Design Helper
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Back of Envelope Calculation
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="purple" data-md-color-media="" data-md-color-primary="teal" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="lime" data-md-color-media="" data-md-color-primary="teal" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../..">
+        
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../basics/cpu/">
+          
+  
+  Basics
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../ai/ai/">
+          
+  
+  AI
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../devops/">
+          
+  
+  DevOps
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../security/introduction/">
+          
+  
+  Security
+
+        </a>
+</li>
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../../../books/">
+          
+  
+  System Design
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="System Design Helper" class="md-nav__button md-logo" data-md-component="logo" href="../../../.." title="System Design Helper">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    System Design Helper
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../..">
+<span class="md-ellipsis">
+    Home
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Basics
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            Basics
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/cpu/">
+<span class="md-ellipsis">
+    CPU
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/pointers/">
+<span class="md-ellipsis">
+    Pointers
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/maths/">
+<span class="md-ellipsis">
+    Maths
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/behavioural/">
+<span class="md-ellipsis">
+    Behavioural
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/developer-experiences/">
+<span class="md-ellipsis">
+    Developer Experiences
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/open-source-tools/">
+<span class="md-ellipsis">
+    Open Source Tools
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/software-architect/">
+<span class="md-ellipsis">
+    Software Architect
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/wisdom/">
+<span class="md-ellipsis">
+    Wisdom
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+<span class="md-ellipsis">
+    AI
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            AI
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/ai/">
+<span class="md-ellipsis">
+    AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/ai-tools/">
+<span class="md-ellipsis">
+    AI Tools
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/agentic-ai/">
+<span class="md-ellipsis">
+    Agentic AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/gen-ai/">
+<span class="md-ellipsis">
+    Gen AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/langchain-and-langgraph/">
+<span class="md-ellipsis">
+    LangChain and LangGraph
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/MCP/">
+<span class="md-ellipsis">
+    MCP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/RAG/">
+<span class="md-ellipsis">
+    RAG
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/llm-wiki/">
+<span class="md-ellipsis">
+    LLM Wiki
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/vector-embeddings/">
+<span class="md-ellipsis">
+    Vector Embeddings
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/vibe-coding/">
+<span class="md-ellipsis">
+    Vibe Coding
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/courses/">
+<span class="md-ellipsis">
+    Courses
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    DevOps
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            DevOps
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../devops/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../devops/deployment-strategies/">
+<span class="md-ellipsis">
+    Deployment Strategies
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+<span class="md-ellipsis">
+    Security
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            Security
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/authentication-and-authorization/">
+<span class="md-ellipsis">
+    Authentication &amp; Authorization
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/oauth/">
+<span class="md-ellipsis">
+    OAuth
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/rbac/">
+<span class="md-ellipsis">
+    RBAC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/sso/">
+<span class="md-ellipsis">
+    SSO
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/ssl/">
+<span class="md-ellipsis">
+    SSL
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/ssh/">
+<span class="md-ellipsis">
+    SSH
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/jwt/">
+<span class="md-ellipsis">
+    JWT
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/encryption/">
+<span class="md-ellipsis">
+    Encryption
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/environment-variables/">
+<span class="md-ellipsis">
+    Environment Variables
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/devsecops/">
+<span class="md-ellipsis">
+    DevSecOps
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/firewall/">
+<span class="md-ellipsis">
+    Firewall
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+<span class="md-ellipsis">
+    Certificate
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_13_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_13">
+<span class="md-nav__icon md-icon"></span>
+            Certificate
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/certificate/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/certificate/certificate-authority/">
+<span class="md-ellipsis">
+    Certificate Authority
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/certificate/client-certificates/">
+<span class="md-ellipsis">
+    Client Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/certificate/server-certificates/">
+<span class="md-ellipsis">
+    Server Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/certificate/self-signed-certificates/">
+<span class="md-ellipsis">
+    Self-Signed Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/certificate/links/">
+<span class="md-ellipsis">
+    Links
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_14" id="__nav_5_14_label" tabindex="0">
+<span class="md-ellipsis">
+    Reverse Proxy
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_14_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_14">
+<span class="md-nav__icon md-icon"></span>
+            Reverse Proxy
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/reverse-proxy/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/reverse-proxy/haproxy/">
+<span class="md-ellipsis">
+    HAProxy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/reverse-proxy/nginx/">
+<span class="md-ellipsis">
+    Nginx
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    System Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            System Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../books/">
+<span class="md-ellipsis">
+    Books
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../courses/">
+<span class="md-ellipsis">
+    Courses
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../interview/">
+<span class="md-ellipsis">
+    Interview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4" id="__nav_6_4_label" tabindex="">
+<span class="md-ellipsis">
+    High Level Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_6_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_4">
+<span class="md-nav__icon md-icon"></span>
+            High Level Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6_4_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1" id="__nav_6_4_1_label" tabindex="0">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_6_4_1_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_1">
+<span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../philosophy-of-system-design/">
+<span class="md-ellipsis">
+    Philosophy of System Design
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../client-server-architecture/">
+<span class="md-ellipsis">
+    Client-Server Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../separation-of-concerns/">
+<span class="md-ellipsis">
+    Separation of Concerns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../state-and-data-flow/">
+<span class="md-ellipsis">
+    State and Data Flow
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    Back of Envelope Calculation
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    Back of Envelope Calculation
+  </span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#blogs-and-websites">
+<span class="md-ellipsis">
+      Blogs and websites
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#medium">
+<span class="md-ellipsis">
+      Medium
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#youtube">
+<span class="md-ellipsis">
+      Youtube
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#theory">
+<span class="md-ellipsis">
+      Theory
+    </span>
+</a>
+<nav aria-label="Theory" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#latency-hierarchy-visualization">
+<span class="md-ellipsis">
+      Latency Hierarchy Visualization
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#back-of-envelope-calculation">
+<span class="md-ellipsis">
+      Back of Envelope Calculation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#a-simple-process">
+<span class="md-ellipsis">
+      A Simple Process
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#worked-examples">
+<span class="md-ellipsis">
+      Worked Examples
+    </span>
+</a>
+<nav aria-label="Worked Examples" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-1-estimating-api-throughput">
+<span class="md-ellipsis">
+      Example 1: Estimating API Throughput
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-2-estimating-storage-growth">
+<span class="md-ellipsis">
+      Example 2: Estimating Storage Growth
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-3-estimating-media-upload-bandwidth">
+<span class="md-ellipsis">
+      Example 3: Estimating Media Upload Bandwidth
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#rules-of-thumb">
+<span class="md-ellipsis">
+      Rules of Thumb
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#hardware-impact-on-throughput">
+<span class="md-ellipsis">
+      Hardware Impact on Throughput
+    </span>
+</a>
+<nav aria-label="Hardware Impact on Throughput" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#hardware-resource-bottlenecks">
+<span class="md-ellipsis">
+      Hardware Resource Bottlenecks
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#instance-size-vs-readwrite-throughput-aws-equivalents">
+<span class="md-ellipsis">
+      Instance Size vs. Read/Write Throughput (AWS Equivalents)
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#technology-scale-benchmarks-per-single-node-partition">
+<span class="md-ellipsis">
+      Technology Scale Benchmarks (Per Single Node / Partition)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#when-to-use-replication-partitioning-and-sharding">
+<span class="md-ellipsis">
+      When to Use Replication, Partitioning, and Sharding
+    </span>
+</a>
+<nav aria-label="When to Use Replication, Partitioning, and Sharding" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#decision-flowchart">
+<span class="md-ellipsis">
+      Decision Flowchart
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#thresholds-when-to-pull-each-lever">
+<span class="md-ellipsis">
+      Thresholds: When to Pull Each Lever
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#replication-vs-sharding-vs-partitioning-conceptual-differences">
+<span class="md-ellipsis">
+      Replication vs. Sharding vs. Partitioning: Conceptual Differences
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#handling-peak-load-black-friday-flash-sale-scenarios">
+<span class="md-ellipsis">
+      Handling Peak Load (Black Friday / Flash Sale Scenarios)
+    </span>
+</a>
+<nav aria-label="Handling Peak Load (Black Friday / Flash Sale Scenarios)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#why-spikes-are-dangerous">
+<span class="md-ellipsis">
+      Why Spikes Are Dangerous
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#estimation-sizing-for-a-spike">
+<span class="md-ellipsis">
+      Estimation: Sizing for a Spike
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#architecture-layers-of-defence">
+<span class="md-ellipsis">
+      Architecture: Layers of Defence
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#strategy-predictable-vs-unpredictable-spikes">
+<span class="md-ellipsis">
+      Strategy: Predictable vs. Unpredictable Spikes
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#techniques-by-layer">
+<span class="md-ellipsis">
+      Techniques by Layer
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#load-shedding-the-last-resort">
+<span class="md-ellipsis">
+      Load Shedding: The Last Resort
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#black-friday-concrete-sizing-example">
+<span class="md-ellipsis">
+      Black Friday: Concrete Sizing Example
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cloud-computing/">
+<span class="md-ellipsis">
+    Cloud Computing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ip-addresses-and-ports/">
+<span class="md-ellipsis">
+    IP Addresses &amp; Ports
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../sockets/">
+<span class="md-ellipsis">
+    Sockets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../dns-server/">
+<span class="md-ellipsis">
+    DNS Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../networking/">
+<span class="md-ellipsis">
+    Networking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tcp/">
+<span class="md-ellipsis">
+    TCP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../udp/">
+<span class="md-ellipsis">
+    UDP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../http/">
+<span class="md-ellipsis">
+    HTTP / HTTPS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../websockets/">
+<span class="md-ellipsis">
+    WebSockets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../webrtc/">
+<span class="md-ellipsis">
+    WebRTC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../smtp-server/">
+<span class="md-ellipsis">
+    SMTP Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../voice-over-internet-protocol/">
+<span class="md-ellipsis">
+    VoIP (Voice Over Internet Protocol)
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../api/">
+<span class="md-ellipsis">
+    API
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../restfull-architecture/">
+<span class="md-ellipsis">
+    RESTful Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../graphql/">
+<span class="md-ellipsis">
+    GraphQL
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../grpc/">
+<span class="md-ellipsis">
+    gRPC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../data-serialization/">
+<span class="md-ellipsis">
+    Data Serialization
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../asynchronus-communication/">
+<span class="md-ellipsis">
+    Asynchronous Communication
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../nats/">
+<span class="md-ellipsis">
+    NATS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../webhooks/">
+<span class="md-ellipsis">
+    Webhooks
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../load-balancer-and-proxy-server/">
+<span class="md-ellipsis">
+    Load Balancer &amp; Proxy Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../api-gateway/">
+<span class="md-ellipsis">
+    API Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cdn/">
+<span class="md-ellipsis">
+    CDN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../service-discovery/">
+<span class="md-ellipsis">
+    Service Discovery
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../service-mesh/">
+<span class="md-ellipsis">
+    Service Mesh
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hashing/">
+<span class="md-ellipsis">
+    Hashing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../consistent-hashing/">
+<span class="md-ellipsis">
+    Consistent Hashing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../storage/">
+<span class="md-ellipsis">
+    Storage
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../s3/">
+<span class="md-ellipsis">
+    S3
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../caching/">
+<span class="md-ellipsis">
+    Caching
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-caches-and-caching-strategies/">
+<span class="md-ellipsis">
+    Distributed Caches &amp; Caching Strategies
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../scalability/">
+<span class="md-ellipsis">
+    Scalability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../scaling-to-one-million/">
+<span class="md-ellipsis">
+    Scaling to One Million
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../adaptive-bitrate-streaming/">
+<span class="md-ellipsis">
+    Adaptive Bitrate Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../browser-rendering-pipeline/">
+<span class="md-ellipsis">
+    Browser Rendering Pipeline
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../availability-and-reliability/">
+<span class="md-ellipsis">
+    Availability &amp; Reliability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../consistency/">
+<span class="md-ellipsis">
+    Consistency
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cap-theorm/">
+<span class="md-ellipsis">
+    CAP Theorem
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../fault-tolerance/">
+<span class="md-ellipsis">
+    Fault Tolerance
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../architecture-patterns/">
+<span class="md-ellipsis">
+    Architecture Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../clean-architecture/">
+<span class="md-ellipsis">
+    Clean Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../microservices-patterns/">
+<span class="md-ellipsis">
+    Microservices Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../raft-consensus-algorithm/">
+<span class="md-ellipsis">
+    Raft Consensus Algorithm
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../gossip-protocol/">
+<span class="md-ellipsis">
+    Gossip Protocol
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ditributed-transaction-and-concurrency-control/">
+<span class="md-ellipsis">
+    Distributed Transaction &amp; Concurrency Control
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cdc/">
+<span class="md-ellipsis">
+    CDC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../resilience-patterns/">
+<span class="md-ellipsis">
+    Resilience Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../thundering-effect/">
+<span class="md-ellipsis">
+    Thundering Herd Effect
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../security-basics/">
+<span class="md-ellipsis">
+    Security Basics
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../passwords/">
+<span class="md-ellipsis">
+    Passwords
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../environment-configuration-and-secrets/">
+<span class="md-ellipsis">
+    Environment Configuration &amp; Secrets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../observability/">
+<span class="md-ellipsis">
+    Observability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cqrs/">
+<span class="md-ellipsis">
+    CQRS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../event-sourcing/">
+<span class="md-ellipsis">
+    Event Sourcing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../saga-pattern/">
+<span class="md-ellipsis">
+    Saga Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../data-processing/">
+<span class="md-ellipsis">
+    Data Processing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../process/">
+<span class="md-ellipsis">
+    Process
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../code-documentation/">
+<span class="md-ellipsis">
+    Code Documentation
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../programming-language/">
+<span class="md-ellipsis">
+    Programming Language
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../github-server/">
+<span class="md-ellipsis">
+    GitHub Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../additional-concepts/">
+<span class="md-ellipsis">
+    Additional Concepts
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2" id="__nav_6_4_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Designing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Designing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/url-shortner/">
+<span class="md-ellipsis">
+    URL Shortener
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/key-value-store/">
+<span class="md-ellipsis">
+    Key Value Store
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/rate-limiter/">
+<span class="md-ellipsis">
+    Rate Limiter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/notification-system/">
+<span class="md-ellipsis">
+    Notification System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/log-system/">
+<span class="md-ellipsis">
+    Log System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/search-engine/">
+<span class="md-ellipsis">
+    Search Engine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/authentication-system/">
+<span class="md-ellipsis">
+    Authentication System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/webhook/">
+<span class="md-ellipsis">
+    Webhook
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/distributed-counter/">
+<span class="md-ellipsis">
+    Distributed Counter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/distributed-cache/">
+<span class="md-ellipsis">
+    Distributed Cache
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/distributed-locking-service/">
+<span class="md-ellipsis">
+    Distributed Locking Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/distributed-job-scheduler/">
+<span class="md-ellipsis">
+    Distributed Job Scheduler
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/cdn/">
+<span class="md-ellipsis">
+    CDN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/autocomplete/">
+<span class="md-ellipsis">
+    Autocomplete
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/pastebin/">
+<span class="md-ellipsis">
+    Pastebin
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/leaderboard/">
+<span class="md-ellipsis">
+    Leaderboard
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/chat-system/">
+<span class="md-ellipsis">
+    Chat System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/whatspp/">
+<span class="md-ellipsis">
+    WhatsApp
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/live-comments/">
+<span class="md-ellipsis">
+    Live Comments
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/distributed-messaging-queue/">
+<span class="md-ellipsis">
+    Distributed Messaging Queue
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/slack/">
+<span class="md-ellipsis">
+    Slack
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/video-streaming/">
+<span class="md-ellipsis">
+    Video Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/netflix/">
+<span class="md-ellipsis">
+    Netflix
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/spotify/">
+<span class="md-ellipsis">
+    Spotify
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/live-streaming/">
+<span class="md-ellipsis">
+    Live Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/Image-Optimisation-on-the-fly/">
+<span class="md-ellipsis">
+    Image Optimisation On The Fly
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/amazon-flipkart/">
+<span class="md-ellipsis">
+    Amazon/Flipkart
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/e-commerce/">
+<span class="md-ellipsis">
+    E-Commerce
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/ecommerce-checkout/">
+<span class="md-ellipsis">
+    E-Commerce Checkout
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/payment-gateway/">
+<span class="md-ellipsis">
+    Payment Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/upi-payments/">
+<span class="md-ellipsis">
+    UPI Payments
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/digital-wallet/">
+<span class="md-ellipsis">
+    Digital Wallet
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/vending-machine/">
+<span class="md-ellipsis">
+    Vending Machine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/twitter/">
+<span class="md-ellipsis">
+    Twitter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/social-media/">
+<span class="md-ellipsis">
+    Social Media
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/hashtag-service/">
+<span class="md-ellipsis">
+    Hashtag Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/recomendation-engine/">
+<span class="md-ellipsis">
+    Recommendation Engine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/facebook/">
+<span class="md-ellipsis">
+    Facebook
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/instagram/">
+<span class="md-ellipsis">
+    Instagram
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/tiktok/">
+<span class="md-ellipsis">
+    TikTok
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/bookmyshow/">
+<span class="md-ellipsis">
+    BookMyShow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/uber/">
+<span class="md-ellipsis">
+    Uber
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/food-delivery/">
+<span class="md-ellipsis">
+    Food Delivery
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/hotel-booking/">
+<span class="md-ellipsis">
+    Hotel Booking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/app-store/">
+<span class="md-ellipsis">
+    App Store
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/yelp/">
+<span class="md-ellipsis">
+    Yelp
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/flight-booking/">
+<span class="md-ellipsis">
+    Flight Booking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/google-maps/">
+<span class="md-ellipsis">
+    Google Maps
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/google-drive/">
+<span class="md-ellipsis">
+    Google Drive
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/data-warehouse/">
+<span class="md-ellipsis">
+    Data Warehouse
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/distributed-geospatial-data-platform/">
+<span class="md-ellipsis">
+    Distributed Geospatial Data Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/redis/">
+<span class="md-ellipsis">
+    Redis
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/large-language-model/">
+<span class="md-ellipsis">
+    Large Language Model
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/leetcode/">
+<span class="md-ellipsis">
+    LeetCode
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/vercel/">
+<span class="md-ellipsis">
+    Vercel
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/email-automation-platform/">
+<span class="md-ellipsis">
+    Email Automation Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/google-docs/">
+<span class="md-ellipsis">
+    Google Docs
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/online-code-editor/">
+<span class="md-ellipsis">
+    Online Code Editor
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/vpn/">
+<span class="md-ellipsis">
+    VPN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/stock-broker-system/">
+<span class="md-ellipsis">
+    Stock Broker System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/chess-game/">
+<span class="md-ellipsis">
+    Chess Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/multiplayer-game/">
+<span class="md-ellipsis">
+    Multiplayer Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/how-to-host-your-own-x/">
+<span class="md-ellipsis">
+    How to Host Your Own X
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_3" id="__nav_6_4_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Links
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Links
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../links/udemy/">
+<span class="md-ellipsis">
+    Udemy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../links/websites/">
+<span class="md-ellipsis">
+    Websites
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../links/youtube/">
+<span class="md-ellipsis">
+    YouTube
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="">
+<span class="md-ellipsis">
+    Low Level Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_5">
+<span class="md-nav__icon md-icon"></span>
+            Low Level Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_2" id="__nav_6_5_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_2">
+<span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/concepts/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/concepts/hashmap/">
+<span class="md-ellipsis">
+    HashMap
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/concepts/mvc/">
+<span class="md-ellipsis">
+    MVC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/concepts/null-object-pattern/">
+<span class="md-ellipsis">
+    Null Object Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/concepts/solid-principles/">
+<span class="md-ellipsis">
+    SOLID Principles
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/concepts/technical-debt/">
+<span class="md-ellipsis">
+    Technical Debt
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3" id="__nav_6_5_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Design Patterns
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_3">
+<span class="md-nav__icon md-icon"></span>
+            Design Patterns
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/design-pattern/">
+<span class="md-ellipsis">
+    Design Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_2" id="__nav_6_5_3_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Creational
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_2">
+<span class="md-nav__icon md-icon"></span>
+            Creational
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/creational/creational/">
+<span class="md-ellipsis">
+    All Creational Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/creational/singleton/">
+<span class="md-ellipsis">
+    Singleton
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/creational/prototype/">
+<span class="md-ellipsis">
+    Prototype
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/creational/builder/">
+<span class="md-ellipsis">
+    Builder
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/creational/factory/">
+<span class="md-ellipsis">
+    Factory
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/creational/abstract-factory/">
+<span class="md-ellipsis">
+    Abstract Factory
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/creational/object-pool/">
+<span class="md-ellipsis">
+    Object Pool
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_3" id="__nav_6_5_3_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Structural
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_3">
+<span class="md-nav__icon md-icon"></span>
+            Structural
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/structural/">
+<span class="md-ellipsis">
+    All Structural Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/adapter/">
+<span class="md-ellipsis">
+    Adapter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/bridge/">
+<span class="md-ellipsis">
+    Bridge
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/composite/">
+<span class="md-ellipsis">
+    Composite
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/decorator/">
+<span class="md-ellipsis">
+    Decorator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/facade/">
+<span class="md-ellipsis">
+    Facade
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/flyweight/">
+<span class="md-ellipsis">
+    Flyweight
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/proxy/">
+<span class="md-ellipsis">
+    Proxy
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_4" id="__nav_6_5_3_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Behavioral
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_4_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_4">
+<span class="md-nav__icon md-icon"></span>
+            Behavioral
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/behavioral/">
+<span class="md-ellipsis">
+    All Behavioral Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/chain-of-responsibility/">
+<span class="md-ellipsis">
+    Chain of Responsibility
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/command/">
+<span class="md-ellipsis">
+    Command
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/interpreter/">
+<span class="md-ellipsis">
+    Interpreter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/iterator/">
+<span class="md-ellipsis">
+    Iterator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/mediator/">
+<span class="md-ellipsis">
+    Mediator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/memento/">
+<span class="md-ellipsis">
+    Memento
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/observer/">
+<span class="md-ellipsis">
+    Observer
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/state/">
+<span class="md-ellipsis">
+    State
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/strategy/">
+<span class="md-ellipsis">
+    Strategy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/template/">
+<span class="md-ellipsis">
+    Template
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/visitor/">
+<span class="md-ellipsis">
+    Visitor
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_4" id="__nav_6_5_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Designing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_4_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_4">
+<span class="md-nav__icon md-icon"></span>
+            Designing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/access-management-system/">
+<span class="md-ellipsis">
+    Access Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/account-balance-tracker/">
+<span class="md-ellipsis">
+    Account Balance Tracker
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/air-traffic-controller/">
+<span class="md-ellipsis">
+    Air Traffic Controller
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/apply-coupons-on-shopping-cart/">
+<span class="md-ellipsis">
+    Apply Coupons on Shopping Cart
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/atm/">
+<span class="md-ellipsis">
+    ATM
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/bookmyshow/">
+<span class="md-ellipsis">
+    BookMyShow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/cache-system/">
+<span class="md-ellipsis">
+    Cache System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/car-rental-service/">
+<span class="md-ellipsis">
+    Car Rental Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/chess-game/">
+<span class="md-ellipsis">
+    Chess Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/cricbuzz/">
+<span class="md-ellipsis">
+    Cricbuzz
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/elevator-system/">
+<span class="md-ellipsis">
+    Elevator System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/inventory-management-system/">
+<span class="md-ellipsis">
+    Inventory Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/locker-allocation-system/">
+<span class="md-ellipsis">
+    Locker Allocation System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/logging-system/">
+<span class="md-ellipsis">
+    Logging System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/meeting-scheduler/">
+<span class="md-ellipsis">
+    Meeting Scheduler
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/parking-lot/">
+<span class="md-ellipsis">
+    Parking Lot
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/payment-gateway/">
+<span class="md-ellipsis">
+    Payment Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/snake-and-ladder/">
+<span class="md-ellipsis">
+    Snake and Ladder
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/splitwise/">
+<span class="md-ellipsis">
+    Splitwise
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/stock-exchange-book/">
+<span class="md-ellipsis">
+    Stock Exchange Book
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/tic-tac-toe/">
+<span class="md-ellipsis">
+    Tic Tac Toe
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/vending-machine/">
+<span class="md-ellipsis">
+    Vending Machine
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="back-of-the-envelope-calculations">Back-of-the-Envelope Calculations</h1>
+<h2 id="blogs-and-websites">Blogs and websites</h2>
+<ul>
+<li><a href="https://bytebytego.com/courses/system-design-interview/back-of-the-envelope-estimation">Back-of-the-envelope Estimation</a></li>
+</ul>
+<h2 id="medium">Medium</h2>
+<h2 id="youtube">Youtube</h2>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=DwqTon7ZS_s">Back of Envelope Calculation - System Design Concept</a></li>
+<li><a href="https://www.youtube.com/watch?v=WZjSFNPS9Lo">8. Back-Of-The-Envelope Estimation for System Design Interview | Capacity Planning of Facebook | HLD</a></li>
+</ul>
+<h2 id="theory">Theory</h2>
+<p>Quick estimations for system design.</p>
+<p><strong>Key Numbers:</strong>
+- 1 million requests/day ≈ 12 requests/second
+    - Why it matters: interview problems and early design discussions often give traffic in daily numbers, while infrastructure decisions need per-second numbers.
+    - Quick math: <span class="arithmatex">\(1{,}000{,}000 \div 86{,}400 \approx 11.57\)</span>, which is usually rounded to <span class="arithmatex">\(12\)</span> requests/second.
+    - Practical use: if a service handles 10 million requests/day, it is about <span class="arithmatex">\(120\)</span> requests/second on average. If peak traffic is 5 times the average, the system should be sized for about <span class="arithmatex">\(600\)</span> requests/second.
+    - Example: if each request reads 20 KB, then average read throughput is <span class="arithmatex">\(12 \times 20\text{ KB} = 240\text{ KB/s}\)</span> for 1 million requests/day.
+- 86,400 seconds in a day
+    - This is the base conversion for moving between daily, hourly, and per-second traffic estimates.
+    - Formula: <span class="arithmatex">\(24 \times 60 \times 60 = 86{,}400\)</span>.
+    - Approximation: in rough calculations, many engineers round it to <span class="arithmatex">\(100{,}000\)</span> to do fast mental math. That introduces some error, but is often acceptable for order-of-magnitude estimates.
+    - Example: 500,000 events/day is about <span class="arithmatex">\(500{,}000 \div 100{,}000 = 5\)</span> events/second using the approximation, or about <span class="arithmatex">\(5.8\)</span> events/second using the exact value.
+- 1 KB = 1,000 bytes
+    - In system design interviews, storage and bandwidth are usually estimated using decimal units because cloud/network pricing is often expressed that way.
+    - This keeps the math simple: 250 KB/request at 2,000 requests/second means roughly <span class="arithmatex">\(500{,}000\)</span> KB/s, or about <span class="arithmatex">\(500\)</span> MB/s.
+    - Note: operating systems sometimes use binary units where 1 KiB = 1,024 bytes. For quick capacity planning, decimal units are usually close enough.
+- 1 MB = 1,000 KB
+    - This helps convert application-level payload sizes into service-level throughput.
+    - Example: if image uploads are 3 MB each and users upload 100 images/second, the incoming traffic is about <span class="arithmatex">\(300\)</span> MB/s.
+    - This number is immediately useful for estimating network capacity, object storage writes, and replication costs.
+- 1 GB = 1,000 MB
+    - This is the usual next step when daily storage accumulation becomes large.
+    - Example: 5 million video metadata writes/day at 2 KB each produces about <span class="arithmatex">\(10{,}000\)</span> MB/day, which is about <span class="arithmatex">\(10\)</span> GB/day.
+    - Over a year, that becomes roughly <span class="arithmatex">\(3.65\)</span> TB before replication, indexing overhead, and backups are added.</p>
+<p><strong>Latency Numbers:</strong>
+- L1 cache: 0.5 ns
+    - This is the fastest memory a CPU core can usually access.
+    - Design implication: algorithms that fit hot data into CPU cache can be dramatically faster than ones that repeatedly fetch from main memory.
+    - Example: tight loops over small arrays often perform much better than pointer-heavy structures with poor locality.
+- L2 cache: 7 ns
+    - Still extremely fast, but noticeably slower than L1.
+    - Design implication: even within one machine, data placement and access patterns matter.
+    - Example: a high-frequency matching engine or metrics aggregator may benefit from cache-friendly data structures.
+- RAM: 100 ns
+    - Main memory is much slower than CPU cache, but still far faster than disk or network calls.
+    - Design implication: serving reads from an in-memory cache like Redis or a process-local cache is usually much cheaper than hitting a database on disk.
+    - Example: moving a frequently read user profile from disk-backed storage to memory can cut response latency by orders of magnitude.
+- SSD: 150 μs
+    - SSDs are fast persistent storage, but still far slower than RAM.
+    - Design implication: databases on SSD can provide strong performance, but repeated random reads are still expensive compared with memory caching.
+    - Example: if a query requires 10 SSD lookups, storage latency alone can approach <span class="arithmatex">\(1.5\)</span> ms before any CPU or network overhead.
+- HDD: 10 ms
+    - Hard drives are much slower, especially for random I/O.
+    - Design implication: HDD-backed systems are often acceptable for archival or sequential workloads, but are usually poor for low-latency online reads.
+    - Example: a log archive can live on HDD, while a hot recommendation index likely should not.
+- Network (same datacenter): 0.5 ms
+    - A remote call inside the same datacenter is still much slower than local memory access.
+    - Design implication: microservice boundaries are not free. Splitting one request across many services can accumulate latency quickly.
+    - Example: five sequential service-to-service calls can add a few milliseconds even before business logic runs.
+- Network (cross-country): 150 ms
+    - Geographical distance dominates user experience for globally distributed systems.
+    - Design implication: edge caching, CDNs, regional replication, and read locality become essential for international products.
+    - Example: loading a static page from a nearby CDN edge is much faster than fetching it from a distant origin server.</p>
+<h4 id="latency-hierarchy-visualization">Latency Hierarchy Visualization</h4>
+<p>To conceptualize how drastically latency increases as we move away from the CPU, consider this approximate hierarchy:</p>
+<pre class="mermaid"><code>flowchart LR
+    subgraph CPU
+    A[L1 Cache: 0.5 ns] --&gt; B[L2 Cache: 7 ns]
+    end
+    subgraph Local
+    B --&gt; C[RAM: 100 ns]
+    C --&gt; D[SSD: 150 μs]
+    D --&gt; E[HDD: 10 ms]
+    end
+    subgraph Network
+    C -.-&gt; F[Same DC: 0.5 ms]
+    F -.-&gt; G[Cross-Country: 150 ms]
+    end
+
+    style A fill:#e8f5e9,stroke:#4caf50
+    style D fill:#fff3e0,stroke:#ff9800
+    style G fill:#ffebee,stroke:#f44336
+</code></pre>
+<pre class="mermaid"><code>flowchart TD
+        A[Business Requirement] --&gt; B[Estimate Daily Traffic]
+        B --&gt; C[Convert to Requests Per Second]
+        C --&gt; D[Estimate Payload Size]
+        D --&gt; E[Compute Bandwidth]
+        D --&gt; F[Compute Storage Growth]
+        C --&gt; G[Estimate Peak Load]
+        G --&gt; H[Choose Compute Capacity]
+        E --&gt; I[Plan Network and Cache]
+        F --&gt; J[Plan Database and Retention]
+</code></pre>
+<hr/>
+<h3 id="back-of-envelope-calculation">Back of Envelope Calculation</h3>
+<p>Back of envelope calculation is a technique used to quickly estimate values and check the feasibility of a system design. It involves making reasonable approximations and simplifying assumptions to get rough, order-of-magnitude answers.</p>
+<p>The purpose is not to be perfectly accurate. The purpose is to answer questions like:</p>
+<ul>
+<li>Can a single database likely handle this workload?</li>
+<li>Do we need caching to keep latency reasonable?</li>
+<li>How much storage will this feature consume in a month or a year?</li>
+<li>Is the expected bandwidth small enough for one region, or large enough to require CDN or multi-region planning?</li>
+</ul>
+<p>In practice, back-of-the-envelope calculations help narrow the solution space before deeper design work begins.</p>
+<h3 id="a-simple-process">A Simple Process</h3>
+<ol>
+<li>Start from a product number such as daily active users, requests/day, uploads/day, or messages/day.<ul>
+<li><strong>Why it matters:</strong> It is easier to reason about human behaviors (e.g., "users post 2 times a day") than server-level operations.</li>
+<li><strong>Example:</strong> 10 million Daily Active Users (DAU) where each views 5 pages means 50 million page views per day.</li>
+</ul>
+</li>
+<li>Convert it into requests/second or events/second.<ul>
+<li><strong>Why it matters:</strong> System throughput metrics, load balancers, and auto-scaling groups are governed by Requests Per Second (RPS) or Queries Per Second (QPS), not daily metrics.</li>
+<li><strong>Example:</strong> <span class="arithmatex">\(50{,}000{,}000 \div 86{,}400 \approx 580\)</span> RPS.</li>
+</ul>
+</li>
+<li>Estimate peak traffic using a multiplier such as 3x, 5x, or 10x.<ul>
+<li><strong>Why it matters:</strong> Systems crash during peak spikes (like a sudden viral event or ticket sale). Designing only for average load leads to outages.</li>
+<li><strong>Example:</strong> For an average of 580 RPS, a standard consumer app might see a 3x peak of <span class="arithmatex">\(1{,}740\)</span> RPS during prime time.</li>
+</ul>
+</li>
+<li>Add payload size to estimate bandwidth.<ul>
+<li><strong>Why it matters:</strong> High bandwidth can saturate Network Interface Cards (NICs), incur massive cloud egress costs, or necessitate Content Delivery Networks (CDNs).</li>
+<li><strong>Example:</strong> <span class="arithmatex">\(1{,}740\)</span> RPS <span class="arithmatex">\(\times\)</span> 50 KB per page <span class="arithmatex">\(\approx 87\)</span> MB/s peak bandwidth.</li>
+</ul>
+</li>
+<li>Add data retention duration to estimate storage.<ul>
+<li><strong>Why it matters:</strong> Short-term data lives in RAM/caches, active data on SSDs, and historical data on cheaper HDDs. Projecting over 1 to 5 years determines your database sharding and cold-storage strategies.</li>
+<li><strong>Example:</strong> <span class="arithmatex">\(50\text{ million} \times 1\text{ KB record} \approx 50\text{ GB/day}\)</span>. Kept for 5 years: <span class="arithmatex">\(50 \times 365 \times 5 \approx 91\text{ TB}\)</span>.</li>
+</ul>
+</li>
+<li>Compare the result with known system limits to decide whether the design is small, moderate, or internet-scale.<ul>
+<li><strong>Why it matters:</strong> Prevents over-engineering. If total data fits in a single modern SSD (e.g., 2 TB) and RPS is low (e.g., 500 RPS), a single relational database like PostgreSQL is highly efficient.</li>
+</ul>
+</li>
+</ol>
+<pre class="mermaid"><code>flowchart LR
+        A[Daily Users or Requests] --&gt; B[Average RPS]
+        B --&gt; C[Peak RPS]
+        C --&gt; D[Servers / Threads / Partitions]
+        C --&gt; E[Read or Write QPS]
+        E --&gt; F[Database Capacity]
+        A --&gt; G[Data Per Request]
+        G --&gt; H[Bandwidth]
+        G --&gt; I[Daily Storage Growth]
+        I --&gt; J[Monthly or Yearly Capacity]
+</code></pre>
+<p>Some common approximations:</p>
+<ul>
+<li>
+<p><strong>Seconds in a day:</strong><br/>
+<span class="arithmatex">\(24 \times 60 \times 60 = 86,400 \approx 100,000\)</span> (1 Lakh)</p>
+<ul>
+<li>Why this approximation is useful: dividing by 100,000 is easy to do mentally.</li>
+<li>Example: 25 million page views/day is about <span class="arithmatex">\(250\)</span> page views/second using the approximation.</li>
+<li>Trade-off: the estimate is intentionally rough. It is good for feasibility checks, not billing-grade calculations.</li>
+</ul>
+</li>
+<li>
+<p><strong>Bytes and Bits:</strong><br/>
+<span class="arithmatex">\(1\)</span> Byte <span class="arithmatex">\(= 8\)</span> bits (sometimes approximated as <span class="arithmatex">\(10\)</span> bits for easier calculations)</p>
+<ul>
+<li>Why this matters: network links are often described in bits/second, while payload sizes are usually described in bytes.</li>
+<li>Example: if every request transfers 50 KB, then each request moves about <span class="arithmatex">\(400\)</span> Kb of data. At 1,000 requests/second, that is about <span class="arithmatex">\(400\)</span> Mb/s.</li>
+<li>Why some people use 10 bits per byte in rough math: it gives a quick way to account for protocol overhead, headers, and framing without doing detailed packet analysis.</li>
+</ul>
+</li>
+</ul>
+<h3 id="worked-examples">Worked Examples</h3>
+<h4 id="example-1-estimating-api-throughput">Example 1: Estimating API Throughput</h4>
+<p>Suppose a service receives 20 million requests/day.</p>
+<ul>
+<li>Average requests/second:
+    <span class="arithmatex">\(<span class="arithmatex">\(\frac{20{,}000{,}000}{86{,}400} \approx 231\text{ requests/second}\)</span>\)</span></li>
+<li>If peak traffic is 5x average:
+    <span class="arithmatex">\(<span class="arithmatex">\(231 \times 5 \approx 1{,}155\text{ requests/second}\)</span>\)</span></li>
+<li>If each response is 10 KB:
+    <span class="arithmatex">\(<span class="arithmatex">\(1{,}155 \times 10\text{ KB} = 11{,}550\text{ KB/s} \approx 11.5\text{ MB/s}\)</span>\)</span></li>
+</ul>
+<p>This immediately suggests that the service is not huge, but it is large enough that caching, connection pooling, and database indexing should be considered.</p>
+<h4 id="example-2-estimating-storage-growth">Example 2: Estimating Storage Growth</h4>
+<p>Suppose a chat application stores 50 million messages/day and each message record averages 500 bytes.</p>
+<ul>
+<li>Daily data:
+    <span class="arithmatex">\(<span class="arithmatex">\(50{,}000{,}000 \times 500 = 25{,}000{,}000{,}000\text{ bytes} \approx 25\text{ GB/day}\)</span>\)</span></li>
+<li>Monthly data:
+    <span class="arithmatex">\(<span class="arithmatex">\(25\text{ GB/day} \times 30 = 750\text{ GB/month}\)</span>\)</span></li>
+<li>Yearly data:
+    <span class="arithmatex">\(<span class="arithmatex">\(25\text{ GB/day} \times 365 \approx 9.1\text{ TB/year}\)</span>\)</span></li>
+</ul>
+<p>This estimate is still incomplete because production systems also need indexes, replication, metadata, backups, and space for compaction. A more realistic total might be 2x to 4x the raw data size.</p>
+<h4 id="example-3-estimating-media-upload-bandwidth">Example 3: Estimating Media Upload Bandwidth</h4>
+<p>Suppose users upload 2 million photos/day, and each photo is 4 MB.</p>
+<ul>
+<li>Daily ingest:
+    <span class="arithmatex">\(<span class="arithmatex">\(2{,}000{,}000 \times 4\text{ MB} = 8{,}000{,}000\text{ MB} = 8\text{ TB/day}\)</span>\)</span></li>
+<li>Average bandwidth:
+    <span class="arithmatex">\(<span class="arithmatex">\(\frac{8\text{ TB}}{86{,}400\text{ s}} \approx 92.6\text{ MB/s}\)</span>\)</span></li>
+<li>Peak bandwidth at 4x average:
+    <span class="arithmatex">\(<span class="arithmatex">\(92.6 \times 4 \approx 370\text{ MB/s}\)</span>\)</span></li>
+</ul>
+<p>This result implies that object storage, upload gateways, CDN integration, and background image processing pipelines will likely be required.</p>
+<h3 id="rules-of-thumb">Rules of Thumb</h3>
+<ul>
+<li>Use exact numbers only when a small error changes the design decision.</li>
+<li>Use rounded numbers when the goal is to compare options quickly.</li>
+<li>Always estimate peak load, not just average load.</li>
+<li>Add overhead for replication, indexes, metadata, and retries.</li>
+<li>Separate read traffic from write traffic because they often scale differently.</li>
+<li>Revisit the math if assumptions change, such as file size, retention period, or geographic distribution.</li>
+</ul>
+<p>These quick calculations help engineers estimate storage, bandwidth, or processing requirements without needing precise numbers. The goal is to validate ideas and catch obvious issues early in the design process.</p>
+<p>If the estimate says a problem is small, the design can stay simple. If the estimate says the scale is large, the team can justify techniques such as partitioning, caching, asynchronous processing, or regional distribution much earlier in the design process.</p>
+<h3 id="hardware-impact-on-throughput">Hardware Impact on Throughput</h3>
+<p>When estimating capacity, the underlying hardware directly determines what a single node can sustain before horizontal scaling becomes necessary. The table below covers both raw hardware specs and how typical cloud instance sizes map to real-world throughput.</p>
+<h4 id="hardware-resource-bottlenecks">Hardware Resource Bottlenecks</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Resource</th>
+<th style="text-align: left;">IOPS / Throughput</th>
+<th style="text-align: left;">Primary Bottleneck</th>
+<th style="text-align: left;">Typical Impact</th>
+<th style="text-align: left;">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>HDD</strong></td>
+<td style="text-align: left;">~100–200 random IOPS, ~150 MB/s sequential</td>
+<td style="text-align: left;">Random I/O latency (10 ms)</td>
+<td style="text-align: left;">Poor for databases with random reads. Fine for append-only log segments.</td>
+<td style="text-align: left;">Kafka on HDD is viable because it does sequential writes. PostgreSQL on HDD is painful.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SSD (SATA)</strong></td>
+<td style="text-align: left;">~5,000–50,000 IOPS, ~500 MB/s sequential</td>
+<td style="text-align: left;">Throughput ceiling for mid-range DBs</td>
+<td style="text-align: left;">Suitable for most production databases.</td>
+<td style="text-align: left;">Most cloud general-purpose instances (e.g., <code>gp2</code>) are SATA SSD.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>NVMe SSD</strong></td>
+<td style="text-align: left;">~100,000–1,000,000 IOPS, ~3,500 MB/s sequential</td>
+<td style="text-align: left;">CPU and network become the bottleneck before disk</td>
+<td style="text-align: left;">Ideal for high-frequency trading, OLTP, time-series DBs.</td>
+<td style="text-align: left;">Costs 3–5x more than SATA SSD per GB.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>RAM</strong></td>
+<td style="text-align: left;">~10–50 GB/s bandwidth, ~100 ns latency</td>
+<td style="text-align: left;">Working set size</td>
+<td style="text-align: left;">Every GB of RAM that holds hot data eliminates equivalent disk reads.</td>
+<td style="text-align: left;">Redis relies entirely on RAM. PostgreSQL <code>shared_buffers</code> should be 25–40% of total RAM.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>CPU (4 cores)</strong></td>
+<td style="text-align: left;">~2,000–5,000 RPS (REST), ~500–2,000 TPS (DB)</td>
+<td style="text-align: left;">Compute-bound workloads</td>
+<td style="text-align: left;">Limits JSON serialization, SSL handshakes, and query planning.</td>
+<td style="text-align: left;">1 core ≈ ~500–1,000 lightweight concurrent requests with Go/Node. Java/Python apps are 3–10x heavier.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>CPU (16+ cores)</strong></td>
+<td style="text-align: left;">~20,000–50,000 RPS (REST), ~5,000–15,000 TPS (DB)</td>
+<td style="text-align: left;">Network I/O becomes next bottleneck</td>
+<td style="text-align: left;">Good for parallelizable read workloads, multi-threaded query processing.</td>
+<td style="text-align: left;">Kafka brokers and Elasticsearch nodes benefit greatly from high core count.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Network (1 Gbps)</strong></td>
+<td style="text-align: left;">~125 MB/s bandwidth</td>
+<td style="text-align: left;">Bandwidth for large payloads</td>
+<td style="text-align: left;">Limits video streaming, bulk file transfers, and replication traffic.</td>
+<td style="text-align: left;">At 100 KB/response, a 1 Gbps link saturates at ~1,250 concurrent requests/sec.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Network (10 Gbps)</strong></td>
+<td style="text-align: left;">~1,250 MB/s bandwidth</td>
+<td style="text-align: left;">Connection count for micro-payloads</td>
+<td style="text-align: left;">Standard in cloud datacenters (e.g., AWS <code>c5.4xlarge</code>). Rarely the bottleneck for API workloads.</td>
+<td style="text-align: left;">Becomes critical for inter-node Kafka replication or Cassandra gossip.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="instance-size-vs-readwrite-throughput-aws-equivalents">Instance Size vs. Read/Write Throughput (AWS Equivalents)</h4>
+<p>These are representative estimates assuming a moderately optimized application on SSD-backed storage.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Instance Profile</th>
+<th style="text-align: center;">vCPU</th>
+<th style="text-align: center;">RAM</th>
+<th style="text-align: center;">Disk Type</th>
+<th style="text-align: center;">REST API RPS</th>
+<th style="text-align: center;">PostgreSQL Read QPS</th>
+<th style="text-align: center;">PostgreSQL Write TPS</th>
+<th style="text-align: center;">Redis QPS</th>
+<th style="text-align: center;">Kafka Msgs/sec</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Small</strong> (t3.medium)</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">4 GB</td>
+<td style="text-align: center;">gp2 SSD</td>
+<td style="text-align: center;">~1,000–2,000</td>
+<td style="text-align: center;">~1,000–3,000</td>
+<td style="text-align: center;">~300–600</td>
+<td style="text-align: center;">~50,000–80,000</td>
+<td style="text-align: center;">~20,000–50,000</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Medium</strong> (c5.xlarge)</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">8 GB</td>
+<td style="text-align: center;">gp3 SSD</td>
+<td style="text-align: center;">~5,000–10,000</td>
+<td style="text-align: center;">~5,000–10,000</td>
+<td style="text-align: center;">~1,000–2,000</td>
+<td style="text-align: center;">~100,000–150,000</td>
+<td style="text-align: center;">~100,000–200,000</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Large</strong> (c5.4xlarge)</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">32 GB</td>
+<td style="text-align: center;">gp3 SSD</td>
+<td style="text-align: center;">~20,000–40,000</td>
+<td style="text-align: center;">~15,000–30,000</td>
+<td style="text-align: center;">~3,000–6,000</td>
+<td style="text-align: center;">~300,000–500,000</td>
+<td style="text-align: center;">~300,000–600,000</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>XLarge</strong> (c5.18xlarge)</td>
+<td style="text-align: center;">72</td>
+<td style="text-align: center;">144 GB</td>
+<td style="text-align: center;">NVMe SSD</td>
+<td style="text-align: center;">~80,000–150,000</td>
+<td style="text-align: center;">~40,000–80,000</td>
+<td style="text-align: center;">~8,000–15,000</td>
+<td style="text-align: center;">~800,000+</td>
+<td style="text-align: center;">~800,000–1,500,000</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Memory-Optimized</strong> (r5.8xlarge)</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">256 GB</td>
+<td style="text-align: center;">NVMe SSD</td>
+<td style="text-align: center;">~30,000–60,000</td>
+<td style="text-align: center;">~80,000–150,000 (from buffer cache)</td>
+<td style="text-align: center;">~5,000–10,000</td>
+<td style="text-align: center;">~1,000,000+</td>
+<td style="text-align: center;">~500,000–1,000,000</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Key insight:</strong> For read-heavy workloads (e.g., social feeds), a memory-optimized instance with large RAM dramatically outperforms a compute-optimized instance by keeping the working set in the buffer pool, eliminating disk I/O almost entirely.</p>
+</blockquote>
+<hr/>
+<h3 id="technology-scale-benchmarks-per-single-node-partition">Technology Scale Benchmarks (Per Single Node / Partition)</h3>
+<p>Use these numbers to answer the core interview question: <em>"Can this technology handle my estimated QPS on a single node, or do I need a cluster?"</em></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Technology</th>
+<th style="text-align: left;">Category</th>
+<th style="text-align: left;">Read Throughput (single node)</th>
+<th style="text-align: left;">Write Throughput (single node)</th>
+<th style="text-align: left;">Primary Bottleneck</th>
+<th style="text-align: left;">Scale Strategy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>REST API Server</strong> (Node/Go)</td>
+<td style="text-align: left;">App Server</td>
+<td style="text-align: left;">5,000–20,000 RPS</td>
+<td style="text-align: left;">5,000–20,000 RPS</td>
+<td style="text-align: left;">CPU (serialization), Network</td>
+<td style="text-align: left;">Horizontal scale behind LB</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>REST API Server</strong> (Java/Python)</td>
+<td style="text-align: left;">App Server</td>
+<td style="text-align: left;">1,000–5,000 RPS</td>
+<td style="text-align: left;">1,000–5,000 RPS</td>
+<td style="text-align: left;">CPU (GC / GIL), Thread pool</td>
+<td style="text-align: left;">Horizontal scale; consider async frameworks</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>WebSocket Server</strong></td>
+<td style="text-align: left;">App Server</td>
+<td style="text-align: left;">10K–500K concurrent connections</td>
+<td style="text-align: left;">10K–50,000 msg/sec</td>
+<td style="text-align: left;">RAM (connection state), OS file descriptors</td>
+<td style="text-align: left;">Stateless + Redis Pub/Sub across nodes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SSE Server</strong></td>
+<td style="text-align: left;">App Server</td>
+<td style="text-align: left;">10K–200K concurrent streams</td>
+<td style="text-align: left;">N/A (server push only)</td>
+<td style="text-align: left;">RAM, Network bandwidth</td>
+<td style="text-align: left;">Same as WebSocket; SSE is simpler (HTTP/1.1)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Nginx / HAProxy</strong></td>
+<td style="text-align: left;">API Gateway / LB</td>
+<td style="text-align: left;">50,000–200,000 RPS</td>
+<td style="text-align: left;">50,000–200,000 RPS</td>
+<td style="text-align: left;">Network I/O, CPU (SSL)</td>
+<td style="text-align: left;">Scale up cores; SSL termination offload</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Envoy / Kong</strong></td>
+<td style="text-align: left;">API Gateway</td>
+<td style="text-align: left;">10,000–50,000 RPS</td>
+<td style="text-align: left;">10,000–50,000 RPS</td>
+<td style="text-align: left;">CPU (plugins, Lua/WASM filters)</td>
+<td style="text-align: left;">Horizontal scale; avoid heavy plugins on hot path</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Redis</strong> (single-threaded)</td>
+<td style="text-align: left;">Cache / KV Store</td>
+<td style="text-align: left;">100,000–300,000 QPS</td>
+<td style="text-align: left;">100,000–200,000 QPS</td>
+<td style="text-align: left;">RAM capacity, Network bandwidth</td>
+<td style="text-align: left;">Redis Cluster for data sharding; replicas for reads</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Redis</strong> (multi-threaded, v6+)</td>
+<td style="text-align: left;">Cache / KV Store</td>
+<td style="text-align: left;">500,000–1,000,000 QPS</td>
+<td style="text-align: left;">300,000–600,000 QPS</td>
+<td style="text-align: left;">RAM capacity</td>
+<td style="text-align: left;">Redis Cluster shards data across nodes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Memcached</strong></td>
+<td style="text-align: left;">Cache</td>
+<td style="text-align: left;">200,000–500,000 QPS</td>
+<td style="text-align: left;">200,000–500,000 QPS</td>
+<td style="text-align: left;">RAM, Network</td>
+<td style="text-align: left;">Multi-threaded; scales better than Redis for pure cache</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>PostgreSQL</strong></td>
+<td style="text-align: left;">Relational DB</td>
+<td style="text-align: left;">5,000–30,000 QPS (with buffer cache)</td>
+<td style="text-align: left;">1,000–5,000 TPS</td>
+<td style="text-align: left;">IOPS, WAL write latency, ACID locks</td>
+<td style="text-align: left;">Read replicas for reads; PgBouncer for connection pooling</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>MySQL / Aurora</strong></td>
+<td style="text-align: left;">Relational DB</td>
+<td style="text-align: left;">5,000–50,000 QPS</td>
+<td style="text-align: left;">2,000–10,000 TPS</td>
+<td style="text-align: left;">IOPS, Row locks</td>
+<td style="text-align: left;">Aurora auto-scales read replicas; ProxySQL for pooling</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Kafka</strong> (per broker)</td>
+<td style="text-align: left;">Event Streaming</td>
+<td style="text-align: left;">500,000–1,000,000 msg/sec read</td>
+<td style="text-align: left;">100,000–500,000 msg/sec write</td>
+<td style="text-align: left;">Sequential disk I/O, Network</td>
+<td style="text-align: left;">Add brokers; increase partition count to fan out throughput</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>RabbitMQ</strong></td>
+<td style="text-align: left;">Message Queue</td>
+<td style="text-align: left;">20,000–50,000 msg/sec</td>
+<td style="text-align: left;">10,000–30,000 msg/sec</td>
+<td style="text-align: left;">RAM (in-memory queue), CPU</td>
+<td style="text-align: left;">Quorum queues for HA; not designed for millions/sec</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Elasticsearch</strong></td>
+<td style="text-align: left;">Search Engine</td>
+<td style="text-align: left;">1,000–5,000 search req/sec</td>
+<td style="text-align: left;">1,000–5,000 index req/sec</td>
+<td style="text-align: left;">CPU (query parsing), RAM (JVM heap), I/O</td>
+<td style="text-align: left;">Shard data across nodes; index lifecycle policies</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Apache Solr</strong></td>
+<td style="text-align: left;">Search Engine</td>
+<td style="text-align: left;">500–3,000 search req/sec</td>
+<td style="text-align: left;">500–2,000 index req/sec</td>
+<td style="text-align: left;">JVM heap, Disk I/O</td>
+<td style="text-align: left;">Sharding via SolrCloud</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Cassandra</strong> (per node)</td>
+<td style="text-align: left;">Wide-Column NoSQL</td>
+<td style="text-align: left;">10,000–50,000 QPS</td>
+<td style="text-align: left;">10,000–40,000 QPS</td>
+<td style="text-align: left;">Network (gossip), Disk I/O</td>
+<td style="text-align: left;">Add nodes to ring; consistent hashing distributes load</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>DynamoDB</strong> (per partition)</td>
+<td style="text-align: left;">NoSQL</td>
+<td style="text-align: left;">~3,000 RCU/sec</td>
+<td style="text-align: left;">~1,000 WCU/sec</td>
+<td style="text-align: left;">Partition key hot spots</td>
+<td style="text-align: left;">Use composite keys to spread load; enable auto-scaling</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>MongoDB</strong> (primary)</td>
+<td style="text-align: left;">Document DB</td>
+<td style="text-align: left;">5,000–20,000 QPS</td>
+<td style="text-align: left;">2,000–10,000 QPS</td>
+<td style="text-align: left;">RAM (working set size), IOPS</td>
+<td style="text-align: left;">Replica sets for HA; sharding for horizontal scale</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>S3 / GCS</strong></td>
+<td style="text-align: left;">Object Storage</td>
+<td style="text-align: left;">5,500 GET/sec per prefix</td>
+<td style="text-align: left;">3,500 PUT/sec per prefix</td>
+<td style="text-align: left;">Prefix-level rate limit</td>
+<td style="text-align: left;">Randomize key prefixes to spread across partitions</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>CloudFront / CDN</strong></td>
+<td style="text-align: left;">Edge Cache</td>
+<td style="text-align: left;">Millions of req/sec globally</td>
+<td style="text-align: left;">N/A (cache invalidation only)</td>
+<td style="text-align: left;">Origin pull rate</td>
+<td style="text-align: left;">Cache TTL tuning; use S3 as origin</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Reading the table:</strong> If your estimated peak QPS exceeds the single-node write throughput of your chosen technology, you must either shard, add brokers/nodes, or introduce a write buffer (like Kafka in front of a database).</p>
+</blockquote>
+<hr/>
+<h3 id="when-to-use-replication-partitioning-and-sharding">When to Use Replication, Partitioning, and Sharding</h3>
+<p>As traffic grows, there are three distinct levers to pull. Choosing the wrong one wastes engineering effort and adds unnecessary complexity.</p>
+<h4 id="decision-flowchart">Decision Flowchart</h4>
+<pre class="mermaid"><code>flowchart TD
+    A{What is your bottleneck?} --&gt; B[Read QPS too high]
+    A --&gt; C[Write QPS too high]
+    A --&gt; D[Data size too large]
+    A --&gt; E[Too many connections]
+
+    B --&gt; B1[Add Read Replicas]
+    B --&gt; B2[Add Caching Layer - Redis/Memcached]
+    B1 --&gt; B3[Primary handles writes\nReplicas handle reads]
+
+    C --&gt; C1[Shard by partition key]
+    C --&gt; C2[Use write-optimized store\nKafka / Cassandra]
+    C1 --&gt; C3[user_id mod N shards\nEach shard owns a range]
+
+    D --&gt; D1[Archive cold data to\nS3 / Glacier / HDD]
+    D --&gt; D2[Shard horizontally]
+    D1 --&gt; D3[Hot data on SSD\nCold data on object store]
+
+    E --&gt; E1[Horizontal scale app servers\nbehind Load Balancer]
+    E --&gt; E2[Decouple state to\nRedis Pub-Sub / Kafka]
+    E1 --&gt; E3[Stateless servers\nShared session store]
+</code></pre>
+<h4 id="thresholds-when-to-pull-each-lever">Thresholds: When to Pull Each Lever</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Trigger Condition</th>
+<th style="text-align: left;">Strategy</th>
+<th style="text-align: left;">Mechanism</th>
+<th style="text-align: left;">Trade-off</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Read QPS &gt; 10,000/sec on a single DB node</td>
+<td style="text-align: left;"><strong>Read Replication</strong></td>
+<td style="text-align: left;">Add 1–5 read replicas. Route SELECT queries to replicas.</td>
+<td style="text-align: left;">Replication lag. Replicas may serve stale data by milliseconds to seconds.</td>
+</tr>
+<tr>
+<td style="text-align: left;">Write QPS &gt; 5,000/sec or TPS &gt; 2,000/sec on a single DB node</td>
+<td style="text-align: left;"><strong>Write Sharding</strong></td>
+<td style="text-align: left;">Partition data by a hash or range of a key (e.g., <code>user_id</code>). Each shard is an independent DB.</td>
+<td style="text-align: left;">No cross-shard JOINs. Resharding is expensive. Requires application-level routing.</td>
+</tr>
+<tr>
+<td style="text-align: left;">Dataset &gt; 2–5 TB on a single node</td>
+<td style="text-align: left;"><strong>Horizontal Sharding</strong></td>
+<td style="text-align: left;">Split by range (e.g., date ranges) or hash across N shards.</td>
+<td style="text-align: left;">Same as write sharding. Maintenance windows for re-balancing.</td>
+</tr>
+<tr>
+<td style="text-align: left;">p99 read latency &gt; 10 ms on hot data</td>
+<td style="text-align: left;"><strong>Caching Layer</strong></td>
+<td style="text-align: left;">Place Redis/Memcached in front of the database. Cache hot keys with a TTL.</td>
+<td style="text-align: left;">Cache invalidation complexity. Cache stampedes during cold starts.</td>
+</tr>
+<tr>
+<td style="text-align: left;">Millions of write events/sec (e.g., IoT, analytics)</td>
+<td style="text-align: left;"><strong>Event Streaming Buffer</strong></td>
+<td style="text-align: left;">Place Kafka between producers and the DB. DB consumes at its own pace.</td>
+<td style="text-align: left;">Adds operational complexity. Data is eventually consistent with DB.</td>
+</tr>
+<tr>
+<td style="text-align: left;">Concurrent connections &gt; 100,000 per app server</td>
+<td style="text-align: left;"><strong>Connection Scaling</strong></td>
+<td style="text-align: left;">Add stateless app servers behind a load balancer. Store session state in Redis.</td>
+<td style="text-align: left;">Load balancer becomes SPOF. Sticky sessions can cause uneven distribution.</td>
+</tr>
+<tr>
+<td style="text-align: left;">Data older than N days rarely accessed</td>
+<td style="text-align: left;"><strong>Tiered Storage</strong></td>
+<td style="text-align: left;">Archive to cold object storage (S3 Glacier, GCS Nearline). Keep hot data on NVMe.</td>
+<td style="text-align: left;">Higher retrieval latency for cold data (minutes to hours for Glacier).</td>
+</tr>
+<tr>
+<td style="text-align: left;">Multi-region user base</td>
+<td style="text-align: left;"><strong>Geographic Replication</strong></td>
+<td style="text-align: left;">Multi-master or active-passive replication across regions. CDN for static content.</td>
+<td style="text-align: left;">Conflict resolution for multi-master writes. Higher operational cost.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="replication-vs-sharding-vs-partitioning-conceptual-differences">Replication vs. Sharding vs. Partitioning: Conceptual Differences</h4>
+<ul>
+<li><strong>Replication</strong> copies the <em>same data</em> to multiple nodes. Solves <em>read throughput</em> and <em>availability</em> (failover). Does <strong>not</strong> reduce write load on the primary.</li>
+<li><strong>Sharding</strong> splits <em>different data</em> across multiple nodes. Each shard is authoritative for its slice. Solves <em>write throughput</em> and <em>storage capacity</em>. Increases operational complexity significantly.</li>
+<li><strong>Partitioning</strong> is a logical concept — it is how data is divided within a single node (e.g., Postgres table partitioning by date range). It improves query performance by pruning irrelevant data but does not distribute load to another machine.</li>
+<li><strong>Sharding = horizontal partitioning across machines.</strong> Partitioning without sharding stays on one machine.</li>
+</ul>
+<hr/>
+<h3 id="handling-peak-load-black-friday-flash-sale-scenarios">Handling Peak Load (Black Friday / Flash Sale Scenarios)</h3>
+<p>Regular traffic estimation is straightforward. The harder problem is designing for <strong>transient spikes</strong> that are 10x or 100x of the baseline — events like Black Friday sales, viral posts, sports finals, or ticket drops. These spikes are short-lived (minutes to hours), but they are the events that cause outages and make the news.</p>
+<h4 id="why-spikes-are-dangerous">Why Spikes Are Dangerous</h4>
+<p>If your baseline is 1,000 RPS and peak is 100,000 RPS, your system needs to handle a 100x spike. The danger is not just throughput — it is the <strong>cascade effect</strong>:</p>
+<ol>
+<li>App servers saturate → response times increase.</li>
+<li>Slow responses keep connections open longer → connection pool exhausts.</li>
+<li>Retries amplify traffic → 100x real demand becomes 300x apparent demand.</li>
+<li>Database connections overflow → timeouts and errors compound.</li>
+<li>Users rage-refresh → traffic multiplies again.</li>
+</ol>
+<p>A system that degrades gracefully under overload recovers quickly. A system that crashes takes minutes or hours to come back, because every component must restart, warm caches, and re-establish connections simultaneously.</p>
+<h4 id="estimation-sizing-for-a-spike">Estimation: Sizing for a Spike</h4>
+<p>If baseline is 1,000 RPS and you expect 10x peak on Black Friday:</p>
+<div class="arithmatex">\[\text{Peak RPS} = 1{,}000 \times 10 = 10{,}000\text{ RPS}\]</div>
+<p>At 10 KB per response:
+<span class="arithmatex">\(<span class="arithmatex">\(\text{Peak Bandwidth} = 10{,}000 \times 10\text{ KB} = 100\text{ MB/s}\)</span>\)</span></p>
+<p>If each app server handles 2,000 RPS:
+<span class="arithmatex">\(<span class="arithmatex">\(\text{Servers needed at peak} = \frac{10{,}000}{2{,}000} = 5\text{ servers}\)</span>\)</span></p>
+<p>But add a safety buffer of 30–50% headroom to avoid operating at 100% utilization:
+<span class="arithmatex">\(<span class="arithmatex">\(\text{Actual servers to provision} = 5 \times 1.4 \approx 7\text{ servers}\)</span>\)</span></p>
+<p>For a 100x spike (100,000 RPS), scale this linearly: 70 servers. This is where auto-scaling and cloud elasticity become critical — pre-provisioning 70 servers permanently is prohibitively expensive.</p>
+<h4 id="architecture-layers-of-defence">Architecture: Layers of Defence</h4>
+<pre class="mermaid"><code>flowchart LR
+    subgraph Users
+    A[Traffic Spike\n10x - 100x]
+    end
+    subgraph Edge
+    A --&gt; B[CDN\nServes cached static\ncontent instantly]
+    A --&gt; C[WAF / Rate Limiter\nDrop bots and\nabusive clients]
+    end
+    subgraph Gateway
+    B --&gt; D[API Gateway\nThrottling + Circuit Breaker]
+    C --&gt; D
+    end
+    subgraph App Layer
+    D --&gt; E[Auto-Scaled\nApp Server Fleet]
+    D --&gt; F[Queue - Kafka / SQS\nAbsorb write bursts]
+    end
+    subgraph Data Layer
+    E --&gt; G[Redis Cache\nServe hot reads]
+    E --&gt; H[Read Replicas\nSpread read QPS]
+    F --&gt; I[Primary DB\nWrites at sustainable rate]
+    end
+</code></pre>
+<h4 id="strategy-predictable-vs-unpredictable-spikes">Strategy: Predictable vs. Unpredictable Spikes</h4>
+<pre class="mermaid"><code>flowchart TD
+    A[Peak Traffic Hits] --&gt; B{Is it predictable?}
+    B -- Yes --&gt; C[Pre-warm: Scale out\nbefore event starts]
+    B -- No --&gt; D[Auto-scaling triggers\non CPU/RPS metrics]
+
+    C --&gt; E[Pre-warm CDN\nPrime Redis cache\nSpin up extra instances]
+    D --&gt; F[Cloud Auto-scaling Group\nSpins new instances in 2-5 min]
+
+    E --&gt; G{Still overloaded?}
+    F --&gt; G
+
+    G -- Yes --&gt; H[Shed load:\nQueue non-critical writes\nReturn 503 with Retry-After]
+    G -- No --&gt; I[System handles peak normally]
+
+    H --&gt; J[Async workers drain\nqueue after spike subsides]
+</code></pre>
+<h4 id="techniques-by-layer">Techniques by Layer</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Layer</th>
+<th style="text-align: left;">Technique</th>
+<th style="text-align: left;">How it Helps</th>
+<th style="text-align: left;">Trade-off</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>DNS / Edge</strong></td>
+<td style="text-align: left;">CDN caching for static assets (HTML, JS, CSS, images)</td>
+<td style="text-align: left;">Offloads 60–90% of total requests at the edge before they hit origin servers.</td>
+<td style="text-align: left;">Stale content risk. Cache invalidation requires careful design.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Edge</strong></td>
+<td style="text-align: left;">WAF rate limiting per IP / user token</td>
+<td style="text-align: left;">Eliminates bot traffic and scraper floods that amplify peak by 2–5x.</td>
+<td style="text-align: left;">Legitimate burst users (e.g., shared office IP) may get throttled.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>API Gateway</strong></td>
+<td style="text-align: left;">Request throttling (token bucket / leaky bucket)</td>
+<td style="text-align: left;">Returns <code>429 Too Many Requests</code> before the request reaches app servers. Protects downstream.</td>
+<td style="text-align: left;">Users get errors instead of slow responses. Requires client retry logic with backoff.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>API Gateway</strong></td>
+<td style="text-align: left;">Circuit breaker</td>
+<td style="text-align: left;">When downstream services are slow, the gateway fails fast instead of holding connections open. Prevents cascade.</td>
+<td style="text-align: left;">Must tune error thresholds carefully. Overly sensitive breakers cause false outages.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>App Layer</strong></td>
+<td style="text-align: left;">Horizontal auto-scaling (AWS ASG, GKE HPA)</td>
+<td style="text-align: left;">Spins up new instances within 2–5 minutes of a spike being detected.</td>
+<td style="text-align: left;">Cold start latency. Instances are not immediately warm (empty caches, JVM warmup).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>App Layer</strong></td>
+<td style="text-align: left;">Pre-scaling for predictable events</td>
+<td style="text-align: left;">Manually or scheduled scale-out 30–60 minutes before a known event (e.g., Black Friday 00:00 UTC).</td>
+<td style="text-align: left;">Costs money for pre-provisioned idle capacity. Usually still worth it.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>App Layer</strong></td>
+<td style="text-align: left;">Graceful degradation (feature flags)</td>
+<td style="text-align: left;">Disable expensive non-critical features under load (e.g., hide recommendation panels, skip analytics events).</td>
+<td style="text-align: left;">Requires instrumentation. Users get a reduced experience.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Write Path</strong></td>
+<td style="text-align: left;">Async queue (Kafka, SQS, RabbitMQ) in front of DB</td>
+<td style="text-align: left;">Smooths out write bursts. DB consumes at a sustainable rate. Prevents write TPS from spiking the primary.</td>
+<td style="text-align: left;">Eventual consistency. Order confirmations may be delayed by seconds.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Read Path</strong></td>
+<td style="text-align: left;">Redis / Memcached hot cache warming</td>
+<td style="text-align: left;">Pre-load top products, homepage content, and session data into cache before the event starts.</td>
+<td style="text-align: left;">Cache invalidation must be handled. Stale cache can show wrong prices during flash sales.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Read Path</strong></td>
+<td style="text-align: left;">Read replicas</td>
+<td style="text-align: left;">Spread SELECT load across 3–5 replicas. Keeps the primary free for writes.</td>
+<td style="text-align: left;">Replication lag means replicas may show slightly old inventory counts.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Database</strong></td>
+<td style="text-align: left;">Connection pooling (PgBouncer, ProxySQL)</td>
+<td style="text-align: left;">Each new app server does not open a new DB connection. Pool is shared. Prevents the DB from hitting its <code>max_connections</code> limit.</td>
+<td style="text-align: left;">Misconfigured pools can cause timeouts during pool saturation.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Database</strong></td>
+<td style="text-align: left;">Read-through / write-behind cache</td>
+<td style="text-align: left;">Writes land in Redis first, asynchronously flushed to DB. Reads from cache. DB sees only a fraction of the traffic.</td>
+<td style="text-align: left;">Risk of data loss if Redis goes down before flush. Not suitable for financial writes.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="load-shedding-the-last-resort">Load Shedding: The Last Resort</h4>
+<p>When traffic exceeds all capacity, a system must <strong>actively refuse work</strong> instead of trying to process everything slowly (which causes cascading failures). Load shedding strategies:</p>
+<ul>
+<li><strong>Return <code>503 Service Unavailable</code> with <code>Retry-After</code> header.</strong> Clients know to back off. Better than a silent timeout.</li>
+<li><strong>Queue overflow with a ticket / estimated wait time.</strong> Used by Ticketmaster, Shopify during launches. Users see a virtual queue instead of errors.</li>
+<li><strong>Prioritize paid/authenticated users.</strong> Shed anonymous or low-priority requests first. Protect revenue-generating paths.</li>
+<li><strong>Shed writes before reads.</strong> If inventory updates are delayed by a few seconds, that is acceptable. Failing a checkout is not.</li>
+</ul>
+<h4 id="black-friday-concrete-sizing-example">Black Friday: Concrete Sizing Example</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Metric</th>
+<th style="text-align: right;">Normal Day</th>
+<th style="text-align: right;">Black Friday (10x)</th>
+<th style="text-align: right;">Flash Sale (100x)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">RPS</td>
+<td style="text-align: right;">1,000</td>
+<td style="text-align: right;">10,000</td>
+<td style="text-align: right;">100,000</td>
+</tr>
+<tr>
+<td style="text-align: left;">DB Read QPS</td>
+<td style="text-align: right;">5,000</td>
+<td style="text-align: right;">50,000</td>
+<td style="text-align: right;">500,000</td>
+</tr>
+<tr>
+<td style="text-align: left;">DB Write TPS</td>
+<td style="text-align: right;">500</td>
+<td style="text-align: right;">5,000</td>
+<td style="text-align: right;">50,000</td>
+</tr>
+<tr>
+<td style="text-align: left;">App Servers (2K RPS each)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7 (with buffer)</td>
+<td style="text-align: right;">70</td>
+</tr>
+<tr>
+<td style="text-align: left;">Redis Cache Hit Rate needed</td>
+<td style="text-align: right;">70%</td>
+<td style="text-align: right;">95%+</td>
+<td style="text-align: right;">99%+</td>
+</tr>
+<tr>
+<td style="text-align: left;">Read Replicas</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3–5</td>
+<td style="text-align: right;">10–20</td>
+</tr>
+<tr>
+<td style="text-align: left;">CDN offload required</td>
+<td style="text-align: right;">Optional</td>
+<td style="text-align: right;">Essential</td>
+<td style="text-align: right;">Mandatory</td>
+</tr>
+<tr>
+<td style="text-align: left;">Async write queue</td>
+<td style="text-align: right;">Optional</td>
+<td style="text-align: right;">Recommended</td>
+<td style="text-align: right;">Mandatory</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Key insight for 100x spikes:</strong> At 100x load, you cannot realistically auto-scale all 70 servers in time unless pre-scaled. The only practical way to survive a 100x spike without pre-provisioning is to push the vast majority of traffic to the CDN/cache and degrade gracefully for the remainder. At 99% cache hit rate, your origin servers see only 1% of the peak traffic — which is 1,000 RPS, identical to your baseline.</p>
+</blockquote>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      © 2025 <a href="https://github.com/abhishekghoshh" rel="noopener" target="_blank">Abhishek Ghosh</a>
+</div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+<div class="md-social">
+<a class="md-social__link" href="https://github.com/abhishekghoshh" rel="noopener" target="_blank" title="github.com">
+<svg viewbox="0 0 480 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"></path></svg>
+</a>
+<a class="md-social__link" href="https://x.com/abhishek_ghoshh" rel="noopener" target="_blank" title="x.com">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253"></path></svg>
+</a>
+<a class="md-social__link" href="https://www.linkedin.com/in/abhishek-ghosh-220679132/" rel="noopener" target="_blank" title="www.linkedin.com">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5m282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"></path></svg>
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+<script src="../../../../assets/javascripts/bundle.60a45f97.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+window.mermaidConfig = {default: {
+    startOnLoad: false
+}};</script></body>
+</html>
