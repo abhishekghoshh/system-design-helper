@@ -147,6 +147,8 @@
 - [Mayank Joshi](https://www.youtube.com/@9to5dude)
     - [System Design Full Course by Microsoft SWE](https://www.youtube.com/playlist?list=PLtUBJBQF5VJgSzegWtlFiNTWehra8eSHU)
 - [Milan Jovanović](https://www.youtube.com/@MilanJovanovicTech)
+- [Web Dev Cody](https://www.youtube.com/@WebDevCody)
+    - [Software Engineering](https://www.youtube.com/playlist?list=PL6x5Q-Sj_BlbrbQP3alEVrJ4dA8JQW-HG)
 
 
 ### Other Playlist
