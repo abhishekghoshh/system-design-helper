@@ -1,0 +1,3189 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="https://abhishekghoshh.github.io/system-design-helper/system-design/high-level/concepts/ip-addresses-and-ports/" rel="canonical"/>
+<link href="../cloud-computing/" rel="prev"/>
+<link href="../sockets/" rel="next"/>
+<link href="../../../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.50" name="generator"/>
+<title>IP Addresses &amp; Ports - System Design Helper</title>
+<link href="../../../../assets/stylesheets/main.a40c8224.min.css" rel="stylesheet"/>
+<link href="../../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+<meta content="website" property="og:type"/>
+<meta content="IP Addresses &amp; Ports - System Design Helper" property="og:title"/>
+<meta content="None" property="og:description"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/system-design/high-level/concepts/ip-addresses-and-ports.png" property="og:image"/>
+<meta content="image/png" property="og:image:type"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/system-design/high-level/concepts/ip-addresses-and-ports/" property="og:url"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="IP Addresses &amp; Ports - System Design Helper" name="twitter:title"/>
+<meta content="None" name="twitter:description"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/system-design/high-level/concepts/ip-addresses-and-ports.png" name="twitter:image"/>
+</head>
+<body data-md-color-accent="purple" data-md-color-primary="teal" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#ip-addresses-ports">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="System Design Helper" class="md-header__button md-logo" data-md-component="logo" href="../../../.." title="System Design Helper">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            System Design Helper
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              IP Addresses &amp; Ports
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="purple" data-md-color-media="" data-md-color-primary="teal" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="lime" data-md-color-media="" data-md-color-primary="teal" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../..">
+        
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../basics/cpu/">
+          
+  
+  Basics
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../ai/ai/">
+          
+  
+  AI
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../devops/">
+          
+  
+  DevOps
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../security/introduction/">
+          
+  
+  Security
+
+        </a>
+</li>
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../../../books/">
+          
+  
+  System Design
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="System Design Helper" class="md-nav__button md-logo" data-md-component="logo" href="../../../.." title="System Design Helper">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    System Design Helper
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../..">
+<span class="md-ellipsis">
+    Home
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Basics
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            Basics
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/cpu/">
+<span class="md-ellipsis">
+    CPU
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/pointers/">
+<span class="md-ellipsis">
+    Pointers
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/maths/">
+<span class="md-ellipsis">
+    Maths
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/behavioural/">
+<span class="md-ellipsis">
+    Behavioural
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/developer-experiences/">
+<span class="md-ellipsis">
+    Developer Experiences
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/open-source-tools/">
+<span class="md-ellipsis">
+    Open Source Tools
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/software-architect/">
+<span class="md-ellipsis">
+    Software Architect
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/wisdom/">
+<span class="md-ellipsis">
+    Wisdom
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+<span class="md-ellipsis">
+    AI
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            AI
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/ai/">
+<span class="md-ellipsis">
+    AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/ai-tools/">
+<span class="md-ellipsis">
+    AI Tools
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/agentic-ai/">
+<span class="md-ellipsis">
+    Agentic AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/gen-ai/">
+<span class="md-ellipsis">
+    Gen AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/langchain-and-langgraph/">
+<span class="md-ellipsis">
+    LangChain and LangGraph
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/MCP/">
+<span class="md-ellipsis">
+    MCP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/RAG/">
+<span class="md-ellipsis">
+    RAG
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/llm-wiki/">
+<span class="md-ellipsis">
+    LLM Wiki
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/vector-embeddings/">
+<span class="md-ellipsis">
+    Vector Embeddings
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/vibe-coding/">
+<span class="md-ellipsis">
+    Vibe Coding
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/courses/">
+<span class="md-ellipsis">
+    Courses
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    DevOps
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            DevOps
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../devops/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../devops/deployment-strategies/">
+<span class="md-ellipsis">
+    Deployment Strategies
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+<span class="md-ellipsis">
+    Security
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            Security
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/authentication-and-authorization/">
+<span class="md-ellipsis">
+    Authentication &amp; Authorization
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/oauth/">
+<span class="md-ellipsis">
+    OAuth
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/rbac/">
+<span class="md-ellipsis">
+    RBAC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/sso/">
+<span class="md-ellipsis">
+    SSO
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/ssl/">
+<span class="md-ellipsis">
+    SSL
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/ssh/">
+<span class="md-ellipsis">
+    SSH
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/jwt/">
+<span class="md-ellipsis">
+    JWT
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/encryption/">
+<span class="md-ellipsis">
+    Encryption
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/environment-variables/">
+<span class="md-ellipsis">
+    Environment Variables
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/devsecops/">
+<span class="md-ellipsis">
+    DevSecOps
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/firewall/">
+<span class="md-ellipsis">
+    Firewall
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+<span class="md-ellipsis">
+    Certificate
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_13_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_13">
+<span class="md-nav__icon md-icon"></span>
+            Certificate
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/certificate/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/certificate/certificate-authority/">
+<span class="md-ellipsis">
+    Certificate Authority
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/certificate/client-certificates/">
+<span class="md-ellipsis">
+    Client Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/certificate/server-certificates/">
+<span class="md-ellipsis">
+    Server Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/certificate/self-signed-certificates/">
+<span class="md-ellipsis">
+    Self-Signed Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/certificate/links/">
+<span class="md-ellipsis">
+    Links
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_14" id="__nav_5_14_label" tabindex="0">
+<span class="md-ellipsis">
+    Reverse Proxy
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_14_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_14">
+<span class="md-nav__icon md-icon"></span>
+            Reverse Proxy
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/reverse-proxy/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/reverse-proxy/haproxy/">
+<span class="md-ellipsis">
+    HAProxy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/reverse-proxy/nginx/">
+<span class="md-ellipsis">
+    Nginx
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    System Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            System Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../books/">
+<span class="md-ellipsis">
+    Books
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../courses/">
+<span class="md-ellipsis">
+    Courses
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../interview/">
+<span class="md-ellipsis">
+    Interview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4" id="__nav_6_4_label" tabindex="">
+<span class="md-ellipsis">
+    High Level Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_6_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_4">
+<span class="md-nav__icon md-icon"></span>
+            High Level Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6_4_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1" id="__nav_6_4_1_label" tabindex="0">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_6_4_1_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_1">
+<span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../philosophy-of-system-design/">
+<span class="md-ellipsis">
+    Philosophy of System Design
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../client-server-architecture/">
+<span class="md-ellipsis">
+    Client-Server Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../separation-of-concerns/">
+<span class="md-ellipsis">
+    Separation of Concerns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../state-and-data-flow/">
+<span class="md-ellipsis">
+    State and Data Flow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../back-of-envelope-calculation/">
+<span class="md-ellipsis">
+    Back of Envelope Calculation
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cloud-computing/">
+<span class="md-ellipsis">
+    Cloud Computing
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    IP Addresses &amp; Ports
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    IP Addresses &amp; Ports
+  </span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#blogs-and-websites">
+<span class="md-ellipsis">
+      Blogs and websites
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#medium">
+<span class="md-ellipsis">
+      Medium
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#youtube">
+<span class="md-ellipsis">
+      Youtube
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#theory">
+<span class="md-ellipsis">
+      Theory
+    </span>
+</a>
+<nav aria-label="Theory" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ip-addresses-the-internets-postal-system">
+<span class="md-ellipsis">
+      IP Addresses: The Internet's Postal System
+    </span>
+</a>
+<nav aria-label="IP Addresses: The Internet's Postal System" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ipv4-architecture">
+<span class="md-ellipsis">
+      IPv4 Architecture
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ipv6-the-future-and-present">
+<span class="md-ellipsis">
+      IPv6: The Future (and Present)
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ports-doorways-to-applications">
+<span class="md-ellipsis">
+      Ports: Doorways to Applications
+    </span>
+</a>
+<nav aria-label="Ports: Doorways to Applications" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#port-ranges-and-their-purposes">
+<span class="md-ellipsis">
+      Port Ranges and Their Purposes
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#real-world-use-cases">
+<span class="md-ellipsis">
+      Real-World Use Cases
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-example-socket-programming">
+<span class="md-ellipsis">
+      Code Example: Socket Programming
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#network-address-translation-nat">
+<span class="md-ellipsis">
+      Network Address Translation (NAT)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#common-networking-commands">
+<span class="md-ellipsis">
+      Common Networking Commands
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#security-considerations">
+<span class="md-ellipsis">
+      Security Considerations
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../sockets/">
+<span class="md-ellipsis">
+    Sockets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../dns-server/">
+<span class="md-ellipsis">
+    DNS Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../networking/">
+<span class="md-ellipsis">
+    Networking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tcp/">
+<span class="md-ellipsis">
+    TCP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../udp/">
+<span class="md-ellipsis">
+    UDP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../http/">
+<span class="md-ellipsis">
+    HTTP / HTTPS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../websockets/">
+<span class="md-ellipsis">
+    WebSockets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../webrtc/">
+<span class="md-ellipsis">
+    WebRTC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../smtp-server/">
+<span class="md-ellipsis">
+    SMTP Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../voice-over-internet-protocol/">
+<span class="md-ellipsis">
+    VoIP (Voice Over Internet Protocol)
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../api/">
+<span class="md-ellipsis">
+    API
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../restfull-architecture/">
+<span class="md-ellipsis">
+    RESTful Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../graphql/">
+<span class="md-ellipsis">
+    GraphQL
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../grpc/">
+<span class="md-ellipsis">
+    gRPC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../data-serialization/">
+<span class="md-ellipsis">
+    Data Serialization
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../asynchronus-communication/">
+<span class="md-ellipsis">
+    Asynchronous Communication
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../nats/">
+<span class="md-ellipsis">
+    NATS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../webhooks/">
+<span class="md-ellipsis">
+    Webhooks
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../load-balancer-and-proxy-server/">
+<span class="md-ellipsis">
+    Load Balancer &amp; Proxy Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../api-gateway/">
+<span class="md-ellipsis">
+    API Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cdn/">
+<span class="md-ellipsis">
+    CDN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../service-discovery/">
+<span class="md-ellipsis">
+    Service Discovery
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../service-mesh/">
+<span class="md-ellipsis">
+    Service Mesh
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hashing/">
+<span class="md-ellipsis">
+    Hashing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../consistent-hashing/">
+<span class="md-ellipsis">
+    Consistent Hashing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../storage/">
+<span class="md-ellipsis">
+    Storage
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../s3/">
+<span class="md-ellipsis">
+    S3
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../caching/">
+<span class="md-ellipsis">
+    Caching
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-caches-and-caching-strategies/">
+<span class="md-ellipsis">
+    Distributed Caches &amp; Caching Strategies
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../scalability/">
+<span class="md-ellipsis">
+    Scalability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../scaling-to-one-million/">
+<span class="md-ellipsis">
+    Scaling to One Million
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../adaptive-bitrate-streaming/">
+<span class="md-ellipsis">
+    Adaptive Bitrate Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../browser-rendering-pipeline/">
+<span class="md-ellipsis">
+    Browser Rendering Pipeline
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../availability-and-reliability/">
+<span class="md-ellipsis">
+    Availability &amp; Reliability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../consistency/">
+<span class="md-ellipsis">
+    Consistency
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cap-theorm/">
+<span class="md-ellipsis">
+    CAP Theorem
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../fault-tolerance/">
+<span class="md-ellipsis">
+    Fault Tolerance
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../architecture-patterns/">
+<span class="md-ellipsis">
+    Architecture Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../clean-architecture/">
+<span class="md-ellipsis">
+    Clean Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../microservices-patterns/">
+<span class="md-ellipsis">
+    Microservices Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../raft-consensus-algorithm/">
+<span class="md-ellipsis">
+    Raft Consensus Algorithm
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../gossip-protocol/">
+<span class="md-ellipsis">
+    Gossip Protocol
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ditributed-transaction-and-concurrency-control/">
+<span class="md-ellipsis">
+    Distributed Transaction &amp; Concurrency Control
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cdc/">
+<span class="md-ellipsis">
+    CDC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../resilience-patterns/">
+<span class="md-ellipsis">
+    Resilience Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../thundering-effect/">
+<span class="md-ellipsis">
+    Thundering Herd Effect
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../security-basics/">
+<span class="md-ellipsis">
+    Security Basics
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../passwords/">
+<span class="md-ellipsis">
+    Passwords
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../environment-configuration-and-secrets/">
+<span class="md-ellipsis">
+    Environment Configuration &amp; Secrets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../observability/">
+<span class="md-ellipsis">
+    Observability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cqrs/">
+<span class="md-ellipsis">
+    CQRS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../event-sourcing/">
+<span class="md-ellipsis">
+    Event Sourcing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../saga-pattern/">
+<span class="md-ellipsis">
+    Saga Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../data-processing/">
+<span class="md-ellipsis">
+    Data Processing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../process/">
+<span class="md-ellipsis">
+    Process
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../code-documentation/">
+<span class="md-ellipsis">
+    Code Documentation
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../programming-language/">
+<span class="md-ellipsis">
+    Programming Language
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../github-server/">
+<span class="md-ellipsis">
+    GitHub Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../additional-concepts/">
+<span class="md-ellipsis">
+    Additional Concepts
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2" id="__nav_6_4_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Designing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Designing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/url-shortner/">
+<span class="md-ellipsis">
+    URL Shortener
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/key-value-store/">
+<span class="md-ellipsis">
+    Key Value Store
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/rate-limiter/">
+<span class="md-ellipsis">
+    Rate Limiter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/notification-system/">
+<span class="md-ellipsis">
+    Notification System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/log-system/">
+<span class="md-ellipsis">
+    Log System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/search-engine/">
+<span class="md-ellipsis">
+    Search Engine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/authentication-system/">
+<span class="md-ellipsis">
+    Authentication System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/webhook/">
+<span class="md-ellipsis">
+    Webhook
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/distributed-counter/">
+<span class="md-ellipsis">
+    Distributed Counter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/distributed-cache/">
+<span class="md-ellipsis">
+    Distributed Cache
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/distributed-locking-service/">
+<span class="md-ellipsis">
+    Distributed Locking Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/distributed-job-scheduler/">
+<span class="md-ellipsis">
+    Distributed Job Scheduler
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/cdn/">
+<span class="md-ellipsis">
+    CDN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/autocomplete/">
+<span class="md-ellipsis">
+    Autocomplete
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/pastebin/">
+<span class="md-ellipsis">
+    Pastebin
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/leaderboard/">
+<span class="md-ellipsis">
+    Leaderboard
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/chat-system/">
+<span class="md-ellipsis">
+    Chat System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/whatspp/">
+<span class="md-ellipsis">
+    WhatsApp
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/live-comments/">
+<span class="md-ellipsis">
+    Live Comments
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/distributed-messaging-queue/">
+<span class="md-ellipsis">
+    Distributed Messaging Queue
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/slack/">
+<span class="md-ellipsis">
+    Slack
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/video-streaming/">
+<span class="md-ellipsis">
+    Video Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/netflix/">
+<span class="md-ellipsis">
+    Netflix
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/spotify/">
+<span class="md-ellipsis">
+    Spotify
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/live-streaming/">
+<span class="md-ellipsis">
+    Live Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/Image-Optimisation-on-the-fly/">
+<span class="md-ellipsis">
+    Image Optimisation On The Fly
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/amazon-flipkart/">
+<span class="md-ellipsis">
+    Amazon/Flipkart
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/e-commerce/">
+<span class="md-ellipsis">
+    E-Commerce
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/ecommerce-checkout/">
+<span class="md-ellipsis">
+    E-Commerce Checkout
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/payment-gateway/">
+<span class="md-ellipsis">
+    Payment Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/upi-payments/">
+<span class="md-ellipsis">
+    UPI Payments
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/digital-wallet/">
+<span class="md-ellipsis">
+    Digital Wallet
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/vending-machine/">
+<span class="md-ellipsis">
+    Vending Machine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/twitter/">
+<span class="md-ellipsis">
+    Twitter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/social-media/">
+<span class="md-ellipsis">
+    Social Media
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/hashtag-service/">
+<span class="md-ellipsis">
+    Hashtag Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/recomendation-engine/">
+<span class="md-ellipsis">
+    Recommendation Engine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/facebook/">
+<span class="md-ellipsis">
+    Facebook
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/instagram/">
+<span class="md-ellipsis">
+    Instagram
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/tiktok/">
+<span class="md-ellipsis">
+    TikTok
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/bookmyshow/">
+<span class="md-ellipsis">
+    BookMyShow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/uber/">
+<span class="md-ellipsis">
+    Uber
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/food-delivery/">
+<span class="md-ellipsis">
+    Food Delivery
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/hotel-booking/">
+<span class="md-ellipsis">
+    Hotel Booking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/app-store/">
+<span class="md-ellipsis">
+    App Store
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/yelp/">
+<span class="md-ellipsis">
+    Yelp
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/flight-booking/">
+<span class="md-ellipsis">
+    Flight Booking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/google-maps/">
+<span class="md-ellipsis">
+    Google Maps
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/google-drive/">
+<span class="md-ellipsis">
+    Google Drive
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/data-warehouse/">
+<span class="md-ellipsis">
+    Data Warehouse
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/distributed-geospatial-data-platform/">
+<span class="md-ellipsis">
+    Distributed Geospatial Data Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/redis/">
+<span class="md-ellipsis">
+    Redis
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/large-language-model/">
+<span class="md-ellipsis">
+    Large Language Model
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/leetcode/">
+<span class="md-ellipsis">
+    LeetCode
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/vercel/">
+<span class="md-ellipsis">
+    Vercel
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/email-automation-platform/">
+<span class="md-ellipsis">
+    Email Automation Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/google-docs/">
+<span class="md-ellipsis">
+    Google Docs
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/online-code-editor/">
+<span class="md-ellipsis">
+    Online Code Editor
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/vpn/">
+<span class="md-ellipsis">
+    VPN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/stock-broker-system/">
+<span class="md-ellipsis">
+    Stock Broker System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/chess-game/">
+<span class="md-ellipsis">
+    Chess Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/multiplayer-game/">
+<span class="md-ellipsis">
+    Multiplayer Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/how-to-host-your-own-x/">
+<span class="md-ellipsis">
+    How to Host Your Own X
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_3" id="__nav_6_4_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Links
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Links
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../links/udemy/">
+<span class="md-ellipsis">
+    Udemy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../links/websites/">
+<span class="md-ellipsis">
+    Websites
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../links/youtube/">
+<span class="md-ellipsis">
+    YouTube
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="">
+<span class="md-ellipsis">
+    Low Level Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_5">
+<span class="md-nav__icon md-icon"></span>
+            Low Level Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_2" id="__nav_6_5_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_2">
+<span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/concepts/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/concepts/hashmap/">
+<span class="md-ellipsis">
+    HashMap
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/concepts/mvc/">
+<span class="md-ellipsis">
+    MVC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/concepts/null-object-pattern/">
+<span class="md-ellipsis">
+    Null Object Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/concepts/solid-principles/">
+<span class="md-ellipsis">
+    SOLID Principles
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/concepts/technical-debt/">
+<span class="md-ellipsis">
+    Technical Debt
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3" id="__nav_6_5_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Design Patterns
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_3">
+<span class="md-nav__icon md-icon"></span>
+            Design Patterns
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/design-pattern/">
+<span class="md-ellipsis">
+    Design Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_2" id="__nav_6_5_3_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Creational
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_2">
+<span class="md-nav__icon md-icon"></span>
+            Creational
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/creational/creational/">
+<span class="md-ellipsis">
+    All Creational Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/creational/singleton/">
+<span class="md-ellipsis">
+    Singleton
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/creational/prototype/">
+<span class="md-ellipsis">
+    Prototype
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/creational/builder/">
+<span class="md-ellipsis">
+    Builder
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/creational/factory/">
+<span class="md-ellipsis">
+    Factory
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/creational/abstract-factory/">
+<span class="md-ellipsis">
+    Abstract Factory
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/creational/object-pool/">
+<span class="md-ellipsis">
+    Object Pool
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_3" id="__nav_6_5_3_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Structural
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_3">
+<span class="md-nav__icon md-icon"></span>
+            Structural
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/structural/">
+<span class="md-ellipsis">
+    All Structural Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/adapter/">
+<span class="md-ellipsis">
+    Adapter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/bridge/">
+<span class="md-ellipsis">
+    Bridge
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/composite/">
+<span class="md-ellipsis">
+    Composite
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/decorator/">
+<span class="md-ellipsis">
+    Decorator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/facade/">
+<span class="md-ellipsis">
+    Facade
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/flyweight/">
+<span class="md-ellipsis">
+    Flyweight
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/proxy/">
+<span class="md-ellipsis">
+    Proxy
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_4" id="__nav_6_5_3_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Behavioral
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_4_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_4">
+<span class="md-nav__icon md-icon"></span>
+            Behavioral
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/behavioral/">
+<span class="md-ellipsis">
+    All Behavioral Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/chain-of-responsibility/">
+<span class="md-ellipsis">
+    Chain of Responsibility
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/command/">
+<span class="md-ellipsis">
+    Command
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/interpreter/">
+<span class="md-ellipsis">
+    Interpreter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/iterator/">
+<span class="md-ellipsis">
+    Iterator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/mediator/">
+<span class="md-ellipsis">
+    Mediator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/memento/">
+<span class="md-ellipsis">
+    Memento
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/observer/">
+<span class="md-ellipsis">
+    Observer
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/state/">
+<span class="md-ellipsis">
+    State
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/strategy/">
+<span class="md-ellipsis">
+    Strategy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/template/">
+<span class="md-ellipsis">
+    Template
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/visitor/">
+<span class="md-ellipsis">
+    Visitor
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_4" id="__nav_6_5_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Designing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_4_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_4">
+<span class="md-nav__icon md-icon"></span>
+            Designing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/access-management-system/">
+<span class="md-ellipsis">
+    Access Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/account-balance-tracker/">
+<span class="md-ellipsis">
+    Account Balance Tracker
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/air-traffic-controller/">
+<span class="md-ellipsis">
+    Air Traffic Controller
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/apply-coupons-on-shopping-cart/">
+<span class="md-ellipsis">
+    Apply Coupons on Shopping Cart
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/atm/">
+<span class="md-ellipsis">
+    ATM
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/bookmyshow/">
+<span class="md-ellipsis">
+    BookMyShow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/cache-system/">
+<span class="md-ellipsis">
+    Cache System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/car-rental-service/">
+<span class="md-ellipsis">
+    Car Rental Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/chess-game/">
+<span class="md-ellipsis">
+    Chess Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/cricbuzz/">
+<span class="md-ellipsis">
+    Cricbuzz
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/elevator-system/">
+<span class="md-ellipsis">
+    Elevator System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/inventory-management-system/">
+<span class="md-ellipsis">
+    Inventory Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/locker-allocation-system/">
+<span class="md-ellipsis">
+    Locker Allocation System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/logging-system/">
+<span class="md-ellipsis">
+    Logging System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/meeting-scheduler/">
+<span class="md-ellipsis">
+    Meeting Scheduler
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/parking-lot/">
+<span class="md-ellipsis">
+    Parking Lot
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/payment-gateway/">
+<span class="md-ellipsis">
+    Payment Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/snake-and-ladder/">
+<span class="md-ellipsis">
+    Snake and Ladder
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/splitwise/">
+<span class="md-ellipsis">
+    Splitwise
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/stock-exchange-book/">
+<span class="md-ellipsis">
+    Stock Exchange Book
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/tic-tac-toe/">
+<span class="md-ellipsis">
+    Tic Tac Toe
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/vending-machine/">
+<span class="md-ellipsis">
+    Vending Machine
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ip-addresses-ports">IP Addresses &amp; Ports</h1>
+<h2 id="blogs-and-websites">Blogs and websites</h2>
+<h2 id="medium">Medium</h2>
+<h2 id="youtube">Youtube</h2>
+<h2 id="theory">Theory</h2>
+<h3 id="ip-addresses-the-internets-postal-system">IP Addresses: The Internet's Postal System</h3>
+<p><strong>IP Address</strong>: A unique numerical label assigned to every device on a network that uses the Internet Protocol (IP) for communication. Think of it exactly like a postal address — without one, data packets have no destination to route towards.</p>
+<p>Every packet sent over the internet contains two IP addresses in its header:
+- <strong>Source IP</strong> — where the packet came from
+- <strong>Destination IP</strong> — where the packet should go</p>
+<p>Routers read these headers and forward packets hop-by-hop until they reach the destination.</p>
+<h4 id="ipv4-architecture">IPv4 Architecture</h4>
+<p><strong>Format</strong>: 32-bit address (4 bytes), written as dotted decimal notation. Each of the 4 "octets" is a number from 0–255.</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>192  .  168  .   1   .  100
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> ↓       ↓       ↓       ↓
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> 8 bits  8 bits  8 bits  8 bits  =  32 bits total
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>Binary representation:
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>11000000 . 10101000 . 00000001 . 01100100
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>   192   .    168   .     1    .    100
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>Each octet:
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>  00000000 = 0
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>  11111111 = 255
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>  Range per octet: 0–255
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>Total unique IPv4 addresses: 2^32 = 4,294,967,296 (~4.3 billion)
+</code></pre></div>
+<p><strong>Address Classes (Classful Networking):</strong></p>
+<p>The original IP addressing scheme divided the 32-bit space into fixed classes. While largely superseded by CIDR (below), classes explain why you'll commonly see <code>10.x.x.x</code>, <code>172.16–31.x.x</code>, and <code>192.168.x.x</code> as private network addresses.</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>Class A: 0.0.0.0      to 127.255.255.255
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>         Network: 8 bits  |  Host: 24 bits  →  16,777,214 hosts/network
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>         First bit always 0
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>         Example: 10.1.2.3  (Network=10, Host=1.2.3)
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>         Users: ISPs, huge enterprises (APNIC, MIT, etc.)
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>Class B: 128.0.0.0    to 191.255.255.255
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>         Network: 16 bits  |  Host: 16 bits  →  65,534 hosts/network
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>         First two bits always 10
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>         Example: 172.16.1.100  (Network=172.16, Host=1.100)
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>         Users: Medium-large organizations, universities
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>Class C: 192.0.0.0    to 223.255.255.255
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>         Network: 24 bits  |  Host: 8 bits  →  254 hosts/network
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>         First three bits always 110
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>         Example: 192.168.1.50  (Network=192.168.1, Host=50)
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>         Users: Small offices, home networks
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>Special ranges:
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>  127.0.0.0   – 127.255.255.255  →  Loopback (localhost/self, never leaves NIC)
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>  169.254.0.0 – 169.254.255.255  →  APIPA / Link-local (auto-assigned when DHCP fails)
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>  0.0.0.0                        →  "This host" / wildcard listen address
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>  255.255.255.255                →  Limited broadcast (all devices on local segment)
+</code></pre></div>
+<p><strong>CIDR Notation (Modern Approach):</strong></p>
+<p>CIDR (Classless Inter-Domain Routing, RFC 1519) replaced classful addressing. You specify the network with a slash and a prefix length — the number of bits that form the "network" portion. This allows flexible, efficient IP allocation.</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>192.168.1.0/24  →  prefix length 24
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>Breakdown:
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>  IP address:   192.168.1.0    = 11000000.10101000.00000001.00000000
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>  Subnet mask: /24             = 11111111.11111111.11111111.00000000
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>                                  ←────── network ──────────→ ←hosts→
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>  Network address:  192.168.1.0    (all host bits = 0, not assignable)
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>  Broadcast:        192.168.1.255  (all host bits = 1, not assignable)
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>  Usable host range: 192.168.1.1 – 192.168.1.254  (254 hosts)
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>Common subnet sizes:
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>  /8   →  16,777,214 hosts   mask: 255.0.0.0       (e.g., 10.0.0.0/8)
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>  /16  →      65,534 hosts   mask: 255.255.0.0      (e.g., 172.16.0.0/16)
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>  /24  →         254 hosts   mask: 255.255.255.0    (e.g., 192.168.1.0/24)
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>  /28  →          14 hosts   mask: 255.255.255.240  (small cloud subnet)
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>  /30  →           2 hosts   mask: 255.255.255.252  (point-to-point links)
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>  /32  →           1 host    mask: 255.255.255.255  (single host route)
+</code></pre></div>
+<p><strong>Private vs Public IP Addresses:</strong></p>
+<p>RFC 1918 defines three address blocks permanently reserved for private/internal use. These are free to reuse inside any organization but are never forwarded by public internet routers.</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>Private IP Ranges (RFC 1918):
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>┌───────────────────────────────────────────────────────────────┐
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>│ Range                           CIDR        Class   # Hosts   │
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>├───────────────────────────────────────────────────────────────┤
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>│ 10.0.0.0  – 10.255.255.255     10.0.0.0/8    A     16.7M     │
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>│ 172.16.0.0 – 172.31.255.255   172.16.0.0/12  B     1.05M     │
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>│ 192.168.0.0 – 192.168.255.255 192.168.0.0/16 C     65K       │
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>└───────────────────────────────────────────────────────────────┘
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>Why private IPs exist:
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>  → IPv4 has ~4.3 billion addresses total — not enough for every device
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>  → Organizations reuse private ranges internally (no global uniqueness needed)
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>  → Only the edge router needs a globally unique public IP
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>  → NAT bridges private ↔ public worlds
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>Public IPs:
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>  → Globally unique, managed by IANA → RIRs (ARIN, RIPE, APNIC, etc.)
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>  → Routable across the entire Internet
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a>  → Assigned by your ISP (dynamic) or cloud provider (static EIP, floating IP, etc.)
+</code></pre></div>
+<p><strong>Real-World Example — Home Network:</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>Your Home Network:
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>┌─────────────────────────────────────────────────────────────┐
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>│ Public IP: 203.0.113.45  (assigned by ISP via DHCP/PPPoE)  │
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>│                                                              │
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>│  Modem + Router (NAT + DHCP server)                        │
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>│    └─ Private LAN: 192.168.1.0/24                          │
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>│         ├─ Router gateway:  192.168.1.1                    │
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>│         ├─ Laptop:          192.168.1.10  (DHCP lease)     │
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>│         ├─ Phone:           192.168.1.11  (DHCP lease)     │
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>│         └─ Smart TV:        192.168.1.12  (DHCP lease)     │
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>└─────────────────────────────────────────────────────────────┘
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>What happens when your laptop visits google.com:
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>  1. Laptop sends packet: src=192.168.1.10:54231  dst=142.250.80.46:443
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>  2. Router NAT rewrites: src=203.0.113.45:54231  dst=142.250.80.46:443
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>  3. Google responds to:  dst=203.0.113.45:54231
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>  4. Router translates back and delivers to 192.168.1.10:54231
+</code></pre></div></p>
+<p><strong>Network Hierarchy Diagram:</strong></p>
+<pre class="mermaid"><code>graph TD
+    Internet["🌐 Public Internet<br/>(Globally Routed IPs)"]
+    ISP["ISP Router<br/>Assigns Public IP: 203.0.113.45"]
+    Router["Home Router / NAT<br/>WAN: 203.0.113.45<br/>LAN Gateway: 192.168.1.1<br/>DHCP: 192.168.1.2–254"]
+    Laptop["💻 Laptop<br/>192.168.1.10"]
+    Phone["📱 Phone<br/>192.168.1.11"]
+    TV["📺 Smart TV<br/>192.168.1.12"]
+
+    Internet --&gt; ISP
+    ISP --&gt; Router
+    Router --&gt; Laptop
+    Router --&gt; Phone
+    Router --&gt; TV
+</code></pre>
+<hr/>
+<h4 id="ipv6-the-future-and-present">IPv6: The Future (and Present)</h4>
+<p><strong>Format</strong>: 128-bit address (16 bytes), written as 8 groups of 4 hexadecimal digits separated by colons.</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>Full form (128 bits, 32 hex digits):
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>  2001:0db8:85a3:0000:0000:8a2e:0370:7334
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>Simplification Rule 1 — Drop leading zeros in each group:
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>  2001:db8:85a3:0:0:8a2e:370:7334
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>Simplification Rule 2 — Replace one longest run of all-zero groups with :::
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>  2001:db8:85a3::8a2e:370:7334
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>Important: :: can appear only ONCE (otherwise the address is ambiguous)
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>  VALID:    ::1            (loopback — all zeros except last bit)
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>  VALID:    2001:db8::1
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>  INVALID:  2001::db8::1  ← rejected, ambiguous
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>IPv6 in URLs — wrap in square brackets to distinguish : from port separator:
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>  http://[2001:db8::1]:8080/path
+</code></pre></div>
+<p><strong>Why IPv6?</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>IPv4 Problem:
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>  → 2^32 = ~4.3 billion addresses — exhausted by IANA in February 2011
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>  → ARIN (North America) ran out in 2015
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>  → NAT is a workaround that breaks end-to-end connectivity
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>  → NAT complicates P2P, VoIP, online gaming, IoT
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>IPv6 Solution:
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>  → 2^128 = 340,282,366,920,938,463,463,374,607,431,768,211,456
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>  → ~340 undecillion — effectively unlimited
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>  → ~50 octillion addresses per person on Earth
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>  → Built-in IPSec support
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a>  → Stateless Address Autoconfiguration (SLAAC) — no DHCP needed
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a>  → No NAT required: every device can have a globally unique address
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a>  → Better multicast, no broadcast storms
+</code></pre></div>
+<p><strong>IPv6 Address Types:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>Type            Prefix      IPv4 Equivalent      Scope
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>──────────────────────────────────────────────────────────────────────
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>Global Unicast  2000::/3    Public IP            Internet-wide
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>Link-Local      fe80::/10   169.254.0.0/16       Single network segment
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>Loopback        ::1         127.0.0.1            Self only
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>Unique Local    fc00::/7    RFC1918 private       Organization-internal
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>Multicast       ff00::/8    224.0.0.0/4          One-to-many group
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>Anycast         (any GUA)   —                    Nearest of a group
+</code></pre></div>
+<p><strong>Global Unicast Address Structure:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>2001:db8:85a3:1234:5678:8a2e:370:7334
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>│◄──────── 48 bits ────────►│◄16b►│◄────── 64 bits ──────────►│
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>    Global Routing Prefix    Subnet    Interface ID
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>    (assigned by ISP/RIR)    (your    (often derived from MAC
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>                              subnet)  via EUI-64 or random)
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>Example breakdown:
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>  2001:0db8   → Assigned to your ISP by IANA
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>  85a3        → ISP assigns this prefix to your org
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>  1234        → Your subnet ID (you choose)
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>  5678:8a2e:0370:7334 → Interface ID (auto-generated from MAC or random)
+</code></pre></div>
+<p><strong>Dual-Stack (IPv4 + IPv6 coexistence):</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>Most production servers today run both protocols simultaneously.
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>example.com DNS records:
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>  A    record → 93.184.216.34            (IPv4)
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>  AAAA record → 2606:2800:220:1:248:...  (IPv6)
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>Browser behavior (Happy Eyeballs - RFC 8305):
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>  1. Query both A and AAAA simultaneously
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>  2. Try IPv6 first (slight preference)
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>  3. If IPv6 fails after 250ms, race with IPv4
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>  4. Use whichever connects first
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a>Transition mechanisms:
+<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>  → Dual-stack: server speaks both (preferred)
+<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>  → 6to4: encapsulate IPv6 in IPv4 tunnels
+<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>  → NAT64: translate IPv6 ↔ IPv4 at border
+</code></pre></div>
+<hr/>
+<h3 id="ports-doorways-to-applications">Ports: Doorways to Applications</h3>
+<p><strong>Concept</strong>: An IP address gets you to the right server (the building). A port number gets you to the right application on that server (the apartment). Multiple services can run simultaneously on the same server because each binds to a unique port.</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>Server: 192.168.1.100
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>┌─────────────────────────────────────────────────────┐
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>│ Port 22:    SSH Daemon         ← ssh user@server    │
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>│ Port 80:    Nginx (HTTP)       ← http://server      │
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>│ Port 443:   Nginx (HTTPS)      ← https://server     │
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>│ Port 3000:  Node.js App        ← http://server:3000 │
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>│ Port 5432:  PostgreSQL DB      ← postgres://server  │
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>│ Port 6379:  Redis Cache        ← redis://server     │
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>│ Port 27017: MongoDB            ← mongodb://server   │
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>└─────────────────────────────────────────────────────┘
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>Port number facts:
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>  → 16-bit unsigned integer → range: 0 to 65,535
+<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>  → Stored in the transport layer header (TCP/UDP)
+<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a>
+<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>A TCP/UDP connection is uniquely identified by a 5-tuple:
+<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a>  (Protocol, Source IP, Source Port, Destination IP, Destination Port)
+<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a>
+<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a>  This means the same client IP can have thousands of simultaneous
+<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a>  connections to the same server port, each with a different source port.
+</code></pre></div>
+<p><strong>TCP vs UDP Ports:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>TCP (Transmission Control Protocol):
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>  ✓ Connection-oriented: requires 3-way handshake before data transfer
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>  ✓ Reliable: guarantees delivery, ordering, and error detection
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>  ✓ Flow control and congestion control built-in
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>  ✓ Used by: HTTP/HTTPS, SSH, FTP, SMTP, PostgreSQL, MySQL, Redis
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>  → OS maintains per-connection state machine
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>  TCP States: LISTEN → SYN_RCVD → ESTABLISHED → FIN_WAIT → TIME_WAIT → CLOSED
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>UDP (User Datagram Protocol):
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>  ✓ Connectionless: no handshake, send and forget
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a>  ✓ Lower latency (no setup overhead)
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>  ✓ No guaranteed delivery or ordering
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>  ✓ Used by: DNS, NTP, DHCP, video streaming (WebRTC), VoIP, QUIC (HTTP/3)
+<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>  → No per-connection state maintained by OS
+<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a>
+<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>Same port number, different protocols:
+<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a>  TCP 53 = DNS for large responses (&gt;512 bytes) and zone transfers
+<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a>  UDP 53 = DNS for standard queries (faster, stateless)
+<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a>  TCP 443 = HTTPS (TLS over TCP)
+<a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a>  UDP 443 = HTTPS via QUIC/HTTP3 (TLS over UDP)
+</code></pre></div>
+<p><strong>TCP Connection Port Lifecycle:</strong></p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant C as Client<br/>192.168.1.10
+    participant S as Server<br/>192.168.1.100:443
+
+    Note over C: OS picks ephemeral port (e.g., 54231)<br/>from range 32768–60999
+    C-&gt;&gt;S: SYN  [src=:54231, dst=:443, seq=x]
+    S-&gt;&gt;C: SYN-ACK  [src=:443, dst=:54231, seq=y, ack=x+1]
+    C-&gt;&gt;S: ACK  [ack=y+1]
+    Note over C,S: ✅ Connection established
+
+    C-&gt;&gt;S: HTTP GET /api/data
+    S-&gt;&gt;C: HTTP 200 OK + JSON body
+
+    C-&gt;&gt;S: FIN  (client done)
+    S-&gt;&gt;C: ACK
+    S-&gt;&gt;C: FIN  (server done)
+    C-&gt;&gt;S: ACK
+    Note over C: Port 54231 enters TIME_WAIT (~60s),<br/>then released back to OS pool
+</code></pre>
+<h4 id="port-ranges-and-their-purposes">Port Ranges and Their Purposes</h4>
+<p><strong>Well-Known Ports (0–1023):</strong> Assigned by IANA; require root/administrator to bind.</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>Port     Protocol  Transport  Description
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>──────────────────────────────────────────────────────────────────────────────
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>20       FTP-data  TCP        File Transfer — data channel (active mode)
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>21       FTP-ctrl  TCP        File Transfer — command/control channel
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>22       SSH       TCP        Secure Shell: encrypted remote login + tunneling
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>23       Telnet    TCP        Unencrypted remote login — NEVER use in production
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>25       SMTP      TCP        Email relay between mail servers
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>53       DNS       TCP/UDP    Domain Name resolution (UDP standard, TCP for large)
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>67       DHCP      UDP        DHCP server (IP lease offers)
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>68       DHCP      UDP        DHCP client (IP lease requests)
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>80       HTTP      TCP        Unencrypted web traffic
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>110      POP3      TCP        Email retrieval (downloads + deletes from server)
+<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>143      IMAP      TCP        Email access with sync (multi-device friendly)
+<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>443      HTTPS     TCP/UDP    Encrypted web (TLS/TCP or QUIC/UDP)
+<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a>465      SMTPS     TCP        SMTP over implicit TLS (email submission)
+<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a>587      SMTP      TCP        SMTP with STARTTLS (preferred submission port)
+<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a>993      IMAPS     TCP        IMAP over TLS
+<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a>995      POP3S     TCP        POP3 over TLS
+<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a>3306     MySQL     TCP        MySQL/MariaDB database connections
+<a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a>5432     PostgreSQL TCP       PostgreSQL database connections
+<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a>6379     Redis     TCP        Redis in-memory data store
+<a href="#__codelineno-12-22" id="__codelineno-12-22" name="__codelineno-12-22"></a>27017    MongoDB   TCP        MongoDB document database
+</code></pre></div>
+<p><strong>Registered Ports (1024–49151):</strong> Application-specific; no root required to bind.</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>Port     Service                Common Use
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>────────────────────────────────────────────────────────────────────────
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>3000     Node.js / Grafana      Express/React dev server, Grafana dashboard
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>4200     Angular CLI            Angular development server
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>5000     Flask / .NET           Python Flask default, ASP.NET Kestrel
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>5173     Vite                   Modern frontend dev server (Vite, SvelteKit)
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>5601     Kibana                 Elasticsearch visualization dashboard
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a>8000     Django / SimpleHTTP    Django dev server, Python's http.server
+<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>8080     HTTP alt               Tomcat, Jenkins, proxy servers, dev APIs
+<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a>8443     HTTPS alt              Alternative HTTPS for non-root dev/proxy
+<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a>9090     Prometheus             Metrics scraping endpoint
+<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a>9200     Elasticsearch          Elasticsearch HTTP REST API
+<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a>15672    RabbitMQ mgmt          RabbitMQ management web UI
+<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a>2181     ZooKeeper              Kafka/ZooKeeper coordination port
+<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a>9092     Kafka                  Kafka broker (producer/consumer connections)
+</code></pre></div>
+<p><strong>Dynamic/Ephemeral Ports (49152–65535):</strong> Auto-assigned by the OS for outgoing connections.</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a>When your browser makes a request:
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>  Your OS picks a temporary "ephemeral" port from its available pool.
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>Example — browser visits https://google.com:
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>  Source:      192.168.1.10:54231   ← OS-assigned ephemeral port
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>  Destination: 142.250.80.46:443    ← well-known HTTPS port
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a>
+<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a>After the connection closes, port 54231 is returned to the pool
+<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a>and can be reused for the next connection.
+<a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a>
+<a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a>Linux ephemeral range (default): 32768–60999
+<a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a>  Check: cat /proc/sys/net/ipv4/ip_local_port_range
+<a href="#__codelineno-14-13" id="__codelineno-14-13" name="__codelineno-14-13"></a>
+<a href="#__codelineno-14-14" id="__codelineno-14-14" name="__codelineno-14-14"></a>Why this matters at scale:
+<a href="#__codelineno-14-15" id="__codelineno-14-15" name="__codelineno-14-15"></a>  → A single server on port 443 can serve millions of clients
+<a href="#__codelineno-14-16" id="__codelineno-14-16" name="__codelineno-14-16"></a>    because each client pair is unique by (client IP, client port)
+<a href="#__codelineno-14-17" id="__codelineno-14-17" name="__codelineno-14-17"></a>  → If a client exhausts its ephemeral range (~28K ports), new
+<a href="#__codelineno-14-18" id="__codelineno-14-18" name="__codelineno-14-18"></a>    connections fail with "Cannot assign requested address"
+<a href="#__codelineno-14-19" id="__codelineno-14-19" name="__codelineno-14-19"></a>  → Solution: use multiple source IPs or tune the port range
+<a href="#__codelineno-14-20" id="__codelineno-14-20" name="__codelineno-14-20"></a>
+<a href="#__codelineno-14-21" id="__codelineno-14-21" name="__codelineno-14-21"></a>Visualized:
+<a href="#__codelineno-14-22" id="__codelineno-14-22" name="__codelineno-14-22"></a>  Client 192.168.1.10:54231 ──→ Server 1.2.3.4:443   ✓ connection 1
+<a href="#__codelineno-14-23" id="__codelineno-14-23" name="__codelineno-14-23"></a>  Client 192.168.1.10:54232 ──→ Server 1.2.3.4:443   ✓ connection 2
+<a href="#__codelineno-14-24" id="__codelineno-14-24" name="__codelineno-14-24"></a>  Client 192.168.1.10:54233 ──→ Server 1.2.3.4:443   ✓ connection 3
+<a href="#__codelineno-14-25" id="__codelineno-14-25" name="__codelineno-14-25"></a>  (all three are distinct 5-tuples — OS tracks them independently)
+</code></pre></div>
+<h4 id="real-world-use-cases">Real-World Use Cases</h4>
+<p><strong>Use Case 1: Web Server with HTTPS Redirect</strong></p>
+<p>When a user types <code>http://example.com</code>, their browser connects to port 80. The server redirects them to HTTPS (port 443), where all subsequent communication is encrypted.</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>Server setup (Nginx):
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>┌──────────────────────────────────────────────────────────────┐
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>│ example.com (1.2.3.4)                                        │
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a>│   Port 80  → Nginx: receive HTTP, issue 301 redirect        │
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>│   Port 443 → Nginx: TLS termination + serve content         │
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a>└──────────────────────────────────────────────────────────────┘
+</code></pre></div>
+<pre class="mermaid"><code>sequenceDiagram
+    participant U as 👤 Browser
+    participant D as DNS Server
+    participant S as example.com<br/>(1.2.3.4)
+
+    U-&gt;&gt;D: Resolve example.com?
+    D--&gt;&gt;U: A record → 1.2.3.4
+
+    U-&gt;&gt;S: HTTP GET :80 /
+    S--&gt;&gt;U: 301 Moved Permanently<br/>Location: https://example.com/
+
+    U-&gt;&gt;S: TLS ClientHello :443
+    S--&gt;&gt;U: TLS Certificate + ServerHello
+    U-&gt;&gt;S: TLS Finished (symmetric key exchanged)
+    Note over U,S: 🔒 Encrypted channel established
+
+    U-&gt;&gt;S: HTTPS GET :443 / (encrypted)
+    S--&gt;&gt;U: 200 OK + HTML (encrypted)
+</code></pre>
+<p><strong>Use Case 2: Microservices with API Gateway</strong></p>
+<p>In a microservices architecture, each service owns its own port. The API gateway is the single external entry point, routing requests to the correct service internally. Only ports 80/443 are exposed to the internet.</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>External traffic (port 443 only — everything else blocked by firewall)
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>        ↓
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>┌─────────────────────────────────────────────────────────┐
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a>│  API Gateway: 10.0.1.10:443                             │
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a>│  Routing rules:                                         │
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a>│    POST /auth/login    → Auth Service :3000             │
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a>│    GET  /users/{id}    → User Service :3001             │
+<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a>│    GET  /products      → Product Service :3002          │
+<a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a>│    POST /orders        → Order Service :3003            │
+<a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a>└─────────────────────────────────────────────────────────┘
+<a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a>        ↓  Internal private network (firewall blocks direct access)
+<a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a>┌─────────────────────────────────────────────────────────────────┐
+<a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a>│ App Server: 10.0.1.50                                           │
+<a href="#__codelineno-16-14" id="__codelineno-16-14" name="__codelineno-16-14"></a>│   :3000  Auth Service    — JWT validation, login/logout         │
+<a href="#__codelineno-16-15" id="__codelineno-16-15" name="__codelineno-16-15"></a>│   :3001  User Service    — User CRUD operations                 │
+<a href="#__codelineno-16-16" id="__codelineno-16-16" name="__codelineno-16-16"></a>│   :3002  Product Service — Catalog, search, pricing             │
+<a href="#__codelineno-16-17" id="__codelineno-16-17" name="__codelineno-16-17"></a>│   :3003  Order Service   — Order lifecycle, payments            │
+<a href="#__codelineno-16-18" id="__codelineno-16-18" name="__codelineno-16-18"></a>│   :6379  Redis           — Session store, rate-limit counters   │
+<a href="#__codelineno-16-19" id="__codelineno-16-19" name="__codelineno-16-19"></a>│   :5432  PostgreSQL      — Primary data persistence             │
+<a href="#__codelineno-16-20" id="__codelineno-16-20" name="__codelineno-16-20"></a>└─────────────────────────────────────────────────────────────────┘
+</code></pre></div>
+<pre class="mermaid"><code>graph LR
+    Client["👤 Client"] --&gt;|"HTTPS :443"| GW["API Gateway<br/>10.0.1.10:443"]
+    GW --&gt;|"HTTP :3000"| Auth["🔐 Auth Service"]
+    GW --&gt;|"HTTP :3001"| User["👤 User Service"]
+    GW --&gt;|"HTTP :3002"| Product["📦 Product Service"]
+    GW --&gt;|"HTTP :3003"| Order["🛒 Order Service"]
+    Auth &amp; User &amp; Product &amp; Order --&gt;|":5432"| PG[("🐘 PostgreSQL")]
+    Auth &amp; User --&gt;|":6379"| Redis[("⚡ Redis Cache")]
+</code></pre>
+<p><strong>Use Case 3: Database Read Replica Cluster</strong></p>
+<p>Write traffic goes to the primary. Read traffic is spread across replicas to scale read throughput. The replicas stay in sync via WAL (Write-Ahead Log) streaming replication.</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a>Application:
+<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>  → Writes → Primary  (10.0.2.10:5432)
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>  → Reads  → Read Load Balancer (10.0.2.1:5432) → Replica 1 or 2
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a>
+<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a>PostgreSQL Cluster:
+<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a>┌──────────────────────────────────────────────────────────┐
+<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a>│ Primary:   10.0.2.10:5432  (accepts reads + writes)     │
+<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a>│      │                                                   │
+<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a>│      │──── WAL streaming replication ───────────────┐   │
+<a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a>│      ↓                                               ↓   │
+<a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a>│ Replica 1: 10.0.2.11:5432  (read-only)              │   │
+<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a>│ Replica 2: 10.0.2.12:5432  (read-only)  ← ─────────┘   │
+<a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a>└──────────────────────────────────────────────────────────┘
+<a href="#__codelineno-17-14" id="__codelineno-17-14" name="__codelineno-17-14"></a>  Replication lag: typically &lt;1 second (async) or 0 (synchronous mode)
+</code></pre></div>
+<pre class="mermaid"><code>graph TD
+    App["🖥️ Application"]
+    App --&gt;|"Writes"| Primary[("🟢 Primary<br/>10.0.2.10:5432")]
+    App --&gt;|"Reads"| LB["⚖️ Read Load Balancer<br/>10.0.2.1:5432"]
+    LB --&gt; R1[("🔵 Replica 1<br/>10.0.2.11:5432")]
+    LB --&gt; R2[("🔵 Replica 2<br/>10.0.2.12:5432")]
+    Primary --&gt;|"WAL streaming"| R1
+    Primary --&gt;|"WAL streaming"| R2
+</code></pre>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="c1"># Application config — separate write and read connections</span>
+<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_engine</span>
+<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a>
+<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a><span class="n">write_engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="s2">"postgresql://10.0.2.10:5432/mydb"</span><span class="p">,</span>
+<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a>                              <span class="n">pool_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_overflow</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a>
+<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a><span class="n">read_replicas</span> <span class="o">=</span> <span class="p">[</span>
+<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a>    <span class="s2">"postgresql://10.0.2.11:5432/mydb"</span><span class="p">,</span>
+<a href="#__codelineno-18-10" id="__codelineno-18-10" name="__codelineno-18-10"></a>    <span class="s2">"postgresql://10.0.2.12:5432/mydb"</span><span class="p">,</span>
+<a href="#__codelineno-18-11" id="__codelineno-18-11" name="__codelineno-18-11"></a><span class="p">]</span>
+<a href="#__codelineno-18-12" id="__codelineno-18-12" name="__codelineno-18-12"></a>
+<a href="#__codelineno-18-13" id="__codelineno-18-13" name="__codelineno-18-13"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_read_engine</span><span class="p">():</span>
+<a href="#__codelineno-18-14" id="__codelineno-18-14" name="__codelineno-18-14"></a>    <span class="c1"># Simple random replica selection (or use a proper load balancer)</span>
+<a href="#__codelineno-18-15" id="__codelineno-18-15" name="__codelineno-18-15"></a>    <span class="k">return</span> <span class="n">create_engine</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">read_replicas</span><span class="p">),</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</code></pre></div>
+<h4 id="code-example-socket-programming">Code Example: Socket Programming</h4>
+<p>Sockets are the OS API between your application code and the network stack. Understanding sockets reveals exactly how IP addresses and port numbers work at runtime.</p>
+<p><strong>How a socket works at the OS level:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a>Server side:                          Client side:
+<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a>  socket()    ← create endpoint         socket()    ← create endpoint
+<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a>  bind()      ← assign IP:port          connect()   ← initiate 3-way handshake
+<a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a>  listen()    ← mark as passive              ↕
+<a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a>  accept()    ← block, wait for client   send()/recv() ← exchange data
+<a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a>  send()/recv() ← exchange data          close()
+<a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a>  close()
+</code></pre></div>
+<p><strong>TCP 3-Way Handshake (what happens under the hood during <code>connect()</code>):</strong></p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant C as Client Socket<br/>(connect called)
+    participant S as Server Socket<br/>(:8080, listen called)
+
+    Note over S: Waiting in accept()
+    C-&gt;&gt;S: SYN [seq=1000]
+    S-&gt;&gt;C: SYN-ACK [seq=2000, ack=1001]
+    C-&gt;&gt;S: ACK [ack=2001]
+    Note over C,S: ✅ connect() returns on client<br/>accept() returns on server
+
+    C-&gt;&gt;S: send() → "GET / HTTP/1.1\r\n..."
+    S-&gt;&gt;C: recv() + process
+    S-&gt;&gt;C: send() → "HTTP/1.1 200 OK\r\n..."
+    C-&gt;&gt;S: close() → FIN
+    S-&gt;&gt;C: FIN-ACK
+</code></pre>
+<p><strong>Python TCP Server (handles multiple clients using threads):</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">socket</span>
+<a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+<a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a>
+<a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">handle_client</span><span class="p">(</span><span class="n">client_socket</span><span class="p">,</span> <span class="n">addr</span><span class="p">):</span>
+<a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a><span class="w">    </span><span class="sd">"""Handle one client connection — runs in its own thread."""</span>
+<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[+] Connected: </span><span class="si">{</span><span class="n">addr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">addr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a>    <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-20-8" id="__codelineno-20-8" name="__codelineno-20-8"></a>        <span class="c1"># recv() blocks until data arrives or connection closes</span>
+<a href="#__codelineno-20-9" id="__codelineno-20-9" name="__codelineno-20-9"></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">client_socket</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">4096</span><span class="p">)</span>
+<a href="#__codelineno-20-10" id="__codelineno-20-10" name="__codelineno-20-10"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+<a href="#__codelineno-20-11" id="__codelineno-20-11" name="__codelineno-20-11"></a>            <span class="k">return</span>
+<a href="#__codelineno-20-12" id="__codelineno-20-12" name="__codelineno-20-12"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[&lt;] Received </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes"</span><span class="p">)</span>
+<a href="#__codelineno-20-13" id="__codelineno-20-13" name="__codelineno-20-13"></a>
+<a href="#__codelineno-20-14" id="__codelineno-20-14" name="__codelineno-20-14"></a>        <span class="c1"># Build minimal HTTP response</span>
+<a href="#__codelineno-20-15" id="__codelineno-20-15" name="__codelineno-20-15"></a>        <span class="n">response</span> <span class="o">=</span> <span class="p">(</span>
+<a href="#__codelineno-20-16" id="__codelineno-20-16" name="__codelineno-20-16"></a>            <span class="s2">"HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s2">"</span>
+<a href="#__codelineno-20-17" id="__codelineno-20-17" name="__codelineno-20-17"></a>            <span class="s2">"Content-Type: text/plain</span><span class="se">\r\n</span><span class="s2">"</span>
+<a href="#__codelineno-20-18" id="__codelineno-20-18" name="__codelineno-20-18"></a>            <span class="s2">"Connection: close</span><span class="se">\r\n</span><span class="s2">"</span>
+<a href="#__codelineno-20-19" id="__codelineno-20-19" name="__codelineno-20-19"></a>            <span class="s2">"</span><span class="se">\r\n</span><span class="s2">"</span>
+<a href="#__codelineno-20-20" id="__codelineno-20-20" name="__codelineno-20-20"></a>            <span class="s2">"Hello from Python socket server!"</span>
+<a href="#__codelineno-20-21" id="__codelineno-20-21" name="__codelineno-20-21"></a>        <span class="p">)</span>
+<a href="#__codelineno-20-22" id="__codelineno-20-22" name="__codelineno-20-22"></a>        <span class="n">client_socket</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+<a href="#__codelineno-20-23" id="__codelineno-20-23" name="__codelineno-20-23"></a>    <span class="k">finally</span><span class="p">:</span>
+<a href="#__codelineno-20-24" id="__codelineno-20-24" name="__codelineno-20-24"></a>        <span class="n">client_socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<a href="#__codelineno-20-25" id="__codelineno-20-25" name="__codelineno-20-25"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[-] Disconnected: </span><span class="si">{</span><span class="n">addr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">addr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-20-26" id="__codelineno-20-26" name="__codelineno-20-26"></a>
+<a href="#__codelineno-20-27" id="__codelineno-20-27" name="__codelineno-20-27"></a><span class="c1"># AF_INET = IPv4  |  AF_INET6 = IPv6</span>
+<a href="#__codelineno-20-28" id="__codelineno-20-28" name="__codelineno-20-28"></a><span class="c1"># SOCK_STREAM = TCP  |  SOCK_DGRAM = UDP</span>
+<a href="#__codelineno-20-29" id="__codelineno-20-29" name="__codelineno-20-29"></a><span class="n">server</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+<a href="#__codelineno-20-30" id="__codelineno-20-30" name="__codelineno-20-30"></a>
+<a href="#__codelineno-20-31" id="__codelineno-20-31" name="__codelineno-20-31"></a><span class="c1"># SO_REUSEADDR: avoids "Address already in use" error on quick restart</span>
+<a href="#__codelineno-20-32" id="__codelineno-20-32" name="__codelineno-20-32"></a><span class="n">server</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_REUSEADDR</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<a href="#__codelineno-20-33" id="__codelineno-20-33" name="__codelineno-20-33"></a>
+<a href="#__codelineno-20-34" id="__codelineno-20-34" name="__codelineno-20-34"></a><span class="c1"># '0.0.0.0' = listen on ALL interfaces (loopback + ethernet + Wi-Fi)</span>
+<a href="#__codelineno-20-35" id="__codelineno-20-35" name="__codelineno-20-35"></a><span class="c1"># Use '127.0.0.1' to restrict to loopback only (localhost)</span>
+<a href="#__codelineno-20-36" id="__codelineno-20-36" name="__codelineno-20-36"></a><span class="n">server</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s1">'0.0.0.0'</span><span class="p">,</span> <span class="mi">8080</span><span class="p">))</span>
+<a href="#__codelineno-20-37" id="__codelineno-20-37" name="__codelineno-20-37"></a>
+<a href="#__codelineno-20-38" id="__codelineno-20-38" name="__codelineno-20-38"></a><span class="c1"># backlog=5: OS queues up to 5 pending connections before refusing new ones</span>
+<a href="#__codelineno-20-39" id="__codelineno-20-39" name="__codelineno-20-39"></a><span class="n">server</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<a href="#__codelineno-20-40" id="__codelineno-20-40" name="__codelineno-20-40"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"[*] Listening on 0.0.0.0:8080"</span><span class="p">)</span>
+<a href="#__codelineno-20-41" id="__codelineno-20-41" name="__codelineno-20-41"></a>
+<a href="#__codelineno-20-42" id="__codelineno-20-42" name="__codelineno-20-42"></a><span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+<a href="#__codelineno-20-43" id="__codelineno-20-43" name="__codelineno-20-43"></a>    <span class="n">conn</span><span class="p">,</span> <span class="n">addr</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>       <span class="c1"># blocks until a client connects</span>
+<a href="#__codelineno-20-44" id="__codelineno-20-44" name="__codelineno-20-44"></a>    <span class="n">t</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">handle_client</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">addr</span><span class="p">))</span>
+<a href="#__codelineno-20-45" id="__codelineno-20-45" name="__codelineno-20-45"></a>    <span class="n">t</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
+<a href="#__codelineno-20-46" id="__codelineno-20-46" name="__codelineno-20-46"></a>    <span class="n">t</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</code></pre></div>
+<p><strong>Python TCP Client:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">socket</span>
+<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a>
+<a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a><span class="c1"># Create IPv4 TCP socket</span>
+<a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a><span class="n">client</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+<a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a>
+<a href="#__codelineno-21-6" id="__codelineno-21-6" name="__codelineno-21-6"></a><span class="c1"># Set a timeout so connect() doesn't block forever</span>
+<a href="#__codelineno-21-7" id="__codelineno-21-7" name="__codelineno-21-7"></a><span class="n">client</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<a href="#__codelineno-21-8" id="__codelineno-21-8" name="__codelineno-21-8"></a>
+<a href="#__codelineno-21-9" id="__codelineno-21-9" name="__codelineno-21-9"></a><span class="n">server_ip</span>   <span class="o">=</span> <span class="s1">'127.0.0.1'</span>   <span class="c1"># Use actual server IP in production</span>
+<a href="#__codelineno-21-10" id="__codelineno-21-10" name="__codelineno-21-10"></a><span class="n">server_port</span> <span class="o">=</span> <span class="mi">8080</span>
+<a href="#__codelineno-21-11" id="__codelineno-21-11" name="__codelineno-21-11"></a>
+<a href="#__codelineno-21-12" id="__codelineno-21-12" name="__codelineno-21-12"></a><span class="c1"># This triggers the 3-way TCP handshake</span>
+<a href="#__codelineno-21-13" id="__codelineno-21-13" name="__codelineno-21-13"></a><span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="n">server_ip</span><span class="p">,</span> <span class="n">server_port</span><span class="p">))</span>
+<a href="#__codelineno-21-14" id="__codelineno-21-14" name="__codelineno-21-14"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[*] Connected to </span><span class="si">{</span><span class="n">server_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">server_port</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-21-15" id="__codelineno-21-15" name="__codelineno-21-15"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[*] Our local address: </span><span class="si">{</span><span class="n">client</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>  <span class="c1"># shows ephemeral port</span>
+<a href="#__codelineno-21-16" id="__codelineno-21-16" name="__codelineno-21-16"></a>
+<a href="#__codelineno-21-17" id="__codelineno-21-17" name="__codelineno-21-17"></a><span class="c1"># sendall() ensures all bytes are sent (unlike send() which may send partial)</span>
+<a href="#__codelineno-21-18" id="__codelineno-21-18" name="__codelineno-21-18"></a><span class="n">request</span> <span class="o">=</span> <span class="s2">"GET / HTTP/1.1</span><span class="se">\r\n</span><span class="s2">Host: localhost</span><span class="se">\r\n</span><span class="s2">Connection: close</span><span class="se">\r\n\r\n</span><span class="s2">"</span>
+<a href="#__codelineno-21-19" id="__codelineno-21-19" name="__codelineno-21-19"></a><span class="n">client</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+<a href="#__codelineno-21-20" id="__codelineno-21-20" name="__codelineno-21-20"></a>
+<a href="#__codelineno-21-21" id="__codelineno-21-21" name="__codelineno-21-21"></a><span class="c1"># Read all response data until server closes the connection</span>
+<a href="#__codelineno-21-22" id="__codelineno-21-22" name="__codelineno-21-22"></a><span class="n">chunks</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-21-23" id="__codelineno-21-23" name="__codelineno-21-23"></a><span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+<a href="#__codelineno-21-24" id="__codelineno-21-24" name="__codelineno-21-24"></a>    <span class="n">chunk</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">4096</span><span class="p">)</span>
+<a href="#__codelineno-21-25" id="__codelineno-21-25" name="__codelineno-21-25"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">chunk</span><span class="p">:</span>
+<a href="#__codelineno-21-26" id="__codelineno-21-26" name="__codelineno-21-26"></a>        <span class="k">break</span>
+<a href="#__codelineno-21-27" id="__codelineno-21-27" name="__codelineno-21-27"></a>    <span class="n">chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+<a href="#__codelineno-21-28" id="__codelineno-21-28" name="__codelineno-21-28"></a>
+<a href="#__codelineno-21-29" id="__codelineno-21-29" name="__codelineno-21-29"></a><span class="n">response</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">chunks</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+<a href="#__codelineno-21-30" id="__codelineno-21-30" name="__codelineno-21-30"></a><span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+<a href="#__codelineno-21-31" id="__codelineno-21-31" name="__codelineno-21-31"></a><span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div>
+<p><strong>UDP Socket Example (connectionless — DNS-style):</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">socket</span>
+<a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a>
+<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="c1"># ── UDP SERVER ──────────────────────────────────────────────────────</span>
+<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a><span class="n">server</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">)</span>
+<a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a><span class="n">server</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s1">'0.0.0.0'</span><span class="p">,</span> <span class="mi">5353</span><span class="p">))</span>
+<a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"[*] UDP server listening on :5353"</span><span class="p">)</span>
+<a href="#__codelineno-22-7" id="__codelineno-22-7" name="__codelineno-22-7"></a>
+<a href="#__codelineno-22-8" id="__codelineno-22-8" name="__codelineno-22-8"></a><span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+<a href="#__codelineno-22-9" id="__codelineno-22-9" name="__codelineno-22-9"></a>    <span class="c1"># recvfrom returns (data, (client_ip, client_port))</span>
+<a href="#__codelineno-22-10" id="__codelineno-22-10" name="__codelineno-22-10"></a>    <span class="n">data</span><span class="p">,</span> <span class="n">addr</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">recvfrom</span><span class="p">(</span><span class="mi">512</span><span class="p">)</span>   <span class="c1"># 512 bytes = DNS UDP max</span>
+<a href="#__codelineno-22-11" id="__codelineno-22-11" name="__codelineno-22-11"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[&lt;] Query from </span><span class="si">{</span><span class="n">addr</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-22-12" id="__codelineno-22-12" name="__codelineno-22-12"></a>    <span class="n">server</span><span class="o">.</span><span class="n">sendto</span><span class="p">(</span><span class="sa">b</span><span class="s2">"response_data"</span><span class="p">,</span> <span class="n">addr</span><span class="p">)</span>   <span class="c1"># no connect() needed</span>
+<a href="#__codelineno-22-13" id="__codelineno-22-13" name="__codelineno-22-13"></a>
+<a href="#__codelineno-22-14" id="__codelineno-22-14" name="__codelineno-22-14"></a><span class="c1"># ── UDP CLIENT ──────────────────────────────────────────────────────</span>
+<a href="#__codelineno-22-15" id="__codelineno-22-15" name="__codelineno-22-15"></a><span class="n">client</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">)</span>
+<a href="#__codelineno-22-16" id="__codelineno-22-16" name="__codelineno-22-16"></a><span class="n">client</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>    <span class="c1"># UDP has no built-in timeout</span>
+<a href="#__codelineno-22-17" id="__codelineno-22-17" name="__codelineno-22-17"></a>
+<a href="#__codelineno-22-18" id="__codelineno-22-18" name="__codelineno-22-18"></a><span class="n">client</span><span class="o">.</span><span class="n">sendto</span><span class="p">(</span><span class="sa">b</span><span class="s2">"my_query"</span><span class="p">,</span> <span class="p">(</span><span class="s1">'192.168.1.100'</span><span class="p">,</span> <span class="mi">5353</span><span class="p">))</span>
+<a href="#__codelineno-22-19" id="__codelineno-22-19" name="__codelineno-22-19"></a><span class="n">response</span><span class="p">,</span> <span class="n">server_addr</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">recvfrom</span><span class="p">(</span><span class="mi">512</span><span class="p">)</span>
+<a href="#__codelineno-22-20" id="__codelineno-22-20" name="__codelineno-22-20"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[&lt;] Response from </span><span class="si">{</span><span class="n">server_addr</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">response</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-22-21" id="__codelineno-22-21" name="__codelineno-22-21"></a><span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<a href="#__codelineno-22-22" id="__codelineno-22-22" name="__codelineno-22-22"></a><span class="c1"># Note: no connection teardown — UDP is stateless</span>
+</code></pre></div>
+<h4 id="network-address-translation-nat">Network Address Translation (NAT)</h4>
+<p>NAT solves the IPv4 exhaustion problem by allowing many private IP devices to share a single public IP address. The router acts as a translator, rewriting packet headers on the fly.</p>
+<p><strong>Three Types of NAT:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-23-1" id="__codelineno-23-1" name="__codelineno-23-1"></a>SNAT (Source NAT / Masquerade):
+<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a>  Direction: Outbound (private → internet)
+<a href="#__codelineno-23-3" id="__codelineno-23-3" name="__codelineno-23-3"></a>  Action:    Rewrites the SOURCE IP (and port) of outgoing packets
+<a href="#__codelineno-23-4" id="__codelineno-23-4" name="__codelineno-23-4"></a>  Use case:  Home routers, cloud instances with private IPs accessing internet
+<a href="#__codelineno-23-5" id="__codelineno-23-5" name="__codelineno-23-5"></a>  Example:   192.168.1.10:5000 → 203.0.113.45:40001 → 8.8.8.8:443
+<a href="#__codelineno-23-6" id="__codelineno-23-6" name="__codelineno-23-6"></a>
+<a href="#__codelineno-23-7" id="__codelineno-23-7" name="__codelineno-23-7"></a>DNAT (Destination NAT / Port Forwarding):
+<a href="#__codelineno-23-8" id="__codelineno-23-8" name="__codelineno-23-8"></a>  Direction: Inbound (internet → private)
+<a href="#__codelineno-23-9" id="__codelineno-23-9" name="__codelineno-23-9"></a>  Action:    Rewrites the DESTINATION IP (and optionally port) of incoming packets
+<a href="#__codelineno-23-10" id="__codelineno-23-10" name="__codelineno-23-10"></a>  Use case:  Expose an internal server to the internet
+<a href="#__codelineno-23-11" id="__codelineno-23-11" name="__codelineno-23-11"></a>  Example:   203.0.113.45:80 → 192.168.1.50:80 (home web server)
+<a href="#__codelineno-23-12" id="__codelineno-23-12" name="__codelineno-23-12"></a>
+<a href="#__codelineno-23-13" id="__codelineno-23-13" name="__codelineno-23-13"></a>PAT (Port Address Translation / NAT Overload):
+<a href="#__codelineno-23-14" id="__codelineno-23-14" name="__codelineno-23-14"></a>  The combination of SNAT + port remapping used by virtually all home routers
+<a href="#__codelineno-23-15" id="__codelineno-23-15" name="__codelineno-23-15"></a>  One public IP → many private IPs, differentiated by port numbers
+</code></pre></div>
+<p><strong>How PAT Works in Detail:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-24-1" id="__codelineno-24-1" name="__codelineno-24-1"></a>Internal Network                    NAT Router (PAT)              Internet
+<a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a>                                    WAN: 203.0.113.45
+<a href="#__codelineno-24-3" id="__codelineno-24-3" name="__codelineno-24-3"></a>┌───────────────────────┐          ┌─────────────────┐         ┌──────────────┐
+<a href="#__codelineno-24-4" id="__codelineno-24-4" name="__codelineno-24-4"></a>│ PC1: 192.168.1.10     │──┐       │  Translation    │         │ 8.8.8.8 DNS  │
+<a href="#__codelineno-24-5" id="__codelineno-24-5" name="__codelineno-24-5"></a>│ PC2: 192.168.1.11     │──┼──────▶│  Table (PAT)    │────────▶│ 1.1.1.1 CF   │
+<a href="#__codelineno-24-6" id="__codelineno-24-6" name="__codelineno-24-6"></a>│ PC3: 192.168.1.12     │──┘       │                 │◀────────│ 93.1.1.1 etc │
+<a href="#__codelineno-24-7" id="__codelineno-24-7" name="__codelineno-24-7"></a>└───────────────────────┘          └─────────────────┘         └──────────────┘
+<a href="#__codelineno-24-8" id="__codelineno-24-8" name="__codelineno-24-8"></a>
+<a href="#__codelineno-24-9" id="__codelineno-24-9" name="__codelineno-24-9"></a>PAT Translation Table:
+<a href="#__codelineno-24-10" id="__codelineno-24-10" name="__codelineno-24-10"></a>┌───────────────────────────────────────────────────────────────────────┐
+<a href="#__codelineno-24-11" id="__codelineno-24-11" name="__codelineno-24-11"></a>│ Internal (private)       │ External (NATed)          │ Destination    │
+<a href="#__codelineno-24-12" id="__codelineno-24-12" name="__codelineno-24-12"></a>├───────────────────────────────────────────────────────────────────────┤
+<a href="#__codelineno-24-13" id="__codelineno-24-13" name="__codelineno-24-13"></a>│ 192.168.1.10:5000        │ 203.0.113.45:40001        │ 8.8.8.8:53     │
+<a href="#__codelineno-24-14" id="__codelineno-24-14" name="__codelineno-24-14"></a>│ 192.168.1.11:5000  ←same port!│ 203.0.113.45:40002  │ 1.1.1.1:443    │
+<a href="#__codelineno-24-15" id="__codelineno-24-15" name="__codelineno-24-15"></a>│ 192.168.1.12:5000  ←same port!│ 203.0.113.45:40003  │ 93.1.1.1:80    │
+<a href="#__codelineno-24-16" id="__codelineno-24-16" name="__codelineno-24-16"></a>└───────────────────────────────────────────────────────────────────────┘
+<a href="#__codelineno-24-17" id="__codelineno-24-17" name="__codelineno-24-17"></a>
+<a href="#__codelineno-24-18" id="__codelineno-24-18" name="__codelineno-24-18"></a>Key insight: All three PCs use source port 5000 internally — PAT remaps
+<a href="#__codelineno-24-19" id="__codelineno-24-19" name="__codelineno-24-19"></a>each to a unique external port so the router knows who to send replies to.
+</code></pre></div>
+<p><strong>Full Outbound NAT Flow:</strong></p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant PC1 as 💻 PC1<br/>192.168.1.10:5000
+    participant NAT as 🔀 NAT Router<br/>203.0.113.45
+    participant G as 🌐 Google<br/>8.8.8.8:443
+
+    PC1-&gt;&gt;NAT: Packet<br/>src=192.168.1.10:5000<br/>dst=8.8.8.8:443
+    Note over NAT: Creates NAT entry:<br/>192.168.1.10:5000 ↔ 203.0.113.45:40001
+    NAT-&gt;&gt;G: Packet (rewritten)<br/>src=203.0.113.45:40001<br/>dst=8.8.8.8:443
+    G--&gt;&gt;NAT: Response<br/>src=8.8.8.8:443<br/>dst=203.0.113.45:40001
+    Note over NAT: Looks up 203.0.113.45:40001<br/>→ translates to 192.168.1.10:5000
+    NAT--&gt;&gt;PC1: Response (rewritten)<br/>src=8.8.8.8:443<br/>dst=192.168.1.10:5000
+</code></pre>
+<p><strong>Port Forwarding (DNAT) — Exposing Internal Services:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-25-1" id="__codelineno-25-1" name="__codelineno-25-1"></a>Goal: Make your home server (192.168.1.50:80) reachable from the internet.
+<a href="#__codelineno-25-2" id="__codelineno-25-2" name="__codelineno-25-2"></a>
+<a href="#__codelineno-25-3" id="__codelineno-25-3" name="__codelineno-25-3"></a>Router DNAT rule:
+<a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a>  "Incoming traffic on 203.0.113.45:80 → forward to 192.168.1.50:80"
+<a href="#__codelineno-25-5" id="__codelineno-25-5" name="__codelineno-25-5"></a>
+<a href="#__codelineno-25-6" id="__codelineno-25-6" name="__codelineno-25-6"></a>External user → 203.0.113.45:80
+<a href="#__codelineno-25-7" id="__codelineno-25-7" name="__codelineno-25-7"></a>                      ↓ DNAT rewrites destination IP
+<a href="#__codelineno-25-8" id="__codelineno-25-8" name="__codelineno-25-8"></a>               192.168.1.50:80 (internal web server)
+<a href="#__codelineno-25-9" id="__codelineno-25-9" name="__codelineno-25-9"></a>
+<a href="#__codelineno-25-10" id="__codelineno-25-10" name="__codelineno-25-10"></a>Common port forwarding use cases:
+<a href="#__codelineno-25-11" id="__codelineno-25-11" name="__codelineno-25-11"></a>  → Self-hosted websites or APIs
+<a href="#__codelineno-25-12" id="__codelineno-25-12" name="__codelineno-25-12"></a>  → Home lab Minecraft/game server
+<a href="#__codelineno-25-13" id="__codelineno-25-13" name="__codelineno-25-13"></a>  → Self-hosted VPN endpoint (WireGuard on 51820/UDP)
+<a href="#__codelineno-25-14" id="__codelineno-25-14" name="__codelineno-25-14"></a>  → NAS remote access (e.g., Synology DSM on 5001)
+<a href="#__codelineno-25-15" id="__codelineno-25-15" name="__codelineno-25-15"></a>  → SSH access from outside (forward external 2222 → internal 22)
+</code></pre></div>
+<p><strong>NAT Limitations (why IPv6 matters):</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-26-1" id="__codelineno-26-1" name="__codelineno-26-1"></a>NAT breaks:
+<a href="#__codelineno-26-2" id="__codelineno-26-2" name="__codelineno-26-2"></a>  → End-to-end connectivity (can't initiate inbound without port forwarding)
+<a href="#__codelineno-26-3" id="__codelineno-26-3" name="__codelineno-26-3"></a>  → Protocols that embed IPs in payload (FTP active mode, SIP/VoIP)
+<a href="#__codelineno-26-4" id="__codelineno-26-4" name="__codelineno-26-4"></a>  → P2P applications need NAT traversal (STUN/TURN/ICE)
+<a href="#__codelineno-26-5" id="__codelineno-26-5" name="__codelineno-26-5"></a>  → Increases complexity and state in routers (stateful NAT tables)
+<a href="#__codelineno-26-6" id="__codelineno-26-6" name="__codelineno-26-6"></a>  → Each NAT entry consumes router memory; large tables = performance hit
+<a href="#__codelineno-26-7" id="__codelineno-26-7" name="__codelineno-26-7"></a>
+<a href="#__codelineno-26-8" id="__codelineno-26-8" name="__codelineno-26-8"></a>IPv6 eliminates the need for NAT by giving every device a globally unique IP.
+</code></pre></div>
+<h4 id="common-networking-commands">Common Networking Commands</h4>
+<p><strong>Find your IP address:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-27-1" id="__codelineno-27-1" name="__codelineno-27-1"></a><span class="c1"># ── Linux ─────────────────────────────────────────────────────────────</span>
+<a href="#__codelineno-27-2" id="__codelineno-27-2" name="__codelineno-27-2"></a>ip<span class="w"> </span>addr<span class="w"> </span>show<span class="w">                        </span><span class="c1"># all interfaces with IPs (modern)</span>
+<a href="#__codelineno-27-3" id="__codelineno-27-3" name="__codelineno-27-3"></a>ip<span class="w"> </span>addr<span class="w"> </span>show<span class="w"> </span>eth0<span class="w">                   </span><span class="c1"># specific interface</span>
+<a href="#__codelineno-27-4" id="__codelineno-27-4" name="__codelineno-27-4"></a>hostname<span class="w"> </span>-I<span class="w">                         </span><span class="c1"># just the primary IP(s), no labels</span>
+<a href="#__codelineno-27-5" id="__codelineno-27-5" name="__codelineno-27-5"></a>
+<a href="#__codelineno-27-6" id="__codelineno-27-6" name="__codelineno-27-6"></a>ifconfig<span class="w">                            </span><span class="c1"># traditional (may need net-tools)</span>
+<a href="#__codelineno-27-7" id="__codelineno-27-7" name="__codelineno-27-7"></a>ifconfig<span class="w"> </span>eth0<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">'inet '</span><span class="w">        </span><span class="c1"># just IPv4 of eth0</span>
+<a href="#__codelineno-27-8" id="__codelineno-27-8" name="__codelineno-27-8"></a>
+<a href="#__codelineno-27-9" id="__codelineno-27-9" name="__codelineno-27-9"></a><span class="c1"># ── macOS ─────────────────────────────────────────────────────────────</span>
+<a href="#__codelineno-27-10" id="__codelineno-27-10" name="__codelineno-27-10"></a>ipconfig<span class="w"> </span>getifaddr<span class="w"> </span>en0<span class="w">              </span><span class="c1"># Wi-Fi IP</span>
+<a href="#__codelineno-27-11" id="__codelineno-27-11" name="__codelineno-27-11"></a>ipconfig<span class="w"> </span>getifaddr<span class="w"> </span>en1<span class="w">              </span><span class="c1"># Ethernet IP</span>
+<a href="#__codelineno-27-12" id="__codelineno-27-12" name="__codelineno-27-12"></a>networksetup<span class="w"> </span>-getinfo<span class="w"> </span>Wi-Fi<span class="w">         </span><span class="c1"># IP, subnet, router for Wi-Fi</span>
+<a href="#__codelineno-27-13" id="__codelineno-27-13" name="__codelineno-27-13"></a>
+<a href="#__codelineno-27-14" id="__codelineno-27-14" name="__codelineno-27-14"></a><span class="c1"># ── Windows ───────────────────────────────────────────────────────────</span>
+<a href="#__codelineno-27-15" id="__codelineno-27-15" name="__codelineno-27-15"></a>ipconfig<span class="w"> </span>/all<span class="w">                       </span><span class="c1"># full details: IP, MAC, DNS, DHCP</span>
+<a href="#__codelineno-27-16" id="__codelineno-27-16" name="__codelineno-27-16"></a>ipconfig<span class="w"> </span>/displaydns<span class="w">                </span><span class="c1"># show cached DNS entries</span>
+<a href="#__codelineno-27-17" id="__codelineno-27-17" name="__codelineno-27-17"></a>ipconfig<span class="w"> </span>/flushdns<span class="w">                  </span><span class="c1"># clear DNS resolver cache</span>
+<a href="#__codelineno-27-18" id="__codelineno-27-18" name="__codelineno-27-18"></a>
+<a href="#__codelineno-27-19" id="__codelineno-27-19" name="__codelineno-27-19"></a><span class="c1"># ── Any OS — public IP (what the internet sees) ──────────────────────</span>
+<a href="#__codelineno-27-20" id="__codelineno-27-20" name="__codelineno-27-20"></a>curl<span class="w"> </span>ifconfig.me
+<a href="#__codelineno-27-21" id="__codelineno-27-21" name="__codelineno-27-21"></a>curl<span class="w"> </span>ipinfo.io/ip
+<a href="#__codelineno-27-22" id="__codelineno-27-22" name="__codelineno-27-22"></a>
+<a href="#__codelineno-27-23" id="__codelineno-27-23" name="__codelineno-27-23"></a><span class="c1"># Example output (ip addr show):</span>
+<a href="#__codelineno-27-24" id="__codelineno-27-24" name="__codelineno-27-24"></a><span class="c1"># 2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500</span>
+<a href="#__codelineno-27-25" id="__codelineno-27-25" name="__codelineno-27-25"></a><span class="c1">#     inet  192.168.1.100/24  brd 192.168.1.255  scope global  eth0</span>
+<a href="#__codelineno-27-26" id="__codelineno-27-26" name="__codelineno-27-26"></a><span class="c1">#     inet6 fe80::1/64  scope link</span>
+<a href="#__codelineno-27-27" id="__codelineno-27-27" name="__codelineno-27-27"></a><span class="c1">#             ↑ IPv4                              ↑ IPv6 link-local</span>
+</code></pre></div>
+<p><strong>Check which process is using a port:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-28-1" id="__codelineno-28-1" name="__codelineno-28-1"></a><span class="c1"># ── Linux ─────────────────────────────────────────────────────────────</span>
+<a href="#__codelineno-28-2" id="__codelineno-28-2" name="__codelineno-28-2"></a>sudo<span class="w"> </span>lsof<span class="w"> </span>-i<span class="w"> </span>:8080<span class="w">                  </span><span class="c1"># which process uses port 8080</span>
+<a href="#__codelineno-28-3" id="__codelineno-28-3" name="__codelineno-28-3"></a>sudo<span class="w"> </span>lsof<span class="w"> </span>-i<span class="w"> </span>TCP<span class="w"> </span>-P<span class="w"> </span>-n<span class="w">              </span><span class="c1"># all TCP listeners, numeric IPs</span>
+<a href="#__codelineno-28-4" id="__codelineno-28-4" name="__codelineno-28-4"></a>sudo<span class="w"> </span>ss<span class="w"> </span>-tlnp<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="m">8080</span><span class="w">           </span><span class="c1"># ss: faster modern netstat alternative</span>
+<a href="#__codelineno-28-5" id="__codelineno-28-5" name="__codelineno-28-5"></a>sudo<span class="w"> </span>netstat<span class="w"> </span>-tuln<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="m">8080</span><span class="w">      </span><span class="c1"># traditional netstat</span>
+<a href="#__codelineno-28-6" id="__codelineno-28-6" name="__codelineno-28-6"></a>
+<a href="#__codelineno-28-7" id="__codelineno-28-7" name="__codelineno-28-7"></a><span class="c1"># Kill a process occupying a port</span>
+<a href="#__codelineno-28-8" id="__codelineno-28-8" name="__codelineno-28-8"></a>sudo<span class="w"> </span>fuser<span class="w"> </span>-k<span class="w"> </span><span class="m">8080</span>/tcp<span class="w">              </span><span class="c1"># kill by port</span>
+<a href="#__codelineno-28-9" id="__codelineno-28-9" name="__codelineno-28-9"></a>
+<a href="#__codelineno-28-10" id="__codelineno-28-10" name="__codelineno-28-10"></a><span class="c1"># ── macOS ─────────────────────────────────────────────────────────────</span>
+<a href="#__codelineno-28-11" id="__codelineno-28-11" name="__codelineno-28-11"></a>sudo<span class="w"> </span>lsof<span class="w"> </span>-i<span class="w"> </span>:8080<span class="w"> </span>-sTCP:LISTEN<span class="w">    </span><span class="c1"># TCP listeners on 8080</span>
+<a href="#__codelineno-28-12" id="__codelineno-28-12" name="__codelineno-28-12"></a>lsof<span class="w"> </span>-nP<span class="w"> </span>-iTCP:8080<span class="w">                </span><span class="c1"># numeric, no port name resolution</span>
+<a href="#__codelineno-28-13" id="__codelineno-28-13" name="__codelineno-28-13"></a>
+<a href="#__codelineno-28-14" id="__codelineno-28-14" name="__codelineno-28-14"></a><span class="c1"># ── Windows ───────────────────────────────────────────────────────────</span>
+<a href="#__codelineno-28-15" id="__codelineno-28-15" name="__codelineno-28-15"></a>netstat<span class="w"> </span>-ano<span class="w"> </span><span class="p">|</span><span class="w"> </span>findstr<span class="w"> </span>:8080<span class="w">        </span><span class="c1"># find PID using port 8080</span>
+<a href="#__codelineno-28-16" id="__codelineno-28-16" name="__codelineno-28-16"></a>tasklist<span class="w"> </span><span class="p">|</span><span class="w"> </span>findstr<span class="w"> </span>&lt;PID&gt;<span class="w">            </span><span class="c1"># find process name from PID</span>
+<a href="#__codelineno-28-17" id="__codelineno-28-17" name="__codelineno-28-17"></a>
+<a href="#__codelineno-28-18" id="__codelineno-28-18" name="__codelineno-28-18"></a><span class="c1"># Sample output (lsof):</span>
+<a href="#__codelineno-28-19" id="__codelineno-28-19" name="__codelineno-28-19"></a><span class="c1"># COMMAND   PID   USER  FD  TYPE  NODE NAME</span>
+<a href="#__codelineno-28-20" id="__codelineno-28-20" name="__codelineno-28-20"></a><span class="c1"># node     1234   dev   21u IPv4 12345 TCP *:8080 (LISTEN)</span>
+<a href="#__codelineno-28-21" id="__codelineno-28-21" name="__codelineno-28-21"></a><span class="c1">#                                          ↑ listening on all interfaces</span>
+</code></pre></div>
+<p><strong>Test connectivity to an IP:Port:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-29-1" id="__codelineno-29-1" name="__codelineno-29-1"></a><span class="c1"># ── TCP reachability ─────────────────────────────────────────────────</span>
+<a href="#__codelineno-29-2" id="__codelineno-29-2" name="__codelineno-29-2"></a>nc<span class="w"> </span>-zv<span class="w"> </span><span class="m">192</span>.168.1.100<span class="w"> </span><span class="m">8080</span><span class="w">           </span><span class="c1"># netcat: -z scan, -v verbose</span>
+<a href="#__codelineno-29-3" id="__codelineno-29-3" name="__codelineno-29-3"></a>nc<span class="w"> </span>-zv<span class="w"> </span>-w<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">192</span>.168.1.100<span class="w"> </span><span class="m">8080</span><span class="w">      </span><span class="c1"># with 3-second timeout</span>
+<a href="#__codelineno-29-4" id="__codelineno-29-4" name="__codelineno-29-4"></a>telnet<span class="w"> </span><span class="m">192</span>.168.1.100<span class="w"> </span><span class="m">8080</span><span class="w">           </span><span class="c1"># interactive, old-school</span>
+<a href="#__codelineno-29-5" id="__codelineno-29-5" name="__codelineno-29-5"></a>
+<a href="#__codelineno-29-6" id="__codelineno-29-6" name="__codelineno-29-6"></a><span class="c1"># ── UDP reachability ─────────────────────────────────────────────────</span>
+<a href="#__codelineno-29-7" id="__codelineno-29-7" name="__codelineno-29-7"></a>nc<span class="w"> </span>-zuv<span class="w"> </span><span class="m">192</span>.168.1.100<span class="w"> </span><span class="m">53</span><span class="w">            </span><span class="c1"># UDP (-u) check</span>
+<a href="#__codelineno-29-8" id="__codelineno-29-8" name="__codelineno-29-8"></a>
+<a href="#__codelineno-29-9" id="__codelineno-29-9" name="__codelineno-29-9"></a><span class="c1"># ── HTTP endpoint testing ─────────────────────────────────────────────</span>
+<a href="#__codelineno-29-10" id="__codelineno-29-10" name="__codelineno-29-10"></a>curl<span class="w"> </span>-v<span class="w"> </span>http://192.168.1.100:8080/health<span class="w">      </span><span class="c1"># verbose: see headers</span>
+<a href="#__codelineno-29-11" id="__codelineno-29-11" name="__codelineno-29-11"></a>curl<span class="w"> </span>-o<span class="w"> </span>/dev/null<span class="w"> </span>-sw<span class="w"> </span><span class="s2">"%{http_code}"</span><span class="w"> </span>http://192.168.1.100:8080/<span class="w">  </span><span class="c1"># just status code</span>
+<a href="#__codelineno-29-12" id="__codelineno-29-12" name="__codelineno-29-12"></a>curl<span class="w"> </span>-k<span class="w"> </span>https://192.168.1.100:8443/health<span class="w">     </span><span class="c1"># -k = ignore TLS cert errors</span>
+<a href="#__codelineno-29-13" id="__codelineno-29-13" name="__codelineno-29-13"></a>
+<a href="#__codelineno-29-14" id="__codelineno-29-14" name="__codelineno-29-14"></a><span class="c1"># ── Port scanning ─────────────────────────────────────────────────────</span>
+<a href="#__codelineno-29-15" id="__codelineno-29-15" name="__codelineno-29-15"></a>nmap<span class="w"> </span><span class="m">192</span>.168.1.100<span class="w"> </span>-p<span class="w"> </span><span class="m">80</span>,443,8080<span class="w">   </span><span class="c1"># scan specific ports</span>
+<a href="#__codelineno-29-16" id="__codelineno-29-16" name="__codelineno-29-16"></a>nmap<span class="w"> </span><span class="m">192</span>.168.1.100<span class="w"> </span>-p<span class="w"> </span><span class="m">1</span>-1024<span class="w">        </span><span class="c1"># scan first 1024 ports</span>
+<a href="#__codelineno-29-17" id="__codelineno-29-17" name="__codelineno-29-17"></a>nmap<span class="w"> </span><span class="m">192</span>.168.1.0/24<span class="w"> </span>-p<span class="w"> </span><span class="m">22</span><span class="w"> </span>--open<span class="w">   </span><span class="c1"># find SSH hosts on subnet</span>
+<a href="#__codelineno-29-18" id="__codelineno-29-18" name="__codelineno-29-18"></a>nmap<span class="w"> </span>-sU<span class="w"> </span><span class="m">192</span>.168.1.100<span class="w"> </span>-p<span class="w"> </span><span class="m">53</span><span class="w">       </span><span class="c1"># UDP scan (DNS)</span>
+<a href="#__codelineno-29-19" id="__codelineno-29-19" name="__codelineno-29-19"></a>
+<a href="#__codelineno-29-20" id="__codelineno-29-20" name="__codelineno-29-20"></a><span class="c1"># ── Trace network path ────────────────────────────────────────────────</span>
+<a href="#__codelineno-29-21" id="__codelineno-29-21" name="__codelineno-29-21"></a>traceroute<span class="w"> </span>google.com<span class="w">               </span><span class="c1"># Linux/Mac: shows each hop/router</span>
+<a href="#__codelineno-29-22" id="__codelineno-29-22" name="__codelineno-29-22"></a>tracert<span class="w"> </span>google.com<span class="w">                  </span><span class="c1"># Windows equivalent</span>
+<a href="#__codelineno-29-23" id="__codelineno-29-23" name="__codelineno-29-23"></a>mtr<span class="w"> </span>google.com<span class="w">                      </span><span class="c1"># interactive, combines ping + traceroute</span>
+</code></pre></div>
+<p><strong>View active connections:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-30-1" id="__codelineno-30-1" name="__codelineno-30-1"></a><span class="c1"># All established TCP connections (no DNS lookup for speed)</span>
+<a href="#__codelineno-30-2" id="__codelineno-30-2" name="__codelineno-30-2"></a>ss<span class="w"> </span>-tn<span class="w">                              </span><span class="c1"># modern, fast</span>
+<a href="#__codelineno-30-3" id="__codelineno-30-3" name="__codelineno-30-3"></a>netstat<span class="w"> </span>-tn<span class="w">                         </span><span class="c1"># traditional</span>
+<a href="#__codelineno-30-4" id="__codelineno-30-4" name="__codelineno-30-4"></a>
+<a href="#__codelineno-30-5" id="__codelineno-30-5" name="__codelineno-30-5"></a><span class="c1"># All listening ports with process names</span>
+<a href="#__codelineno-30-6" id="__codelineno-30-6" name="__codelineno-30-6"></a>ss<span class="w"> </span>-tlnp
+<a href="#__codelineno-30-7" id="__codelineno-30-7" name="__codelineno-30-7"></a>netstat<span class="w"> </span>-tlnp
+<a href="#__codelineno-30-8" id="__codelineno-30-8" name="__codelineno-30-8"></a>
+<a href="#__codelineno-30-9" id="__codelineno-30-9" name="__codelineno-30-9"></a><span class="c1"># Watch connections in real-time</span>
+<a href="#__codelineno-30-10" id="__codelineno-30-10" name="__codelineno-30-10"></a>watch<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="s2">"ss -tn | grep ESTABLISHED | wc -l"</span><span class="w">  </span><span class="c1"># count connections per second</span>
+<a href="#__codelineno-30-11" id="__codelineno-30-11" name="__codelineno-30-11"></a>
+<a href="#__codelineno-30-12" id="__codelineno-30-12" name="__codelineno-30-12"></a><span class="c1"># Output format (ss -tn):</span>
+<a href="#__codelineno-30-13" id="__codelineno-30-13" name="__codelineno-30-13"></a><span class="c1"># State    Recv-Q  Send-Q  Local Address:Port    Peer Address:Port</span>
+<a href="#__codelineno-30-14" id="__codelineno-30-14" name="__codelineno-30-14"></a><span class="c1"># ESTAB    0       0       192.168.1.10:54231    142.250.80.46:443</span>
+</code></pre></div>
+<h4 id="security-considerations">Security Considerations</h4>
+<p><strong>Principle of Least Exposure:</strong></p>
+<p>Every open port is a potential attack surface. Only expose ports that external users or services genuinely need. Everything else should be blocked at the firewall.</p>
+<p><strong>Firewall Rules:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-31-1" id="__codelineno-31-1" name="__codelineno-31-1"></a><span class="c1"># ── iptables (Linux — low-level) ──────────────────────────────────────</span>
+<a href="#__codelineno-31-2" id="__codelineno-31-2" name="__codelineno-31-2"></a><span class="c1"># Default-deny: allow only what's explicitly permitted</span>
+<a href="#__codelineno-31-3" id="__codelineno-31-3" name="__codelineno-31-3"></a>sudo<span class="w"> </span>iptables<span class="w"> </span>-P<span class="w"> </span>INPUT<span class="w"> </span>DROP<span class="w">           </span><span class="c1"># block all incoming by default</span>
+<a href="#__codelineno-31-4" id="__codelineno-31-4" name="__codelineno-31-4"></a>sudo<span class="w"> </span>iptables<span class="w"> </span>-P<span class="w"> </span>FORWARD<span class="w"> </span>DROP<span class="w">         </span><span class="c1"># block forwarding by default</span>
+<a href="#__codelineno-31-5" id="__codelineno-31-5" name="__codelineno-31-5"></a>sudo<span class="w"> </span>iptables<span class="w"> </span>-P<span class="w"> </span>OUTPUT<span class="w"> </span>ACCEPT<span class="w">        </span><span class="c1"># allow all outgoing</span>
+<a href="#__codelineno-31-6" id="__codelineno-31-6" name="__codelineno-31-6"></a>
+<a href="#__codelineno-31-7" id="__codelineno-31-7" name="__codelineno-31-7"></a><span class="c1"># Allow established connections to return (critical — don't forget this!)</span>
+<a href="#__codelineno-31-8" id="__codelineno-31-8" name="__codelineno-31-8"></a>sudo<span class="w"> </span>iptables<span class="w"> </span>-A<span class="w"> </span>INPUT<span class="w"> </span>-m<span class="w"> </span>state<span class="w"> </span>--state<span class="w"> </span>ESTABLISHED,RELATED<span class="w"> </span>-j<span class="w"> </span>ACCEPT
+<a href="#__codelineno-31-9" id="__codelineno-31-9" name="__codelineno-31-9"></a>
+<a href="#__codelineno-31-10" id="__codelineno-31-10" name="__codelineno-31-10"></a><span class="c1"># Allow loopback (localhost communication)</span>
+<a href="#__codelineno-31-11" id="__codelineno-31-11" name="__codelineno-31-11"></a>sudo<span class="w"> </span>iptables<span class="w"> </span>-A<span class="w"> </span>INPUT<span class="w"> </span>-i<span class="w"> </span>lo<span class="w"> </span>-j<span class="w"> </span>ACCEPT
+<a href="#__codelineno-31-12" id="__codelineno-31-12" name="__codelineno-31-12"></a>
+<a href="#__codelineno-31-13" id="__codelineno-31-13" name="__codelineno-31-13"></a><span class="c1"># Allow HTTPS and HTTP from anywhere</span>
+<a href="#__codelineno-31-14" id="__codelineno-31-14" name="__codelineno-31-14"></a>sudo<span class="w"> </span>iptables<span class="w"> </span>-A<span class="w"> </span>INPUT<span class="w"> </span>-p<span class="w"> </span>tcp<span class="w"> </span>--dport<span class="w"> </span><span class="m">443</span><span class="w"> </span>-j<span class="w"> </span>ACCEPT
+<a href="#__codelineno-31-15" id="__codelineno-31-15" name="__codelineno-31-15"></a>sudo<span class="w"> </span>iptables<span class="w"> </span>-A<span class="w"> </span>INPUT<span class="w"> </span>-p<span class="w"> </span>tcp<span class="w"> </span>--dport<span class="w"> </span><span class="m">80</span><span class="w">  </span>-j<span class="w"> </span>ACCEPT
+<a href="#__codelineno-31-16" id="__codelineno-31-16" name="__codelineno-31-16"></a>
+<a href="#__codelineno-31-17" id="__codelineno-31-17" name="__codelineno-31-17"></a><span class="c1"># Allow SSH only from a specific IP (your admin IP)</span>
+<a href="#__codelineno-31-18" id="__codelineno-31-18" name="__codelineno-31-18"></a>sudo<span class="w"> </span>iptables<span class="w"> </span>-A<span class="w"> </span>INPUT<span class="w"> </span>-p<span class="w"> </span>tcp<span class="w"> </span>--dport<span class="w"> </span><span class="m">22</span><span class="w"> </span>-s<span class="w"> </span><span class="m">10</span>.0.0.5/32<span class="w"> </span>-j<span class="w"> </span>ACCEPT
+<a href="#__codelineno-31-19" id="__codelineno-31-19" name="__codelineno-31-19"></a>
+<a href="#__codelineno-31-20" id="__codelineno-31-20" name="__codelineno-31-20"></a><span class="c1"># ── UFW (Ubuntu/Debian — simpler) ────────────────────────────────────</span>
+<a href="#__codelineno-31-21" id="__codelineno-31-21" name="__codelineno-31-21"></a>sudo<span class="w"> </span>ufw<span class="w"> </span>default<span class="w"> </span>deny<span class="w"> </span>incoming
+<a href="#__codelineno-31-22" id="__codelineno-31-22" name="__codelineno-31-22"></a>sudo<span class="w"> </span>ufw<span class="w"> </span>default<span class="w"> </span>allow<span class="w"> </span>outgoing
+<a href="#__codelineno-31-23" id="__codelineno-31-23" name="__codelineno-31-23"></a>sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="m">80</span>/tcp
+<a href="#__codelineno-31-24" id="__codelineno-31-24" name="__codelineno-31-24"></a>sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="m">443</span>/tcp
+<a href="#__codelineno-31-25" id="__codelineno-31-25" name="__codelineno-31-25"></a>sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span>from<span class="w"> </span><span class="m">10</span>.0.0.5<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">22</span><span class="w">   </span><span class="c1"># SSH from specific IP</span>
+<a href="#__codelineno-31-26" id="__codelineno-31-26" name="__codelineno-31-26"></a>sudo<span class="w"> </span>ufw<span class="w"> </span><span class="nb">enable</span>
+<a href="#__codelineno-31-27" id="__codelineno-31-27" name="__codelineno-31-27"></a>sudo<span class="w"> </span>ufw<span class="w"> </span>status<span class="w"> </span>verbose
+<a href="#__codelineno-31-28" id="__codelineno-31-28" name="__codelineno-31-28"></a>
+<a href="#__codelineno-31-29" id="__codelineno-31-29" name="__codelineno-31-29"></a><span class="c1"># ── Cloud Security Group (AWS-style) ────────────────────────────────</span>
+<a href="#__codelineno-31-30" id="__codelineno-31-30" name="__codelineno-31-30"></a>Inbound<span class="w"> </span>Rules:
+<a href="#__codelineno-31-31" id="__codelineno-31-31" name="__codelineno-31-31"></a>┌────────────┬──────────┬─────────────┬─────────────────────────────────┐
+<a href="#__codelineno-31-32" id="__codelineno-31-32" name="__codelineno-31-32"></a>│<span class="w"> </span>Type<span class="w">       </span>│<span class="w"> </span>Protocol<span class="w"> </span>│<span class="w"> </span>Port<span class="w">        </span>│<span class="w"> </span>Source<span class="w">                          </span>│
+<a href="#__codelineno-31-33" id="__codelineno-31-33" name="__codelineno-31-33"></a>├────────────┼──────────┼─────────────┼─────────────────────────────────┤
+<a href="#__codelineno-31-34" id="__codelineno-31-34" name="__codelineno-31-34"></a>│<span class="w"> </span>HTTPS<span class="w">      </span>│<span class="w"> </span>TCP<span class="w">      </span>│<span class="w"> </span><span class="m">443</span><span class="w">         </span>│<span class="w"> </span><span class="m">0</span>.0.0.0/0<span class="w">  </span><span class="o">(</span>entire<span class="w"> </span>internet<span class="o">)</span><span class="w">   </span>│
+<a href="#__codelineno-31-35" id="__codelineno-31-35" name="__codelineno-31-35"></a>│<span class="w"> </span>HTTP<span class="w">       </span>│<span class="w"> </span>TCP<span class="w">      </span>│<span class="w"> </span><span class="m">80</span><span class="w">          </span>│<span class="w"> </span><span class="m">0</span>.0.0.0/0<span class="w">  </span><span class="o">(</span>redirect<span class="w"> </span>to<span class="w"> </span>HTTPS<span class="o">)</span><span class="w"> </span>│
+<a href="#__codelineno-31-36" id="__codelineno-31-36" name="__codelineno-31-36"></a>│<span class="w"> </span>SSH<span class="w">        </span>│<span class="w"> </span>TCP<span class="w">      </span>│<span class="w"> </span><span class="m">22</span><span class="w">          </span>│<span class="w"> </span><span class="m">203</span>.0.113.1/32<span class="w">  </span><span class="o">(</span>your<span class="w"> </span>IP<span class="w"> </span>only<span class="o">)</span><span class="w"> </span>│
+<a href="#__codelineno-31-37" id="__codelineno-31-37" name="__codelineno-31-37"></a>│<span class="w"> </span>PostgreSQL<span class="w"> </span>│<span class="w"> </span>TCP<span class="w">      </span>│<span class="w"> </span><span class="m">5432</span><span class="w">        </span>│<span class="w"> </span><span class="m">10</span>.0.0.0/16<span class="w">  </span><span class="o">(</span>VPC<span class="w"> </span>internal<span class="o">)</span><span class="w">    </span>│
+<a href="#__codelineno-31-38" id="__codelineno-31-38" name="__codelineno-31-38"></a>│<span class="w"> </span>Redis<span class="w">      </span>│<span class="w"> </span>TCP<span class="w">      </span>│<span class="w"> </span><span class="m">6379</span><span class="w">        </span>│<span class="w"> </span><span class="m">10</span>.0.0.0/16<span class="w">  </span><span class="o">(</span>VPC<span class="w"> </span>internal<span class="o">)</span><span class="w">    </span>│
+<a href="#__codelineno-31-39" id="__codelineno-31-39" name="__codelineno-31-39"></a>│<span class="w"> </span>Custom<span class="w"> </span>App<span class="w"> </span>│<span class="w"> </span>TCP<span class="w">      </span>│<span class="w"> </span><span class="m">8080</span><span class="w">        </span>│<span class="w"> </span><span class="m">10</span>.0.1.0/24<span class="w">  </span><span class="o">(</span>app<span class="w"> </span>tier<span class="w"> </span>only<span class="o">)</span><span class="w">   </span>│
+<a href="#__codelineno-31-40" id="__codelineno-31-40" name="__codelineno-31-40"></a>└────────────┴──────────┴─────────────┴─────────────────────────────────┘
+<a href="#__codelineno-31-41" id="__codelineno-31-41" name="__codelineno-31-41"></a>Note:<span class="w"> </span>Databases<span class="w"> </span>never<span class="w"> </span>have<span class="w"> </span>a<span class="w"> </span><span class="m">0</span>.0.0.0/0<span class="w"> </span>rule.<span class="w"> </span>Ever.
+</code></pre></div>
+<p><strong>Secure Architecture Diagram:</strong></p>
+<pre class="mermaid"><code>graph TD
+    Internet["🌐 Internet<br/>(untrusted)"]
+    WAF["🛡️ WAF / CDN<br/>Cloudflare / AWS WAF<br/>Ports: 80, 443 only"]
+    LB["⚖️ Load Balancer<br/>Public Subnet<br/>Terminates TLS"]
+    App1["🖥️ App Server 1<br/>Private Subnet<br/>:8080 internal"]
+    App2["🖥️ App Server 2<br/>Private Subnet<br/>:8080 internal"]
+    DB[("🐘 PostgreSQL<br/>Private Subnet<br/>:5432 — no public IP")]
+    Cache[("⚡ Redis<br/>Private Subnet<br/>:6379 — no public IP")]
+    Admin["🔐 Admin<br/>(VPN required)"]
+
+    Internet --&gt;|"443, 80"| WAF
+    WAF --&gt;|"443"| LB
+    LB --&gt;|"8080"| App1
+    LB --&gt;|"8080"| App2
+    App1 &amp; App2 --&gt;|"5432"| DB
+    App1 &amp; App2 --&gt;|"6379"| Cache
+    Admin --&gt;|"22 via VPN"| App1
+</code></pre>
+<p><strong>Best Practices with Rationale:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-32-1" id="__codelineno-32-1" name="__codelineno-32-1"></a>┌────────────────────────────────────────────────────────────────────────────┐
+<a href="#__codelineno-32-2" id="__codelineno-32-2" name="__codelineno-32-2"></a>│ DO                                          WHY                            │
+<a href="#__codelineno-32-3" id="__codelineno-32-3" name="__codelineno-32-3"></a>├────────────────────────────────────────────────────────────────────────────┤
+<a href="#__codelineno-32-4" id="__codelineno-32-4" name="__codelineno-32-4"></a>│ ✓ Default-deny firewall posture            Block unexpected services       │
+<a href="#__codelineno-32-5" id="__codelineno-32-5" name="__codelineno-32-5"></a>│ ✓ Expose only 80/443 publicly             Minimize internet-facing surface │
+<a href="#__codelineno-32-6" id="__codelineno-32-6" name="__codelineno-32-6"></a>│ ✓ Use non-standard SSH port (e.g., 2222)  Reduces automated scanner noise  │
+<a href="#__codelineno-32-7" id="__codelineno-32-7" name="__codelineno-32-7"></a>│ ✓ Restrict SSH to specific IP/CIDR        Prevent brute-force from internet│
+<a href="#__codelineno-32-8" id="__codelineno-32-8" name="__codelineno-32-8"></a>│ ✓ Use VPN for internal service access     Encrypted, authenticated tunnel  │
+<a href="#__codelineno-32-9" id="__codelineno-32-9" name="__codelineno-32-9"></a>│ ✓ Put DBs in private subnets (no pub IP)  No direct internet route exists  │
+<a href="#__codelineno-32-10" id="__codelineno-32-10" name="__codelineno-32-10"></a>│ ✓ Bind dev services to 127.0.0.1          Prevent accidental LAN exposure  │
+<a href="#__codelineno-32-11" id="__codelineno-32-11" name="__codelineno-32-11"></a>│ ✓ Regularly audit open ports (nmap)       Detect unauthorized changes      │
+<a href="#__codelineno-32-12" id="__codelineno-32-12" name="__codelineno-32-12"></a>│ ✓ Use fail2ban or similar on SSH          Auto-block repeated failures      │
+<a href="#__codelineno-32-13" id="__codelineno-32-13" name="__codelineno-32-13"></a>│ ✓ Prefer key-based SSH over passwords     Passwords bruteforceable          │
+<a href="#__codelineno-32-14" id="__codelineno-32-14" name="__codelineno-32-14"></a>├────────────────────────────────────────────────────────────────────────────┤
+<a href="#__codelineno-32-15" id="__codelineno-32-15" name="__codelineno-32-15"></a>│ DON'T                                       RISK                           │
+<a href="#__codelineno-32-16" id="__codelineno-32-16" name="__codelineno-32-16"></a>├────────────────────────────────────────────────────────────────────────────┤
+<a href="#__codelineno-32-17" id="__codelineno-32-17" name="__codelineno-32-17"></a>│ ✗ Expose DB ports (3306, 5432) publicly   Direct database compromise       │
+<a href="#__codelineno-32-18" id="__codelineno-32-18" name="__codelineno-32-18"></a>│ ✗ Use Telnet (port 23)                    Credentials in plaintext         │
+<a href="#__codelineno-32-19" id="__codelineno-32-19" name="__codelineno-32-19"></a>│ ✗ Bind services to 0.0.0.0 in prod       Accidentally exposed to network   │
+<a href="#__codelineno-32-20" id="__codelineno-32-20" name="__codelineno-32-20"></a>│ ✗ Allow 0.0.0.0/0 SSH                    Internet can attempt login        │
+<a href="#__codelineno-32-21" id="__codelineno-32-21" name="__codelineno-32-21"></a>│ ✗ Use Redis without requirepass           Unauthenticated data access       │
+<a href="#__codelineno-32-22" id="__codelineno-32-22" name="__codelineno-32-22"></a>│ ✗ Leave MongoDB with no auth on :27017    Historic mass exploitations       │
+<a href="#__codelineno-32-23" id="__codelineno-32-23" name="__codelineno-32-23"></a>└────────────────────────────────────────────────────────────────────────────┘
+</code></pre></div>
+<p><strong>Common Port-Based Attacks and Mitigations:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-33-1" id="__codelineno-33-1" name="__codelineno-33-1"></a>Attack                      Port(s)      Mitigation
+<a href="#__codelineno-33-2" id="__codelineno-33-2" name="__codelineno-33-2"></a>──────────────────────────────────────────────────────────────────────────────
+<a href="#__codelineno-33-3" id="__codelineno-33-3" name="__codelineno-33-3"></a>SSH Brute Force             22           fail2ban, key-only auth, non-std port
+<a href="#__codelineno-33-4" id="__codelineno-33-4" name="__codelineno-33-4"></a>SQL Injection (via API)     80/443       WAF, parameterized queries, input validation
+<a href="#__codelineno-33-5" id="__codelineno-33-5" name="__codelineno-33-5"></a>Unauthenticated Redis       6379         Bind to 127.0.0.1, set requirepass
+<a href="#__codelineno-33-6" id="__codelineno-33-6" name="__codelineno-33-6"></a>MongoDB NoAuth Exploit      27017        Enable auth, bind to private IP
+<a href="#__codelineno-33-7" id="__codelineno-33-7" name="__codelineno-33-7"></a>Elasticsearch Data Leak     9200         Bind to private IP, enable X-Pack security
+<a href="#__codelineno-33-8" id="__codelineno-33-8" name="__codelineno-33-8"></a>SSRF → Internal Ports       various      Validate/block internal IPs in user input
+<a href="#__codelineno-33-9" id="__codelineno-33-9" name="__codelineno-33-9"></a>Port Scanning               all          IDS/IPS (Snort/Suricata), block repeated SYN
+</code></pre></div>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      © 2025 <a href="https://github.com/abhishekghoshh" rel="noopener" target="_blank">Abhishek Ghosh</a>
+</div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+<div class="md-social">
+<a class="md-social__link" href="https://github.com/abhishekghoshh" rel="noopener" target="_blank" title="github.com">
+<svg viewbox="0 0 480 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"></path></svg>
+</a>
+<a class="md-social__link" href="https://x.com/abhishek_ghoshh" rel="noopener" target="_blank" title="x.com">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253"></path></svg>
+</a>
+<a class="md-social__link" href="https://www.linkedin.com/in/abhishek-ghosh-220679132/" rel="noopener" target="_blank" title="www.linkedin.com">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5m282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"></path></svg>
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+<script src="../../../../assets/javascripts/bundle.60a45f97.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+window.mermaidConfig = {default: {
+    startOnLoad: false
+}};</script></body>
+</html>

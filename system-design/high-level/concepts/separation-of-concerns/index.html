@@ -1,0 +1,2906 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="https://abhishekghoshh.github.io/system-design-helper/system-design/high-level/concepts/separation-of-concerns/" rel="canonical"/>
+<link href="../client-server-architecture/" rel="prev"/>
+<link href="../state-and-data-flow/" rel="next"/>
+<link href="../../../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.50" name="generator"/>
+<title>Separation of Concerns - System Design Helper</title>
+<link href="../../../../assets/stylesheets/main.a40c8224.min.css" rel="stylesheet"/>
+<link href="../../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+<meta content="website" property="og:type"/>
+<meta content="Separation of Concerns - System Design Helper" property="og:title"/>
+<meta content="None" property="og:description"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/system-design/high-level/concepts/separation-of-concerns.png" property="og:image"/>
+<meta content="image/png" property="og:image:type"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/system-design/high-level/concepts/separation-of-concerns/" property="og:url"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Separation of Concerns - System Design Helper" name="twitter:title"/>
+<meta content="None" name="twitter:description"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/system-design/high-level/concepts/separation-of-concerns.png" name="twitter:image"/>
+</head>
+<body data-md-color-accent="purple" data-md-color-primary="teal" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#separation-of-concerns">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="System Design Helper" class="md-header__button md-logo" data-md-component="logo" href="../../../.." title="System Design Helper">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            System Design Helper
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Separation of Concerns
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="purple" data-md-color-media="" data-md-color-primary="teal" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="lime" data-md-color-media="" data-md-color-primary="teal" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../..">
+        
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../basics/cpu/">
+          
+  
+  Basics
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../ai/ai/">
+          
+  
+  AI
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../devops/">
+          
+  
+  DevOps
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../security/introduction/">
+          
+  
+  Security
+
+        </a>
+</li>
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../../../books/">
+          
+  
+  System Design
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="System Design Helper" class="md-nav__button md-logo" data-md-component="logo" href="../../../.." title="System Design Helper">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    System Design Helper
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../..">
+<span class="md-ellipsis">
+    Home
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Basics
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            Basics
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/cpu/">
+<span class="md-ellipsis">
+    CPU
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/pointers/">
+<span class="md-ellipsis">
+    Pointers
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/maths/">
+<span class="md-ellipsis">
+    Maths
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/behavioural/">
+<span class="md-ellipsis">
+    Behavioural
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/developer-experiences/">
+<span class="md-ellipsis">
+    Developer Experiences
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/open-source-tools/">
+<span class="md-ellipsis">
+    Open Source Tools
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/software-architect/">
+<span class="md-ellipsis">
+    Software Architect
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../basics/wisdom/">
+<span class="md-ellipsis">
+    Wisdom
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+<span class="md-ellipsis">
+    AI
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            AI
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/ai/">
+<span class="md-ellipsis">
+    AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/ai-tools/">
+<span class="md-ellipsis">
+    AI Tools
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/agentic-ai/">
+<span class="md-ellipsis">
+    Agentic AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/gen-ai/">
+<span class="md-ellipsis">
+    Gen AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/langchain-and-langgraph/">
+<span class="md-ellipsis">
+    LangChain and LangGraph
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/MCP/">
+<span class="md-ellipsis">
+    MCP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/RAG/">
+<span class="md-ellipsis">
+    RAG
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/llm-wiki/">
+<span class="md-ellipsis">
+    LLM Wiki
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/vector-embeddings/">
+<span class="md-ellipsis">
+    Vector Embeddings
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/vibe-coding/">
+<span class="md-ellipsis">
+    Vibe Coding
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ai/courses/">
+<span class="md-ellipsis">
+    Courses
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    DevOps
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            DevOps
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../devops/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../devops/deployment-strategies/">
+<span class="md-ellipsis">
+    Deployment Strategies
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+<span class="md-ellipsis">
+    Security
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            Security
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/authentication-and-authorization/">
+<span class="md-ellipsis">
+    Authentication &amp; Authorization
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/oauth/">
+<span class="md-ellipsis">
+    OAuth
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/rbac/">
+<span class="md-ellipsis">
+    RBAC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/sso/">
+<span class="md-ellipsis">
+    SSO
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/ssl/">
+<span class="md-ellipsis">
+    SSL
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/ssh/">
+<span class="md-ellipsis">
+    SSH
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/jwt/">
+<span class="md-ellipsis">
+    JWT
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/encryption/">
+<span class="md-ellipsis">
+    Encryption
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/environment-variables/">
+<span class="md-ellipsis">
+    Environment Variables
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/devsecops/">
+<span class="md-ellipsis">
+    DevSecOps
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/firewall/">
+<span class="md-ellipsis">
+    Firewall
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+<span class="md-ellipsis">
+    Certificate
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_13_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_13">
+<span class="md-nav__icon md-icon"></span>
+            Certificate
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/certificate/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/certificate/certificate-authority/">
+<span class="md-ellipsis">
+    Certificate Authority
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/certificate/client-certificates/">
+<span class="md-ellipsis">
+    Client Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/certificate/server-certificates/">
+<span class="md-ellipsis">
+    Server Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/certificate/self-signed-certificates/">
+<span class="md-ellipsis">
+    Self-Signed Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/certificate/links/">
+<span class="md-ellipsis">
+    Links
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_14" id="__nav_5_14_label" tabindex="0">
+<span class="md-ellipsis">
+    Reverse Proxy
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_14_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_14">
+<span class="md-nav__icon md-icon"></span>
+            Reverse Proxy
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/reverse-proxy/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/reverse-proxy/haproxy/">
+<span class="md-ellipsis">
+    HAProxy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../security/reverse-proxy/nginx/">
+<span class="md-ellipsis">
+    Nginx
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    System Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            System Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../books/">
+<span class="md-ellipsis">
+    Books
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../courses/">
+<span class="md-ellipsis">
+    Courses
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../interview/">
+<span class="md-ellipsis">
+    Interview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4" id="__nav_6_4_label" tabindex="">
+<span class="md-ellipsis">
+    High Level Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_6_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_4">
+<span class="md-nav__icon md-icon"></span>
+            High Level Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6_4_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1" id="__nav_6_4_1_label" tabindex="0">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_6_4_1_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_1">
+<span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../philosophy-of-system-design/">
+<span class="md-ellipsis">
+    Philosophy of System Design
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../client-server-architecture/">
+<span class="md-ellipsis">
+    Client-Server Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    Separation of Concerns
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    Separation of Concerns
+  </span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#blogs-and-websites">
+<span class="md-ellipsis">
+      Blogs and websites
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#medium">
+<span class="md-ellipsis">
+      Medium
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#youtube">
+<span class="md-ellipsis">
+      Youtube
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#theory">
+<span class="md-ellipsis">
+      Theory
+    </span>
+</a>
+<nav aria-label="Theory" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-is-separation-of-concerns">
+<span class="md-ellipsis">
+      What is Separation of Concerns?
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#why-it-matters">
+<span class="md-ellipsis">
+      Why It Matters
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#levels-of-separation">
+<span class="md-ellipsis">
+      Levels of Separation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#related-principles">
+<span class="md-ellipsis">
+      Related Principles
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#real-world-examples">
+<span class="md-ellipsis">
+      Real-World Examples
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#benefits">
+<span class="md-ellipsis">
+      Benefits
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#anti-patterns-violations-of-soc">
+<span class="md-ellipsis">
+      Anti-Patterns (Violations of SoC)
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../state-and-data-flow/">
+<span class="md-ellipsis">
+    State and Data Flow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../back-of-envelope-calculation/">
+<span class="md-ellipsis">
+    Back of Envelope Calculation
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cloud-computing/">
+<span class="md-ellipsis">
+    Cloud Computing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ip-addresses-and-ports/">
+<span class="md-ellipsis">
+    IP Addresses &amp; Ports
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../sockets/">
+<span class="md-ellipsis">
+    Sockets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../dns-server/">
+<span class="md-ellipsis">
+    DNS Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../networking/">
+<span class="md-ellipsis">
+    Networking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tcp/">
+<span class="md-ellipsis">
+    TCP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../udp/">
+<span class="md-ellipsis">
+    UDP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../http/">
+<span class="md-ellipsis">
+    HTTP / HTTPS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../websockets/">
+<span class="md-ellipsis">
+    WebSockets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../webrtc/">
+<span class="md-ellipsis">
+    WebRTC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../smtp-server/">
+<span class="md-ellipsis">
+    SMTP Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../voice-over-internet-protocol/">
+<span class="md-ellipsis">
+    VoIP (Voice Over Internet Protocol)
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../api/">
+<span class="md-ellipsis">
+    API
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../restfull-architecture/">
+<span class="md-ellipsis">
+    RESTful Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../graphql/">
+<span class="md-ellipsis">
+    GraphQL
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../grpc/">
+<span class="md-ellipsis">
+    gRPC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../data-serialization/">
+<span class="md-ellipsis">
+    Data Serialization
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../asynchronus-communication/">
+<span class="md-ellipsis">
+    Asynchronous Communication
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../nats/">
+<span class="md-ellipsis">
+    NATS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../webhooks/">
+<span class="md-ellipsis">
+    Webhooks
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../load-balancer-and-proxy-server/">
+<span class="md-ellipsis">
+    Load Balancer &amp; Proxy Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../api-gateway/">
+<span class="md-ellipsis">
+    API Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cdn/">
+<span class="md-ellipsis">
+    CDN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../service-discovery/">
+<span class="md-ellipsis">
+    Service Discovery
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../service-mesh/">
+<span class="md-ellipsis">
+    Service Mesh
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hashing/">
+<span class="md-ellipsis">
+    Hashing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../consistent-hashing/">
+<span class="md-ellipsis">
+    Consistent Hashing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../storage/">
+<span class="md-ellipsis">
+    Storage
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../s3/">
+<span class="md-ellipsis">
+    S3
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../caching/">
+<span class="md-ellipsis">
+    Caching
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-caches-and-caching-strategies/">
+<span class="md-ellipsis">
+    Distributed Caches &amp; Caching Strategies
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../scalability/">
+<span class="md-ellipsis">
+    Scalability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../scaling-to-one-million/">
+<span class="md-ellipsis">
+    Scaling to One Million
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../adaptive-bitrate-streaming/">
+<span class="md-ellipsis">
+    Adaptive Bitrate Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../browser-rendering-pipeline/">
+<span class="md-ellipsis">
+    Browser Rendering Pipeline
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../availability-and-reliability/">
+<span class="md-ellipsis">
+    Availability &amp; Reliability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../consistency/">
+<span class="md-ellipsis">
+    Consistency
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cap-theorm/">
+<span class="md-ellipsis">
+    CAP Theorem
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../fault-tolerance/">
+<span class="md-ellipsis">
+    Fault Tolerance
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../architecture-patterns/">
+<span class="md-ellipsis">
+    Architecture Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../clean-architecture/">
+<span class="md-ellipsis">
+    Clean Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../microservices-patterns/">
+<span class="md-ellipsis">
+    Microservices Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../raft-consensus-algorithm/">
+<span class="md-ellipsis">
+    Raft Consensus Algorithm
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../gossip-protocol/">
+<span class="md-ellipsis">
+    Gossip Protocol
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ditributed-transaction-and-concurrency-control/">
+<span class="md-ellipsis">
+    Distributed Transaction &amp; Concurrency Control
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cdc/">
+<span class="md-ellipsis">
+    CDC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../resilience-patterns/">
+<span class="md-ellipsis">
+    Resilience Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../thundering-effect/">
+<span class="md-ellipsis">
+    Thundering Herd Effect
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../security-basics/">
+<span class="md-ellipsis">
+    Security Basics
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../passwords/">
+<span class="md-ellipsis">
+    Passwords
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../environment-configuration-and-secrets/">
+<span class="md-ellipsis">
+    Environment Configuration &amp; Secrets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../observability/">
+<span class="md-ellipsis">
+    Observability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cqrs/">
+<span class="md-ellipsis">
+    CQRS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../event-sourcing/">
+<span class="md-ellipsis">
+    Event Sourcing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../saga-pattern/">
+<span class="md-ellipsis">
+    Saga Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../data-processing/">
+<span class="md-ellipsis">
+    Data Processing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../process/">
+<span class="md-ellipsis">
+    Process
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../code-documentation/">
+<span class="md-ellipsis">
+    Code Documentation
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../programming-language/">
+<span class="md-ellipsis">
+    Programming Language
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../github-server/">
+<span class="md-ellipsis">
+    GitHub Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../additional-concepts/">
+<span class="md-ellipsis">
+    Additional Concepts
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2" id="__nav_6_4_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Designing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Designing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/url-shortner/">
+<span class="md-ellipsis">
+    URL Shortener
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/key-value-store/">
+<span class="md-ellipsis">
+    Key Value Store
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/rate-limiter/">
+<span class="md-ellipsis">
+    Rate Limiter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/notification-system/">
+<span class="md-ellipsis">
+    Notification System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/log-system/">
+<span class="md-ellipsis">
+    Log System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/search-engine/">
+<span class="md-ellipsis">
+    Search Engine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/authentication-system/">
+<span class="md-ellipsis">
+    Authentication System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/webhook/">
+<span class="md-ellipsis">
+    Webhook
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/distributed-counter/">
+<span class="md-ellipsis">
+    Distributed Counter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/distributed-cache/">
+<span class="md-ellipsis">
+    Distributed Cache
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/distributed-locking-service/">
+<span class="md-ellipsis">
+    Distributed Locking Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/distributed-job-scheduler/">
+<span class="md-ellipsis">
+    Distributed Job Scheduler
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/cdn/">
+<span class="md-ellipsis">
+    CDN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/autocomplete/">
+<span class="md-ellipsis">
+    Autocomplete
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/pastebin/">
+<span class="md-ellipsis">
+    Pastebin
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/leaderboard/">
+<span class="md-ellipsis">
+    Leaderboard
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/chat-system/">
+<span class="md-ellipsis">
+    Chat System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/whatspp/">
+<span class="md-ellipsis">
+    WhatsApp
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/live-comments/">
+<span class="md-ellipsis">
+    Live Comments
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/distributed-messaging-queue/">
+<span class="md-ellipsis">
+    Distributed Messaging Queue
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/slack/">
+<span class="md-ellipsis">
+    Slack
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/video-streaming/">
+<span class="md-ellipsis">
+    Video Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/netflix/">
+<span class="md-ellipsis">
+    Netflix
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/spotify/">
+<span class="md-ellipsis">
+    Spotify
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/live-streaming/">
+<span class="md-ellipsis">
+    Live Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/Image-Optimisation-on-the-fly/">
+<span class="md-ellipsis">
+    Image Optimisation On The Fly
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/amazon-flipkart/">
+<span class="md-ellipsis">
+    Amazon/Flipkart
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/e-commerce/">
+<span class="md-ellipsis">
+    E-Commerce
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/ecommerce-checkout/">
+<span class="md-ellipsis">
+    E-Commerce Checkout
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/payment-gateway/">
+<span class="md-ellipsis">
+    Payment Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/upi-payments/">
+<span class="md-ellipsis">
+    UPI Payments
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/digital-wallet/">
+<span class="md-ellipsis">
+    Digital Wallet
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/vending-machine/">
+<span class="md-ellipsis">
+    Vending Machine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/twitter/">
+<span class="md-ellipsis">
+    Twitter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/social-media/">
+<span class="md-ellipsis">
+    Social Media
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/hashtag-service/">
+<span class="md-ellipsis">
+    Hashtag Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/recomendation-engine/">
+<span class="md-ellipsis">
+    Recommendation Engine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/facebook/">
+<span class="md-ellipsis">
+    Facebook
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/instagram/">
+<span class="md-ellipsis">
+    Instagram
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/tiktok/">
+<span class="md-ellipsis">
+    TikTok
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/bookmyshow/">
+<span class="md-ellipsis">
+    BookMyShow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/uber/">
+<span class="md-ellipsis">
+    Uber
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/food-delivery/">
+<span class="md-ellipsis">
+    Food Delivery
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/hotel-booking/">
+<span class="md-ellipsis">
+    Hotel Booking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/app-store/">
+<span class="md-ellipsis">
+    App Store
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/yelp/">
+<span class="md-ellipsis">
+    Yelp
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/flight-booking/">
+<span class="md-ellipsis">
+    Flight Booking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/google-maps/">
+<span class="md-ellipsis">
+    Google Maps
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/google-drive/">
+<span class="md-ellipsis">
+    Google Drive
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/data-warehouse/">
+<span class="md-ellipsis">
+    Data Warehouse
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/distributed-geospatial-data-platform/">
+<span class="md-ellipsis">
+    Distributed Geospatial Data Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/redis/">
+<span class="md-ellipsis">
+    Redis
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/large-language-model/">
+<span class="md-ellipsis">
+    Large Language Model
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/leetcode/">
+<span class="md-ellipsis">
+    LeetCode
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/vercel/">
+<span class="md-ellipsis">
+    Vercel
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/email-automation-platform/">
+<span class="md-ellipsis">
+    Email Automation Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/google-docs/">
+<span class="md-ellipsis">
+    Google Docs
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/online-code-editor/">
+<span class="md-ellipsis">
+    Online Code Editor
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/vpn/">
+<span class="md-ellipsis">
+    VPN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/stock-broker-system/">
+<span class="md-ellipsis">
+    Stock Broker System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/chess-game/">
+<span class="md-ellipsis">
+    Chess Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/multiplayer-game/">
+<span class="md-ellipsis">
+    Multiplayer Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../desgining/how-to-host-your-own-x/">
+<span class="md-ellipsis">
+    How to Host Your Own X
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_3" id="__nav_6_4_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Links
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Links
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../links/udemy/">
+<span class="md-ellipsis">
+    Udemy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../links/websites/">
+<span class="md-ellipsis">
+    Websites
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../links/youtube/">
+<span class="md-ellipsis">
+    YouTube
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="">
+<span class="md-ellipsis">
+    Low Level Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_5">
+<span class="md-nav__icon md-icon"></span>
+            Low Level Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_2" id="__nav_6_5_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_2">
+<span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/concepts/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/concepts/hashmap/">
+<span class="md-ellipsis">
+    HashMap
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/concepts/mvc/">
+<span class="md-ellipsis">
+    MVC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/concepts/null-object-pattern/">
+<span class="md-ellipsis">
+    Null Object Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/concepts/solid-principles/">
+<span class="md-ellipsis">
+    SOLID Principles
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/concepts/technical-debt/">
+<span class="md-ellipsis">
+    Technical Debt
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3" id="__nav_6_5_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Design Patterns
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_3">
+<span class="md-nav__icon md-icon"></span>
+            Design Patterns
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/design-pattern/">
+<span class="md-ellipsis">
+    Design Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_2" id="__nav_6_5_3_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Creational
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_2">
+<span class="md-nav__icon md-icon"></span>
+            Creational
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/creational/creational/">
+<span class="md-ellipsis">
+    All Creational Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/creational/singleton/">
+<span class="md-ellipsis">
+    Singleton
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/creational/prototype/">
+<span class="md-ellipsis">
+    Prototype
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/creational/builder/">
+<span class="md-ellipsis">
+    Builder
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/creational/factory/">
+<span class="md-ellipsis">
+    Factory
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/creational/abstract-factory/">
+<span class="md-ellipsis">
+    Abstract Factory
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/creational/object-pool/">
+<span class="md-ellipsis">
+    Object Pool
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_3" id="__nav_6_5_3_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Structural
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_3">
+<span class="md-nav__icon md-icon"></span>
+            Structural
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/structural/">
+<span class="md-ellipsis">
+    All Structural Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/adapter/">
+<span class="md-ellipsis">
+    Adapter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/bridge/">
+<span class="md-ellipsis">
+    Bridge
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/composite/">
+<span class="md-ellipsis">
+    Composite
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/decorator/">
+<span class="md-ellipsis">
+    Decorator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/facade/">
+<span class="md-ellipsis">
+    Facade
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/flyweight/">
+<span class="md-ellipsis">
+    Flyweight
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/structural/proxy/">
+<span class="md-ellipsis">
+    Proxy
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_4" id="__nav_6_5_3_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Behavioral
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_4_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_4">
+<span class="md-nav__icon md-icon"></span>
+            Behavioral
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/behavioral/">
+<span class="md-ellipsis">
+    All Behavioral Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/chain-of-responsibility/">
+<span class="md-ellipsis">
+    Chain of Responsibility
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/command/">
+<span class="md-ellipsis">
+    Command
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/interpreter/">
+<span class="md-ellipsis">
+    Interpreter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/iterator/">
+<span class="md-ellipsis">
+    Iterator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/mediator/">
+<span class="md-ellipsis">
+    Mediator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/memento/">
+<span class="md-ellipsis">
+    Memento
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/observer/">
+<span class="md-ellipsis">
+    Observer
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/state/">
+<span class="md-ellipsis">
+    State
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/strategy/">
+<span class="md-ellipsis">
+    Strategy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/template/">
+<span class="md-ellipsis">
+    Template
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/design-pattern/behavioral/visitor/">
+<span class="md-ellipsis">
+    Visitor
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_4" id="__nav_6_5_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Designing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_4_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_4">
+<span class="md-nav__icon md-icon"></span>
+            Designing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/access-management-system/">
+<span class="md-ellipsis">
+    Access Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/account-balance-tracker/">
+<span class="md-ellipsis">
+    Account Balance Tracker
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/air-traffic-controller/">
+<span class="md-ellipsis">
+    Air Traffic Controller
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/apply-coupons-on-shopping-cart/">
+<span class="md-ellipsis">
+    Apply Coupons on Shopping Cart
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/atm/">
+<span class="md-ellipsis">
+    ATM
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/bookmyshow/">
+<span class="md-ellipsis">
+    BookMyShow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/cache-system/">
+<span class="md-ellipsis">
+    Cache System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/car-rental-service/">
+<span class="md-ellipsis">
+    Car Rental Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/chess-game/">
+<span class="md-ellipsis">
+    Chess Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/cricbuzz/">
+<span class="md-ellipsis">
+    Cricbuzz
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/elevator-system/">
+<span class="md-ellipsis">
+    Elevator System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/inventory-management-system/">
+<span class="md-ellipsis">
+    Inventory Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/locker-allocation-system/">
+<span class="md-ellipsis">
+    Locker Allocation System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/logging-system/">
+<span class="md-ellipsis">
+    Logging System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/meeting-scheduler/">
+<span class="md-ellipsis">
+    Meeting Scheduler
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/parking-lot/">
+<span class="md-ellipsis">
+    Parking Lot
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/payment-gateway/">
+<span class="md-ellipsis">
+    Payment Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/snake-and-ladder/">
+<span class="md-ellipsis">
+    Snake and Ladder
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/splitwise/">
+<span class="md-ellipsis">
+    Splitwise
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/stock-exchange-book/">
+<span class="md-ellipsis">
+    Stock Exchange Book
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/tic-tac-toe/">
+<span class="md-ellipsis">
+    Tic Tac Toe
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../low-level/designing/vending-machine/">
+<span class="md-ellipsis">
+    Vending Machine
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="separation-of-concerns">Separation of Concerns</h1>
+<h2 id="blogs-and-websites">Blogs and websites</h2>
+<h2 id="medium">Medium</h2>
+<h2 id="youtube">Youtube</h2>
+<h2 id="theory">Theory</h2>
+<h3 id="what-is-separation-of-concerns">What is Separation of Concerns?</h3>
+<p><strong>Separation of Concerns (SoC)</strong> is a design principle that divides a system into distinct sections, where each section addresses a specific concern (responsibility). Each part should know as little as possible about the others.</p>
+<p><strong>Core Idea:</strong> A piece of code should do <strong>one thing</strong> and do it well. Changes to one concern should not require changes to unrelated concerns.</p>
+<p>The term was coined by computer scientist <strong>Edsger W. Dijkstra</strong> in his 1974 paper <em>"On the role of scientific thought"</em>. The idea is deceptively simple: if you can cleanly separate what a system does into independent pieces, you gain the ability to understand, change, and test each piece without worrying about the rest. This applies from a single function all the way up to a distributed system.</p>
+<pre class="mermaid"><code>graph TD
+    A[One Big Blob of Code] --&gt;|Apply SoC| B[Concern A]
+    A --&gt;|Apply SoC| C[Concern B]
+    A --&gt;|Apply SoC| D[Concern C]
+    B --&gt;|Communicates via interface| C
+    C --&gt;|Communicates via interface| D
+    style A fill:#f66,color:#fff
+    style B fill:#6a6,color:#fff
+    style C fill:#6a6,color:#fff
+    style D fill:#6a6,color:#fff
+</code></pre>
+<hr/>
+<h3 id="why-it-matters">Why It Matters</h3>
+<p>Without SoC, a single function accumulates responsibilities over time — a phenomenon known as <strong>feature creep at the function level</strong>. The function becomes a bottleneck: every developer on the team touches it, every bug lives inside it, and testing it requires simulating all its dependencies at once.</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>Without SoC (everything mixed together):
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>  function handleOrder(req) {
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    // Validate input         ← What if validation rules change?
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>    // Authenticate user      ← What if auth provider changes?
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>    // Check inventory        ← What if inventory is a microservice tomorrow?
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>    // Process payment        ← What if you add a new payment gateway?
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>    // Send email             ← What if you switch to SMS?
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    // Update analytics       ← What if analytics is optional?
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>    // Return response
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>  }
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>  → 500 lines, impossible to test, change, or reuse
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>  → One change risks breaking everything else
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>With SoC (separated responsibilities):
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>  validateInput(req)        → Validation layer
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>  authenticateUser(req)     → Auth middleware
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>  checkInventory(items)     → Inventory service
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>  processPayment(order)     → Payment service
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>  sendConfirmation(email)   → Notification service
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>  trackEvent(order)         → Analytics service
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>  → Each is testable, changeable, and reusable independently
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>  → Swap the payment provider → only processPayment() changes
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>  → Disable analytics        → remove trackEvent(), nothing else breaks
+</code></pre></div>
+<p>The key insight: <strong>each function has exactly one reason to change</strong>. If the payment gateway switches from Stripe to Braintree, only the payment module changes. The validation logic, the email sender, the inventory checker — they remain untouched.</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Client
+    participant Validator
+    participant Auth
+    participant Inventory
+    participant Payment
+    participant Notifier
+    participant Analytics
+
+    Client-&gt;&gt;Validator: handleOrder(req)
+    Validator--&gt;&gt;Client: ValidationError (if invalid)
+    Validator-&gt;&gt;Auth: validated request
+    Auth--&gt;&gt;Client: 401 Unauthorized (if not authed)
+    Auth-&gt;&gt;Inventory: authenticated request
+    Inventory--&gt;&gt;Client: OutOfStock (if unavailable)
+    Inventory-&gt;&gt;Payment: confirmed items
+    Payment--&gt;&gt;Client: PaymentFailed (if declined)
+    Payment-&gt;&gt;Notifier: order confirmed
+    Payment-&gt;&gt;Analytics: track event
+    Notifier--&gt;&gt;Client: confirmation email sent
+</code></pre>
+<hr/>
+<h3 id="levels-of-separation">Levels of Separation</h3>
+<p>SoC is not one-size-fits-all. It applies at every layer of the software stack, from a single function to an entire distributed architecture.</p>
+<hr/>
+<p><strong>1. Code Level — Functions and Classes</strong></p>
+<p>This is the most granular level. The guiding rule here is the <strong>Single Responsibility Principle (SRP)</strong> from SOLID:</p>
+<blockquote>
+<p><em>A class should have only one reason to change.</em></p>
+</blockquote>
+<p><strong>Why it matters at this level:</strong> When a class mixes responsibilities, a bug in one area (e.g., formatting) can silently affect another (e.g., persistence). Unit tests become hard to write because you can't isolate the behavior you care about.</p>
+<p><strong>Example — Violating SRP:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">User</span><span class="p">:</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">save_to_db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>          <span class="c1"># ← persistence concern</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>        <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"INSERT INTO users ..."</span><span class="p">)</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">send_welcome_email</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># ← notification concern</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>        <span class="n">smtp</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="s2">"Welcome!"</span><span class="p">)</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>            <span class="c1"># ← validation concern</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>        <span class="k">if</span> <span class="s2">"@"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">email</span><span class="p">:</span>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Invalid email"</span><span class="p">)</span>
+</code></pre></div>
+<p>This class has <strong>three reasons to change</strong>: if the DB schema changes, if the email template changes, or if validation rules change.</p>
+<p><strong>Example — Applying SRP:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">User</span><span class="p">:</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="k">class</span><span class="w"> </span><span class="nc">UserRepository</span><span class="p">:</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">):</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>        <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"INSERT INTO users ..."</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="k">class</span><span class="w"> </span><span class="nc">UserNotifier</span><span class="p">:</span>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">send_welcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">):</span>
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>        <span class="n">smtp</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="s2">"Welcome!"</span><span class="p">)</span>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="k">class</span><span class="w"> </span><span class="nc">UserValidator</span><span class="p">:</span>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">):</span>
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>        <span class="k">if</span> <span class="s2">"@"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">:</span>
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Invalid email"</span><span class="p">)</span>
+</code></pre></div>
+<p>Now each class has <strong>one reason to change</strong>. You can test <code>UserValidator</code> without a database. You can swap the email provider by only changing <code>UserNotifier</code>.</p>
+<pre class="mermaid"><code>classDiagram
+    class User {
+        +name: str
+        +email: str
+    }
+    class UserRepository {
+        +save(user: User)
+        +find_by_id(id: int) User
+    }
+    class UserNotifier {
+        +send_welcome(user: User)
+    }
+    class UserValidator {
+        +validate(user: User)
+    }
+    UserRepository --&gt; User : persists
+    UserNotifier --&gt; User : notifies
+    UserValidator --&gt; User : validates
+</code></pre>
+<hr/>
+<p><strong>2. Module/Layer Level — Layered Architecture</strong></p>
+<p>As a codebase grows, individual files need to be organized into <strong>layers</strong>, each with a specific role. The classic N-tier model separates the application into:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>Presentation Layer (UI, API endpoints)
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>        ↓
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>Business Logic Layer (rules, workflows)
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>        ↓
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>Data Access Layer (database queries, ORM)
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>        ↓
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>Infrastructure Layer (file system, external APIs)
+</code></pre></div>
+<p>Each layer only talks to the one directly below it. The Presentation Layer never directly issues SQL queries. The Data Access Layer never formats HTML.</p>
+<p><strong>Why this matters:</strong> Imagine you want to switch from PostgreSQL to MongoDB. With a proper Data Access Layer (a repository pattern), only that layer changes — the Business Logic and Presentation layers are completely unaware of the swap.</p>
+<p><strong>Concrete example:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># Presentation Layer — only handles HTTP</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">"/users/&lt;id&gt;"</span><span class="p">)</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_user</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    <span class="n">user</span> <span class="o">=</span> <span class="n">user_service</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>    <span class="c1"># calls Business Logic</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>      <span class="c1"># formats response</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="c1"># Business Logic Layer — only handles rules</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="k">class</span><span class="w"> </span><span class="nc">UserService</span><span class="p">:</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>        <span class="n">user</span> <span class="o">=</span> <span class="n">user_repo</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>       <span class="c1"># calls Data Access</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>        <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>            <span class="k">raise</span> <span class="n">NotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"User </span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2"> not found"</span><span class="p">)</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>        <span class="k">return</span> <span class="n">user</span>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="c1"># Data Access Layer — only handles persistence</span>
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="k">class</span><span class="w"> </span><span class="nc">UserRepository</span><span class="p">:</span>
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">find</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>        <span class="n">row</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">"SELECT * FROM users WHERE id = ?"</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a>        <span class="k">return</span> <span class="n">User</span><span class="o">.</span><span class="n">from_row</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>       <span class="c1"># maps DB row to domain object</span>
+</code></pre></div>
+<pre class="mermaid"><code>graph TD
+    A["Presentation Layer<br/>(Flask routes, REST controllers)"]
+    B["Business Logic Layer<br/>(Services, Use Cases, Rules)"]
+    C["Data Access Layer<br/>(Repositories, ORM models)"]
+    D["Infrastructure Layer<br/>(DB drivers, S3, SMTP, Redis)"]
+
+    A --&gt;|"calls service methods"| B
+    B --&gt;|"calls repository methods"| C
+    C --&gt;|"uses drivers/adapters"| D
+
+    style A fill:#4a9eff,color:#fff
+    style B fill:#f5a623,color:#fff
+    style C fill:#7ed321,color:#fff
+    style D fill:#9b59b6,color:#fff
+</code></pre>
+<p><strong>Dependency rule:</strong> arrows point <strong>downward</strong> only. The Business Logic Layer never imports from the Presentation Layer.</p>
+<hr/>
+<p><strong>3. Service Level — Microservices</strong></p>
+<p>At scale, even well-layered monoliths become deployment bottlenecks. If the notification logic and the payment logic live in the same process, a bug in notifications can take down payments. Microservices apply SoC at the <strong>deployment boundary</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>User Service         → Manages user accounts, profiles, auth
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>Payment Service      → Handles charges, refunds, billing
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>Notification Service → Sends emails, SMS, push notifications
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>Inventory Service    → Tracks stock levels, reservations
+</code></pre></div>
+<p>Each service:
+- Has its <strong>own database</strong> (no shared DB schema)
+- Communicates over <strong>APIs or message queues</strong>
+- Can be <strong>deployed, scaled, and failed</strong> independently</p>
+<p><strong>Example — Order flow across services:</strong></p>
+<pre class="mermaid"><code>graph LR
+    Client --&gt;|POST /orders| OrderService
+    OrderService --&gt;|check stock| InventoryService
+    OrderService --&gt;|charge card| PaymentService
+    OrderService --&gt;|publish OrderPlaced event| MessageBus
+    MessageBus --&gt;|subscribe| NotificationService
+    MessageBus --&gt;|subscribe| AnalyticsService
+
+    style OrderService fill:#4a9eff,color:#fff
+    style InventoryService fill:#7ed321,color:#fff
+    style PaymentService fill:#f5a623,color:#fff
+    style NotificationService fill:#9b59b6,color:#fff
+    style AnalyticsService fill:#e74c3c,color:#fff
+    style MessageBus fill:#555,color:#fff
+</code></pre>
+<p><strong>Trade-off:</strong> Microservices introduce network latency and operational complexity (service discovery, distributed tracing, eventual consistency). Apply this level of SoC only when the team and traffic demand it — premature microservices create "distributed monoliths" where services are too tightly coupled to be independent.</p>
+<hr/>
+<p><strong>4. System Level — Frontend vs Backend</strong></p>
+<p>The broadest level of SoC is the split between client and server:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>Frontend (Client):  UI rendering, user interaction, local state
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>Backend (Server):   Business logic, data persistence, security
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>Database:           Storage, querying, transactions
+</code></pre></div>
+<p><strong>Why this matters:</strong> Without this separation, server-side rendering bleeds business rules into templates, making it impossible to build a mobile app without duplicating logic. The clean boundary enables:
+- A React web app, iOS app, and Android app all consuming the <strong>same REST/GraphQL API</strong>
+- The backend being replaced (e.g., Rails → Go) without changing the frontend
+- The database being sharded or migrated without client awareness</p>
+<pre class="mermaid"><code>graph TD
+    subgraph Clients
+        A[Web Browser<br/>React App]
+        B[Mobile App<br/>iOS / Android]
+        C[CLI Tool]
+    end
+    subgraph Backend
+        D[API Gateway]
+        E[Auth Service]
+        F[Business Logic<br/>Services]
+    end
+    subgraph Persistence
+        G[(Primary DB<br/>PostgreSQL)]
+        H[(Cache<br/>Redis)]
+        I[(Object Store<br/>S3)]
+    end
+
+    A --&gt;|HTTPS / REST| D
+    B --&gt;|HTTPS / REST| D
+    C --&gt;|HTTPS / REST| D
+    D --&gt; E
+    D --&gt; F
+    F --&gt; G
+    F --&gt; H
+    F --&gt; I
+</code></pre>
+<hr/>
+<h3 id="related-principles">Related Principles</h3>
+<p><strong>Don't Repeat Yourself (DRY):</strong></p>
+<p>Extract shared logic into reusable components instead of duplicating code. DRY and SoC work together: if two modules share logic, that logic is its own concern and deserves its own module.</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="c1"># Violating DRY — email validation duplicated</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">UserRegistration</span><span class="p">:</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">validate_email</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>        <span class="k">return</span> <span class="s2">"@"</span> <span class="ow">in</span> <span class="n">email</span> <span class="ow">and</span> <span class="s2">"."</span> <span class="ow">in</span> <span class="n">email</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"@"</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="k">class</span><span class="w"> </span><span class="nc">NewsletterSignup</span><span class="p">:</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">validate_email</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>        <span class="k">return</span> <span class="s2">"@"</span> <span class="ow">in</span> <span class="n">email</span> <span class="ow">and</span> <span class="s2">"."</span> <span class="ow">in</span> <span class="n">email</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"@"</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a><span class="c1"># Applying DRY — shared validator</span>
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a><span class="k">class</span><span class="w"> </span><span class="nc">EmailValidator</span><span class="p">:</span>
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">is_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>        <span class="k">return</span> <span class="s2">"@"</span> <span class="ow">in</span> <span class="n">email</span> <span class="ow">and</span> <span class="s2">"."</span> <span class="ow">in</span> <span class="n">email</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"@"</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+</code></pre></div>
+<blockquote>
+<p><strong>Caveat:</strong> DRY does not mean "never write the same line twice." Sharing code creates a <strong>coupling dependency</strong> between the modules that use it. If the shared code needs to diverge (one caller needs stricter validation than the other), you've overcoupled them. Use DRY when the logic is <strong>genuinely the same concern</strong>, not just accidentally similar.</p>
+</blockquote>
+<hr/>
+<p><strong>Interface Segregation:</strong></p>
+<p>Don't force a module to depend on interfaces it doesn't use. Keep interfaces small and focused.</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="c1"># Fat interface — violates Interface Segregation</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">IAnimal</span><span class="p">:</span>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">fly</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="o">...</span>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">swim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="o">...</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="o">...</span>
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="c1"># A Dog is forced to implement fly() even though it can't</span>
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a><span class="k">class</span><span class="w"> </span><span class="nc">Dog</span><span class="p">(</span><span class="n">IAnimal</span><span class="p">):</span>
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">fly</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">NotImplementedError</span>   <span class="c1"># meaningless</span>
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">swim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="o">...</span>
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="o">...</span>
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a><span class="c1"># Segregated interfaces</span>
+<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a><span class="k">class</span><span class="w"> </span><span class="nc">IFlyable</span><span class="p">:</span>
+<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">fly</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="o">...</span>
+<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>
+<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a><span class="k">class</span><span class="w"> </span><span class="nc">ISwimmable</span><span class="p">:</span>
+<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">swim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="o">...</span>
+<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a>
+<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a><span class="k">class</span><span class="w"> </span><span class="nc">IRunnable</span><span class="p">:</span>
+<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="o">...</span>
+<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a>
+<a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a><span class="k">class</span><span class="w"> </span><span class="nc">Duck</span><span class="p">(</span><span class="n">IFlyable</span><span class="p">,</span> <span class="n">ISwimmable</span><span class="p">,</span> <span class="n">IRunnable</span><span class="p">):</span> <span class="o">...</span>
+<a href="#__codelineno-9-24" id="__codelineno-9-24" name="__codelineno-9-24"></a><span class="k">class</span><span class="w"> </span><span class="nc">Dog</span><span class="p">(</span><span class="n">ISwimmable</span><span class="p">,</span> <span class="n">IRunnable</span><span class="p">):</span> <span class="o">...</span>
+<a href="#__codelineno-9-25" id="__codelineno-9-25" name="__codelineno-9-25"></a><span class="k">class</span><span class="w"> </span><span class="nc">Eagle</span><span class="p">(</span><span class="n">IFlyable</span><span class="p">,</span> <span class="n">IRunnable</span><span class="p">):</span> <span class="o">...</span>
+</code></pre></div>
+<p>Each animal now only depends on the capabilities it actually has. Adding a <code>Penguin</code> doesn't require touching the <code>Eagle</code> code.</p>
+<hr/>
+<p><strong>Dependency Inversion:</strong></p>
+<p>High-level modules shouldn't depend on low-level modules. Both should depend on abstractions (interfaces).</p>
+<p>Without DIP, the Business Logic Layer is coupled to a specific database:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="c1"># Tight coupling — Business Logic knows about MySQL</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">OrderService</span><span class="p">:</span>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="n">MySQLDatabase</span><span class="p">()</span>   <span class="c1"># ← hardcoded dependency</span>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">place_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">):</span>
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+</code></pre></div>
+<p>With DIP, the dependency is inverted through an interface:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="c1"># Loose coupling via abstraction</span>
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">IOrderRepository</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>    <span class="nd">@abstractmethod</span>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">):</span> <span class="o">...</span>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="k">class</span><span class="w"> </span><span class="nc">MySQLOrderRepository</span><span class="p">(</span><span class="n">IOrderRepository</span><span class="p">):</span>
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">):</span> <span class="o">...</span>
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="k">class</span><span class="w"> </span><span class="nc">MongoOrderRepository</span><span class="p">(</span><span class="n">IOrderRepository</span><span class="p">):</span>
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">):</span> <span class="o">...</span>
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a><span class="k">class</span><span class="w"> </span><span class="nc">OrderService</span><span class="p">:</span>
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repo</span><span class="p">:</span> <span class="n">IOrderRepository</span><span class="p">):</span>   <span class="c1"># ← depends on abstraction</span>
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">repo</span> <span class="o">=</span> <span class="n">repo</span>
+<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>
+<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">place_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">):</span>
+<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a>
+<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a><span class="c1"># At startup, inject the concrete implementation</span>
+<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a><span class="n">service</span> <span class="o">=</span> <span class="n">OrderService</span><span class="p">(</span><span class="n">repo</span><span class="o">=</span><span class="n">MySQLOrderRepository</span><span class="p">())</span>
+</code></pre></div>
+<p>Switching to MongoDB now requires only changing the injection at startup — <code>OrderService</code> itself is untouched.</p>
+<pre class="mermaid"><code>graph TD
+    A[OrderService<br/>High-level module]
+    B[IOrderRepository<br/>Abstraction interface]
+    C[MySQLOrderRepository<br/>Low-level module]
+    D[MongoOrderRepository<br/>Low-level module]
+
+    A --&gt;|depends on| B
+    C --&gt;|implements| B
+    D --&gt;|implements| B
+
+    style A fill:#4a9eff,color:#fff
+    style B fill:#f5a623,color:#fff
+    style C fill:#7ed321,color:#fff
+    style D fill:#7ed321,color:#fff
+</code></pre>
+<hr/>
+<h3 id="real-world-examples">Real-World Examples</h3>
+<p><strong>MVC Pattern (Model-View-Controller):</strong></p>
+<p>MVC is one of the oldest applications of SoC in UI development. It cleanly separates data management, presentation, and user input handling:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>Model:      Data and business logic (what the app knows)
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>View:       UI presentation (what the user sees)
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>Controller: Handles input, coordinates Model and View (what the app does in response)
+</code></pre></div>
+<p><strong>Example — a blog post page:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="c1"># Model — manages data, knows nothing about HTML</span>
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">Post</span><span class="p">:</span>
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">content</span><span class="p">):</span>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">id</span>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="n">content</span>
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="k">class</span><span class="w"> </span><span class="nc">PostRepository</span><span class="p">:</span>
+<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">find</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Post</span><span class="p">:</span>
+<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a>        <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">"SELECT * FROM posts WHERE id = ?"</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a>
+<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a><span class="c1"># View — renders HTML, knows nothing about DB</span>
+<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a><span class="k">def</span><span class="w"> </span><span class="nf">render_post</span><span class="p">(</span><span class="n">post</span><span class="p">:</span> <span class="n">Post</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a>    <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;h1&gt;</span><span class="si">{</span><span class="n">post</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&lt;/h1&gt;&lt;p&gt;</span><span class="si">{</span><span class="n">post</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/p&gt;"</span>
+<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a>
+<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a><span class="c1"># Controller — orchestrates, knows about both</span>
+<a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">"/posts/&lt;id&gt;"</span><span class="p">)</span>
+<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a><span class="k">def</span><span class="w"> </span><span class="nf">show_post</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
+<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a>    <span class="n">post</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>   <span class="c1"># asks Model</span>
+<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a>    <span class="k">return</span> <span class="n">render_post</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>           <span class="c1"># passes to View</span>
+</code></pre></div>
+<pre class="mermaid"><code>graph LR
+    User --&gt;|HTTP Request| Controller
+    Controller --&gt;|fetch data| Model
+    Model --&gt;|returns data| Controller
+    Controller --&gt;|passes data| View
+    View --&gt;|rendered HTML| User
+
+    style Controller fill:#4a9eff,color:#fff
+    style Model fill:#7ed321,color:#fff
+    style View fill:#f5a623,color:#fff
+</code></pre>
+<p><strong>Why it matters:</strong> You can swap the View (HTML → JSON for an API) without touching the Model. You can test the Model without rendering anything. The Controller stays thin — it only coordinates.</p>
+<hr/>
+<p><strong>Clean Architecture:</strong></p>
+<p>Clean Architecture (by Robert C. Martin, aka "Uncle Bob") is a more rigorous application of SoC. It organizes code into concentric circles, where the <strong>dependency rule</strong> states: <em>source code dependencies must point inward only</em>.</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a>Entities          (core business rules — framework agnostic)
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>  ← Use Cases     (application-specific rules — orchestrate entities)
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>    ← Interface Adapters  (controllers, presenters, gateways — translate)
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>      ← Frameworks &amp; Drivers  (DB, web framework, UI — the outer shell)
+</code></pre></div>
+<p><strong>Why the layers exist:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Purpose</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Entities</td>
+<td>Pure business logic, no I/O</td>
+<td><code>Order</code>, <code>Product</code>, discount calculation</td>
+</tr>
+<tr>
+<td>Use Cases</td>
+<td>Orchestrates entities for a specific action</td>
+<td><code>PlaceOrderUseCase</code></td>
+</tr>
+<tr>
+<td>Interface Adapters</td>
+<td>Converts between Use Case format and external format</td>
+<td>REST controller, DB repository implementation</td>
+</tr>
+<tr>
+<td>Frameworks &amp; Drivers</td>
+<td>The "details" — easily swappable</td>
+<td>Flask, SQLAlchemy, React</td>
+</tr>
+</tbody>
+</table>
+<pre class="mermaid"><code>graph TD
+    subgraph "Outer Ring — Frameworks &amp; Drivers"
+        A[Flask / Express]
+        B[SQLAlchemy / Mongoose]
+        C[React / Vue]
+    end
+    subgraph "Interface Adapters"
+        D[REST Controllers]
+        E[Repository Implementations]
+        F[Presenters]
+    end
+    subgraph "Use Cases"
+        G[PlaceOrderUseCase]
+        H[RegisterUserUseCase]
+    end
+    subgraph "Entities — Core"
+        I[Order]
+        J[User]
+        K[Product]
+    end
+
+    A --&gt; D
+    B --&gt; E
+    C --&gt; F
+    D --&gt; G
+    E --&gt; G
+    F --&gt; G
+    D --&gt; H
+    E --&gt; H
+    G --&gt; I
+    G --&gt; K
+    H --&gt; J
+</code></pre>
+<p><strong>Key test:</strong> can you run your Use Cases and Entities in a plain Python/Node REPL with no web framework, no database, no HTTP? In Clean Architecture, the answer should be <strong>yes</strong>.</p>
+<hr/>
+<p><strong>API Design:</strong></p>
+<p>SoC in API design means grouping endpoints by <strong>domain entity</strong> (the resource they manage), not by operation type:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>/api/users      → User concern    (CRUD on user accounts)
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>/api/products   → Product concern (CRUD on product catalog)
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>/api/orders     → Order concern   (CRUD on orders)
+</code></pre></div>
+<p><strong>Violation — mixing concerns in a single endpoint:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>POST /api/process   → body: { type: "create_user" | "place_order" | "send_email" }
+</code></pre></div>
+<p>This is an RPC-style blob endpoint. You can't cache it, you can't apply auth policies per resource, and the handler function inevitably becomes a <code>switch</code> statement with hundreds of cases.</p>
+<p><strong>Correct REST design — one concern per resource path:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a>POST   /api/users              → create user
+<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>GET    /api/users/{id}         → read user
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>PUT    /api/users/{id}         → update user
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a>DELETE /api/users/{id}         → delete user
+<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a>
+<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a>POST   /api/orders             → place order
+<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a>GET    /api/orders/{id}        → get order status
+<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a>POST   /api/orders/{id}/cancel → cancel order
+</code></pre></div>
+<p>Each route group can independently have its own middleware (auth, rate limiting, caching), its own controller, and its own set of tests.</p>
+<pre class="mermaid"><code>graph TD
+    Gateway[API Gateway]
+    Gateway --&gt;|/api/users/*| UserController
+    Gateway --&gt;|/api/products/*| ProductController
+    Gateway --&gt;|/api/orders/*| OrderController
+
+    UserController --&gt; UserService
+    ProductController --&gt; ProductService
+    OrderController --&gt; OrderService
+
+    UserService --&gt; UserDB[(Users DB)]
+    ProductService --&gt; ProductDB[(Products DB)]
+    OrderService --&gt; OrderDB[(Orders DB)]
+
+    style Gateway fill:#555,color:#fff
+    style UserController fill:#4a9eff,color:#fff
+    style ProductController fill:#7ed321,color:#fff
+    style OrderController fill:#f5a623,color:#fff
+</code></pre>
+<hr/>
+<h3 id="benefits">Benefits</h3>
+<ul>
+<li><strong>Maintainability</strong>: Change one concern without breaking others.</li>
+<li>
+<p><em>Example:</em> Switching from SendGrid to AWS SES only requires changing <code>NotificationService</code>. No other code is aware of the change.</p>
+</li>
+<li>
+<p><strong>Testability</strong>: Test each part in isolation.</p>
+</li>
+<li>
+<p><em>Example:</em> Unit-test <code>UserValidator</code> by passing <code>User</code> objects directly — no database, no HTTP server needed. Mock the dependencies in <code>OrderService</code> to test payment logic without charging real cards.</p>
+</li>
+<li>
+<p><strong>Reusability</strong>: Use the same module in different contexts.</p>
+</li>
+<li>
+<p><em>Example:</em> An <code>EmailValidator</code> extracted as its own concern can be used in registration, newsletter signup, and admin user creation flows — all without duplication.</p>
+</li>
+<li>
+<p><strong>Team Scalability</strong>: Different teams can own different concerns.</p>
+</li>
+<li>
+<p><em>Example:</em> The Payments team owns <code>PaymentService</code> and can deploy it independently. The Notifications team can refactor their queue logic without coordinating with any other team.</p>
+</li>
+<li>
+<p><strong>Debuggability</strong>: Easier to locate bugs when responsibilities are clear.</p>
+</li>
+<li><em>Example:</em> If an order confirmation email fails, you know immediately the bug lives in <code>NotificationService</code>, not in <code>OrderService</code> or <code>PaymentService</code>.</li>
+</ul>
+<hr/>
+<h3 id="anti-patterns-violations-of-soc">Anti-Patterns (Violations of SoC)</h3>
+<p><strong>God Object:</strong></p>
+<p>One class that knows about everything and does everything. It accumulates methods over time because "it's easier to add it here."</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="c1"># God Object — every concern crammed into UserManager</span>
+<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">UserManager</span><span class="p">:</span>
+<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="o">...</span>
+<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="o">...</span>
+<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">send_email</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="o">...</span>
+<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">generate_pdf_report</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="o">...</span>
+<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">charge_credit_card</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="o">...</span>
+<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">update_analytics_dashboard</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="o">...</span>
+<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">resize_profile_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="o">...</span>
+</code></pre></div>
+<p>This class has <strong>7 reasons to change</strong> and is impossible to test in isolation. Any change risks breaking an unrelated feature.</p>
+<hr/>
+<p><strong>Spaghetti Code:</strong></p>
+<p>Logic spread across files with no clear boundaries, cross-calling each other in circular or unpredictable ways.</p>
+<pre class="mermaid"><code>graph LR
+    A[order.py] --&gt;|imports| B[user.py]
+    B --&gt;|imports| C[email.py]
+    C --&gt;|imports| A
+    A --&gt;|imports| D[payment.py]
+    D --&gt;|imports| B
+    B --&gt;|imports| D
+
+    style A fill:#f66,color:#fff
+    style B fill:#f66,color:#fff
+    style C fill:#f66,color:#fff
+    style D fill:#f66,color:#fff
+</code></pre>
+<p>Circular imports, unpredictable initialization order, and no clear ownership. Changing <code>user.py</code> can break <code>payment.py</code> in non-obvious ways.</p>
+<hr/>
+<p><strong>Leaky Abstractions:</strong></p>
+<p>A concern leaks into a layer that should not be aware of it. The most common example is <strong>database queries in the presentation layer</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="c1"># Leaky — route handler directly queries the DB</span>
+<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">"/users/&lt;id&gt;"</span><span class="p">)</span>
+<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_user</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
+<a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a>    <span class="n">row</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"SELECT * FROM users WHERE id = ?"</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+<a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a>    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">row</span><span class="p">))</span>
+</code></pre></div>
+<p>The HTTP handler now knows about the schema of the <code>users</code> table. If the table is renamed or the DB is swapped, the route handler must change — even though HTTP handling has nothing to do with storage.</p>
+<p><strong>Fixed:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">"/users/&lt;id&gt;"</span><span class="p">)</span>
+<a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_user</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
+<a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a>    <span class="n">user</span> <span class="o">=</span> <span class="n">user_service</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>   <span class="c1"># concern boundary: HTTP → Service</span>
+<a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a>    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>     <span class="c1"># only formats the response</span>
+</code></pre></div>
+<hr/>
+<p><strong>Tight Coupling:</strong></p>
+<p>Changing one module forces changes in many others. Typically caused by using concrete classes instead of interfaces, or by accessing internal implementation details.</p>
+<pre class="mermaid"><code>graph TD
+    A[OrderService] --&gt;|directly instantiates| B[StripePaymentClient]
+    A --&gt;|directly instantiates| C[MySQLDatabase]
+    A --&gt;|directly instantiates| D[SendGridMailer]
+
+    style A fill:#f66,color:#fff
+    style B fill:#f66,color:#fff
+    style C fill:#f66,color:#fff
+    style D fill:#f66,color:#fff
+</code></pre>
+<p>If you switch from Stripe to PayPal, <code>OrderService</code> must be rewritten. With loose coupling (Dependency Inversion), <code>OrderService</code> depends only on <code>IPaymentGateway</code>, and the concrete implementation is injected — <code>OrderService</code> never changes when the provider switches.</p>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      © 2025 <a href="https://github.com/abhishekghoshh" rel="noopener" target="_blank">Abhishek Ghosh</a>
+</div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+<div class="md-social">
+<a class="md-social__link" href="https://github.com/abhishekghoshh" rel="noopener" target="_blank" title="github.com">
+<svg viewbox="0 0 480 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"></path></svg>
+</a>
+<a class="md-social__link" href="https://x.com/abhishek_ghoshh" rel="noopener" target="_blank" title="x.com">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253"></path></svg>
+</a>
+<a class="md-social__link" href="https://www.linkedin.com/in/abhishek-ghosh-220679132/" rel="noopener" target="_blank" title="www.linkedin.com">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5m282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"></path></svg>
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+<script src="../../../../assets/javascripts/bundle.60a45f97.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+window.mermaidConfig = {default: {
+    startOnLoad: false
+}};</script></body>
+</html>
