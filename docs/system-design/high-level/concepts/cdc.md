@@ -23,6 +23,7 @@
 
 ## Youtube
 
+- [What is CDC in System Design?](https://www.youtube.com/watch?v=Ut0i-SSEXY4)
 - [What Is Change Data Capture - Understanding Data Engineering 101](https://www.youtube.com/watch?v=hNJCxF3IWC4)
 - [Change Data Capture (CDC) | Why & How | Use case | System Design](https://www.youtube.com/watch?v=dN_11nBcv_A)
 

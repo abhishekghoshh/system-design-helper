@@ -30,6 +30,10 @@
 - [Addy Osmani](https://addyosmani.com/)
 
 
+- [Design Gurus' Blog](https://www.designgurus.io/blog)
+    - [19 Essential Microservices Patterns for System Design Interviews](https://www.designgurus.io/blog/19-essential-microservices-patterns-for-system-design-interviews)
+
+
 ## freecodecamp
 
 - [The Microservices Book - Learn How to Build and Manage Services in the Cloud](https://www.freecodecamp.org/news/the-microservices-book-build-and-manage-services-in-the-cloud/)
@@ -71,6 +75,8 @@
 
 - [Shivam Srivastava](https://medium.com/@shivamsrivastava.iec)
     - [Interview Experiences and Learnings](https://medium.com/@shivamsrivastava.iec/list/interview-experiences-and-learnings-b859fb631e28)
+- [Arvind Kumar](https://codefarm0.medium.com/)
+- [Ajay Rathod](https://rathod-ajay.medium.com/)
 - [Abhinav Thakur](https://blog.singhabhinav.in/)
 - [Alina Kovtun](https://medium.com/@akovtun)
 - [Pudari Madhavi](https://medium.com/@pudarimadhavi99)

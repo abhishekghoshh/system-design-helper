@@ -10,6 +10,7 @@
 
 ### Introduction
 
+- [How pros build truly resilient systems](https://www.youtube.com/watch?v=W6iMPAGY36c)
 - [How a CDN Works | System Design](https://www.youtube.com/watch?v=5mYSQvflpKA)
 - [How does Netflix's CDN scale to over 100TB/s? | System Design](https://www.youtube.com/watch?v=pdPSLm629yk)
 

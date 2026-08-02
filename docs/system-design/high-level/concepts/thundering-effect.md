@@ -9,6 +9,7 @@
 ## Youtube
 
 - [27. Thundering Herd Effect on Ticket Booking App | System Design](https://www.youtube.com/watch?v=1aamH7sA8FY)
+- [Thundering Herd Problem Explained! - System Design](https://www.youtube.com/watch?v=EIAbTpz-vnw)
 
 ## Theory
 

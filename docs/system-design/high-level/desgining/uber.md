@@ -11,6 +11,7 @@
 
 ## Youtube
 
+- [Uber's insane architecture](https://www.youtube.com/watch?v=g7FmEc5GLWs)
 - [System Design Interview: Design Uber w/ a Google Engineer](https://www.youtube.com/watch?v=TYl0HiOLKUc)
 - [Basic System Design for Uber or Lyft | System Design Interview Prep](https://www.youtube.com/watch?v=R_agd5qZ26Y)
 - [The Genius System Behind the Uber App's Real-Time Map](https://www.youtube.com/watch?v=gHIs0Mdow8M)

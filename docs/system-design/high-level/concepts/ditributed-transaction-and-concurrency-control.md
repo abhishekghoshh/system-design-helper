@@ -9,8 +9,20 @@
 ## Medium
 
 - [Concurrent Writes in Distributed Systems](https://medium.com/the-developers-diary/concurrent-writes-in-distributed-systems-601782e4797f)
+- 
+- 
 - [Optimistic Locking vs Pessimistic Locking: Managing Concurrent Access](https://medium.com/@abhirup.acharya009/managing-concurrent-access-optimistic-locking-vs-pessimistic-locking-0f6a64294db7)
+-
+-
+- 
+- [Understanding Database Phenomena and Isolation Levels](https://medium.com/@ali75mnf/understanding-database-phenomena-and-isolation-levels-6f1fc340b2e5)
+- [Understanding Database Isolation Levels from My Perspective](https://hosseinnejati.medium.com/understanding-database-isolation-levels-from-my-perspective-27f261eeb976)
+- [Understanding Database Isolation Levels](https://nadermedhatthoughts.medium.com/understanding-database-isolation-levels-c4ebcd55c6b9)
 - [Concurrency Challenges in Database Transactions: Isolation Levels and Locking Mechanisms](https://dip-mazumder.medium.com/concurrency-challenges-in-database-transactions-isolation-levels-and-locking-mechanisms-9672d335d432)
+- [Mastering Isolation Levels: A Deep Dive into ACID’s Isolation in Database Systems | Article 3](https://medium.com/@razputshivanshu/mastering-isolation-levels-a-deep-dive-into-acids-isolation-in-database-systems-article-3-292f2b493d9a)
+- [Transaction Isolation [Updated]](https://medium.com/@abhi18632/transaction-isolation-updated-eef62fb2c5bf)
+- [SQL Isolation Levels: A Deep Dive from Basics to Professional](https://medium.com/@cihanelibol99/sql-isolation-levels-a-deep-dive-from-basics-to-professional-09056be3269b)
+
 
 ## Youtube
 

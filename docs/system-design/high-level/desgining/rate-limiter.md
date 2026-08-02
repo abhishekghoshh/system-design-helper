@@ -34,6 +34,8 @@
 
 - [12. Design Rate Limiter | API Rate Limiter System Design | Rate Limiting Algorithms | Rate Limiter](https://www.youtube.com/watch?v=X5daFTDfy2g)
 
+- [Design Rate Limiter (LLD) - Token Bucket, Fixed & Sliding Window with Thread Safety](https://www.youtube.com/watch?v=7y0KWxaUn-E)
+
 
 - [API Throttling vs Rate Limiting | Most important backend concept in Hindi](https://www.youtube.com/watch?v=2XGa0sfU-f0)
 

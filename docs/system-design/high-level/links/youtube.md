@@ -28,6 +28,7 @@
 
 #### Roadmaps and topics
 
+- [System Design in 30 Days](https://www.youtube.com/watch?v=J9T4sLQQmuc)
 - [System design is actually easy...](https://www.youtube.com/watch?v=sIkRdfSxCiI)
 - [I ACED my Technical Interviews knowing these System Design Basics](https://www.youtube.com/watch?v=FxAom29OEKE)
 - [How to Prepare for System Design Interviews w/ Meta Staff Engineer](https://www.youtube.com/watch?v=Ru54dxzCyD0) **Chek the description links**
@@ -36,6 +37,7 @@
 - [Step-by-Step Roadmap to Mastering System Design for Interviews](https://www.youtube.com/watch?v=Ooy-KpRH66M)
 - [Complete System Design Roadmap 2025 | HLD & LLD by Shradha Ma'am](https://www.youtube.com/watch?v=CuQmQpvw04I)
 - [System Design Patterns you should Master Right Now](https://www.youtube.com/watch?v=OdNpY3WQniQ)
+- [System Design is Dead!](https://www.youtube.com/watch?v=gBGVlxuX-rc)
 
 
 #### System Design Crash Course
@@ -88,6 +90,7 @@
 - [Concept && Coding - by Shrayansh](https://www.youtube.com/@ConceptAndCodingByShrayansh/playlists)
     - [InterviewCodingPractise](https://gitlab.com/shrayansh8/interviewcodingpractise)
 - [Hello Interview - SWE Interview Preparation](https://www.youtube.com/@hello_interview/playlists)
+- [Shubh Patel](https://www.youtube.com/@shubhpatel_18/playlists)
 - [NeetCodeIO](https://www.youtube.com/@NeetCodeIO/playlists)
 - [Anubhav Sethi](https://www.youtube.com/@anubhavintech/playlists)
 - [Akhil Sharma](https://www.youtube.com/@AkhilSharmaTech/playlists)
@@ -149,6 +152,7 @@
 - [Milan Jovanović](https://www.youtube.com/@MilanJovanovicTech)
 - [Web Dev Cody](https://www.youtube.com/@WebDevCody)
     - [Software Engineering](https://www.youtube.com/playlist?list=PL6x5Q-Sj_BlbrbQP3alEVrJ4dA8JQW-HG)
+
 
 
 ### Other Playlist
