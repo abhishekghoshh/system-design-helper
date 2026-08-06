@@ -13,6 +13,21 @@
 
 ## Theory
 
+### Table of Contents
+
+- [What is Caching?](#what-is-caching)
+- [Cache Aside (Lazy Loading)](#cache-aside-lazy-loading)
+- [Read Through Strategy](#read-through-strategy)
+- [Write Through Strategy](#write-through-strategy)
+- [Write Behind (Write Back)](#write-behind-write-back)
+- [Write Around](#write-around)
+- [Refresh Ahead (Proactive Refresh)](#refresh-ahead-proactive-refresh)
+- [Cache Invalidation](#cache-invalidation)
+- [Eviction Policies](#eviction-policies)
+- [Popular Cache Systems Comparison](#popular-cache-systems-comparison)
+- [Distributed Cache](#distributed-cache)
+- [Caching Pattern Decision Matrix](#caching-pattern-decision-matrix)
+
 ### What is Caching?
 
 #### The Art of Remembering: The Most Powerful Optimization
@@ -636,6 +651,32 @@ redis-cli INFO stats | grep evicted_keys
 
 ---
 
+#### Real-World Use Cases
+
+- **Netflix / YouTube** - video thumbnails, metadata, and recommendation lists are cached at CDN and application tiers so the same catalog page is never recomputed per viewer.
+- **Twitter / X home timeline** - fan-out timelines are pre-computed and cached in Redis so reading a timeline is a cache lookup, not a live database join across thousands of followed accounts.
+- **DNS resolvers** - every browser and OS caches DNS lookups locally (with the record's own TTL) so repeated requests to the same domain skip the network round trip entirely.
+- **API gateways** - authentication middleware caches decoded JWT claims or API keys in-memory for a few seconds to avoid re-verifying a signature on every single request.
+
+#### Interview Questions and Answers
+
+**Q1: What is caching and why is it the highest-leverage optimization in system design?**
+A: Caching stores a copy of expensive-to-compute or expensive-to-fetch data in a faster medium so subsequent identical requests are served without re-paying that cost. It is high-leverage because real-world access patterns exhibit locality of reference (a small set of hot keys accounts for most traffic), so a relatively small cache can absorb the majority of load and cut both latency and infrastructure cost by orders of magnitude.
+
+**Q2: What is cache hit rate and why does going from 90% to 99% matter so much more than going from 50% to 60%?**
+A: Hit rate is `hits / (hits + misses)`. The relationship between hit rate and backend load is non-linear: at 90% hit rate the backend sees 10% of traffic, at 99% it sees only 1% - a 10x reduction in load for a 9-point improvement in hit rate. At low hit rates (50% to 60%) the backend load only drops from 50% to 40%, a much smaller relative win. This is why production systems obsess over squeezing the last few percentage points of hit rate.
+
+**Q3: What is the difference between temporal and spatial locality, and how does each influence cache design?**
+A: Temporal locality means recently accessed data is likely to be accessed again soon - it justifies caching a value after its first read. Spatial locality means data related to what was just accessed is also likely to be needed soon - it justifies prefetching or bundling related records (e.g., caching a product with its images and reviews together) so one cache miss populates several future hits at once.
+
+**Q4: How would you solve the cold-start problem after deploying a new instance or restarting a cluster?**
+A: Pre-warm the cache before accepting production traffic - load the top-N hot keys from the database or restore a snapshot (Redis RDB/AOF) into the new node - and ramp traffic gradually (1% to 10% to 100%) so the cache fills before it takes full load. Without warming, every request misses simultaneously and can overwhelm the database exactly when it is least prepared for it.
+
+**Q5: If your cache hit rate suddenly drops in production, what would you check first?**
+A: In order: (1) eviction rate - is memory pressure forcing out hot keys; (2) TTL configuration - did a deploy shorten TTLs or disable caching for a hot path; (3) key design - did a recent change break key normalization, creating duplicate entries; (4) write rate - is a spike in writes invalidating keys faster than they can be re-read; (5) whether a new cold node/pod joined the fleet without being warmed.
+
+---
+
 ### Cache Aside (Lazy Loading)
 
 The application manages the cache **explicitly**. The cache does not interact with the database on its own — the application reads from both and is solely responsible for keeping them in sync. This is the most widely used caching pattern in practice.
@@ -766,6 +807,26 @@ public UserDto getUser(long userId) throws Exception {
 
 **Avoid when:** Data is updated very frequently (cache invalidation becomes the bottleneck) or when you cannot tolerate any staleness.
 
+#### Real-World Use Cases
+
+- **Amazon / Flipkart product pages** - product detail objects are loaded into Redis only the first time they are viewed after a deploy or cache flush; subsequent views across millions of users hit the cache.
+- **Instagram/Facebook profile pages** - a user's profile document is fetched from the database once and cached; the app explicitly deletes the cache key whenever the user edits their profile.
+- **Auth token/public-key lookups** - API gateways fetch a signing key from an identity provider once, cache it aside, and reuse it until it is explicitly rotated and invalidated.
+
+#### Interview Questions and Answers
+
+**Q1: Why is this pattern called "lazy loading"?**
+A: Because the cache is populated only on demand - i.e. lazily, the first time a key is requested and missed - rather than being proactively filled ahead of time. Keys that are never read are never cached, which keeps cache usage efficient.
+
+**Q2: What race condition can occur if you delete the cache key before updating the database instead of after?**
+A: Another thread can read the deleted key between the delete and the DB update, miss, read the still-old value from the DB, and repopulate the cache with stale data that then persists until the next write. Always write to the DB first, then delete/invalidate the cache key.
+
+**Q3: What happens to your application if Redis becomes completely unavailable under Cache Aside?**
+A: The application degrades gracefully - every read simply falls through to the database on a cache miss, since the app already owns the fetch logic. Latency increases but the system stays functional, unlike Read Through where the cache layer itself may be a hard dependency.
+
+**Q4: How do you prevent a thundering herd when a very hot key expires?**
+A: Use a distributed mutex (e.g. Redis `SETNX`) so only one thread fetches from the database while others wait briefly and retry from cache, and/or add TTL jitter so hot keys do not all expire at the exact same instant.
+
 ### Read Through Strategy
 
 The **cache itself** handles the database fetch on a miss. The application only ever talks to the cache — it has no direct knowledge of the database on the read path. This is the key distinction from Cache Aside, where the application manages both.
@@ -858,6 +919,26 @@ spring:
 
 **Avoid when:** You need fine-grained TTL control per object or custom cache-population logic that a framework abstraction cannot express.
 
+#### Real-World Use Cases
+
+- **Hibernate/JPA second-level cache** - the ORM itself intercepts entity loads, checks the shared cache region, and only issues SQL on a miss - the application code never sees the distinction.
+- **CDN origin shielding** - a CDN edge node acts as a read-through cache in front of the origin server; the edge fetches from origin transparently on a miss and the browser never talks to origin directly.
+- **Spring Boot microservices with `@Cacheable`** - product, pricing, and inventory lookup services commonly wrap repository calls in `@Cacheable` so callers get transparent caching with zero manual Redis calls.
+
+#### Interview Questions and Answers
+
+**Q1: What is the key architectural difference between Read Through and Cache Aside?**
+A: In Cache Aside the application owns both the cache and the database fetch logic - it checks the cache, and on a miss, queries the DB itself and populates the cache. In Read Through, the cache/framework abstraction owns the fetch logic - the application only ever calls the cache, which fetches from the DB internally on a miss.
+
+**Q2: What happens on the very first read for any key under Read Through?**
+A: It is always a guaranteed cache miss (a cold start penalty) because nothing has been loaded yet - the cache layer fetches from the DB, stores the result, and returns it, so only the first caller pays the full latency.
+
+**Q3: How do you keep a Read Through cache from serving stale data after a write?**
+A: Pair it with explicit invalidation - e.g. Spring's `@CacheEvict` on write methods - or use Write Through so the cache entry is refreshed synchronously the moment the underlying data changes.
+
+**Q4: What is a downside of relying on a framework-level Read Through abstraction?**
+A: You lose fine-grained control - things like custom TTL per object, conditional caching logic, or bespoke population strategies can be awkward or impossible to express through simple annotations, and reads become tightly coupled to cache availability.
+
 ### Write Through Strategy
 
 Every write goes to **both** the cache and the database **synchronously** in the same operation. The write is only acknowledged to the caller once both succeed. This guarantees that the cache is never stale.
@@ -949,6 +1030,26 @@ public String saveConfig(String key, String value) {
 **Best for:** Config values, session data, user preferences — anything that is written and then immediately read. Pairs naturally with Read Through for a fully consistent read/write cache layer.
 
 **Avoid when:** Write throughput is very high and most written data is never re-read (wasted cache space and double write overhead).
+
+#### Real-World Use Cases
+
+- **Bank account balances** - a funds transfer updates the ledger row in the database and the cached balance in the same operation, so the very next balance check (often milliseconds later, in the same session) is always correct.
+- **Feature flag services** (e.g. LaunchDarkly-style systems) - toggling a flag writes to the durable store and the in-memory/Redis cache together so every service instance sees the new value immediately, not after a TTL expires.
+- **Shopping cart state** - adding an item writes to both the cart database and the session cache synchronously so the cart page reflects the change on immediate reload.
+
+#### Interview Questions and Answers
+
+**Q1: Why does Write Through guarantee the cache is never stale?**
+A: Because every write updates the cache and the database as a single logical operation before acknowledging the caller - there is no window where the two can disagree, unlike TTL-based or event-based invalidation which have a delay or depend on a second step happening correctly.
+
+**Q2: What is the main cost of Write Through compared to Write Behind?**
+A: Higher write latency, because the caller must wait for both the cache write and the database write to succeed rather than returning immediately after a fast cache-only write.
+
+**Q3: What happens if the cache write fails but the database write already succeeded (or vice versa)?**
+A: You get a consistency gap. Typical handling: perform the database write first (source of truth), then update the cache - if the cache write fails, log it and let the next read miss and repopulate; never let a cache failure silently roll back a successful DB commit.
+
+**Q4: When would Write Through cause unnecessary cache pollution?**
+A: When a large fraction of written data is rarely or never read again (e.g. bulk imports, archival writes) - every write still occupies cache memory even though it will never be read, wasting capacity that could hold genuinely hot data. Write Around is a better fit for that workload.
 
 ### Write Behind (Write Back)
 
@@ -1054,6 +1155,26 @@ public class ViewCountService {
 
 **Avoid when:** Data loss is unacceptable — financial transactions, inventory levels, order confirmations.
 
+#### Real-World Use Cases
+
+- **YouTube / Medium view counters** - every page view increments a Redis counter instantly; a background job periodically flushes aggregated counts to the durable database instead of writing on every single view.
+- **Gaming leaderboards** - score updates land in Redis sorted sets immediately for real-time ranking, while a scheduled job persists snapshots to the database for long-term storage and analytics.
+- **IoT sensor telemetry** - thousands of sensors write readings per second to an in-memory buffer; a batch job flushes them to a time-series database in bulk rather than per-reading.
+
+#### Interview Questions and Answers
+
+**Q1: Why is Write Behind so much faster on the write path than Write Through?**
+A: The caller only waits for the cache write to complete, not the database write - the database write happens asynchronously in the background, batched with other pending writes, so there is no per-request round trip to the database at all.
+
+**Q2: What is the biggest risk of Write Behind, and how do you mitigate it?**
+A: Data loss - if the cache node crashes before the background flush runs, all unflushed "dirty" entries are lost. Mitigate by backing the dirty queue with a durable log (e.g. Kafka or a Redis AOF-persisted queue) so pending writes can be replayed after a crash, and by keeping the flush interval short.
+
+**Q3: Why would you never use Write Behind for financial transactions?**
+A: Because losing even one unflushed write means silently losing money - a debit or credit that the user was told succeeded. Financial operations require the durability guarantee of Write Through (or a properly transactional write), not the eventual, best-effort durability of Write Behind.
+
+**Q4: How does batching in Write Behind improve database throughput?**
+A: Instead of N separate round trips (one per write), pending writes accumulate in a queue and are flushed as a single batched INSERT/UPDATE every few seconds or every N entries - this amortizes connection and transaction overhead across many logical writes, dramatically increasing effective throughput.
+
 ### Write Around
 
 Writes go **directly to the database**, bypassing the cache entirely. The cache is only populated when the data is subsequently read (via Cache Aside or Read Through). This prevents freshly written data from evicting hot read data that is more likely to be accessed again.
@@ -1121,6 +1242,60 @@ flowchart TD
 **Best for:** Write-heavy workloads where written data is rarely read back — log ingestion, audit trails, bulk imports, batch jobs, media uploads. Protects the cache from being flooded with data that will never be read.
 
 **Avoid when:** Data is read immediately after it is written — the guaranteed first-read miss adds unnecessary latency for that access pattern.
+
+#### Code Example (Spring Boot - Bulk Audit Log Ingestion)
+
+```java
+@Service
+public class AuditLogService {
+
+    private final AuditLogRepository  auditRepo;
+    private final StringRedisTemplate redis;
+    private final ObjectMapper        mapper;
+
+    // Write Around: audit events are written straight to the database.
+    // The cache is never touched here - these records are rarely read back.
+    public void recordAuditEvent(AuditEvent event) {
+        auditRepo.save(event.toEntity());
+        // No cache write - avoids evicting hot product/user data with
+        // records that are read maybe once, if ever, during an investigation.
+    }
+
+    // Only populated in cache on the rare occasion someone actually looks it up
+    public AuditEventDto getAuditEvent(long eventId) throws Exception {
+        String key    = "audit:" + eventId;
+        String cached = redis.opsForValue().get(key);
+        if (cached != null) return mapper.readValue(cached, AuditEventDto.class);
+
+        AuditEventDto dto = auditRepo.findById(eventId)
+            .map(AuditEventDto::from)
+            .orElseThrow(() -> new AuditEventNotFoundException(eventId));
+
+        redis.opsForValue().set(key, mapper.writeValueAsString(dto), Duration.ofMinutes(30));
+        return dto;
+    }
+}
+```
+
+#### Real-World Use Cases
+
+- **Audit trails / compliance logs** - security and compliance events are written directly to durable storage; they are read only occasionally during an investigation, so caching them on write would waste memory.
+- **Bulk CSV/data imports** - a nightly batch job inserting millions of rows writes straight to the database, bypassing the cache entirely so it does not evict genuinely hot, frequently-read keys.
+- **Media upload metadata** - when a user uploads a video or image, the metadata row is written to the database; the cache is populated only later when someone actually views the media.
+
+#### Interview Questions and Answers
+
+**Q1: How does Write Around differ from Write Through in terms of what happens to the cache on a write?**
+A: Write Through updates the cache and the database together on every write, so the cache is always fresh. Write Around writes only to the database and leaves the cache untouched - the cache is populated later, only if and when the data is actually read.
+
+**Q2: What problem does Write Around solve that Write Through does not?**
+A: Cache pollution. If you write-through data that is rarely or never read again (bulk imports, audit logs), it permanently occupies cache memory and can evict genuinely hot keys. Write Around keeps that write-only data out of the cache entirely.
+
+**Q3: What is the guaranteed cost of Write Around on the read path?**
+A: The first read after any write is always a cache miss, since the cache was never populated at write time - this is a deliberate, accepted trade-off in exchange for protecting cache capacity.
+
+**Q4: When would you avoid Write Around?**
+A: When the access pattern is "read immediately after write" - e.g. a user submits a form and is redirected to a page that displays what they just saved. In that case the guaranteed miss adds latency exactly when the user is watching, so Write Through or Cache Aside (which populates cache on the read) is a better fit.
 
 ### Refresh Ahead (Proactive Refresh)
 
@@ -1213,6 +1388,26 @@ public class LiveScoreService {
 **Best for:** Predictable, always-on high-traffic data with expensive recompute cost — live sports scores, stock tickers, homepage banners, trending product lists, currency exchange rates.
 
 **Avoid when:** Access patterns are unpredictable (you cannot know which keys are hot ahead of time) or when data changes faster than your refresh interval can keep up.
+
+#### Real-World Use Cases
+
+- **Stock market tickers** - prices for the most-watched symbols are refreshed in the background every few seconds so any user viewing them always sees an already-warm value with zero miss latency.
+- **Live sports scoreboards** - scores for in-progress matches are proactively refreshed on a tight schedule while the game is live, then the refresh job is stopped once the match ends and traffic drops.
+- **Homepage banners / trending lists** - editorial or algorithmically-ranked "trending now" lists are recomputed and pushed into cache ahead of expiry since they are known to be extremely hot at all times.
+
+#### Interview Questions and Answers
+
+**Q1: How is Refresh Ahead fundamentally different from every other caching pattern discussed?**
+A: Every other pattern is reactive - it responds to a cache miss or a write. Refresh Ahead is proactive - a background process watches the remaining TTL of known-hot keys and refreshes them before they expire, so a user request never experiences a miss on those keys at all.
+
+**Q2: What is the main risk or waste associated with Refresh Ahead?**
+A: Wasted database load - a key is refreshed on schedule even if nobody has requested it recently, meaning some refresh cycles do work that is never actually consumed. It also requires knowing in advance which keys are hot enough to justify the background refresh cost.
+
+**Q3: How do you choose the refresh threshold (e.g. refresh when 10 seconds of TTL remain)?**
+A: Set it comfortably longer than the time it takes to recompute and write the fresh value, so the refresh completes before expiry under normal load - e.g. if a refresh takes 2 seconds, a 10-second threshold gives a wide safety margin against latency spikes.
+
+**Q4: Could you combine Refresh Ahead with Cache Aside in the same system?**
+A: Yes - this is common. Use Refresh Ahead for a small set of known hot keys (top N trending items, live tickers) and fall back to standard Cache Aside for the long tail of less predictable keys, giving you zero-miss latency where it matters most without the overhead of refreshing everything.
 
 ---
 
@@ -1346,6 +1541,26 @@ flowchart TD
 | **Mutex / SETNX lock** | Only one thread fetches from DB; others wait and retry from cache |
 | **Background refresh** | Async job refreshes key before it expires; serves slightly stale data |
 
+#### Real-World Use Cases
+
+- **CDN cache purging** - deploying a new version of a website triggers a purge API call (e.g. Cloudflare/Fastly) that invalidates specific URL patterns so users immediately get the new content instead of waiting for TTL expiry.
+- **Cache-busting via versioned asset URLs** - static assets are served as `app.a1b2c3.js` instead of `app.js`; a new deploy changes the hash, producing a brand new cache key rather than needing to invalidate the old one at all.
+- **E-commerce price updates** - when a product's price changes in the admin panel, the write path immediately deletes the cached product entry so no customer can see a stale price for even a few seconds.
+
+#### Interview Questions and Answers
+
+**Q1: What did Phil Karlton mean by cache invalidation being one of the two hardest problems in computer science?**
+A: Because there is no universally correct answer to "when is this cached value no longer valid" - too aggressive invalidation causes unnecessary misses and load, too lax invalidation causes users to see stale data, and coordinating invalidation across multiple cache layers and services is inherently error-prone.
+
+**Q2: Compare TTL-based invalidation with event-based invalidation.**
+A: TTL is simple and requires no coordination, but it guarantees a stale window of up to the TTL duration. Event-based invalidation (deleting the key right after a write) gives a near-zero stale window but requires every write path to reliably fire the invalidation, and can itself fail if the app crashes between the DB write and the cache delete.
+
+**Q3: What is the Outbox pattern and how does it help cache invalidation reliability?**
+A: The Outbox pattern writes the invalidation event to an outbox table inside the same database transaction as the data change, then a separate consumer reliably publishes that event (e.g. to a queue) and performs the cache delete. This avoids the race condition where the app crashes after committing the DB write but before invalidating the cache.
+
+**Q4: What is a cache stampede and how do you prevent it?**
+A: A cache stampede (dog-pile effect) happens when a very popular key expires and many concurrent requests all miss at once, sending a burst of simultaneous load to the database. Prevent it with TTL jitter (randomizing expiry so hot keys do not all expire together), a mutex/lock so only one request repopulates the cache while others wait, or a background job that refreshes the key just before it expires (Refresh Ahead).
+
 ---
 
 ### Eviction Policies
@@ -1413,6 +1628,64 @@ maxmemory-policy allkeys-lru    # evict LRU across ALL keys when full
 
 > **Tip:** Use two separate Redis instances (or logical databases) if you need different eviction policies — e.g. `allkeys-lru` for the URL cache and `noeviction` for the ID range counter.
 
+#### Code Example (Caffeine In-Process Eviction Policy)
+
+```java
+@Configuration
+public class CaffeineCacheConfig {
+
+    // Size-based LRU-ish eviction (Caffeine uses TinyLFU + LRU segments internally)
+    @Bean
+    public Cache<String, ProductDto> productCache() {
+        return Caffeine.newBuilder()
+            .maximumSize(50_000)                 // evict when size exceeds 50k entries
+            .expireAfterWrite(Duration.ofMinutes(30))
+            .recordStats()                       // exposes hit/miss/eviction counters
+            .build();
+    }
+
+    // Frequency-weighted eviction is approximated automatically by Caffeine's
+    // Window TinyLFU algorithm - no separate LFU flag needed, unlike Redis.
+}
+```
+
+```java
+@Service
+public class ProductCacheService {
+
+    private final Cache<String, ProductDto> cache; // injected productCache bean
+
+    public ProductDto getProduct(String productId, Supplier<ProductDto> loader) {
+        // get() atomically loads-and-caches on miss, avoiding duplicate loads
+        return cache.get(productId, key -> loader.get());
+    }
+
+    public CacheStats stats() {
+        return cache.stats(); // hitRate(), evictionCount(), averageLoadPenalty()
+    }
+}
+```
+
+#### Real-World Use Cases
+
+- **Redis session store** - configured with `allkeys-lru` so the least recently active sessions are evicted first when memory fills, keeping active users logged in.
+- **CDN edge caches** - typically evict on LRU so long-tail assets that have not been requested recently are dropped first, keeping capacity for currently popular content.
+- **Viral content platforms** (e.g. a trending news article) - LFU-style eviction ensures a single article with a million hits is never evicted just because a niche article was technically accessed slightly more recently.
+
+#### Interview Questions and Answers
+
+**Q1: When would you choose LFU over LRU?**
+A: LFU is better when popularity is the dominant signal and you want to protect long-standing viral content from eviction, even if it has not been accessed in the last few minutes. LRU is better for general-purpose caches where recency is a good proxy for future access, and where you want the cache to adapt quickly when the working set shifts.
+
+**Q2: Does Redis implement true LRU?**
+A: No - Redis approximates LRU using random sampling (configurable via `maxmemory-samples`) rather than maintaining a fully ordered list of all keys, trading a small amount of eviction accuracy for much lower memory and CPU overhead compared to exact LRU tracking.
+
+**Q3: What does the `noeviction` policy do, and when would you use it?**
+A: `noeviction` causes Redis to reject write commands with an error once `maxmemory` is reached, instead of evicting any key. It is used for data that must never be silently dropped - e.g. auto-increment ID counters or a durable queue - where losing a key would cause data corruption rather than just a cache miss.
+
+**Q4: How does Caffeine's Window TinyLFU differ from classic LRU or LFU?**
+A: It combines a small LRU-based "window" to quickly admit recently seen items with a frequency sketch (TinyLFU) that protects historically popular items from eviction by low-frequency newcomers - giving better hit rates than pure LRU or pure LFU on many real-world workloads while using very little extra memory.
+
 ---
 
 ### Popular Cache Systems Comparison
@@ -1436,6 +1709,20 @@ maxmemory-policy allkeys-lru    # evict LRU across ALL keys when full
 | Lua scripting | Yes | No |
 | Threading model | Single-threaded event loop | Multi-threaded |
 | **Choose when** | You need rich data types, persistence, pub/sub, or atomic operations | Pure simple cache and multi-core throughput is the only concern |
+
+#### Interview Questions and Answers
+
+**Q1: Redis is single-threaded for command execution - why is it still extremely fast?**
+A: Because it is an in-memory, event-loop-driven system - there is no disk I/O wait and no context-switch or locking overhead between threads for command execution, so a single core can process hundreds of thousands of simple operations per second. Redis 6+ also uses background threads for I/O and some cluster operations without breaking the single-threaded command execution guarantee (which keeps operations like `INCR` naturally atomic).
+
+**Q2: When would you pick Memcached over Redis?**
+A: When you need a pure, simple key-value string cache and want to take advantage of multi-core throughput out of the box, without needing persistence, rich data structures, replication, or pub/sub - Memcached's multi-threaded design can outperform Redis on raw simple GET/SET throughput on a single large multi-core box.
+
+**Q3: What is the practical difference between Ehcache and Hazelcast?**
+A: Ehcache is typically an embedded, single-JVM cache (zero network hop, extremely low latency) best suited when one application instance owns its own cache. Hazelcast is a distributed in-memory data grid designed to span multiple JVMs/nodes, sharing data and compute across a cluster - use it when several service instances need a consistent shared cache view.
+
+**Q4: Why might you choose Redis's Sorted Set data structure over implementing a leaderboard in SQL?**
+A: A Sorted Set gives O(log N) insert/update and O(log N + M) range queries (e.g. "top 10" or "rank of user X") natively in memory, without needing an `ORDER BY` query against a growing table on every request - this is dramatically faster and simpler than maintaining and querying a ranked SQL table for high-frequency leaderboard updates.
 
 ---
 
@@ -1573,6 +1860,27 @@ public class TieredUserService {
 
 **Avoid when:** Running a single-server application with a small dataset — use an embedded in-process cache (Caffeine, Ehcache) for zero network overhead.
 
+#### Real-World Use Cases
+
+- **Shared session store** - a user logged in behind a load balancer can be routed to any of dozens of app servers on each request; a Redis Cluster session store means every server sees the same session data regardless of which one handles the request.
+- **Global rate limiting** - an API gateway with many replicas needs one shared view of "how many requests has this API key made in the last minute" - a distributed cache with atomic `INCR` operations provides a single consistent counter across all replicas.
+- **URL shortener redirect cache** - a service like a bit.ly clone caches short-code to long-URL mappings in a distributed cache so any of its stateless web servers can resolve a redirect in under a millisecond without hitting the database.
+- **Real-time multiplayer game leaderboards** - all game server instances read and write to the same distributed sorted-set based leaderboard so every player sees a consistent global rank.
+
+#### Interview Questions and Answers
+
+**Q1: Why does consistent hashing matter for a distributed cache cluster?**
+A: Consistent hashing (or Redis Cluster's hash-slot variant) ensures that when a node is added or removed, only the keys that mapped to the affected range need to move - not the entire dataset. Without it, a naive `hash(key) % N` scheme would remap almost every key whenever `N` changes, causing a massive, unnecessary cache flush.
+
+**Q2: What happens when a primary node in a Redis Cluster fails?**
+A: Its replica is promoted to primary automatically (Redis Cluster uses a gossip protocol to detect the failure and trigger failover), and it takes over ownership of that primary's hash slot range - clients get redirected transparently, with a brief unavailability window for the affected slots during the failover.
+
+**Q3: How does a distributed cache trade off against the CAP theorem?**
+A: Most distributed caches favor availability and partition tolerance (AP) over strict consistency - e.g. Redis replication is asynchronous by default, so a failover can lose the last few unacknowledged writes. Systems that need strong consistency guarantees must use synchronous replication or quorum-based writes, at the cost of higher write latency.
+
+**Q4: What is the risk of adding a local (L1) in-process cache in front of a distributed (L2) cache, and how do you mitigate it?**
+A: Each application pod's L1 cache is independent, so after a write, other pods can keep serving stale L1 data for up to the L1 TTL. Mitigate by keeping the L1 TTL short, or by broadcasting an invalidation message over Redis pub/sub so all pods evict the affected key from their local L1 cache immediately on write.
+
 ---
 
 ### Caching Pattern Decision Matrix
@@ -1610,3 +1918,17 @@ flowchart TD
     MULTI -- Yes --> RT[Read Through\nshared cache gateway]
     MULTI -- No  --> WA2[Write Around\nprotect cache from cold writes]
 ```
+
+#### Interview Questions and Answers
+
+**Q1: How would you design the caching strategy for a typical e-commerce product detail page?**
+A: Use Cache Aside (or Read Through) for the product data itself since it is read-heavy and updated infrequently, with event-based invalidation on price/stock changes. Use Write Around for write-heavy, rarely-read data like order audit logs. Add a CDN layer in front for product images. If the product list needs a "trending now" section, use Refresh Ahead to keep that specific hot data always warm.
+
+**Q2: A system has heavy writes but can tolerate losing the last few seconds of data on a crash - which pattern fits, and why?**
+A: Write Behind - it acknowledges writes immediately from the cache and flushes to the database asynchronously in batches, maximizing write throughput. The trade-off (a small window of unflushed data at risk on a crash) is acceptable for use cases like view counters or telemetry, but never for financial or inventory data.
+
+**Q3: How do you decide between Cache Aside and Read Through for a new read-heavy service?**
+A: Choose Read Through when you want the cache/framework to own the fetch logic transparently (e.g. Spring `@Cacheable`) and multiple call sites need consistent caching behavior without duplicating logic. Choose Cache Aside when you need fine-grained control over what gets cached, custom TTLs per key, or want the application to degrade gracefully by querying the DB directly if the cache is down.
+
+**Q4: Why might a single service use more than one caching pattern at once?**
+A: Because different data within the same service often has different access patterns - hot, predictable data (trending lists) benefits from Refresh Ahead; general reads use Cache Aside; rarely-read bulk writes use Write Around; and consistency-critical writes (balances, flags) use Write Through. Real production systems mix patterns per data type rather than picking one globally.
