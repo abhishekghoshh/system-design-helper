@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Shell(grep -c '^```' docs/system-design/high-level/concepts/event-sourcing.md && grep -c '^```mermaid' docs/system-design/high-level/concepts/event-sourcing.md && grep -n 'APPEND-NEXT' docs/system-design/high-level/concepts/event-sourcing.md; wc -l docs/system-design/high-level/concepts/event-sourcing.md)",
+      "Shell(python3 - <<'EOF' import re, os text = open('docs/system-design/high-level/concepts/fault-tolerance.md').read() headers = re.findall(r'^### (.+)$', text, re.M) def anchor(h): a = h.lower() a = re.sub(r'[^a-z0-9 \\-]', '', a) return a.replace(' ', '-') valid = {anchor(h) for h in headers} links = re.findall(r'\\]\\(#([^)]+)\\)', text) missing = [l for l in links if l not in valid] print(\"anchors referenced:\", len(links), \"| missing:\", missing if missing else \"none\") rel = re.findall(r'\\]\\(([a-z0-9\\-]+\\.md)[^)]*\\)', text) base = 'docs/system-design/high-level/concepts' bad = [r for r in rel if not os.path.exists(os.path.join(base, r))] print(\"relative links:\", sorted(set(rel)), \"| broken:\", bad if bad else \"none\") print(\"### sections:\", len(headers)) EOF)"
+    ],
+    "deny": [],
+    "defaultMode": "default"
+  }
+}
