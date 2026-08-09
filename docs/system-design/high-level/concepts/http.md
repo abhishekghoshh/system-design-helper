@@ -2,12 +2,18 @@
 
 ## Blogs and websites
 
+- [HTTP/2 vs. HTTP/1.1: How do they affect web performance?](https://www.cloudflare.com/learning/performance/http2-vs-http1.1/)
+
 
 ## Medium
 
 - [Understanding CORS](https://itnext.io/understanding-cors-4157bf640e11)
 
+
 ## Youtube
+
+- [Why HTTP 2 is faster?](https://www.youtube.com/watch?v=4HqpvUtK00g)
+
 
 
 ## Theory

@@ -166,19 +166,19 @@ ETag: "v1.23"  # Version-based validation
 ```
 
 **Benefits:**
-- Zero server load
-- Zero network latency
-- Scales infinitely (each user caches locally)
+- **Zero server load** - once cached, every browser hit is served entirely from local disk; the origin server never sees the request, so it costs nothing in server CPU, memory, or connection handling.
+- **Zero network latency** - there is no round trip to any server at all; the asset is read straight from the user's device, making retrieval effectively instantaneous (0 ms network time).
+- **Scales infinitely (each user caches locally)** - because the cache lives on each individual user's device, there is no shared or central cache to size, replicate, or worry about overloading as traffic grows - a million users simply add a million independent caches, not load on one shared resource.
 
 **Challenges:**
-- Can't invalidate (stuck until expiry)
-- Different versions across users
-- Wasted bandwidth if user never returns
+- **Can't invalidate (stuck until expiry)** - once a browser has cached a resource with a given `max-age`, the server has no way to force that browser to discard it early; the stale copy remains until the TTL naturally elapses or the user manually clears their cache.
+- **Different versions across users** - because each browser caches independently at a different time, users can be viewing different versions of the same asset simultaneously - e.g. after a deploy, some users see new CSS immediately while others serve the cached old version for hours.
+- **Wasted bandwidth if user never returns** - the cost of a large cached download (with a far-future `max-age`) is paid even if that specific user never revisits the site again to benefit from the cached copy, so the caching win is speculative rather than guaranteed.
 
 **Best For:**
-- Static assets (CSS, JS, images)
-- Infrequently changing content
-- User-specific data (after login)
+- **Static assets (CSS, JS, images)** - content addressed by a hashed or versioned filename never changes for a given URL, so caching it aggressively (e.g. `max-age=31536000, immutable`) is always safe.
+- **Infrequently changing content** - anything that updates rarely (a company logo, a terms-of-service PDF) benefits from a long cache lifetime with minimal risk of staleness.
+- **User-specific data (after login)** - private, per-user payloads (like a rendered dashboard fragment) can be cached with a `private` cache-control directive so only that user's browser stores it, avoiding accidental sharing between users on a shared proxy.
 
 ##### CDN Cache (Edge)
 ```
@@ -197,16 +197,16 @@ Return from edge: 5ms (vs 200ms from US origin)
 5. Subsequent users in region: Served from cache
 
 **Benefits:**
-- Geographic proximity (low latency)
-- Offloads origin servers (90%+ hit rates)
-- Handles traffic spikes (DDoS protection)
-- Bandwidth savings (serve from edge)
+- **Geographic proximity (low latency)** - the CDN serves content from the edge node nearest the user rather than the origin server, cutting round-trip time from hundreds of milliseconds (cross-continent) down to a few milliseconds.
+- **Offloads origin servers (90%+ hit rates)** - because most requests are answered directly at the edge, the origin server only needs to handle cache misses and can run with far less capacity than if it served every request directly.
+- **Handles traffic spikes (DDoS protection)** - the CDN's distributed edge network absorbs sudden traffic surges (viral content, flash sales, or malicious floods) across many nodes, protecting the origin from being overwhelmed by a single point of failure.
+- **Bandwidth savings (serve from edge)** - the origin only sends each asset to the CDN once per edge location; from then on, thousands of user requests are served from the CDN's own bandwidth, not the origin's.
 
 **Best For:**
-- Static assets globally distributed
-- Media files (images, videos)
-- API responses (with care)
-- Software downloads
+- **Static assets globally distributed** - assets like CSS, JS, and fonts benefit the most since they are identical for every user and safe to cache broadly.
+- **Media files (images, videos)** - large binary payloads are expensive to transfer repeatedly across long distances, so caching them at the edge yields the biggest latency and bandwidth wins.
+- **API responses (with care)** - dynamic responses can be cached briefly (using `s-maxage`) when a small staleness window is acceptable, giving read-heavy APIs a large capacity boost without code changes.
+- **Software downloads** - large installer or update files are ideal CDN candidates since they are immutable once published and requested repeatedly by many users worldwide.
 
 **Advanced: Dynamic Content Caching**
 Modern CDNs cache API responses:
@@ -242,20 +242,20 @@ def get_user(user_id):
 ```
 
 **Pros:**
-- Extremely fast (nanoseconds)
-- No network calls
-- Simple implementation
+- **Extremely fast (nanoseconds)** - reading from an in-process hash map is just a memory access with no serialization or network stack involved, making it orders of magnitude faster than any remote cache.
+- **No network calls** - there is no socket, no serialization, and no network round trip, eliminating an entire class of latency and failure modes (timeouts, connection resets).
+- **Simple implementation** - a local cache is just a data structure inside the running application (e.g. a `HashMap` or a library like Caffeine) with no separate infrastructure to deploy, monitor, or scale.
 
 **Cons:**
-- Limited by server RAM
-- Not shared across servers
-- Invalidation is complex
-- Lost on server restart
+- **Limited by server RAM** - the cache can only be as large as the heap/memory available on that single instance, capping how much data can realistically be kept warm.
+- **Not shared across servers** - each application instance has its own independent copy, so a value cached on instance A is invisible to instance B, and the same data may be fetched from the database once per instance instead of once globally.
+- **Invalidation is complex** - because there is no single owner, invalidating a key everywhere requires broadcasting the invalidation to every instance (e.g. via pub/sub); a naive implementation can leave stale copies on other instances indefinitely.
+- **Lost on server restart** - the cache lives entirely in process memory, so a deploy, crash, or restart wipes it clean and the instance starts cold again.
 
 **When to Use:**
-- Reference data (countries, config)
-- Session data (if single server)
-- Small datasets
+- **Reference data (countries, config)** - small, rarely changing datasets that are safe to duplicate across every instance and do not need cross-instance consistency.
+- **Session data (if single server)** - viable only when there is exactly one application instance (or sticky sessions are guaranteed), since otherwise a user's session could "disappear" if routed to a different instance.
+- **Small datasets** - anything that comfortably fits in memory alongside the application itself without competing for RAM needed by the rest of the process.
 
 **2. Distributed Cache (Redis, Memcached)**
 ```python
@@ -274,21 +274,21 @@ def get_user(user_id):
 ```
 
 **Pros:**
-- Shared across all servers
-- Persistent (survives app restarts)
-- Large capacity (100s of GB)
-- Atomic operations
+- **Shared across all servers** - every application instance reads and writes to the same cache cluster, so a value populated by one instance is immediately visible to all others - no duplicated fetches, no divergence.
+- **Persistent (survives app restarts)** - the cache runs as its own separate process/cluster, so redeploying or restarting the application does not clear it; with Redis, the data can also survive the cache's own restart via RDB/AOF persistence.
+- **Large capacity (100s of GB)** - a dedicated cache cluster can be sized and scaled independently of the application, holding far more data than would fit in any single application instance's memory.
+- **Atomic operations** - commands like `INCR`, `SETNX`, and Lua scripts execute atomically on the server, making the cache safe to use directly for counters, locks, and rate limiters shared across many concurrent clients.
 
 **Cons:**
-- Network latency (1-2ms)
-- Additional infrastructure
-- Cost
+- **Network latency (1-2ms)** - every read or write now involves a network round trip to a separate process, which is slower than an in-process lookup even though it is still far faster than a database query.
+- **Additional infrastructure** - a distributed cache is another system to provision, monitor, patch, and keep highly available, adding operational surface area beyond just the application itself.
+- **Cost** - running a dedicated cache cluster (compute, memory, and often a managed-service premium) is a direct infrastructure cost that a purely in-process cache does not incur.
 
 **When to Use:**
-- Multi-server deployments
-- Large datasets
-- Session management
-- Rate limiting counters
+- **Multi-server deployments** - any environment with more than one application instance needs a shared cache so all instances see consistent data and do not each independently hammer the database.
+- **Large datasets** - when the working set is too big to fit comfortably in a single instance's memory, a dedicated cache cluster can be scaled to hold it.
+- **Session management** - centralizing session state means users can be routed to any instance behind a load balancer without losing their session.
+- **Rate limiting counters** - atomic increment operations on a shared cache give every instance a consistent, real-time view of how many requests a client has made, which a per-instance local cache cannot provide.
 
 ##### Database Cache (Query Cache)
 ```sql
