@@ -18,6 +18,28 @@
 
 ## Theory
 
+### Topics Covered
+
+1. [HTTP and REST Fundamentals](#http-and-rest-fundamentals)
+2. [HTTPS: Security Through Encryption](#https-security-through-encryption)
+3. [HTTP/1.1 vs HTTP/2 vs HTTP/3](#http11-vs-http2-vs-http3)
+4. [HTTP: Advantages & Disadvantages](#http-advantages--disadvantages)
+5. [Alternatives to HTTP](#alternatives-to-http)
+6. [Decision Matrix: Which Protocol?](#decision-matrix-which-protocol)
+7. [When NOT to Use HTTP](#when-not-to-use-http)
+8. [HTTP Best Practices](#http-best-practices)
+9. [HTTP Characteristics](#http-characteristics)
+10. [HTTP Pros](#http-pros)
+11. [HTTP Cons](#http-cons)
+12. [HTTP Use Cases](#http-use-cases)
+13. [HTTP Components](#http-components)
+14. [HTTP Patterns](#http-patterns)
+15. [HTTP Benefits](#http-benefits)
+16. [HTTP Challenges](#http-challenges)
+17. [Java and Spring Boot Examples](#java-and-spring-boot-examples)
+
+---
+
 ### HTTP and REST Fundamentals
 
 **HTTP (HyperText Transfer Protocol)** is the foundation of data communication on the web. It's a **request-response**, **stateless**, **application-layer** protocol that defines how clients (browsers, apps) and servers exchange information.
@@ -642,4 +664,384 @@ Example:
 ✗ Don't use HTTP for real-time gaming
 ✗ Don't expose internal error details
 ✗ Don't use custom headers when standard ones exist
+
+---
+
+### HTTP Characteristics
+
+- **Request-response model**
+  The client sends a request, and the server returns a response. The client initiates every exchange.
+
+- **Stateless**
+  Each request is independent. The server does not retain session state unless cookies, tokens, or external stores are used.
+
+- **Application-layer protocol**
+  HTTP operates above TCP and defines how applications exchange structured messages.
+
+- **Text-based in HTTP/1.1**
+  HTTP/1.1 messages are human-readable. HTTP/2 and HTTP/3 use binary framing.
+
+- **Extensible**
+  Custom headers, methods, and content types allow the protocol to evolve without breaking existing systems.
+
+- **Uniform resource identification**
+  URLs identify resources, and HTTP methods define operations on those resources.
+
+- **Status-code driven**
+  Responses carry standardized status codes that communicate success, redirect, client error, or server error.
+
+- **Cacheable**
+  Responses can be cached by clients, proxies, and CDNs using cache headers.
+
+- **Connection management**
+  HTTP/1.1 supports persistent connections; HTTP/2 multiplexes multiple streams over one connection.
+
+- **Content negotiation**
+  Clients and servers agree on representation using headers such as `Accept` and `Content-Type`.
+
+---
+
+### HTTP Pros
+
+- **Universal support**
+  Every language, framework, browser, and device supports HTTP.
+
+- **Human-readable**
+  HTTP/1.1 messages can be inspected and debugged directly.
+
+- **Simple mental model**
+  Request, response, method, URL, status code — easy to reason about.
+
+- **Firewall-friendly**
+  Ports 80 and 443 are almost always open, making HTTP easy to deploy across networks.
+
+- **Stateless scalability**
+  Stateless servers can be replicated horizontally behind load balancers.
+
+- **Rich ecosystem**
+  Tooling, libraries, proxies, CDNs, and monitoring are mature and abundant.
+
+- **Flexible content types**
+  JSON, HTML, XML, binary, and streaming formats can all be exchanged.
+
+- **Built-in caching**
+  HTTP caching headers and conditional requests reduce bandwidth and latency.
+
+- **HTTPS security**
+  TLS provides encryption, integrity, and server authentication.
+
+---
+
+### HTTP Cons
+
+- **Text overhead**
+  HTTP/1.1 headers and JSON bodies are verbose compared with binary protocols.
+
+- **Latency**
+  Multiple round trips for TLS and connection setup add overhead.
+
+- **Head-of-line blocking**
+  HTTP/1.1 blocks subsequent requests on a connection; HTTP/2 can still be affected by TCP-level packet loss.
+
+- **No built-in state**
+  Applications must manage sessions, authentication, and user context.
+
+- **Plain HTTP is insecure**
+  Without TLS, traffic is visible and modifiable.
+
+- **Not ideal for real-time**
+  Bidirectional and ultra-low-latency use cases often require WebSockets or UDP-based protocols.
+
+- **Connection overhead**
+  Each connection consumes server resources, especially at high concurrency.
+
+- **Statelessness complicates workflows**
+  Re-authentication and context reconstruction are required on every request.
+
+---
+
+### HTTP Use Cases
+
+- **Web pages and applications**
+  Browsers request HTML, CSS, JavaScript, and assets from web servers.
+
+- **REST APIs**
+  HTTP methods map to CRUD operations on resources.
+
+- **File upload and download**
+  HTTP supports multipart uploads, range requests, and streaming responses.
+
+- **Authentication flows**
+  OAuth 2.0, OpenID Connect, and cookie-based sessions run over HTTP.
+
+- **Microservices communication**
+  Services exchange JSON or XML over HTTP, often behind an API gateway.
+
+- **Content delivery**
+  CDNs and proxies cache and serve HTTP responses.
+
+- **Webhooks**
+  Providers deliver event notifications to consumer HTTP endpoints.
+
+- **Server-sent events**
+  SSE streams server-to-client updates over HTTP.
+
+- **Health checks and monitoring**
+  Services expose HTTP endpoints for liveness and readiness probes.
+
+---
+
+### HTTP Components
+
+- **Client**
+  The browser, mobile app, or service that sends requests.
+
+- **Server**
+  The application that receives requests and returns responses.
+
+- **URL**
+  Identifies the requested resource.
+
+- **HTTP method**
+  Defines the operation: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS.
+
+- **Headers**
+  Carry metadata such as content type, authentication, caching, and cookies.
+
+- **Request body**
+  Contains data sent by the client, such as JSON or form data.
+
+- **Response status**
+  Indicates success or failure with a standardized code.
+
+- **Response body**
+  Contains the resource representation returned by the server.
+
+- **Proxy and CDN**
+  Intermediaries that cache, filter, or route requests.
+
+- **TLS layer**
+  Encrypts the connection in HTTPS.
+
+```mermaid
+flowchart LR
+    Client[Client] -->|HTTP Request| Server[Server]
+    Server -->|HTTP Response| Client
+    Client --> Proxy[Proxy / CDN]
+    Proxy --> Server
+```
+
+---
+
+### HTTP Patterns
+
+- **REST**
+  Resources are identified by URLs, and HTTP methods define operations.
+
+- **RPC over HTTP**
+  APIs expose action-oriented endpoints rather than pure resources.
+
+- **GraphQL over HTTP**
+  A single endpoint accepts structured queries and mutations.
+
+- **Webhooks**
+  Servers push events to registered HTTP endpoints.
+
+- **Server-sent events**
+  Servers stream updates to clients over a long-lived HTTP response.
+
+- **API gateway**
+  A single HTTP entry point routes, authenticates, and rate-limits requests.
+
+- **Caching and revalidation**
+  ETags and `Last-Modified` support conditional requests to avoid re-sending data.
+
+- **Content negotiation**
+  Servers return different representations based on `Accept` headers.
+
+- **Versioned APIs**
+  URLs or headers identify API versions to preserve compatibility.
+
+- **Health check endpoints**
+  Services expose HTTP liveness and readiness probes for orchestration.
+
+---
+
+### HTTP Benefits
+
+- **Interoperability**
+  Different systems can communicate using a shared, open protocol.
+
+- **Scalability**
+  Stateless HTTP servers scale horizontally.
+
+- **Debuggability**
+  Requests and responses can be inspected with standard tools.
+
+- **Caching**
+  HTTP caching reduces latency and backend load.
+
+- **Security**
+  HTTPS provides transport-layer encryption and authentication.
+
+- **Maturity**
+  Decades of real-world use have produced reliable best practices.
+
+- **Flexibility**
+  HTTP supports many content types and communication styles.
+
+---
+
+### HTTP Challenges
+
+- **Latency optimization**
+  Reducing round trips, payload size, and TLS overhead requires tuning.
+
+- **Session management**
+  Statelessness forces external session storage and token handling.
+
+- **Security hardening**
+  HTTPS, headers, CORS, and rate limiting must be configured correctly.
+
+- **API design**
+  Consistent resource modeling, versioning, and error handling require discipline.
+
+- **Backward compatibility**
+  Changing an API can break existing clients.
+
+- **Caching correctness**
+  Private or personalized data must never be served from a shared cache.
+
+- **Distributed tracing**
+  Correlating requests across many HTTP services requires instrumentation.
+
+---
+
+### Java and Spring Boot Examples
+
+#### 1. REST controller with proper status codes
+
+```java
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+
+    private final Map<Long, User> users = new ConcurrentHashMap<>();
+
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUser(@PathVariable Long id) {
+        return Optional.ofNullable(users.get(id))
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        users.put(user.id(), user);
+        return ResponseEntity.status(201).body(user);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        return users.remove(id) != null
+            ? ResponseEntity.noContent().build()
+            : ResponseEntity.notFound().build();
+    }
+}
+```
+
+#### 2. Global exception handler
+
+```java
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleBadRequest(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, String>> handleServerError(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(Map.of("error", "Internal server error"));
+    }
+}
+```
+
+#### 3. HTTP client with RestClient
+
+```java
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
+
+@Service
+public class ExternalApiClient {
+
+    private final RestClient restClient = RestClient.create("https://api.example.com");
+
+    public User getUser(Long id) {
+        return restClient.get()
+            .uri("/api/users/{id}", id)
+            .retrieve()
+            .body(User.class);
+    }
+
+    public User createUser(User user) {
+        return restClient.post()
+            .uri("/api/users")
+            .body(user)
+            .retrieve()
+            .body(User.class);
+    }
+}
+```
+
+#### 4. Caching with ETag and cache headers
+
+```java
+import org.springframework.http.CacheControl;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.TimeUnit;
+
+@RestController
+@RequestMapping("/api/products")
+public class ProductController {
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProduct(@PathVariable Long id) {
+        Product product = new Product(id, "Sample Product");
+        return ResponseEntity.ok()
+            .cacheControl(CacheControl.maxAge(5, TimeUnit.MINUTES).cachePublic())
+            .eTag("\"product-" + id + "\"")
+            .body(product);
+    }
+}
+```
+
+**Interview questions and answers**
+
+- **Q: Why is HTTP considered stateless?**
+  **A:** Each request contains all the information needed to process it, and the server does not retain client state between requests unless external mechanisms are used.
+
+- **Q: What is the difference between PUT and PATCH?**
+  **A:** PUT replaces the entire resource, while PATCH applies a partial update.
+
+- **Q: How do you secure a Spring Boot HTTP API?**
+  **A:** Use HTTPS, validate all input, apply authentication and authorization, return proper status codes, and implement rate limiting.
 ```

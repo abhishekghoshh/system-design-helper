@@ -11,6 +11,22 @@
 
 ## Theory
 
+### Topics Covered
+
+1. [Introduction to Client-Server Architecture](#introduction-to-client-server-architecture)
+2. [Characteristics](#characteristics)
+3. [Pros](#pros)
+4. [Cons](#cons)
+5. [Use Cases](#use-cases)
+6. [Components](#components)
+7. [Architectural Patterns](#architectural-patterns)
+8. [Benefits](#benefits)
+9. [Challenges](#challenges)
+10. [Best Practices](#best-practices)
+11. [When to Use Client-Server Architecture](#when-to-use-client-server-architecture)
+
+---
+
 ### The Foundational Paradigm of Distributed Computing
 
 Client-Server architecture is not merely a pattern—it's the **fundamental organizing principle** of modern computing. It represents the first great abstraction in distributed systems: the separation of **concerns** (what you want) from **capabilities** (how it's provided).
@@ -538,3 +554,486 @@ graph TB
 - **Data**: Databases (PostgreSQL, MongoDB)—durable, queryable storage
 - **State**: External store (Redis)—fast ephemeral state, sessions, pub/sub
 - **Communication**: REST/GraphQL for request-response, WebSockets for server-push events
+
+---
+
+### Introduction to Client-Server Architecture
+
+Client-server architecture is a distributed computing model in which the system is divided into two roles: a client that requests resources and a server that provides them. The client and server communicate over a network using an agreed contract, usually HTTP, WebSocket, or RPC.
+
+The client owns the user experience, input handling, and presentation. The server owns business logic, data, authentication, and authorization. This separation allows each side to evolve, scale, and fail independently.
+
+```mermaid
+flowchart LR
+    Client[Client\nBrowser / Mobile App] -->|Request| Server[Server\nApplication + Data]
+    Server -->|Response| Client
+```
+
+**Real-life use cases**
+
+- **Web applications**: browser clients request pages and APIs from web servers.
+- **Mobile apps**: iOS and Android clients call backend services.
+- **Email**: email clients such as Outlook fetch and send mail through mail servers.
+- **Online banking**: bank apps interact with core banking servers.
+- **Cloud storage**: Dropbox clients synchronize files with storage servers.
+
+**Interview questions and answers**
+
+- **Q: What is client-server architecture?**
+  **A:** It is a model where clients request services or resources and servers provide them over a network, with responsibilities split between presentation and data/business logic.
+
+- **Q: Why is separating client and server useful?**
+  **A:** It enables independent development, deployment, scaling, and replacement of each side. It also centralizes business logic and data on the server for security and consistency.
+
+---
+
+### Characteristics
+
+- **Separation of concerns**
+  The client handles presentation and user interaction. The server handles business logic, data access, and system rules.
+
+- **Request-response communication**
+  The client sends requests, and the server responds. This is the dominant interaction pattern in HTTP and RPC systems.
+
+- **Centralized data and logic**
+  The server is the source of truth for business rules and persistent data. Clients maintain only transient local state.
+
+- **Network dependency**
+  Client and server communicate over a network, introducing latency, bandwidth, and failure considerations.
+
+- **Clear trust boundary**
+  The client is untrusted territory. The server must validate all input and enforce security policies.
+
+- **Asymmetric capabilities**
+  The client typically has limited compute and storage compared with the server. The server can be scaled independently.
+
+- **Multiple client types**
+  One server can serve browsers, mobile apps, desktop applications, and third-party integrations through the same API.
+
+- **Protocol agreement**
+  Both sides must agree on a communication contract, such as REST, GraphQL, gRPC, or WebSocket.
+
+- **State management**
+  The server may be stateless or stateful. Modern systems often keep app servers stateless and move state to external stores such as Redis or a database.
+
+- **Scalability through separation**
+  The stateless application layer can scale horizontally while the database scales through replication and partitioning.
+
+---
+
+### Pros
+
+- **Centralized management**
+  Business logic and data live on the server, making updates, backups, and security policies easier to manage.
+
+- **Independent scalability**
+  The client and server can be scaled separately based on their own demands.
+
+- **Reusability**
+  One server API can serve many different client applications across platforms.
+
+- **Security isolation**
+  The server can be protected behind firewalls, and the database can be kept in a private network.
+
+- **Maintainability**
+  Separating presentation from business logic makes the system easier to understand, test, and modify.
+
+- **Platform flexibility**
+  Clients can be built with different technologies while sharing the same backend.
+
+- **Consistent business rules**
+  Business logic executed on the server behaves the same for every client.
+
+- **Resource efficiency**
+  Clients can be thin, relying on the server for expensive computation and storage.
+
+- **Clear evolution path**
+  A simple two-tier design can grow into three-tier or N-tier as requirements become more complex.
+
+---
+
+### Cons
+
+- **Single point of failure**
+  If the server goes down, all clients lose access unless high availability is designed in.
+
+- **Network latency**
+  Every interaction requires a round trip, which can degrade responsiveness.
+
+- **Server scalability limits**
+  A single server eventually becomes a bottleneck and must be scaled horizontally or vertically.
+
+- **Cost**
+  Servers require infrastructure, maintenance, and operational resources.
+
+- **Complexity of distributed communication**
+  Timeouts, retries, partial failures, and versioning become concerns.
+
+- **Security responsibility**
+  The server is a high-value target and must defend against injection, broken access control, and denial of service.
+
+- **Versioning challenges**
+  Changing an API without breaking existing clients requires careful versioning and deprecation.
+
+- **Trust boundary risk**
+  Any failure to validate client input can expose the server and its data.
+
+---
+
+### Use Cases
+
+- **Web applications**
+  Browsers act as clients, and web servers deliver pages and APIs. Example: GitHub's frontend and backend.
+
+- **Mobile applications**
+  Native apps communicate with cloud backends. Example: a ride-hailing app client calling dispatch and payment services.
+
+- **Database access**
+  Applications act as clients to database servers such as PostgreSQL or MongoDB.
+
+- **Email systems**
+  Mail clients talk to SMTP, IMAP, and POP3 servers.
+
+- **DNS**
+  Resolvers act as clients to authoritative and recursive DNS servers.
+
+- **File storage and sync**
+  Clients upload and download files from storage servers. Example: Google Drive.
+
+- **APIs and microservices**
+  Services act as clients to other services in an N-tier or microservices architecture.
+
+- **IoT**
+  Devices send telemetry to central servers and receive commands. Example: smart home devices connecting to cloud controllers.
+
+---
+
+### Components
+
+- **Client**
+  The application or device that initiates requests. It contains presentation logic, user input handling, and local state.
+
+- **Server**
+  The system that receives requests, executes business logic, and returns responses. It may be an application server, database server, or both.
+
+- **Network**
+  The communication medium carrying requests and responses. This can be LAN, WAN, or the public internet.
+
+- **API contract**
+  The agreed format for communication, including endpoints, methods, payloads, and error semantics.
+
+- **Load balancer**
+  Distributes client requests across multiple server instances to improve availability and throughput.
+
+- **Database**
+  Persistent storage managed by the server tier.
+
+- **Cache**
+  Stores frequently accessed data to reduce database load and latency.
+
+- **Authentication and authorization service**
+  Verifies client identity and permissions before allowing access.
+
+- **Monitoring and logging**
+  Observability infrastructure that tracks requests, errors, and performance.
+
+```mermaid
+flowchart TB
+    C1[Browser Client] --> LB[Load Balancer]
+    C2[Mobile Client] --> LB
+    LB --> S1[App Server 1]
+    LB --> S2[App Server 2]
+    S1 --> DB[(Database)]
+    S2 --> DB
+    S1 --> Cache[(Redis Cache)]
+    S2 --> Cache
+    S1 --> Auth[Auth Service]
+    S2 --> Auth
+```
+
+---
+
+### Architectural Patterns
+
+- **Two-tier architecture**
+  Client talks directly to a server that contains both application logic and data. Simple but tightly coupled.
+
+- **Three-tier architecture**
+  Separates presentation, application logic, and data into distinct layers. The most common pattern for web apps.
+
+- **N-tier architecture**
+  Adds edge, API gateway, message queue, and multiple service layers as the system grows.
+
+- **Stateless server pattern**
+  App servers keep no session state, enabling horizontal scaling and easy failover.
+
+- **Stateful server with external session store**
+  Session data is moved to Redis or a database so app servers remain stateless while preserving user context.
+
+- **Thin client**
+  The server renders complete pages or responses. The client primarily displays content.
+
+- **Thick client**
+  A rich client such as an SPA or native app handles most UI logic, while the server exposes a data API.
+
+- **API gateway pattern**
+  A single entry point routes requests to multiple backend services, handling auth, rate limiting, and aggregation.
+
+- **Client-side caching**
+  Clients cache responses locally to reduce network calls and improve responsiveness.
+
+- **Server-side caching**
+  Servers cache expensive query results or computed data to reduce latency and database load.
+
+---
+
+### Benefits
+
+- **Clear separation of responsibility**
+  Teams can work on client and server independently.
+
+- **Centralized security**
+  Sensitive logic and credentials stay on the server.
+
+- **Horizontal scalability**
+  Stateless servers can be replicated behind a load balancer.
+
+- **Improved maintainability**
+  Each layer can be tested and modified without affecting the others.
+
+- **Broader reach**
+  A single backend can serve many client platforms.
+
+- **Consistency**
+  Server-side business rules apply uniformly to all users.
+
+- **Reliability**
+  Server redundancy and health-based routing improve availability.
+
+- **Observability**
+  Centralized server logs and metrics provide better visibility than client-only systems.
+
+---
+
+### Challenges
+
+- **Handling server failure**
+  A client-server system must detect server outages and retry or degrade gracefully.
+
+- **Managing state**
+  Deciding between stateless and stateful designs affects scalability and complexity.
+
+- **API evolution**
+  Changing the contract while supporting old clients requires versioning.
+
+- **Latency optimization**
+  Reducing round trips through caching, batching, and CDNs is an ongoing challenge.
+
+- **Security at the boundary**
+  Every input from the client must be treated as untrusted.
+
+- **Concurrency**
+  Servers must handle many simultaneous clients safely and efficiently.
+
+- **Data consistency**
+  When servers are replicated, data must remain consistent across instances.
+
+- **Cost management**
+  Server infrastructure and bandwidth can become expensive at scale.
+
+---
+
+### Best Practices
+
+- **Validate all input on the server**
+  Never rely on client-side validation for security.
+
+- **Keep app servers stateless**
+  Store sessions in Redis or a database to enable horizontal scaling.
+
+- **Use HTTPS**
+  Encrypt all client-server communication.
+
+- **Design a clear API contract**
+  Use REST, GraphQL, or gRPC with explicit request and response schemas.
+
+- **Version APIs**
+  Introduce breaking changes through `/v1`, `/v2`, or other versioning strategies.
+
+- **Apply rate limiting**
+  Protect servers from abusive or accidental traffic spikes.
+
+- **Use caching**
+  Cache static assets at the edge and frequently accessed data in Redis.
+
+- **Implement retries with backoff**
+  Clients should retry transient failures without overwhelming the server.
+
+- **Monitor key metrics**
+  Track latency, error rate, throughput, and server health.
+
+- **Use circuit breakers**
+  Prevent cascading failures when a downstream service is slow or down.
+
+- **Separate configuration from code**
+  Manage environment-specific settings externally.
+
+---
+
+### When to Use Client-Server Architecture
+
+- **Use it when** you need centralized data and business logic accessible by multiple clients.
+- **Use it when** clients have limited compute or storage and need a powerful backend.
+- **Use it when** you must enforce security policies on data and operations.
+- **Use it when** you want to support multiple client platforms with one backend.
+- **Use it when** the system needs to scale the backend independently of clients.
+- **Use it when** you need durable, shared storage that clients should not own directly.
+
+**Consider alternatives when**
+
+- Both parties are equal peers with symmetric roles, in which case peer-to-peer may fit better.
+- The application is entirely local with no shared data.
+- Real-time collaboration requires extremely low latency, where a hybrid client-server with WebSockets or a peer mesh may be needed.
+
+---
+
+### Java and Spring Boot Examples
+
+#### 1. Simple REST controller
+
+```java
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUser(@PathVariable Long id) {
+        return userService.findById(id)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        return ResponseEntity.ok(userService.create(user));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+}
+```
+
+#### 2. Service with validation
+
+```java
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+
+@Service
+public class UserService {
+
+    private final Map<Long, User> users = new ConcurrentHashMap<>();
+
+    public Optional<User> findById(Long id) {
+        return Optional.ofNullable(users.get(id));
+    }
+
+    public User create(User user) {
+        if (!StringUtils.hasText(user.email())) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        users.put(user.id(), user);
+        return user;
+    }
+
+    public void delete(Long id) {
+        users.remove(id);
+    }
+}
+```
+
+#### 3. Client using RestClient
+
+```java
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
+
+@Service
+public class UserApiClient {
+
+    private final RestClient restClient = RestClient.create("https://api.example.com");
+
+    public User getUser(Long id) {
+        return restClient.get()
+            .uri("/api/users/{id}", id)
+            .retrieve()
+            .body(User.class);
+    }
+
+    public User createUser(User user) {
+        return restClient.post()
+            .uri("/api/users")
+            .body(user)
+            .retrieve()
+            .body(User.class);
+    }
+}
+```
+
+#### 4. Stateless session with Redis
+
+```java
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Service;
+
+import java.time.Duration;
+
+@Service
+public class SessionService {
+
+    private final StringRedisTemplate redisTemplate;
+
+    public SessionService(StringRedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
+
+    public void saveSession(String sessionId, String userContext, Duration ttl) {
+        redisTemplate.opsForValue().set(sessionId, userContext, ttl);
+    }
+
+    public String getSession(String sessionId) {
+        return redisTemplate.opsForValue().get(sessionId);
+    }
+
+    public void deleteSession(String sessionId) {
+        redisTemplate.delete(sessionId);
+    }
+}
+```
+
+**Interview questions and answers**
+
+- **Q: How do you make a client-server system horizontally scalable?**
+  **A:** Keep the server tier stateless, move sessions to Redis or a database, and place multiple server instances behind a load balancer.
+
+- **Q: Why is server-side validation mandatory?**
+  **A:** The client is untrusted and can be modified. Server-side validation is the only reliable way to prevent malicious or invalid input from reaching business logic.
+
+- **Q: What is the difference between a thin client and a thick client?**
+  **A:** A thin client relies on the server for most logic and rendering. A thick client, such as an SPA or native app, handles substantial UI and local logic while the server primarily exposes data APIs.

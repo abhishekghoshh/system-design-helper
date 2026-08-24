@@ -8,60 +8,1354 @@
 
 ## Theory
 
+### Topics Covered
+
+1. [Problem Statement](#problem-statement)
+2. [Functional Requirements](#functional-requirements)
+3. [Non-Functional Requirements](#non-functional-requirements)
+4. [Capacity Estimation](#capacity-estimation)
+5. [Characteristics](#characteristics)
+6. [Components](#components)
+7. [Design Patterns](#design-patterns)
+8. [Benefits](#benefits)
+9. [Pros](#pros)
+10. [Cons](#cons)
+11. [Challenges](#challenges)
+12. [Best Practices](#best-practices)
+13. [When to Use and When Not to Use](#when-to-use-and-when-not-to-use)
+14. [Use Cases](#use-cases)
+15. [API Design](#api-design)
+16. [Data Modeling](#data-modeling)
+17. [High-Level Design](#high-level-design)
+18. [Deep Dive](#deep-dive)
+19. [Java and Spring Boot Implementation Guide](#java-and-spring-boot-implementation-guide)
+20. [Interview Questions and Answers](#interview-questions-and-answers)
+
+---
+
 ### Problem Statement
 
 Design a basic inventory management system for a single warehouse/store that tracks stock levels for products, supports stock in/out operations, and alerts when items run low.
 
-### Functional Requirements
+An inventory system is the canonical "counter under concurrency" problem. The data volumes are modest and the CRUD is trivial; the design value lives in three places: (1) **correctness of a shared counter** — the same SKU is decremented by many concurrent sales, and the system must never sell stock it does not have (overselling) nor lose stock it does have (phantom decrements); (2) **auditability** — every unit that enters or leaves must be traceable to a reason, an actor, and a reference (order, purchase order, adjustment), because inventory discrepancies are discovered weeks later during cycle counts and must be explainable; and (3) **time- and threshold-driven behavior** — low-stock alerts, reservation expiries, and reorder triggers fire without any user request.
 
-- Add/update product catalog (SKU, name, price, category)
-- Increase stock (receiving/restock) and decrease stock (sale/dispatch)
-- View current stock level per SKU
-- Low-stock threshold alerts
-- Basic reporting: stock movement history
+**Why this problem exists**
 
-### Non-Functional Requirements
+- Physical stock is finite and shared across channels (storefront, web, wholesale); without a single system of record, each channel oversells the others.
+- Money and goods move together: a stock-out that is not recorded is either theft, damage, or a receiving error — the ledger is how you tell which.
+- Customers tolerate "out of stock" but not "you charged me and then cancelled"; overselling is a trust-destroying failure, so availability must be strongly consistent at the point of sale.
+- Purchasing is a lead-time problem: by the time a human notices an empty shelf, the reorder is already late; the system must raise the alert at the reorder point, not at zero.
 
-- **Scale**: Single store/warehouse, up to tens of thousands of SKUs
-- **Consistency**: Stock count must be strongly consistent (no overselling)
-- **Latency**: Stock update/read < 200ms
-- **Auditability**: Every stock change must be traceable to a reason/order
+**Real-life use cases**
 
-### API Design
-
-```
-POST /products                       { sku, name, price, category }
-POST /inventory/{sku}/stock-in       { quantity, reason }
-POST /inventory/{sku}/stock-out      { quantity, reason }
-GET  /inventory/{sku}
-GET  /inventory/low-stock
-```
-
-### Data Model
-
-```
-products:        sku (PK), name, price, category, low_stock_threshold
-inventory:       sku (FK), quantity, updated_at
-stock_movements:  id (PK), sku (FK), delta, reason, created_at
-```
-
-### High-Level Architecture
+- **Retail and e-commerce**: Shopify, Zoho Inventory, and the inventory cores of Amazon/Flipkart seller platforms are this design scaled up.
+- **Warehousing and 3PL**: receiving against purchase orders, putaway, pick/pack/ship, cycle counting.
+- **Manufacturing (light)**: raw-material and finished-goods tracking with adjustments for scrap.
+- **Food and pharma**: the same model plus lot/expiry tracking — an extension of the movement ledger, not a different design.
 
 ```mermaid
 flowchart LR
-    Client --> API[API Layer]
-    API --> InventoryService[Inventory Service]
-    InventoryService --> DB[(Relational DB)]
-    InventoryService --> AlertService[Low-Stock Alert Service]
-    AlertService --> Notification[Notification System]
+    Seller["Store / Seller App"] -->|"stock-in, adjustments"| API["Inventory API"]
+    Buyer["Checkout Service"] -->|"reserve, confirm, release"| API
+    API --> DB[("Inventory Store")]
+    API -->|"async events"| Q[("Event Queue")]
+    Q --> ALERT["Low-Stock Alert Worker"]
+    ALERT -->|"reorder notification"| Buyer
+    JOB["Reservation Expiry Job"] -->|"release expired holds"| DB
 ```
 
-### Key Design Points
+The diagram shows the three actors on the system: interactive writers (seller app, checkout) on a synchronous API, the database as the source of truth, and time/threshold-driven workers (expiry job, alert worker) that act without user traffic.
 
-- Use a single atomic `UPDATE inventory SET quantity = quantity - :qty WHERE sku = :sku AND quantity >= :qty` to prevent negative stock/overselling under concurrent stock-out requests.
-- Append every change to `stock_movements` (event log) so the current quantity can always be reconciled/audited.
-- Trigger low-stock alerts asynchronously so the write path (stock-out) is never blocked on notification delivery.
+---
 
-### Trade-offs
+### Functional Requirements
 
-- A single relational DB with row-level locking is simple and strongly consistent but limits horizontal write scale; sharding by warehouse/SKU range helps once inventory spans many locations (see the advanced real-time/quick-commerce variant for that).
+1. **Product catalog management**
+   - Add/update products (SKU, name, price, category, low-stock threshold, reorder point); deactivate products without deleting history.
+2. **Stock-in (receiving)**
+   - Increase stock for a SKU with a reason and reference (purchase order, return, correction); every receipt is recorded as a movement.
+3. **Stock-out (sale/dispatch)**
+   - Decrease stock atomically; reject the operation if insufficient stock — the quantity must never go negative.
+4. **Reservations**
+   - Reserve stock for an open order (`RESERVED` state) so it cannot be sold twice; confirm (convert reservation to a sale) or release (return to available) with an expiry for abandoned checkouts.
+5. **Stock visibility**
+   - View current stock per SKU split into `on_hand`, `reserved`, and `available = on_hand - reserved`; view per-warehouse breakdown when multiple locations exist.
+6. **Low-stock alerts**
+   - When `available` drops to or below the reorder point, emit an alert event (asynchronously) for purchasing; alert once per threshold crossing, not on every subsequent sale.
+7. **Adjustments and cycle counts**
+   - Record manual corrections (damage, theft, count variance) with mandatory reason codes; adjustments are movements like any other, never silent overwrites.
+8. **Movement history and reporting**
+   - Append-only log of every stock change (delta, reason, reference, actor, timestamp); current quantity must be reconcilable by summing the log.
+
+---
+
+### Non-Functional Requirements
+
+- **Scale**: single store/warehouse up to tens of thousands of SKUs; thousands of stock operations per day; all data fits on one relational primary. (Multi-warehouse allocation is covered in the Deep Dive as the growth path.)
+- **Consistency**: stock counts must be strongly consistent — no overselling and no negative quantities under any concurrency. This is the hard requirement; catalog reads and reports may be eventually consistent by seconds.
+- **Latency**: stock read and stock-in/out under 200 ms at p99 (checkout is latency-sensitive); availability lookups under 100 ms at p99 since they sit on the product-page path.
+- **Availability**: 99.9% for the write path during business hours; alert delivery may lag but must be at-least-once with deduplication.
+- **Durability and auditability**: no acknowledged stock change is ever lost; every change is traceable to a reason and reference for at least the financial retention period (typically 7 years).
+- **Security**: role-based access (viewer vs stock clerk vs admin); adjustments above a threshold require elevated privilege; rate limiting on public availability endpoints.
+
+---
+
+### Capacity Estimation
+
+Back-of-envelope math for a single-warehouse merchant with a web storefront. The point of the exercise is to show *how small* the numbers are — which licenses choosing correctness (one relational primary, row-level locking) over distributed-systems machinery.
+
+**Catalog and stock**
+
+- SKUs: 20,000 active products.
+- Warehouses: 1 (growth path: 5) → stock-level rows: 20,000–100,000. Trivially indexed.
+- Average units per SKU: 50 → ~1M physical units tracked, but only one counter row per (SKU, warehouse).
+
+**Throughput (QPS)**
+
+- Sales: 5,000 orders/day, ~1.5 line items each → 7,500 stock-outs/day. Concentrated in ~12 waking hours → average **0.17 stock-outs/second**, peak ~10× during a flash sale ≈ **2/second**. Stock-ins (receiving) are ~10% of that.
+- Reservations: one per checkout attempt, ~2× the completed-order rate → peak **~4 writes/second** on the reservation path.
+- Availability reads: the dominant load. 50,000 product-page views/day × 1 availability check ≈ **0.6/second average**, peak **~10/second**; a read replica or a short-TTL cache absorbs this entirely.
+- Total write load peaks around **10 QPS**; total read load around **20 QPS**. A single modest application node and one PostgreSQL primary have 100× headroom.
+
+**Storage**
+
+- `products`: 20,000 rows × ~500 bytes ≈ **10 MB**.
+- `stock_levels`: 100,000 rows × ~100 bytes ≈ **10 MB**.
+- `stock_movements` (the append-only ledger — the only table that grows): 8,000 movements/day × ~200 bytes ≈ **1.6 MB/day ≈ 0.6 GB/year**. Seven-year retention ≈ **4 GB** — no partitioning required at this scale; a monthly partition is a cheap insurance policy.
+- Reservations: a few thousand active rows at any time; expired/confirmed rows are pruned or partitioned monthly.
+
+**Bandwidth**
+
+- Negligible: even at peak, request/response payloads of ~1 KB × 30 QPS ≈ **30 KB/s**.
+
+**Conclusion**: the entire hot path is a handful of indexed row updates per second. Spend the design budget on *concurrency correctness and auditability*, not on scale-out.
+
+---
+
+### Characteristics
+
+Each characteristic is explained in detail.
+
+- **Strongly consistent counters**
+  Stock quantities are decremented under concurrency by many independent actors. The system guarantees the invariant `on_hand >= 0` and `available = on_hand - reserved` at all times, enforced in the database, not in application code.
+
+- **Append-only movement ledger**
+  Every change to stock is recorded as an immutable movement row. The current quantity is a *derived* value; the ledger is the truth. This makes discrepancies explainable and audits possible.
+
+- **Reservation lifecycle**
+  Stock moves through `AVAILABLE → RESERVED → SOLD` (or back to `AVAILABLE` on release/expiry). Reservations decouple "a customer is paying" from "the unit shipped", which is what makes checkout safe without holding database locks across a payment call.
+
+- **Threshold-driven alerting**
+  Low-stock detection is a side effect of writes, evaluated asynchronously. The system alerts on the *crossing* of the reorder point, once, rather than on every sale below it.
+
+- **Idempotent write operations**
+  Every mutating operation accepts a client-supplied idempotency key (or a unique reference such as an order ID), so retries from clients, queues, and flaky networks cannot double-receive or double-dispatch stock.
+
+- **Single-writer simplicity**
+  One relational primary owns all stock writes. There is no distributed consensus, no CRDT, no multi-master conflict — correctness comes from row locks and conditional updates.
+
+- **Time-driven background behavior**
+  Reservation expiry and (optionally) reorder-point re-evaluation run as scheduled jobs that scan time-based predicates — naturally re-runnable and self-healing after downtime.
+
+- **Read/write asymmetry**
+  Reads (availability on product pages) outnumber writes by ~10× and can tolerate seconds of staleness; writes cannot tolerate any. The design exploits this with read replicas/caching for reads and a single strongly consistent write path.
+
+- **Auditability and traceability**
+  Every movement carries `reason`, `reference_id` (order/PO/adjustment), and `actor`. A cycle-count variance can be walked back through the ledger to the exact operations that caused it.
+
+- **Graceful degradation**
+  If the alert pipeline or the expiry job is down, the write path is unaffected; reservations simply live longer and alerts arrive late. Core selling never depends on auxiliary workers.
+
+---
+
+### Components
+
+- **API layer (REST service)**
+  Purpose: exposes catalog management, stock-in/out, reservations, availability queries, and movement history.
+  Responsibilities: authentication, role-based authorization (viewer vs clerk vs admin), request validation, idempotency-key handling, and orchestrating the atomic stock transactions.
+  How it works: stateless Spring Boot service; all stock invariants are enforced in the service + database, never in the client.
+  Relationship: the only writer of stock state; emits domain events via the outbox.
+  Real-world example: the inventory microservice behind Shopify's admin and checkout, or the "Inventory Service" box in every e-commerce reference architecture.
+
+- **Inventory store (relational database)**
+  Purpose: durable source of truth for products, stock levels, reservations, the movement ledger, and the outbox.
+  Responsibilities: transactional guarantees for stock operations; constraint enforcement (non-negative quantities via conditional updates, unique idempotency keys, unique active reservation per order line).
+  Relationship: read by the API and read replicas; scanned by the expiry job.
+  Real-world example: PostgreSQL — the default choice for inventory cores at this scale (Zoho Inventory, most ERP inventory modules).
+
+- **Reservation service (module)**
+  Purpose: the transactional core of checkout safety — reserve, confirm, release in one place.
+  Responsibilities: atomic `available` check-and-decrement, reservation row creation with expiry timestamp, confirmation (reservation → sale movement), release (reservation → available), and idempotency on order IDs.
+  Relationship: called by the API; writes reservations, movements, and outbox events in single transactions; scanned by the expiry job.
+  Real-world example: the "inventory allocation" step inside every order-management system (OMS) — Salesforce OMS and commercetools both model exactly this reserve/confirm/release triad.
+
+- **Stock movement ledger**
+  Purpose: append-only record of every unit that enters or leaves, with reason, reference, and actor.
+  Responsibilities: provide the audit trail; serve as the reconciliation source when a cycle count disagrees with the counter; optionally serve as the event-sourced source of truth (see Deep Dive 4).
+  Relationship: written inside every stock transaction; read by reporting and dispute workflows.
+  Real-world example: the "stock moves" table in Odoo/ERPNext — in those systems the ledger *is* the model and quantities are computed from it.
+
+- **Low-stock alert pipeline (outbox → queue → worker)**
+  Purpose: notify purchasing when a SKU crosses its reorder point.
+  Responsibilities: evaluate the threshold after each stock-out (inside the transaction, write an outbox row only on a crossing); deliver the alert asynchronously; dedupe so one crossing produces one alert.
+  Relationship: downstream of every stock write; never on the synchronous path.
+  Real-world example: reorder-point notifications in TradeGecko/QuickBooks Commerce; a Kafka consumer emailing a purchasing Slack channel is the same shape.
+
+- **Reservation expiry job**
+  Purpose: release reservations whose checkout never completed (payment abandoned, session timed out).
+  Responsibilities: scan `WHERE status = 'ACTIVE' AND expires_at < now()` with `FOR UPDATE SKIP LOCKED`, release each in its own transaction, emit release events.
+  How it works: batched poller; time-based predicates make reruns idempotent and self-healing after downtime.
+  Real-world example: the "abandoned cart inventory release" job every e-commerce platform runs; ticket-booking systems (BookMyShow seat holds) use the identical mechanism.
+
+- **Availability read path (replica + optional cache)**
+  Purpose: serve high-volume "is it in stock" reads without touching the write primary.
+  Responsibilities: project `available` per SKU to a read replica or a short-TTL (1–5 s) cache; tolerate bounded staleness.
+  Relationship: read-only; invalidated or refreshed on stock events.
+  Real-world example: product-detail-page inventory badges ("Only 3 left") are almost always served from a cached, slightly stale projection — the authoritative check happens at reserve time.
+
+- **Warehouse allocation service (growth path)**
+  Purpose: choose which warehouse fulfills an order when multiple locations hold the SKU.
+  Responsibilities: rank candidate warehouses by stock availability, distance to the customer, and split-shipment cost; execute the reservation against the chosen warehouse's stock row.
+  Relationship: sits between the API and the reservation service; reads per-warehouse stock levels.
+  Real-world example: the "sourcing/fulfillment optimizer" in an OMS; see Deep Dive 3.
+
+```mermaid
+flowchart TB
+    Admin["Seller Admin App"] --> LB["Load Balancer"]
+    Checkout["Checkout Service"] --> LB
+    PDP["Product Page Reads"] --> Cache["Availability Cache"]
+    LB --> API["Inventory API Service"]
+    API --> DB[("PostgreSQL: products, stock_levels, reservations, stock_movements, outbox")]
+    Cache --> Replica[("Read Replica")]
+    RELAY["Outbox Relay"] -->|"poll unpublished"| DB
+    RELAY --> Q[("Queue")]
+    Q --> ALERT["Low-Stock Alert Worker"]
+    ALERT --> Notify["Email / Slack / Webhook"]
+    JOB["Reservation Expiry Job"] -->|"claim expired holds"| DB
+    JOB -->|"release events"| Q
+```
+
+At this scale every box except PostgreSQL can be one process; the architecture is drawn distributed so the *growth* story (more warehouses, more channels, an events feed) requires no redesign — only deployment changes.
+
+---
+
+### Design Patterns
+
+- **Atomic conditional update (database compare-and-set)**
+  What it is: `UPDATE stock_levels SET on_hand = on_hand - :qty WHERE sku = :sku AND on_hand - reserved >= :qty`, then check the affected-row count.
+  Problem it solves: two concurrent checkouts of the last unit must not both succeed; read-modify-write in application code has a check-then-act race.
+  How it works: the predicate is evaluated under the row lock inside the update itself; exactly one of two racing updates can observe sufficient availability for the final unit.
+  When to use: counters and capacity columns under concurrency. When not: when you need to read related state and make a multi-step decision under the same lock (use pessimistic locking — see Deep Dive 2).
+  Advantages: no pessimistic locking across think-time, no distributed locks, single round-trip. Disadvantages: all contention for a SKU funnels onto one row — fine at this scale; a hot SKU in a flash sale serializes on that row (mitigations in Deep Dive 2).
+  Real-world example: ticket inventory, seat maps, and stock decrement systems all use this primitive.
+
+- **Optimistic locking with retry (`@Version`)**
+  What it is: a version column on the stock row; JPA increments it per update and throws `OptimisticLockException` on a stale write; the service retries the whole unit of work a bounded number of times.
+  Problem it solves: lost updates when a transaction reads a row, computes, and writes back — without holding a lock across the computation.
+  When to use: low-to-moderate contention where retries are rare and cheap. When not: hot rows where retries amplify load (a flash-sale SKU would livelock).
+  Advantages: no lock held during think-time, no deadlock risk. Disadvantages: wasted work under contention; retry logic must be bounded and jittered.
+  Real-world example: Deep Dive 2 shows both this and the pessimistic alternative with trade-offs.
+
+- **Pessimistic locking (`SELECT ... FOR UPDATE`)**
+  What it is: the transaction takes the row lock up front via JPA `@Lock(PESSIMISTIC_WRITE)`; all other writers queue until commit.
+  Problem it solves: multi-step invariants (check availability, check reservation limits, write movement, write outbox) that must observe a stable row throughout.
+  When to use: high contention on a specific row, or when the read-then-write decision is complex. When not: across external calls (payment gateways) — never hold a database lock over a network call; that is what reservations exist for.
+  Advantages: no wasted work, simple mental model. Disadvantages: lock queueing adds latency; deadlock risk if multiple rows are locked in inconsistent order (always lock in a canonical order, e.g. sorted by SKU).
+
+- **Reservation with expiry (two-phase commit substitute)**
+  What it is: split "sell" into `reserve` (fast, synchronous, holds the units) and `confirm`/`release` (after payment), with a TTL on the hold.
+  Problem it solves: you cannot hold a database transaction open across a payment-gateway call, yet you must not sell the reserved units to anyone else in the meantime.
+  How it works: reserve decrements `available` (moves units to `reserved`) and writes a reservation row with `expires_at`; confirm converts it to a `SALE` movement; the expiry job releases abandoned holds.
+  When to use: any flow with a slow, fallible middle step (payment, fraud check). When not: instant, single-step operations (in-store cash sale) — just do a direct stock-out.
+  Advantages: no distributed transaction, no lock across the network, automatic recovery from abandoned checkouts. Disadvantages: stock is temporarily unavailable while reserved (overselling is traded for occasional under-selling); requires the expiry job to be reliable.
+  Real-world example: airline seat holds, BookMyShow seat selection timers, Shopify checkout inventory reservation.
+
+- **Transactional Outbox**
+  What it is: the stock transaction and a "stock changed / low-stock crossed" event row commit together; a relay publishes to the queue.
+  Problem it solves: the dual-write problem — a stock-out that commits but whose low-stock alert never publishes (or publishes for a rolled-back stock-out).
+  Advantages: atomicity without distributed transactions. Disadvantages: at-least-once delivery, so consumers must dedupe.
+  Real-world example: Debezium CDC streaming an outbox table to Kafka.
+
+- **Event sourcing for stock movements (optional, see Deep Dive 4)**
+  What it is: the append-only `stock_events` ledger is the source of truth; `stock_levels` is a materialized projection rebuilt by summing events.
+  Problem it solves: perfect auditability, temporal queries ("what was the stock of SKU-9 last Tuesday?"), and the ability to rebuild derived state after a bug.
+  When to use: regulated domains, heavy dispute/audit load, or when many read models need the same history. When not: a simple single-store system where a counter + audit log already satisfies the auditors — event sourcing adds real complexity.
+  Advantages: complete history, replayable projections. Disadvantages: eventual consistency between event write and projection; snapshotting needed for fast current-state reads.
+
+- **Idempotent Consumer**
+  What it is: consumers of order events record `(event_id)` under a unique constraint and skip duplicates.
+  Problem it solves: at-least-once queues plus retries must not double-decrement stock when an `OrderCreated` event is delivered twice.
+  Advantages: exactly-once effect from at-least-once transport. Disadvantages: an extra write per event; a bounded residual duplicate window on consumer crash (named and accepted). See Deep Dive 6.
+
+- **Polling Publisher with row claiming (scheduled jobs)**
+  What it is: `SELECT ... WHERE status = 'ACTIVE' AND expires_at < now() FOR UPDATE SKIP LOCKED LIMIT N` on a schedule.
+  Problem it solves: reservation expiry must run with no user traffic and survive restarts and multiple app instances.
+  Advantages: self-healing, horizontally scalable without a lock service. Disadvantages: detection granularity equals the poll interval — fine for minute-scale reservation TTLs.
+
+---
+
+### Benefits
+
+- **No overselling, by construction**: the conditional update and the reservation state machine make the bad state (negative stock, double-sold units) unrepresentable, not just unlikely — support tickets about cancelled paid orders disappear.
+- **Complete audit trail**: the movement ledger answers "where did the units go" months later, which is the difference between a solvable shrinkage problem and a write-off.
+- **Checkout safety without distributed transactions**: reservations give payment flows a safe two-phase shape with automatic recovery from abandonment, using only one database.
+- **Purchasing lead time**: reorder-point alerts fire when there is still time to restock, converting stockouts from surprises into planned purchase orders.
+- **Operational visibility**: on-hand, reserved, and available per SKU per warehouse, plus movement history, are all simple queries — the data model doubles as the reporting model at this scale.
+- **Safe retries everywhere**: idempotency keys on every mutation mean clients, queues, and cron jobs can retry freely after timeouts without corrupting stock — the most common real-world inventory bug class is eliminated.
+- **Growth without redesign**: the outbox, the per-warehouse stock rows, and the reservation model are already the shapes the multi-warehouse, multi-channel version needs.
+
+---
+
+### Pros
+
+- **Simplicity**: one relational primary, one service, well-understood primitives (row locks, conditional updates). A small team can operate it.
+- **Strong correctness**: invariants enforced in the database hold under application bugs, retries, and manual SQL fixes.
+- **Low latency**: single-row updates are sub-millisecond inside the database; the 200 ms p99 budget is mostly network and framework overhead.
+- **Cheap to run**: the capacity math shows 100× headroom on a single modest node; no Kafka, no cache cluster, no coordination service is *required* at this scale.
+- **Debuggability**: every state change is a row in a ledger with a reason; "why is this number what it is" is a SQL query, not a log-grep across ten services.
+- **Testability**: the concurrency-critical code paths are small and deterministic; race conditions can be exercised with plain multi-threaded integration tests against a real database.
+
+---
+
+### Cons
+
+- **Single-primary write ceiling**: all writes for a SKU serialize on one row of one database. A viral flash-sale SKU can create a lock queue; the fixes (inventory splitting, async claim queues) add complexity.
+- **Reservation-induced under-selling**: units held by abandoned checkouts are temporarily unsellable; aggressive TTLs hurt conversion, lax TTLs hurt availability — a real business trade-off, not a bug.
+- **Staleness on the read path**: cached availability can say "in stock" for a unit that just sold; the authoritative check at reserve time must handle the resulting failures gracefully (this is unavoidable — it is the price of read scale).
+- **Operational jobs are load-bearing**: if the expiry job silently stops, reserved stock leaks and availability drifts down; jobs need the same monitoring as the API.
+- **Ledger growth**: the movement table grows forever; without partitioning/archival discipline, queries and backups degrade over years.
+- **Not a WMS**: this design tracks *how many*, not *where in the building* (bins, pick paths, lot/expiry, serial numbers). Those are deliberate scope cuts; bolting them on later is a data-model migration, not a config change.
+
+---
+
+### Challenges
+
+- **Technical — the check-then-act race**: the naive `SELECT quantity; if (quantity >= n) UPDATE quantity = quantity - n` loses updates under concurrency because the check and the write are not atomic. Every stock mutation must be a single conditional statement, an optimistic-lock retry loop, or a pessimistically locked critical section — there is no fourth option, and choosing none is the most common beginner bug.
+- **Technical — the dual-write problem**: a stock change and its downstream effects (alert, search-index update, analytics event) cannot be committed atomically to two systems. The outbox pattern is the standard answer; skipping it produces phantom alerts and missed reorders.
+- **Scalability — hot-SKU contention**: a flash sale concentrates thousands of decrements on one row, which serializes at the row lock. Mitigations: split the SKU's stock into N sub-rows (inventory sharding) and decrement any one of them; or accept oversell-tolerant queuing with post-payment reconciliation. Both are complexity you add only when measurement demands it.
+- **Scalability — multi-warehouse fan-out**: once stock lives in many locations, "do we have it" is a multi-row question and "where do we ship from" is an optimization problem. The per-(SKU, warehouse) row design keeps each write single-row, but allocation logic must handle partial availability and split shipments (Deep Dive 3).
+- **Performance — read-path pressure**: availability sits on the product-page path with 10× the write volume. Serving it from the write primary wastes the primary's headroom; serving it from a cache introduces staleness that must be bounded and must fail safe at reserve time.
+- **Reliability — the expiry job is load-bearing**: a stopped expiry job leaks reserved stock and slowly zeroes availability. It needs heartbeats, alerting on "no releases in N minutes during traffic", and a catch-up-safe design (time-based predicates, not in-memory state).
+- **Reliability — exactly-once illusion**: queues deliver at-least-once; networks time out after the server committed. Without idempotency keys and consumer dedupe, retries double-receive and double-dispatch stock — the single most common production inventory bug.
+- **Maintainability — invariant drift**: as features accrete (bundles, backorders, pre-orders, returns-to-stock), each new write path must re-implement or reuse the same invariants. Keeping *all* stock mutation behind one service module (never direct table writes from other features) is what keeps the system correct at year three.
+- **Operational — reconciliation**: physical stock drifts from recorded stock (damage, theft, mis-picks). The system needs cycle-count workflows and adjustment movements with reason codes; a counter that cannot be corrected becomes a counter nobody trusts.
+- **Security — adjustment abuse**: manual adjustments are the fraud vector (a clerk "adjusts" stock down and walks out with units). Adjustments need role gating, amount thresholds, mandatory reason codes, and an immutable audit trail with the actor's identity.
+
+---
+
+### Best Practices
+
+- **Enforce invariants in the database, not just the service.** A conditional `UPDATE ... WHERE available >= :qty` and a `CHECK (on_hand >= 0)` constraint hold under application bugs, future services, and manual SQL fixes. Application-only checks are one race window away from negative stock.
+- **Never hold a database lock across a network call.** Payment gateways take seconds and fail often; a row lock held across that call queues every other buyer of the SKU behind a flaky third party. Reservations exist precisely to convert "hold a lock" into "hold a row state with a TTL".
+- **Make every mutation idempotent from day one.** Require an idempotency key (or a natural unique reference like `order_id`) on stock-in, stock-out, reserve, confirm, and release, enforced by a unique constraint. Retrofitting idempotency after the first double-dispatch incident means reconciling corrupted stock; building it in costs one column.
+- **Append movements; never overwrite quantities silently.** An adjustment is a movement with a reason, not an `UPDATE` to the counter alone. When the cycle count disagrees with the system — and it will — the ledger is the only way to explain the gap.
+- **Alert on threshold crossings, not on states.** Emit the low-stock event when `available` transitions from above to at-or-below the reorder point, and record that it fired. Alerting on every sale below the threshold spams purchasing into ignoring the channel; alerting once per crossing keeps the signal meaningful.
+- **Keep the write path free of auxiliary work.** Notification delivery, search reindexing, and analytics are outbox consumers, not inline calls. A slow email provider must never add latency to a checkout.
+- **Lock in a canonical order.** When a transaction touches multiple stock rows (a multi-line order), lock them sorted by SKU. Inconsistent lock ordering across concurrent transactions is how you get deadlocks; canonical ordering makes them structurally impossible.
+- **Bound and jitter every retry.** Optimistic-lock retries and queue redeliveries must have a cap and exponential backoff with jitter; unbounded retries turn a hot row into a retry storm that looks exactly like a DDoS.
+- **Monitor the counters, not just the service.** Alert on negative-available attempts (rejected stock-outs spike = overselling pressure or a bug), reservation leak rate (active reservations older than 2× TTL), and ledger-vs-counter drift. The numbers *are* the health of an inventory system.
+- **Treat time as data.** Store `expires_at`, `created_at`, and `occurred_at` explicitly and let jobs scan them; in-memory timers and "run at" schedulers die with the process and are the classic source of leaked reservations after a deploy.
+
+---
+
+### When to Use and When Not to Use
+
+**Use this design when:**
+
+- You operate one or a few warehouses/stores with up to ~100k SKUs and up to thousands of stock operations per day — the single-primary model has orders of magnitude of headroom.
+- Overselling is unacceptable (paid orders, regulated goods) and you need strong consistency at the point of sale.
+- You need a defensible audit trail: finance, disputes, or shrinkage investigations require every unit movement to be explainable.
+- Checkout involves a slow middle step (payment, fraud review) that needs the reserve/confirm/release shape.
+- Your team is small and should be spending its complexity budget on the product, not on operating distributed infrastructure.
+
+**Do not use this design (as-is) when:**
+
+- You are a marketplace or quick-commerce platform with hundreds of warehouses and tens of thousands of decrements per second on hot SKUs — you need sharded inventory, per-warehouse services, and possibly oversell-tolerant async claiming (the advanced real-time variant).
+- You need full warehouse-management features: bin locations, pick-path optimization, lot/serial/expiry tracking, wave picking — that is a WMS; this design is the inventory *core* a WMS would sit beside.
+- You sell purely digital, effectively infinite goods (software licenses without seat limits) — a counter with strong consistency is overkill; a simple entitlement check suffices.
+- You need multi-region active-active writes with sub-100 ms latency on every continent — a single primary cannot do that; you would need per-region inventory partitioning (each region owns its stock) rather than this design.
+
+---
+
+### Use Cases
+
+- **E-commerce checkout reservation**: a shopper checks out; the system reserves the units for 15 minutes while payment runs; payment success confirms the sale, failure or timeout releases the units. The reservation TTL balances conversion (longer holds) against availability (shorter holds).
+- **Receiving against a purchase order**: a warehouse clerk scans a delivery; stock-in movements reference the PO, and a partial receipt leaves the PO open — the ledger shows exactly what arrived when.
+- **Flash sale on a hot SKU**: 500 units, 10,000 would-be buyers. The conditional update admits exactly 500 successful reservations; everyone else gets a fast, honest "sold out" instead of a cancelled order the next day.
+- **Cycle count and shrinkage adjustment**: a weekly count finds 3 units missing; an adjustment movement with reason `CYCLE_COUNT_VARIANCE` and the clerk's identity corrects the counter, and the ledger preserves the discrepancy for the shrinkage report.
+- **Reorder-point purchasing**: the 400th sale of a SKU crosses its reorder point; exactly one alert goes to purchasing with current available, average daily sales, and supplier lead time — early enough that the replenishment arrives before stockout.
+- **Multi-warehouse order routing**: an order for 5 units can be fulfilled from warehouse A (3 units) and B (2 units); the allocation service either splits the shipment or routes whole to the warehouse that has all 5, per cost policy (Deep Dive 3).
+- **Return to stock**: a customer return is inspected and restocked as a `RETURN` movement; a damaged return is a movement to a quarantine bucket instead — both keep the ledger complete without inflating sellable stock.
+- **Oversell incident forensics**: after a bug, support asks "how did SKU-9 go negative for 4 minutes?" The movement ledger, with references to order IDs, answers it in one query — the difference between a postmortem and a guess.
+
+---
+
+### API Design
+
+REST over JSON, versioned by URL prefix (`/api/v1`). All mutating endpoints require an `Idempotency-Key` header; the server stores `(key, endpoint, actor) → response` for 24 hours and replays the stored response on duplicate keys. Authenticated via OAuth2 client-credentials (service-to-service) or JWT bearer (admin UI); roles: `VIEWER`, `CLERK`, `ADMIN`.
+
+**Endpoints**
+
+| Method | Path | Purpose | Role |
+|---|---|---|---|
+| POST | `/api/v1/products` | Create product | ADMIN |
+| GET | `/api/v1/products/{sku}` | Product + availability | VIEWER |
+| GET | `/api/v1/products?category=&cursor=&limit=&sort=` | List/search products | VIEWER |
+| POST | `/api/v1/inventory/{sku}/stock-in` | Receive stock | CLERK |
+| POST | `/api/v1/inventory/{sku}/stock-out` | Direct sale/dispatch | CLERK |
+| POST | `/api/v1/inventory/{sku}/adjustments` | Cycle-count/damage correction | ADMIN |
+| POST | `/api/v1/reservations` | Reserve stock for an order | CLERK (service) |
+| POST | `/api/v1/reservations/{id}/confirm` | Convert reservation to sale | CLERK (service) |
+| POST | `/api/v1/reservations/{id}/release` | Cancel reservation | CLERK (service) |
+| GET | `/api/v1/inventory/low-stock` | SKUs at/below reorder point | VIEWER |
+| GET | `/api/v1/inventory/{sku}/movements?cursor=&limit=` | Movement history | VIEWER |
+
+**Create product**
+
+```http
+POST /api/v1/products HTTP/1.1
+Authorization: Bearer eyJhbGciOiJSUzI1NiIs...
+Idempotency-Key: 9b3f0c2e-7a1d-4f2a-9c55-2f0d1a2b3c4d
+Content-Type: application/json
+
+{
+  "sku": "WIDGET-001",
+  "name": "Standard Widget",
+  "price": { "amount": 1299, "currency": "USD" },
+  "category": "widgets",
+  "reorderPoint": 25,
+  "lowStockThreshold": 10
+}
+```
+
+```http
+HTTP/1.1 201 Created
+Location: /api/v1/products/WIDGET-001
+
+{
+  "sku": "WIDGET-001",
+  "name": "Standard Widget",
+  "price": { "amount": 1299, "currency": "USD" },
+  "category": "widgets",
+  "reorderPoint": 25,
+  "lowStockThreshold": 10,
+  "active": true,
+  "createdAt": "2026-01-15T10:30:00Z"
+}
+```
+
+**Stock-in (receiving)**
+
+```http
+POST /api/v1/inventory/WIDGET-001/stock-in HTTP/1.1
+Idempotency-Key: po-8842-receipt-1
+
+{ "quantity": 100, "reason": "PURCHASE_ORDER_RECEIPT", "referenceId": "PO-8842", "warehouseId": "WH-1" }
+```
+
+```http
+HTTP/1.1 200 OK
+
+{ "sku": "WIDGET-001", "warehouseId": "WH-1", "onHand": 100, "reserved": 0, "available": 100, "movementId": "mv_01J..." }
+```
+
+**Reserve stock (checkout)**
+
+```http
+POST /api/v1/reservations HTTP/1.1
+Idempotency-Key: order-55123-line-1
+
+{ "orderId": "ORD-55123", "sku": "WIDGET-001", "quantity": 2, "warehouseId": "WH-1", "ttlSeconds": 900 }
+```
+
+```http
+HTTP/1.1 201 Created
+
+{ "reservationId": "rsv_01J9Z...", "orderId": "ORD-55123", "sku": "WIDGET-001", "quantity": 2, "status": "ACTIVE", "expiresAt": "2026-01-15T10:45:00Z" }
+```
+
+Insufficient stock is a domain failure, not a server error:
+
+```http
+HTTP/1.1 409 Conflict
+
+{ "error": "INSUFFICIENT_STOCK", "message": "Requested 2, available 1", "sku": "WIDGET-001", "available": 1 }
+```
+
+**Confirm / release**
+
+```http
+POST /api/v1/reservations/rsv_01J9Z.../confirm
+Idempotency-Key: order-55123-confirm
+→ 200 OK { "reservationId": "rsv_01J9Z...", "status": "CONFIRMED", "movementId": "mv_01JA..." }
+
+POST /api/v1/reservations/rsv_01J9Z.../release
+Idempotency-Key: order-55123-release
+→ 200 OK { "reservationId": "rsv_01J9Z...", "status": "RELEASED" }
+```
+
+Confirming an expired reservation returns `410 Gone` (`RESERVATION_EXPIRED`) — the units may have been resold; the order flow must re-attempt reservation.
+
+**Availability read**
+
+```http
+GET /api/v1/products/WIDGET-001
+→ 200 OK
+{ "sku": "WIDGET-001", "name": "Standard Widget", "availability": { "onHand": 98, "reserved": 5, "available": 93 }, "lowStock": false }
+```
+
+**Movement history with pagination, filtering, sorting**
+
+```http
+GET /api/v1/inventory/WIDGET-001/movements?reason=SALE&from=2026-01-01&sort=occurredAt:desc&limit=50&cursor=eyJpZCI6...
+→ 200 OK
+{
+  "data": [
+    { "movementId": "mv_01JA...", "delta": -2, "reason": "SALE", "referenceId": "ORD-55123", "actor": "checkout-service", "occurredAt": "2026-01-15T10:46:02Z" }
+  ],
+  "page": { "limit": 50, "nextCursor": "eyJpZCI6Im12XzAxSi4uLiJ9", "hasMore": true }
+}
+```
+
+**Contract rules**
+
+- **Validation**: `quantity` must be a positive integer ≤ 1,000,000; `sku` must match `^[A-Z0-9-]{3,32}$`; unknown fields are rejected. Validation failures return `400` with a field-level error list: `{ "error": "VALIDATION_FAILED", "fields": [{ "field": "quantity", "issue": "must be positive" }] }`.
+- **Status codes**: `201` creates; `200` success; `400` validation; `401/403` auth; `404` unknown SKU/reservation; `409` domain conflict (insufficient stock, duplicate active reservation for the order line); `410` expired reservation; `422` state-machine violation (confirming a released reservation); `429` rate limited; `5xx` retryable server faults.
+- **Idempotency**: duplicate `Idempotency-Key` returns the original response with an `Idempotent-Replay: true` header and performs no state change. Keys are scoped per endpoint and actor.
+- **Pagination**: cursor-based (`cursor` + `limit`, max 200) for movements and product lists — offset pagination skips/duplicates rows under concurrent writes, and the movement ledger is always being written.
+- **Filtering/sorting**: allowlisted fields only (`reason`, `from`, `to`, `sort=occurredAt:asc|desc`); arbitrary sort fields are rejected to prevent unindexed scans.
+- **Versioning**: URL prefix `/api/v1`; breaking changes ship as `/api/v2` alongside v1 for one deprecation window; additive fields are not versioned.
+- **Rate limiting**: token bucket per client identity — 100 req/s for service accounts, 20 req/s for admin UI tokens; `429` responses include `Retry-After` and `X-RateLimit-Remaining` headers.
+- **Auth**: every request carries a JWT; the `sub` claim is recorded as the `actor` on every movement — the audit trail is only as good as its attribution.
+
+---
+
+### Data Modeling
+
+```mermaid
+erDiagram
+    PRODUCTS ||--o{ STOCK_LEVELS : "stocked as"
+    WAREHOUSES ||--o{ STOCK_LEVELS : "holds"
+    PRODUCTS ||--o{ STOCK_MOVEMENTS : "tracked by"
+    WAREHOUSES ||--o{ STOCK_MOVEMENTS : "location of"
+    STOCK_LEVELS ||--o{ RESERVATIONS : "held against"
+    PRODUCTS ||--o{ RESERVATIONS : "reserved as"
+    PRODUCTS ||--o{ IDEMPOTENCY_KEYS : "scoped to"
+
+    PRODUCTS {
+        string sku PK
+        string name
+        int price_amount
+        string price_currency
+        string category
+        int reorder_point
+        int low_stock_threshold
+        boolean active
+        timestamp created_at
+    }
+    WAREHOUSES {
+        string warehouse_id PK
+        string name
+        string region
+    }
+    STOCK_LEVELS {
+        string sku PK,FK
+        string warehouse_id PK,FK
+        int on_hand
+        int reserved
+        int version
+        timestamp updated_at
+    }
+    RESERVATIONS {
+        string reservation_id PK
+        string sku FK
+        string warehouse_id FK
+        string order_id
+        int quantity
+        string status
+        timestamp expires_at
+        timestamp created_at
+    }
+    STOCK_MOVEMENTS {
+        string movement_id PK
+        string sku FK
+        string warehouse_id FK
+        int delta
+        string reason
+        string reference_id
+        string actor
+        timestamp occurred_at
+    }
+    IDEMPOTENCY_KEYS {
+        string key PK
+        string endpoint
+        string actor
+        string response_body
+        timestamp created_at
+    }
+```
+
+**Design notes**
+
+- `STOCK_LEVELS` is keyed by `(sku, warehouse_id)` — the composite key is what makes the multi-warehouse growth path a data change, not a schema change. `available` is *derived* (`on_hand - reserved`), never stored, so it cannot drift.
+- `STOCK_LEVELS.version` backs optimistic locking (Deep Dive 2); a `CHECK (on_hand >= 0 AND reserved >= 0 AND reserved <= on_hand)` constraint makes invalid states unrepresentable.
+- `RESERVATIONS.status` is `ACTIVE | CONFIRMED | RELEASED | EXPIRED`; a partial unique index `ON reservations (order_id, sku) WHERE status = 'ACTIVE'` makes duplicate active reservations for one order line impossible at the database level.
+- `STOCK_MOVEMENTS` is append-only (no `UPDATE`/`DELETE` granted to the application role). `delta` is signed: receipts positive, sales negative. `reason` is an enum: `PURCHASE_ORDER_RECEIPT`, `SALE`, `RESERVATION_CONFIRM`, `RESERVATION_RELEASE`, `RETURN`, `CYCLE_COUNT_VARIANCE`, `DAMAGE`, `CORRECTION`.
+- Indexes: `stock_movements (sku, occurred_at DESC)` for history; `stock_movements (reference_id)` for order-level forensics; `reservations (status, expires_at)` for the expiry job's scan; `products (category)` for listing.
+- The current quantity is always reconcilable: `SELECT sku, SUM(delta) FROM stock_movements GROUP BY sku` must equal `stock_levels.on_hand` (plus/minus reserved accounting); a nightly job verifies this and alerts on drift.
+
+---
+
+### High-Level Design
+
+```mermaid
+flowchart TB
+    subgraph Clients
+        AdminUI["Seller Admin UI"]
+        CheckoutSvc["Checkout / Order Service"]
+        PDP["Product Page (reads)"]
+    end
+
+    subgraph Edge["Edge"]
+        LB["Load Balancer + WAF"]
+    end
+
+    subgraph App["Application Tier (stateless)"]
+        API["Inventory API Service"]
+        ExpiryJob["Reservation Expiry Job"]
+        Relay["Outbox Relay"]
+    end
+
+    subgraph Data["Data Tier"]
+        Primary[("PostgreSQL Primary")]
+        Replica[("Read Replica")]
+        Cache["Availability Cache (TTL 1-5s)"]
+        Queue[("Message Queue")]
+    end
+
+    subgraph Workers["Async Workers"]
+        AlertWorker["Low-Stock Alert Worker"]
+        Projector["Availability Projector"]
+    end
+
+    AdminUI --> LB
+    CheckoutSvc --> LB
+    LB --> API
+    PDP --> Cache
+    Cache --> Replica
+    API --> Primary
+    Primary --> Replica
+    ExpiryJob -->|"claim expired reservations"| Primary
+    Relay -->|"poll unpublished outbox rows"| Primary
+    Relay --> Queue
+    Queue --> AlertWorker
+    Queue --> Projector
+    Projector -->|"refresh availability"| Cache
+    AlertWorker --> Notify["Email / Slack / Webhook"]
+```
+
+**How the pieces fit**: all writes flow through the API service to the single primary — there is exactly one write path, which is what makes the invariants enforceable. Reads split by consistency need: checkout-critical reads hit the primary; product-page reads hit the cache/replica and tolerate seconds of staleness. Everything downstream (alerts, cache projection) is driven by the outbox, so a slow or dead consumer never affects the write path. The expiry job is the only component that writes without a client request.
+
+**Reservation sequence (the critical flow)**
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant C as Checkout Service
+    participant API as Inventory API
+    participant DB as PostgreSQL
+    participant P as Payment Gateway
+    participant J as Expiry Job
+
+    C->>API: POST /reservations (orderId, sku, qty, Idempotency-Key)
+    API->>DB: BEGIN; UPDATE stock_levels SET reserved = reserved + qty WHERE sku AND on_hand - reserved >= qty
+    alt affected rows = 1
+        API->>DB: INSERT reservation (ACTIVE, expires_at = now + ttl); INSERT outbox; COMMIT
+        API-->>C: 201 reservationId, expiresAt
+        C->>P: charge customer
+        alt payment success
+            C->>API: POST /reservations/{id}/confirm
+            API->>DB: BEGIN; reservation ACTIVE->CONFIRMED; on_hand -= qty, reserved -= qty; INSERT movement (SALE); COMMIT
+            API-->>C: 200 CONFIRMED
+        else payment failed or timeout
+            C->>API: POST /reservations/{id}/release
+            API->>DB: BEGIN; reservation ACTIVE->RELEASED; reserved -= qty; INSERT movement (RELEASE); COMMIT
+            API-->>C: 200 RELEASED
+        end
+    else affected rows = 0
+        API-->>C: 409 INSUFFICIENT_STOCK (available: n)
+    end
+    Note over J,DB: if the customer abandons checkout
+    J->>DB: SELECT ... WHERE status='ACTIVE' AND expires_at < now() FOR UPDATE SKIP LOCKED
+    J->>DB: per row: EXPIRED; reserved -= qty; INSERT movement (RELEASE); COMMIT
+```
+
+**Why this shape**: the payment call (steps 6–8) happens *outside* any database transaction — the reservation row, not a lock, protects the units. Every state transition is a small, fast transaction. The expiry job guarantees the `ACTIVE` state is always temporary, so abandoned checkouts cannot permanently remove stock from sale. Confirming is idempotent on the reservation's state machine: a duplicate confirm sees `CONFIRMED` and returns success without a second movement.
+
+---
+
+### Deep Dive
+
+#### 1. Stock reservation flow: reserve → confirm → release with expiry
+
+The reservation lifecycle is a state machine: `ACTIVE → CONFIRMED` (sale), `ACTIVE → RELEASED` (explicit cancel), `ACTIVE → EXPIRED` (TTL elapsed). Terminal states are final; every transition writes a movement.
+
+```mermaid
+stateDiagram-v2
+    [*] --> ACTIVE : reserve (available >= qty)
+    ACTIVE --> CONFIRMED : payment success
+    ACTIVE --> RELEASED : explicit cancel
+    ACTIVE --> EXPIRED : expiry job (ttl elapsed)
+    CONFIRMED --> [*] : movement SALE
+    RELEASED --> [*] : movement RELEASE
+    EXPIRED --> [*] : movement RELEASE
+```
+
+Key invariants:
+
+- **Reserve** is one conditional statement: `UPDATE stock_levels SET reserved = reserved + :qty WHERE sku = :sku AND warehouse_id = :wh AND on_hand - reserved >= :qty`. Zero affected rows → `409`. No application-level check precedes it.
+- **Confirm** transitions the reservation and adjusts both counters in one transaction: `reserved -= qty` and `on_hand -= qty`, plus the `SALE` movement. It validates the reservation is `ACTIVE` and unexpired; an expired reservation returns `410` and the order flow must re-reserve (the units may have been resold — that is correct behavior, not an error).
+- **Release** (explicit or via the expiry job) does `reserved -= qty` plus a `RELEASE` movement. It is idempotent: releasing a `RELEASED` reservation is a no-op returning success.
+- **Expiry** is a batch job, not a timer per reservation: `SELECT reservation_id FROM reservations WHERE status = 'ACTIVE' AND expires_at < now() ORDER BY expires_at LIMIT 500 FOR UPDATE SKIP LOCKED`. `SKIP LOCKED` lets multiple app instances run the job concurrently without double-processing; each row is released in its own short transaction so one poison row cannot block the batch.
+- **TTL choice** is a business knob: 10–15 minutes for checkout holds. Too short loses conversions (slow payment methods); too long under-sells stock. Measure abandonment vs. reservation-driven stockouts to tune it.
+
+#### 2. Overselling prevention: optimistic vs pessimistic locking
+
+Both approaches are correct; they differ in *where* the conflict cost is paid. The conditional `UPDATE` from Deep Dive 1 is actually a third option — the cheapest — but it only works when the entire decision fits in one SQL predicate. When the service must read state, apply logic, and write (e.g. confirm a reservation: check status, check expiry, adjust two counters, write a movement), you need a locking strategy.
+
+**Optimistic locking (`@Version` + retry)** — assume conflicts are rare; detect them at write time and retry:
+
+```java
+@Entity
+@Table(name = "stock_levels")
+public class StockLevel {
+
+    @EmbeddedId
+    private StockLevelId id;          // (sku, warehouseId)
+
+    private int onHand;
+    private int reserved;
+
+    @Version
+    private int version;              // JPA increments and checks on every UPDATE
+
+    public void reserve(int qty) {
+        if (onHand - reserved < qty) {
+            throw new InsufficientStockException(id.getSku(), onHand - reserved);
+        }
+        reserved += qty;
+    }
+    // confirm(), release() analogous — domain logic on the entity
+}
+```
+
+```java
+@Service
+public class OptimisticReservationService {
+
+    private static final int MAX_ATTEMPTS = 3;
+
+    private final StockLevelRepository stockLevels;
+    private final ReservationRepository reservations;
+
+    public OptimisticReservationService(StockLevelRepository stockLevels,
+                                        ReservationRepository reservations) {
+        this.stockLevels = stockLevels;
+        this.reservations = reservations;
+    }
+
+    public Reservation reserve(String sku, String warehouseId, String orderId, int qty) {
+        int attempt = 0;
+        while (true) {
+            try {
+                return doReserve(sku, warehouseId, orderId, qty);
+            } catch (ObjectOptimisticLockingFailureException e) {
+                if (++attempt >= MAX_ATTEMPTS) {
+                    throw new ConcurrentStockUpdateException(sku, e);
+                }
+                backoffWithJitter(attempt);   // e.g. 10ms * 2^attempt +/- jitter
+            }
+        }
+    }
+
+    @Transactional
+    protected Reservation doReserve(String sku, String warehouseId, String orderId, int qty) {
+        StockLevel level = stockLevels.findById(new StockLevelId(sku, warehouseId))
+                .orElseThrow(() -> new UnknownSkuException(sku));
+        level.reserve(qty);                       // throws InsufficientStockException if short
+        Reservation r = Reservation.active(sku, warehouseId, orderId, qty, Duration.ofMinutes(15));
+        reservations.save(r);
+        return r;                                 // @Version checked at flush/commit
+    }
+}
+```
+
+Trade-offs: no lock is held while the transaction does its work, so throughput is high when conflicts are rare; but under a flash sale on one SKU, most transactions lose the version race and retry, multiplying load exactly when the system is busiest. Retries must be bounded (3 attempts) and jittered, and the final failure must surface as a clean `409`, not a `500`.
+
+**Pessimistic locking (`SELECT ... FOR UPDATE` via JPA `@Lock`)** — take the row lock up front; conflicts queue instead of retrying:
+
+```java
+public interface StockLevelRepository extends JpaRepository<StockLevel, StockLevelId> {
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT s FROM StockLevel s WHERE s.id = :id")
+    Optional<StockLevel> findByIdForUpdate(@Param("id") StockLevelId id);
+
+    @Modifying
+    @Query("""
+            UPDATE StockLevel s SET s.reserved = s.reserved + :qty
+            WHERE s.id = :id AND s.onHand - s.reserved >= :qty
+            """)
+    int tryReserve(@Param("id") StockLevelId id, @Param("qty") int qty);
+}
+```
+
+```java
+@Service
+public class PessimisticReservationService {
+
+    private final StockLevelRepository stockLevels;
+    private final ReservationRepository reservations;
+
+    public PessimisticReservationService(StockLevelRepository stockLevels,
+                                         ReservationRepository reservations) {
+        this.stockLevels = stockLevels;
+        this.reservations = reservations;
+    }
+
+    @Transactional
+    public Reservation reserve(String sku, String warehouseId, String orderId, int qty) {
+        StockLevel level = stockLevels.findByIdForUpdate(new StockLevelId(sku, warehouseId))
+                .orElseThrow(() -> new UnknownSkuException(sku));
+        level.reserve(qty);                       // safe: row is locked until commit
+        Reservation r = Reservation.active(sku, warehouseId, orderId, qty, Duration.ofMinutes(15));
+        return reservations.save(r);
+    }
+}
+```
+
+Trade-offs: no wasted work — a contending transaction waits (bounded by `lock_timeout`, e.g. 2 s) instead of retrying, which is the right behavior for hot rows; but throughput on that row is capped at `1 / avg_transaction_time`, long transactions queue everyone behind them, and multi-row transactions must lock in canonical (sorted) order to avoid deadlocks.
+
+**Choosing**: default to the single conditional `UPDATE` (no entity read at all) for simple decrements; use pessimistic locking for multi-step invariants like confirm/release; use optimistic locking for low-contention, read-heavy aggregates (product catalog edits). Never mix optimistic and pessimistic writers on the same row without a version check in the pessimistic path — a blind `UPDATE` would silently overwrite an optimistic writer's change.
+
+#### 3. Multi-warehouse allocation
+
+With stock in N warehouses, "reserve 5 units of SKU-9" becomes an *allocation* decision. The design keeps each write single-row (per `(sku, warehouse_id)`) and puts the decision in an allocation service:
+
+1. **Candidate selection**: query all warehouses with `available > 0` for the SKU, joined with warehouse metadata (region, shipping cost to the destination, cutoff times).
+2. **Ranking policy** (configurable, in priority order): prefer a single warehouse that can fulfill the *whole* order (split shipments cost 1.5–2× in postage and support load); among those, nearest to the customer; tie-break by highest available stock (keeps small remnants from being stranded).
+3. **Atomic claim**: attempt the conditional reserve against the top candidate. If it returns zero rows (a race — someone else took the units between selection and claim), fall through to the next candidate. The selection read is *advisory*; the conditional update is *authoritative* — this read-then-race-then-retry shape is unavoidable and correct because the claim re-validates.
+4. **Split fallback**: if no single warehouse has the full quantity and policy allows splits, reserve greedily from ranked warehouses, each reservation its own transaction, compensating (releasing) earlier reservations if a later line fails — a mini-saga scoped to one order.
+
+```java
+@Service
+public class AllocationService {
+
+    private final StockLevelRepository stockLevels;
+    private final ReservationService reservationService;
+
+    public AllocationService(StockLevelRepository stockLevels,
+                             ReservationService reservationService) {
+        this.stockLevels = stockLevels;
+        this.reservationService = reservationService;
+    }
+
+    public Reservation allocate(String sku, String orderId, int qty, String destinationRegion) {
+        List<StockLevel> candidates = stockLevels
+                .findAvailableBySkuOrderByRegionPreference(sku, qty, destinationRegion);
+        for (StockLevel candidate : candidates) {
+            try {
+                return reservationService.reserve(sku, candidate.getId().getWarehouseId(), orderId, qty);
+            } catch (InsufficientStockException raced) {
+                // another order claimed the units between selection and claim; try next warehouse
+            }
+        }
+        throw new InsufficientStockException(sku, 0);
+    }
+}
+```
+
+The important property: allocation never decrements across warehouses in one distributed transaction — each warehouse's stock row is claimed independently, and failure compensation is explicit release calls.
+
+#### 4. Event sourcing for stock movements
+
+In the base design, `stock_levels` is the truth and `stock_movements` is an audit log. The event-sourced variant inverts this: **`stock_events` is the only source of truth**, and `stock_levels` is a disposable projection.
+
+- **Write path**: every operation appends an immutable event — `StockReceived(sku, wh, qty, poRef)`, `StockReserved`, `StockReservationConfirmed`, `StockReleased`, `StockAdjusted` — with a monotonically increasing sequence per `(sku, warehouse)` stream. Concurrency control moves to the stream: appending with an expected version (`INSERT ... WHERE current_version = expected`) is the optimistic concurrency check; a conflict means re-read the stream and re-decide.
+- **Read path**: current availability is a projection — either maintained transactionally alongside the event insert (the pragmatic choice: event + counter update in one transaction, giving you both strong consistency *and* full history) or rebuilt asynchronously by a projector (the purist choice, with eventual-consistency lag on reads).
+- **What you gain**: perfect temporal queries ("stock of SKU-9 at 2026-01-01T00:00Z" is `SUM(delta) WHERE occurred_at <= :t`), trivial new read models (rebuild a reporting table by replaying), and an audit trail that cannot be incomplete because the audit trail *is* the state.
+- **What you pay**: every current-state read needs the projection (never sum the whole stream per request — snapshot); schema evolution becomes event-versioning (old events must be upcast or handled forever); and the team must understand the model — event sourcing imposed on a team that doesn't need it is a net negative. For a single-store system, the counter + audit log is usually sufficient; adopt full event sourcing when auditors, disputes, or many downstream projections justify it.
+
+#### 5. Low-stock and reorder-point alerts
+
+The naive implementation — "after every stock-out, if available < threshold, send an alert" — spams purchasing with one email per sale. The correct implementation alerts on the **crossing**, once:
+
+1. Inside the stock-out transaction, capture availability *before* and *after* the decrement (the conditional `UPDATE ... RETURNING on_hand, reserved` gives both in one statement).
+2. If `before > reorderPoint AND after <= reorderPoint`, insert a `LOW_STOCK_CROSSED` event into the outbox in the same transaction. No crossing, no row — the write path pays nothing in the common case.
+3. The alert worker consumes the event, enriches it (average daily sales from the movement ledger, supplier lead time from config), and delivers one notification. Deduplication is structural: the crossing can only happen once per replenishment cycle because a restock moves availability back above the point, re-arming the trigger.
+4. **Re-arm discipline**: a restock that lands *below* the reorder point (partial replenishment) must not re-fire the alert — track `alerted` state per SKU, cleared only when availability rises above the reorder point. Otherwise every subsequent sale re-alerts.
+5. Two thresholds with different semantics: `reorder_point` (act now: lead time × daily sales + safety stock) drives purchasing alerts; `low_stock_threshold` (warn: shelf looks thin) drives a dashboard badge. Conflating them either pages purchasing for cosmetic lows or hides real reorder urgency.
+
+#### 6. Idempotent order-event consumption
+
+When inventory consumes order events from a queue (e.g. `OrderCreated` → reserve, `OrderCancelled` → release), at-least-once delivery makes duplicates a certainty, not an edge case. The consumer must be idempotent:
+
+```java
+@Service
+public class OrderEventConsumer {
+
+    private final ProcessedEventRepository processedEvents;
+    private final ReservationService reservationService;
+
+    public OrderEventConsumer(ProcessedEventRepository processedEvents,
+                              ReservationService reservationService) {
+        this.processedEvents = processedEvents;
+        this.reservationService = reservationService;
+    }
+
+    @Transactional
+    public void onOrderCreated(OrderCreatedEvent event) {
+        // Unique constraint on processed_events(event_id) is the dedupe mechanism.
+        if (!processedEvents.tryInsert(event.eventId(), "OrderCreated")) {
+            return;   // duplicate delivery: already handled, acknowledge and skip
+        }
+        for (OrderLine line : event.lines()) {
+            reservationService.reserve(line.sku(), event.warehouseId(),
+                                       event.orderId(), line.quantity());
+        }
+        // Both the dedupe row and the reservations commit in ONE transaction:
+        // a crash before commit means the event is redelivered and retried cleanly.
+    }
+}
+```
+
+The critical detail is that the dedupe record and the business effect commit **atomically** — recording "processed" in a separate store (or after commit) reopens the duplicate window. Natural idempotency keys reinforce this: `reserve` is keyed on `(order_id, sku)` with the partial unique index from the data model, so even a consumer bug that skips the dedupe check cannot create two active reservations for one order line. Defense in depth: unique constraints at the database are the last line, idempotent consumers are the first.
+
+---
+
+### Java and Spring Boot Implementation Guide
+
+Spring Boot 3.x, Java 17+, Spring Data JPA on PostgreSQL. Constructor injection everywhere; DTOs are records; configuration via `@Value`.
+
+**Configuration**
+
+```java
+@Configuration
+public class InventoryConfig {
+
+    @Value("${inventory.reservation-ttl:PT15M}")
+    private Duration reservationTtl;
+
+    @Value("${inventory.expiry-job.batch-size:500}")
+    private int expiryBatchSize;
+
+    @Bean
+    public Duration reservationTtl() {
+        return reservationTtl;
+    }
+
+    @Bean
+    public int expiryBatchSize() {
+        return expiryBatchSize;
+    }
+}
+```
+
+**Entities**
+
+```java
+@Embeddable
+public record StockLevelId(String sku, String warehouseId) implements Serializable {
+}
+
+@Entity
+@Table(name = "stock_levels")
+public class StockLevel {
+
+    @EmbeddedId
+    private StockLevelId id;
+
+    @Column(nullable = false)
+    private int onHand;
+
+    @Column(nullable = false)
+    private int reserved;
+
+    @Version
+    private int version;
+
+    protected StockLevel() {
+    }
+
+    public StockLevel(StockLevelId id) {
+        this.id = id;
+    }
+
+    public int available() {
+        return onHand - reserved;
+    }
+
+    public void receive(int qty) {
+        if (qty <= 0) throw new IllegalArgumentException("qty must be positive");
+        onHand += qty;
+    }
+
+    public void reserve(int qty) {
+        if (available() < qty) {
+            throw new InsufficientStockException(id.sku(), available());
+        }
+        reserved += qty;
+    }
+
+    public void confirmReservation(int qty) {
+        if (reserved < qty) throw new IllegalStateException("reserved < qty");
+        reserved -= qty;
+        onHand -= qty;
+    }
+
+    public void releaseReservation(int qty) {
+        if (reserved < qty) throw new IllegalStateException("reserved < qty");
+        reserved -= qty;
+    }
+
+    public StockLevelId getId() {
+        return id;
+    }
+}
+
+@Entity
+@Table(name = "reservations")
+public class Reservation {
+
+    @Id
+    private String reservationId;
+
+    @Column(nullable = false)
+    private String sku;
+
+    @Column(nullable = false)
+    private String warehouseId;
+
+    @Column(nullable = false)
+    private String orderId;
+
+    @Column(nullable = false)
+    private int quantity;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status;
+
+    @Column(nullable = false)
+    private Instant expiresAt;
+
+    @Column(nullable = false)
+    private Instant createdAt;
+
+    public enum Status { ACTIVE, CONFIRMED, RELEASED, EXPIRED }
+
+    protected Reservation() {
+    }
+
+    public static Reservation active(String sku, String warehouseId, String orderId,
+                                     int qty, Duration ttl) {
+        Reservation r = new Reservation();
+        r.reservationId = "rsv_" + UUID.randomUUID();
+        r.sku = sku;
+        r.warehouseId = warehouseId;
+        r.orderId = orderId;
+        r.quantity = qty;
+        r.status = Status.ACTIVE;
+        r.createdAt = Instant.now();
+        r.expiresAt = r.createdAt.plus(ttl);
+        return r;
+    }
+
+    public void confirm() {
+        if (status != Status.ACTIVE) {
+            throw new ReservationStateException(reservationId, status, Status.CONFIRMED);
+        }
+        if (Instant.now().isAfter(expiresAt)) {
+            throw new ReservationExpiredException(reservationId);
+        }
+        status = Status.CONFIRMED;
+    }
+
+    public void release(Status terminal) {
+        if (status != Status.ACTIVE) {
+            return;   // idempotent: releasing a terminal reservation is a no-op
+        }
+        status = terminal;
+    }
+
+    public boolean isActive() {
+        return status == Status.ACTIVE;
+    }
+
+    // getters omitted for brevity
+}
+```
+
+**DTOs (records) and validation**
+
+```java
+public record CreateProductRequest(
+        @NotBlank @Pattern(regexp = "^[A-Z0-9-]{3,32}$") String sku,
+        @NotBlank String name,
+        @NotNull @Positive Money price,
+        @NotBlank String category,
+        @PositiveOrZero int reorderPoint,
+        @PositiveOrZero int lowStockThreshold) {
+}
+
+public record Money(@Positive long amount, @Size(min = 3, max = 3) String currency) {
+}
+
+public record StockChangeRequest(
+        @Positive int quantity,
+        @NotBlank String reason,
+        @NotBlank String referenceId,
+        String warehouseId) {
+}
+
+public record ReserveRequest(
+        @NotBlank String orderId,
+        @NotBlank String sku,
+        @Positive int quantity,
+        @NotBlank String warehouseId,
+        @PositiveOrZero Integer ttlSeconds) {
+}
+
+public record AvailabilityResponse(
+        String sku, String warehouseId, int onHand, int reserved, int available) {
+}
+
+public record ReservationResponse(
+        String reservationId, String orderId, String sku,
+        int quantity, String status, Instant expiresAt) {
+}
+```
+
+**Repository and core reservation service**
+
+```java
+public interface StockLevelRepository extends JpaRepository<StockLevel, StockLevelId> {
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT s FROM StockLevel s WHERE s.id = :id")
+    Optional<StockLevel> findByIdForUpdate(@Param("id") StockLevelId id);
+
+    @Modifying
+    @Query("""
+            UPDATE StockLevel s SET s.reserved = s.reserved + :qty
+            WHERE s.id = :id AND s.onHand - s.reserved >= :qty
+            """)
+    int tryReserve(@Param("id") StockLevelId id, @Param("qty") int qty);
+
+    @Query("""
+            SELECT s FROM StockLevel s
+            JOIN Product p ON p.sku = s.id.sku
+            WHERE s.onHand - s.reserved <= p.reorderPoint AND p.active = true
+            """)
+    List<StockLevel> findAllBelowReorderPoint();
+}
+
+@Service
+public class ReservationService {
+
+    private final StockLevelRepository stockLevels;
+    private final ReservationRepository reservations;
+    private final MovementRepository movements;
+    private final OutboxRepository outbox;
+    private final Duration reservationTtl;
+
+    public ReservationService(StockLevelRepository stockLevels,
+                              ReservationRepository reservations,
+                              MovementRepository movements,
+                              OutboxRepository outbox,
+                              Duration reservationTtl) {
+        this.stockLevels = stockLevels;
+        this.reservations = reservations;
+        this.movements = movements;
+        this.outbox = outbox;
+        this.reservationTtl = reservationTtl;
+    }
+
+    @Transactional
+    public Reservation reserve(String sku, String warehouseId, String orderId, int qty) {
+        var existing = reservations.findActiveByOrderIdAndSku(orderId, sku);
+        if (existing.isPresent()) {
+            return existing.get();   // idempotent replay for a duplicate order event
+        }
+        StockLevelId id = new StockLevelId(sku, warehouseId);
+        int updated = stockLevels.tryReserve(id, qty);   // atomic compare-and-set
+        if (updated == 0) {
+            int available = stockLevels.findById(id).map(StockLevel::available).orElse(0);
+            throw new InsufficientStockException(sku, available);
+        }
+        Reservation r = Reservation.active(sku, warehouseId, orderId, qty, reservationTtl);
+        movements.append(sku, warehouseId, 0, "RESERVATION_CREATED", orderId);
+        return reservations.save(r);
+    }
+
+    @Transactional
+    public Reservation confirm(String reservationId) {
+        Reservation r = reservations.findById(reservationId)
+                .orElseThrow(() -> new ReservationNotFoundException(reservationId));
+        if (r.getStatus() == Reservation.Status.CONFIRMED) {
+            return r;   // idempotent duplicate confirm
+        }
+        r.confirm();    // validates ACTIVE + unexpired, else throws
+        StockLevel level = stockLevels
+                .findByIdForUpdate(new StockLevelId(r.getSku(), r.getWarehouseId()))
+                .orElseThrow();
+        level.confirmReservation(r.getQuantity());
+        movements.append(r.getSku(), r.getWarehouseId(), -r.getQuantity(), "SALE", r.getOrderId());
+        maybeEmitLowStock(r.getSku(), level);
+        return r;
+    }
+
+    @Transactional
+    public Reservation release(String reservationId, Reservation.Status terminal) {
+        Reservation r = reservations.findById(reservationId)
+                .orElseThrow(() -> new ReservationNotFoundException(reservationId));
+        if (!r.isActive()) {
+            return r;   // idempotent
+        }
+        StockLevel level = stockLevels
+                .findByIdForUpdate(new StockLevelId(r.getSku(), r.getWarehouseId()))
+                .orElseThrow();
+        level.releaseReservation(r.getQuantity());
+        r.release(terminal);
+        movements.append(r.getSku(), r.getWarehouseId(), 0, "RESERVATION_RELEASED", r.getOrderId());
+        return r;
+    }
+
+    private void maybeEmitLowStock(String sku, StockLevel level) {
+        // alert on the crossing only; re-armed when stock rises above the point again
+        if (level.available() <= products.reorderPointOf(sku) && !alerts.isAlerted(sku)) {
+            outbox.append(new LowStockCrossed(sku, level.getId().warehouseId(), level.available()));
+            alerts.markAlerted(sku);
+        }
+    }
+}
+```
+
+**REST controller and global error handling**
+
+```java
+@RestController
+@RequestMapping("/api/v1")
+public class InventoryController {
+
+    private final ReservationService reservationService;
+    private final StockService stockService;
+
+    public InventoryController(ReservationService reservationService, StockService stockService) {
+        this.reservationService = reservationService;
+        this.stockService = stockService;
+    }
+
+    @PostMapping("/inventory/{sku}/stock-in")
+    public AvailabilityResponse stockIn(@PathVariable String sku,
+                                        @Valid @RequestBody StockChangeRequest request,
+                                        @RequestHeader("Idempotency-Key") String idempotencyKey) {
+        return stockService.stockIn(sku, request, idempotencyKey);
+    }
+
+    @PostMapping("/reservations")
+    public ResponseEntity<ReservationResponse> reserve(@Valid @RequestBody ReserveRequest request,
+                                                       @RequestHeader("Idempotency-Key") String key) {
+        Reservation r = reservationService.reserve(
+                request.sku(), request.warehouseId(), request.orderId(), request.quantity());
+        return ResponseEntity.status(HttpStatus.CREATED).body(ReservationResponse.from(r));
+    }
+
+    @PostMapping("/reservations/{id}/confirm")
+    public ReservationResponse confirm(@PathVariable String id,
+                                       @RequestHeader("Idempotency-Key") String key) {
+        return ReservationResponse.from(reservationService.confirm(id));
+    }
+
+    @PostMapping("/reservations/{id}/release")
+    public ReservationResponse release(@PathVariable String id,
+                                       @RequestHeader("Idempotency-Key") String key) {
+        return ReservationResponse.from(
+                reservationService.release(id, Reservation.Status.RELEASED));
+    }
+}
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<ApiError> insufficientStock(InsufficientStockException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ApiError("INSUFFICIENT_STOCK", e.getMessage()));
+    }
+
+    @ExceptionHandler(ReservationExpiredException.class)
+    public ResponseEntity<ApiError> expired(ReservationExpiredException e) {
+        return ResponseEntity.status(HttpStatus.GONE)
+                .body(new ApiError("RESERVATION_EXPIRED", e.getMessage()));
+    }
+
+    @ExceptionHandler(ReservationStateException.class)
+    public ResponseEntity<ApiError> badState(ReservationStateException e) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .body(new ApiError("INVALID_STATE_TRANSITION", e.getMessage()));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiError> validation(MethodArgumentNotValidException e) {
+        List<FieldIssue> fields = e.getBindingResult().getFieldErrors().stream()
+                .map(f -> new FieldIssue(f.getField(), f.getDefaultMessage()))
+                .toList();
+        return ResponseEntity.badRequest().body(new ApiError("VALIDATION_FAILED", fields));
+    }
+
+    public record ApiError(String error, Object details) {
+    }
+
+    public record FieldIssue(String field, String issue) {
+    }
+}
+```
+
+**Expiry job and low-stock worker**
+
+```java
+@Component
+public class ReservationExpiryJob {
+
+    private final ReservationRepository reservations;
+    private final ReservationService reservationService;
+    private final int batchSize;
+
+    public ReservationExpiryJob(ReservationRepository reservations,
+                                ReservationService reservationService,
+                                int expiryBatchSize) {
+        this.reservations = reservations;
+        this.reservationService = reservationService;
+        this.batchSize = expiryBatchSize;
+    }
+
+    @Scheduled(fixedDelayString = "${inventory.expiry-job.interval:PT1M}")
+    public void releaseExpired() {
+        // FOR UPDATE SKIP LOCKED inside this query: safe to run on every app instance
+        List<String> expiredIds = reservations.findExpiredActiveIds(Instant.now(), batchSize);
+        for (String id : expiredIds) {
+            try {
+                reservationService.release(id, Reservation.Status.EXPIRED);
+            } catch (Exception e) {
+                // one poison row must not block the batch; it will be retried next run
+                log.warn("Failed to expire reservation {}", id, e);
+            }
+        }
+    }
+}
+```
+
+Key implementation rules: every public service method that mutates stock is `@Transactional`; the expiry job's release is per-row so a crash mid-batch leaves the rest for the next run; `findExpiredActiveIds` uses `FOR UPDATE SKIP LOCKED` so horizontally scaled instances do not fight over the same rows; and all amounts, TTLs, and batch sizes come from `@Value`/config — never hard-coded.
+
+---
