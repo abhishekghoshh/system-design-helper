@@ -1359,3 +1359,57 @@ public class ReservationExpiryJob {
 Key implementation rules: every public service method that mutates stock is `@Transactional`; the expiry job's release is per-row so a crash mid-batch leaves the rest for the next run; `findExpiredActiveIds` uses `FOR UPDATE SKIP LOCKED` so horizontally scaled instances do not fight over the same rows; and all amounts, TTLs, and batch sizes come from `@Value`/config — never hard-coded.
 
 ---
+
+### Interview Questions and Answers
+
+**Beginner**
+
+- **Q: What is the difference between stock on hand and available-to-promise (ATP)?**
+  **A:** Stock on hand is the physical count physically present. ATP is what you can still promise to customers: `on_hand − allocated − queued + inbound_in_window`. They differ because of reservations — stock may read 100 but ATP is near zero if 95 units are reserved. The trap is treating them as the same and overselling.
+
+- **Q: How do you prevent selling stock you don't have?**
+  **A:** Reserve before you confirm, atomically. The sale flow: `SELECT FOR UPDATE` the SKU row, assert `quantity_available ≥ qty`, insert a reservation row that decrements available and increments allocated, commit. The check and reservation are one transaction; nothing can slip in between. Common mistake: only a `SELECT` of the balance and trusting that nothing else sells in the 5 ms before your insert.
+
+- **Q: What is an optimistic lock (`@Version`) good for here?**
+  **A:** It lets multiple transactions update stock concurrently and detects conflicts after the fact: each transaction writes `WHERE version = oldVersion`; if the row changed, the update affects 0 rows and you retry. Good for low-contention SKUs (the 99% of catalog that isn't a limited drop).
+
+**Intermediate**
+
+- **Q: Compare optimistic and pessimistic locking for oversell prevention.**
+  **A:** Optimistic (`@Version` + retry) is cheap and scales on low-contention items but turns into a retry storm under a flash sale. Pessimistic (`SELECT ... FOR UPDATE`) serializes sellers on the row — safe, but throughput is capped at what one locked transaction at a time can do. Choice depends on contention: most catalog → optimistic; lottery tickets / limited drops → pessimistic. Expected follow-up: *why not always pessimistic?* — because it serializes even uncontended sales, throttling the common case to protect the rare one.
+
+- **Q: How do you handle reservation expiry so stock isn't locked forever?**
+  **A:** Every reservation carries a TTL. A scheduled `FOR UPDATE SKIP LOCKED` job scans `WHERE expires_at < now() AND status = 'ACTIVE'` and releases matched reservations back to available. `SKIP LOCKED` is the correctness detail — without it, concurrent worker instances re-select and double-release the same rows. The job is idempotent per row (release is a no-op if already released).
+
+- **Q: Walk the purchase flow from "add to cart" through shipment.**
+  **A:** Add-to-cart does *nothing* to inventory (the cart is not a reservation). At checkout, a `ReservationService.reserve(orderItems)` runs in a transaction: check ATP, insert reservations, decrement ATP by the reserved qty. Reservations hold the stock for a TTL. When warehouse confirms the pick, `reserve → confirm` decrements allocated and, on shipment, frees it. If the pick can't fulfill, the reservation is released and the customer is notified. The key invariant: committed stock is only decremented at shipment, not at cart.
+
+- **Q: Why use a read replica, and what's the hazard?**
+  **A:** For catalog browsing and balance reads that tolerate seconds of lag, offloading the primary. The hazard is read-after-write on the critical path: a customer buys the last unit, refreshes the catalog from the replica, and still sees it "in stock" — an oversell-by-lag. Mitigation: read-your-writes routing for authenticated sessions near checkout, or always re-check ATP against the primary at the moment of purchase (the only place stale reads are dangerous).
+
+**Advanced**
+
+- **Q: Design allocation across multiple warehouses.**
+  **A:** Given `Qty 5` and stock spread (WH-A: 3, WH-B: 2), the allocator returns `(WH-A, 3), (WH-B, 2)` and creates a reservation in each warehouse's shard. Inputs: stock per warehouse, shipping distance/cost, capacity, policy. Single-source minimizes shipping cost; split-source minimizes delivery time. Allocations are batched per pick wave for throughput; availability is re-checked at pick time and short-ships are possible. Expected discussion: the race where a concurrent order wins stock — resolved by idempotent reserve-at-promise plus re-check-at-pick.
+
+- **Q: When do you need lot/batch and expiry tracking?**
+  **A:** For FIFO/LIFO rotation and for industries where expiry matters (food, pharma, cosmetics). The model adds `lots(lot_id, sku_id, qty, expires_at, received_at)`; FIFO allocation picks the oldest non-expired lot first. This is a business/finance requirement that forces per-lot tracking — a system that tracks only aggregate SKU quantities cannot satisfy it, and that's a design failure, not a feature gap.
+
+- **Q: How do you run a flash sale of 100,000 limited items without overselling under thundering-herd traffic?**
+  **A:** Pre-create the 100,000 reservations in one transaction before the sale — the stock is *already* reserved, never check-and-take at request time. The sale endpoint then does an atomic, idempotent decrement guarded by a Lua script: `if redis.call("GET", stock) >= 0 then return redis.call("DECR", stock) else return -1 end`, returning sold-out when -1. The decrement is the only hot path, and it's lock-free. Discussion points: why a bare `DECR` that goes negative is the failure mode, why idempotency keys prevent double-buy on retry, and why the durable DB reservation is the source of truth (Redis is just the rate-limit gate).
+
+**Senior / System Design**
+
+- **Q: Design a global inventory platform. How do you partition the data?**
+  **A:** Keep the invariants: atomic reservation per SKU, no cross-warehouse overselling, graceful degradation. Regional inventory services, each owning SKU-hash shards for its geography, with a global coordination layer (strongly consistent store or a dedicated reservation service) for cross-region allocation and the shared reserved total. Partitioning by SKU hash gives even distribution; hot SKUs are isolated or rate-limited. Expected discussion: CAP — a global flash sale chooses consistency and may turn a region away rather than oversell; regional write models stay eventually consistent with the global reserved ledger, updated in the same transaction as the local reservation.
+
+- **Q: Single global stock table vs per-warehouse table with a materialized total — trade-offs?**
+  **A:** A single global table is simple and consistent but is one write shard that caps throughput (one hot row per SKU under load). Per-warehouse rows plus a materialized total is write-scalable (warehouses update independently) but requires reconciliation (totals are rebuildable from warehouse rows; drift is a scheduled job alert). Default recommendation: per-warehouse-per-SKU as source of truth, materialized totals as an invalidated cache — and never allow direct updates to the cached total.
+
+- **Q: How do you observe and alert on inventory health day-to-day?**
+  **A:** Reservation success rate vs. stockouts (business truth), reservation expiry rate (a spike means checkout is hanging), oversell attempts blocked at the check (correctness), reconciliation drift between `current_stock` and the event-stream fold (data integrity — must be zero, always alert), and warehouse pick variance vs. reserved (operational). The reconciliation job is the one metric that must be continuously zero — every other signal can be gamed, but "stock according to events" does not lie.
+
+- **Q: What are the most common mistakes candidates make on this problem?**
+  **A:** (1) Confusing stock on hand with ATP. (2) Check-then-reserve with no atomicity — the classic oversell race. (3) No reservation expiry so stock is locked forever into abandoned carts. (4) Reading stock from a replica right after writing it and trusting it for availability. (5) Offset pagination on pick lists (skips/duplicates under concurrent picks). (6) No lot/batch or expiry tracking where the domain requires FIFO/rotation. (7) Storing the current count as source of truth instead of deriving it from events (kills the audit trail).
+
+---

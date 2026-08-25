@@ -29,6 +29,123 @@
 
 ---
 
+### Topics Covered
+
+1. [Introduction and Problem Statement](#introduction-and-problem-statement)
+2. [Functional Requirements](#functional-requirements)
+3. [Non-Functional Requirements](#non-functional-requirements)
+4. [Shared Capacity Planning](#shared-capacity-planning)
+5. [API Design and Contract](#api-design-and-contract)
+6. [Characteristics](#characteristics)
+7. [Components](#components)
+8. [Patterns](#patterns)
+9. [Benefits](#benefits)
+10. [Pros](#pros)
+11. [Cons](#cons)
+12. [Challenges](#challenges)
+13. [Best Practices](#best-practices)
+14. [When to Use and When Not to Use](#when-to-use-and-when-not-to-use)
+15. [Use Cases](#use-cases)
+16. [Data Modeling](#data-modeling)
+17. [High-Level Design](#high-level-design)
+18. [Approach 1: High-Scale Distributed System (Cassandra + ID Range Service)](#approach-1-high-scale-distributed-system-cassandra--id-range-service)
+19. [Approach 2: Moderate-Scale Relational System (PostgreSQL + Replicas)](#approach-2-moderate-scale-relational-system-postgresql--replicas)
+20. [Approach 3: AWS-Native Architecture](#approach-3-aws-native-architecture)
+21. [Deep Dive](#deep-dive)
+22. [Java and Spring Boot Implementation Guide](#java-and-spring-boot-implementation-guide)
+23. [Recommendation Summary](#recommendation-summary)
+24. [Interview Questions and Answers](#interview-questions-and-answers)
+
+---
+
+### Introduction and Problem Statement
+
+A URL shortener (TinyURL, bit.ly, t.co) maps a long destination URL to a short, shareable
+link (`https://short.ly/abc123`) and redirects that link back to the original URL. The core
+product value is brevity and shareability — fitting URLs into constrained media (SMS,
+Twitter's 280-char limit, QR codes) and brandable/short links for marketing.
+
+**Why is it an interesting system design problem?** It looks like trivial CRUD but hides three
+classic distributed-systems challenges that the design must solve explicitly:
+
+1. **Hot-key write contention** — if the short code is derived from a single sequential counter,
+   every create writes the same row/key, and a viral marketing campaign collapses the system.
+2. **Redirect performance at massive scale** — the redirect path is read-only and must serve
+   millions of requests/sec with ~10 ms latency; it cannot touch the application's slow path.
+3. **Unbounded growth of a monotonic ID space** — a single auto-increment counter is forever
+   coupled to a single shard's capacity.
+
+```mermaid
+flowchart LR
+    User["User"] -->|"long URL"| API["Shortener API"]
+    API --> IDS["ID / Short-Code Service"]
+    API --> DB[("Metadata Store")]
+    API --> Cache[("Redirect Cache (Redis)")]
+    Clicker["Clicker"] -->|"short.ly/abc123"| CDNSW["CDN / Edge Redirect"]
+    CDNSW -->|miss| Cache
+    Cache --> DB
+    CF["Click Counter (async)"]
+    Clicker -->|"count click"| CF
+```
+
+The diagram separates the **write path** (long URL → ID service → metadata store) from the
+**read/redirect path** (short code → CDN → cache → metadata → Location redirect). The click
+counter is decoupled from the redirect so redirection stays fast.
+
+**Real-life use cases**
+
+- **Marketing attribution**: branded short domains (`go.company.com/campaign`) carry tracking
+  params and make URLs scannable; every click is attributed to a campaign.
+- **Social/media platforms**: Twitter's `t.co` wraps every link for safety and analytics; SMS
+  and QR codes need short URLs.
+- **Email campaigns**: newsletters and phishing-protection systems rewrite links through a
+  shortener to track opens/clicks and to disable malicious links post-send.
+- **App deep links**: short URLs route into mobile apps via deferred deep linking
+  (Branch, Firebase Dynamic Links) — the short link encodes both the destination and the
+  post-install routing.
+
+---
+
+### Functional Requirements
+
+1. **Shorten a URL**: given a long URL, create a short link that redirects to it; return the
+   short code. Authenticated users may optionally supply a custom alias.
+2. **Redirect**: `GET /{shortCode}` returns a `301`/`302` redirect to the stored long URL,
+   or `404`/`410` if not found / expired / disabled.
+3. **Custom aliases**: allow the user to pick a vanity short code (e.g. `/newsletter`), with
+   collision detection and reservation.
+4. **Expiration / TTL**: pastes/redirects can be time-bounded (expire after N days); expired
+   short links return `410 Gone`.
+5. **Disabling / deactivating links**: revoke a short link (e.g. for abuse) without deleting the
+   row — it returns `410 Gone`.
+6. **Analytics / click tracking**: count clicks per short link, optionally with timestamp, IP
+   geolocation, user agent, and referrer — recorded without slowing the redirect.
+7. **User accounts (optional)**: a dashboard of "my links", ability to edit destination /
+   delete / change TTL, and quota enforcement.
+8. **Link safety**: optionally check destinations against a blocklist (phishing/malware) before
+   serving the redirect, especially for anonymous-created links.
+
+Out of scope for the basic design: user-specific click analytics dashboards, A/B testing of
+destinations, and full link-management platforms (those are Bitly-as-a-product, a larger scope).
+
+---
+
+### Non-Functional Requirements
+
+- **Scale**: 1B+ redirects/month baseline (~400–500 redirects/sec average, spikes to 50K–500K
+  redirects/sec during a viral campaign); 1M+ new shortens/day (~12 shortens/sec average, with
+  burst campaigns).
+- **Latency**: redirect < 10 ms p99 (read path is the user-facing SLA; users bounce on slow
+  redirects); create < 50 ms p99.
+- **Availability**: 99.9%+ for redirects (a down redirect service kills the marketing funnel);
+  reads must stay available even if writes are briefly impaired.
+- **Durability**: an acknowledged short link must persist; redirecting to a dead link is a
+  severe trust failure.
+- **Uniqueness**: short codes must be unique — collisions are a correctness bug, not a rate
+  feature.
+
+---
+
 ### Shared Capacity Planning
 
 Before picking an architecture, nail the numbers. Every design decision flows from these estimates.
@@ -123,7 +240,7 @@ A 64 GB Redis node with **LRU eviction** naturally keeps the hottest URLs reside
 
 Always provision 2× of the calculated minimum for burst capacity, rolling deploys, and hardware failures.
 
-#### Core API Contract
+### API Design and Contract
 
 | Endpoint | Purpose | Success | Client errors |
 |---|---|---|---|
@@ -131,6 +248,255 @@ Always provision 2× of the calculated minimum for burst capacity, rolling deplo
 | `GET /{shortCode}` | Redirect to long URL | `301`/`302` | `404 Not Found`, `410 Gone` |
 
 > **301 vs 302** — 301 lets browsers cache the redirect permanently, reducing server load. 302 forces every request through the server, giving you analytics visibility. Choose based on whether analytics matter more than infrastructure cost.
+
+The redirect is the user-facing path and carries the full weight of the SLA. It must be a `301` *or* `302` with a `Location` header and no body, served from cache, with click counting decoupled (see High-Level Design). Error semantics: `404` for never-created codes (a miss), `410 Gone` for expired or revoked codes (a former paste). Never return a `200` page for a miss — that breaks the contract and the browser back-button expectation of a redirect.
+
+**Extended contract details**
+
+- **`POST /url` body**: `{ "longUrl": "https://example.com/...", "customAlias": "newsletter", "ownerId": "...", "expiresAt": "...", "isPublic": true }`.
+- **`POST /url` response**: `201` with `{ "shortCode": "abc123", "shortUrl": "https://short.ly/abc123", "expiresAt": "..." }`.
+- **Validation**: `longUrl` must be a valid http/https URL; `customAlias` must satisfy `[a-zA-Z0-9_-]{4,32}` and not collide; reject on private-IP/long-TLD abuse (SSRF protection on the redirect target — see Challenges).
+- **Rate limiting**: create is heavily limited per IP/user (shorten is cheap to abuse for spam/scam); read is unlimited but CDN-cached. `429` responses include `Retry-After` and `X-RateLimit-*` headers.
+- **Idempotency**: `POST /url` is idempotent by `(longUrl, customAlias, ownerId)` for a window — re-shortening the same request returns the same link.
+- **Security headers**: the redirect response itself carries no sensitive data, but the *create* endpoint needs auth for privileged features and SSRF-safe validation of the destination.
+
+---
+
+### Characteristics
+
+- **Read-heavy, write-light**
+  What it means: redirects outnumber creates ~1000:1. Why it matters: the entire architecture is optimized so creates touch a fast write path and redirects touch only the cache edge. How it works: writes update one metadata row; reads never touch the writer at steady state.
+
+- **Sub-millisecond redirect latency**
+  What it means: the redirect path is measured in milliseconds because users notice a slow link. Why it matters: a viral short link can be clicked by millions; a 10 ms redirect vs a 100 ms redirect is a huge UX and bounce difference. How it works: the short-code→destination mapping must be cache-resident or served from an in-memory store, with a single disk/DB hop as the fallback.
+
+- **Write-path hot-key pressure**
+  What it means: any scheme deriving the short code from a single monotonic counter (or a single hash shard) centralizes creates. Why it matters: under a burst campaign, one key/row/table is the bottleneck. How it works: the standard mitigation is an ID-generation service that hands out disjoint ranges (Approach 1), or a hash-based key space that shards by code.
+
+- **URL as the contract**
+  What it means: the short URL is a public, immutable, forever contract — once printed on a billboard, the link must resolve forever (or explicitly `410`). Why it matters: unlike a session or a token, you cannot recall a short link. How it works: no deletion of live links without becoming a `410`; TTL/expiration is opt-in per paste, not the default.
+
+- **Unbounded key growth**
+  What it means: the short-code space grows monotonically. Why it matters: a sequential scheme is eventually consistent across a single shard and cannot shard without re-keying. How it works: the ID service owns disjoint ranges so the space never needs re-partitioning (vs. hash-partitioning the metadata table by short code).
+
+- **Analytics without slowing the redirect**
+  What it means: click counting, geo, referer must not inflate the user-visible redirect latency. Why it matters: every microsecond added to the redirect multiplies across millions of clicks. How it works: fire-and-forget logging (queue or UDP/statsd) on the redirect path; never wait for analytics before responding.
+
+---
+
+### Components
+
+- **Redirect Service / Edge redirect**
+  Purpose: resolve `shortCode → longUrl` and `301`/`302` redirect. Responsibilities: serve from cache, fall back to metadata, never block on analytics. How it works: the hottest tier (CDN or an in-memory store at the edge); the slow path to DB is the fallback, never the default. Real-world example: bit.ly's edge redirector, t.co's redirect at the CDN edge.
+
+- **Shorten (Create) Service**
+  Purpose: validate, generate the short code, persist the mapping. Responsibilities: URL validation (SSRF), custom-alias reservation, ID generation, write to metadata store. How it works: the write path is rate-limited and authenticated for privileged features; it does *not* serve redirects. Real-world example: the API tier that writes to DynamoDB or Cassandra.
+
+- **ID / Short-Code Generator (or ID Range Service)**
+  Purpose: produce unique short codes. Responsibilities: uniqueness, monotonicity (if sequential), and — critically — handing out *disjoint ranges* so creates are not serialized on one counter. How it works: Approach 1 uses a range service (e.g. Snowflake-like, or a PostgreSQL `bigserial` range allocator) so each app instance owns a range and encodes `rangeStart + offset` → base62. Random/hash-based schemes sidestep range management entirely. Relationship: called by the create service, never by the redirect path.
+
+- **Metadata Store**
+  Purpose: the authoritative `shortCode → longUrl (+owner, ttl, status)` mapping. Responsibilities: uniqueness (unique index on short_code), durability, serving cache misses. Real-world example: Cassandra (wide rows, range queries), PostgreSQL (simple, strong consistency), DynamoDB (single-digit ms at any scale). The store choice is the headline architecture decision — it is the entire system's durability and consistency boundary.
+
+- **Redirect Cache (in-memory / Redis)**
+  Purpose: serve the redirect at memory speed. Responsibilities: hold the hot short-code→URL map, support TTL-aligned eviction, serve misses by loading from the metadata store. How it works: cache-aside; the redirect service `GET shortCode` → miss → `SELECT longUrl FROM ...` → populate. Real-world example: Redis cluster at the core, with CDN at the edge doubling as cache.
+
+- **Click Counter (async)**
+  Purpose: count and attribute clicks without slowing redirects. Responsibilities: append-only click events with timestamp/IP/UA/referrer, eventual aggregation. How it works: the redirect service emits a fire-and-forget event (queue or statsd) and responds immediately; a separate processor aggregates counts into analytics. Relationship: decouples the redirect SLA from analytics processing. Real-world example: Kafka topics fed by edge redirects.
+
+- **CDN Edge**
+  Purpose: serve redirects (and cached mappings) from the edge. Responsibilities: terminate TLS close to users, cache redirects, forward only misses. How it works: either an edge function that looks up the mapping and returns the 30x, or a CDN caching reverse-proxy in front of the redirect service. Real-world example: CloudFront + Lambda@Edge, Cloudflare Workers KV.
+
+---
+
+### Patterns
+
+- **Edge Redirect (the redirect never touches origin for hot links)**
+  What it is: the 30x is resolved and returned at the CDN edge (worker / cached reverse proxy). Problem it solves: millions of redirects/sec without app servers. How it works: the short-code→URL map is in an edge-keyed store (KV or Redis at the edge); a cache miss falls through to origin. When to use: any link-shortener reaching >10K redirects/sec or serving global traffic. When not: tiny scale where an app server is simpler. Advantages: near-zero origin cost for the read path, global low latency. Disadvantages: cold-edge KV misses still hit origin (mitigate with warm cache), operational complexity of edge functions. Real-world example: bit.ly's edge redirect, t.co.
+
+- **Disjoint Key Ranges (no single-counter bottleneck)**
+  What it is: instead of one global counter, an ID service hands out a range (e.g. 1–1M, 1M–2M) to each app instance; the code is `rangeOffset + localCounter`, encoded to base62. Problem it solves: the single hot row/key under creates. How it works: the range service allocates via a single `UPDATE ... RETURNING` on a ranges table (or a Snowflake-style distributed generator), each instance counts within its range. When to use: when short codes are sequential-ish and create throughput matters. When not: random/hash codes make this unnecessary. Advantages: monotonically increasing keys (storage and cache friendly), no cross-shard coordination per create. Disadvantages: requires a range service and range-exhaustion handling. Real-world example: Twitter's Snowflake, Instagram's ID service.
+
+- **Write-Through / Cache-Aside on the Redirect Path**
+  What it is: cache the short-code→URL mapping; populate on miss from the metadata store. Problem it solves: the redirect path must be fast and must not fan out. How it works: `GET cache:{code}` → miss → `SELECT` → `SETEX` cache → respond; writes invalidate/update the cache entry. When to use: the redirect path always. Advantages: simple, DB failure is contained to the cold tail. Disadvantages: brief staleness (acceptable — a long URL doesn't change), invalidation races (mitigate with versioned cache keys: `cache:{code}:{version}`).
+
+- **Decoupled Analytics via Fire-and-Forget Events**
+  What it is: count clicks asynchronously so the redirect is never delayed by analytics. Problem it solves: analytics processing cost must not inflate the redirect SLA. How it works: emit a click event (Kafka/queue/statsd) and respond 30x immediately; a separate worker aggregates into a time-series/DB. When to use: always, unless you have no analytics requirement. Advantages: clean SLA separation, independent scaling. Disadvantages: at-least-once delivery (click counts can over-count; acceptable for analytics). Real-world example: every major ad/analytics platform.
+
+- **TTL / Expiration by Design**
+  What it is: pastes carry an `expires_at`; expired codes return `410`. Problem it solves: unbounded growth of the metadata table (a real cost at billions of rows). How it works: a `created_at`/`expires_at` index powers both the lazy 410-on-read and an active sweeper (Approach 1 deep dive). When to use: when the use case allows expiry (marketing links usually do not; throwaway pastes do). Advantages: bounded storage, GDPR/right-to-be-forgotten alignment. Disadvantages: a link printed on a billboard that expires is a broken customer experience — make TTL opt-in and long by default.
+
+---
+
+### Benefits
+
+- **Cheap, fast reads at any scale.** The short-code→URL mapping is tiny and cacheable, so the redirect path costs pennies even at millions of requests/sec — the read path does not scale with the team size or budget linearly, it scales with cache hit ratio.
+- **Immutable, durable links.** Once created, a short link is a forever contract. This is a feature, not a bug: it makes short links trustworthy for print, email, and social (a billboard URL never rots). The flip side (can't recall) is why `410` must be explicit and rare.
+- **Separation of hot read path from write path.** Creates and redirects use different code paths, stores (sometimes entirely different engines), and caches. This isolation lets you scale the read path aggressively and the write path conservatively — and means a write-path incident never takes down redirects.
+- **Analytics without SLA risk.** Because click counting is decoupled, you can add geo/referrer/user-agent attribution, A/B tests, and abuse detection on the event stream without ever touching the user-facing redirect latency.
+- **Edge delivery.** Resolving the redirect at the CDN edge (not the origin) means the origin sees only cache misses — so a viral link on the front page of Reddit does not wake the on-call engineer.
+
+---
+
+### Pros
+
+- **Redirects are sub-millisecond when cached.** The entire mapping for a hot short code fits in a few bytes; an edge cache or Redis serves it in microseconds, so the redirect SLA is dominated by network round-trip, not by your application.
+- **Creates are cheap and rare.** At 12 creates/sec average, even a single database can absorb the writes — the hard part is key uniqueness and range allocation, not write throughput. This is why many shorteners start relational and only shard when a single write shard becomes the ceiling.
+- **Strong consistency on the write path is affordable.** Since creates are rare, you can afford a strongly consistent store or a single-writer range allocator; you do not need the write path to be highly available or eventually consistent — the redirect path is what must be always-on.
+- **The data model is trivially simple.** One mapping, a few attributes. Simplicity is the reason the domain is so interview-friendly: almost all the complexity is in *how it scales*, not in what it stores.
+- **URLs are stable, shareable, and cacheable forever.** This enables aggressive CDN caching (years-long TTLs on redirects) that no other product feature can break.
+
+### Cons
+
+- **Short codes are enumerable if predictable.** Sequential or low-entropy codes (`base62(autoincrement)` with no entropy) let an attacker scrape/guess links and access "private" pastes. Mitigation: add entropy (random component), longer codes, or a key service that emits non-sequential codes. This is a real security property, not a hypothetical.
+- **A single short code is a forever liability.** If a short link is printed on a million flyers and the destination is compromised later, you cannot recall it — you can only `410` it (breaking the flyers) or redirect it to a safe page. URL shorteners are high-value for phishing precisely because the destination can be changed; treat redirect destination mutation as a privileged, audited operation.
+- **Redirect analytics are coarse and spoofable.** User-agent and referer are client-supplied and trivially forged; IP geolocation is imprecise; and HTTPS strips the referer across origins. Do not rely on click analytics for security or billing.
+- **SSRF risk on the destination.** Accepting arbitrary `longUrl`s and then *fetching or embedding* them (preview/thumbnail) turns your service into an SSRF proxy. Even redirect-only shorteners must validate the destination (block private IPv4/6, localhost, metadata endpoints, and `.internal`/`.local` TLDs) and re-resolve at redirect time. This is an easy correctness gap in interviews.
+- **Write-path hot key under sequential schemes.** A single counter is the bottleneck under burst campaigns; the fix is the range-service or random scheme, but that adds complexity. Many teams start sequential and refactor under pain — a deliberate trade-off.
+
+---
+
+### Challenges
+
+- **Technical: key uniqueness under concurrency at scale.** Without a single-writer range allocator or a collision check, concurrent app instances generating sequential keys collide or race on the shared counter. The distributed solution is either a range service (Approach 1) or a random keyspace large enough that collisions are astronomically unlikely and handled by a `GET`-then-`retry` in the rare case. The wrong answer is a read-then-write check-then-insert on a shared counter.
+- **Scalability: the redirect hot key / the viral link.** One short code receiving millions of clicks becomes a single cache-key hot spot. Mitigations: edge caching (the CDN absorbs it), cache warming a fresh code before promotion, and single-flight so a cache miss for a viral code triggers one origin fetch, not a stampede.
+- **Performance: redirect latency budget.** The redirect must be faster than a human-perceivable threshold (~10 ms includes network). That budget buys very little headroom, so anything beyond a cache hit (DB read, analytics emit) must be on the critical path only for cold keys — which is why analytics are decoupled and why DB reads are strictly the miss path.
+- **Reliability: redirect availability vs. create availability.** At billion-row scale, a metadata-store outage takes down *all* redirects (cache miss → origin → 5xx). The design goal is that cache hit ratio + CDN coverage make the origin rarely hit — and that a metadata store outage degrades to "stale cache serves for a while" rather than total failure. Plan cache TTLs and stale-while-revalidate accordingly.
+- **Maintainability: schema and code evolution on a forever link.** The short-code→long-URL mapping cannot change shape casually (old links must keep resolving). Schema changes (adding fields, splitting tables) must be backward-compatible; large backfill jobs can lock the write path. Version the internal record format and migrate lazily on read.
+- **Operational: range exhaustion and key reuse.** A range-key service must detect range exhaustion and issue a new range without downtime; reusing ranges across app instances risks collision. Monitor the high-water mark of each range and alert at 90% utilization.
+- **Security: SSRF and link abuse.** Beyond SSRF (above), anonymous shortening is a spam/scam vector. Countermeasures: create rate limits (strong), link-preview validation, and — for higher trust — manual review or phone/SMS verification for bulk creation. The redirect itself should also set `Referrer-Policy: no-referrer` and, if serving previews, sandbox them.
+- **Compliance: right-to-be-forgotten vs. link permanence.** GDPR "right to erasure" conflicts with the immutability contract. Design a `410`-only lifecycle and ensure the metadata row is soft-deleted then hard-purged on a schedule; content (none here — just a URL) is not an issue, but logs/analytics may need the same treatment.
+
+---
+
+### Best Practices
+
+- **Cache the redirect at the edge and keep the origin cold-path small.** Why: a viral link lives and dies by cache hit ratio. Long TTLs on redirects, warm the cache for fresh high-traffic codes, and make a cache miss a single key-value lookup — never a join or a scan.
+- **Decouple click analytics from the redirect.** Why: analytics is the easiest thing to accidentally put on the critical path. Emit a click event and return the 30x immediately; aggregate later. The redirect SLA should never wait on a database write.
+- **Use a range-ID service (or random codes) for creates — never a shared counter.** Why: the shared counter is the first thing to break under a burst. Even if you don't need the burst today, the refactor from "I'll use a counter" to "I need ranges" is a migration that touches the core write path — pick the range/random scheme up front and avoid it.
+- **Validate and re-resolve redirect destinations at serve time (SSRF protection).** Why: validating at create time is insufficient if the destination IP later points to a metadata endpoint. Re-resolve and re-check the destination IP against the private-IP block on each redirect (or at least on cache miss), and block `.internal`/`.local` and bare IPs where the product allows.
+- **Make `410` the only way to "delete" a live link, and make it rare + audited.** Why: a live short link is a public contract; soft-deleting it silently breaks embeds/QR codes without warning. Expose explicit disable (→ `410`) with an audit trail, and prefer redirect-to-a-safe-page over a naked `404` for revoked links.
+- **Version the internal mapping record and migrate on read.** Why: you cannot bulk-rewrite billions of short-link rows safely. A versioned internal schema with read-time migration keeps old links resolving while new writes use the new shape.
+- **Rate-limit creation aggressively, reads permissively.** Why: creation is the abuse vector (scam/phishing links) and is cheap to limit per IP; reads are cheap to serve from cache and are the product's purpose — tightening read limits hurts virality.
+
+---
+
+### When to Use and When Not to Use
+
+**This design is appropriate when:**
+
+- You need short, shareable links at meaningful scale (marketing, social media, email).
+- Redirects must be fast and highly available (the link is in print/SMS/social — user experience directly).
+- Create rate is low relative to read rate (the read-heavy asymmetry holds).
+
+**This design is not appropriate when:**
+
+- **You need end-to-end encryption or zero-knowledge links** — standard shorteners are transparent; encrypted/encrypted-at-rest links (e.g. one-time encrypted notes like Privnote) are a different design.
+- **Links are high-security by design** — a shortener that anyone can create links on is a phishing amplifier; you need abuse review, domain allowlisting, and user verification, which changes the threat model substantially.
+- **You need full link-management (auditing, teams, SSO, A/B destinations)** — at that point you are building Bitly-as-a-product; the simple redirect system is a starting point, not the end state.
+
+**Alternatives to consider:** a managed shortener (Bitly, Rebrandly, Firebase Dynamic Links) when links are not your core product; t.co/Firebase Dynamic Links for mobile deep-linking; a reverse proxy `rewrite` rule for an internal, low-scale mapping.
+
+**Decision factors:** expected redirect volume and latency budget, whether links must be permanent or TTL'd, the abuse/vishing risk tolerance, and whether analytics/attribution are a product feature or incidental.
+
+---
+
+### Use Cases
+
+#### Use Case 1: Marketing campaign short links (`go.company.com/spring-sale`)
+
+- **Problem**: marketing runs many campaigns; long UTM-laden URLs are unwieldy in SMS, QR codes, and print; each needs attribution and a branded short domain.
+- **Proposed solution**: a create endpoint that issues branded vanity codes (reserved per-campaign) pointing to the full UTM URL, with click analytics streamed to the attribution warehouse.
+- **Why suitable**: creates are rare (per campaign), redirects are hot and cacheable, and the edge redirect means the billboard link never depends on the marketing service staying up.
+- **How it works**: `POST /url` with `customAlias` and `ownerId=campaign` reserves the code; the redirect is resolved at the CDN edge; clicks are emitted to Kafka for attribution.
+- **Trade-offs**: vanity codes must be reserved (409 on collision), so a campaign service must handle conflicts; a revoked/deleted campaign link returns 410 (print materials can't be updated).
+
+#### Use Case 2: Twitter/X t.co-style link wrapping
+
+- **Problem**: every link in a tweet must be short, wrapped for safety/analytics, and resolved quickly at massive volume (hundreds of thousands of redirects/sec globally).
+- **Proposed solution**: server-side wrapping at tweet-compose time into `t.co/XXXX`, with the redirect resolved at the CDN edge from a KV store; unwrapping/redirect happens without origin contact for cached codes.
+- **Why suitable**: the extreme read skew (a few viral links dominate) and the global-latency requirement make edge resolution essential — this is the canonical "edge redirect" use case.
+- **How it works**: tweet composer calls `POST /url` → edge KV populated; at click, edge worker returns 30x; click event streamed asynchronously.
+- **Trade-offs**: edge KV cold misses still hit origin (cache warming for high-profile links mitigates); link safety requires inspecting destination content, which is an async queue off the redirect path to avoid latency.
+
+#### Use Case 3: One-time self-destructing notes (a pastebin-flavored short link)
+
+- **Problem**: a shareable link that is valid for a limited number of reads or time, then is gone.
+- **Proposed solution**: add a `readCount`/`maxReads` and `expiresAt` to the mapping; the redirect service decrements `maxReads` atomically and returns 410 when exhausted.
+- **Why suitable**: reuses the same redirect/cache machinery with a stateful twist; the short-code→URL map is still the core, but now reads have side effects.
+- **How it works**: the redirect service, on a cache miss, `UPDATE links SET read_count = read_count + 1 WHERE short_code = ? AND read_count < max_reads RETURNING *`; serve the 30x if a row comes back, else 410 and let a sweeper hard-delete. Cache the "410" outcome briefly too (don't let exhausted links hammer the DB).
+- **Trade-offs**: the read-side becomes stateful, so cache invalidation on exhaustion is essential (a cached 30x would over-serve a consumed link); this is the point where "short link" and "one-time link" diverge architecturally.
+
+---
+
+### High-Level Design
+
+This section unifies the three approaches below (Approach 1: Cassandra + range service; Approach 2: PostgreSQL + replicas; Approach 3: AWS-native) into the canonical architecture every variant shares:
+
+```mermaid
+flowchart LR
+    Creator["Creator"] -->|"POST /url"| API["Create Service"]
+    Clicker["Clicker"] -->|"GET /code"| CDN["CDN / Edge Worker"]
+    CDN -->|"cache miss"| RS["Redirect Service (cache-aside)"]
+    API --> IDS["ID / Range Service"]
+    API --> MDB[("Metadata Store")]
+    RS --> Cache[("Redirect Cache (Redis/KV)")]
+    RS --> MDB
+    RS -->|"click event"| Q["Event Stream (Kafka)"]
+    Q --> Counter["Click Counter (async)"]
+    Sweeper["Expiry Sweeper"] --> MDB
+    Sweeper -->|"delete object / 410"| MDB
+```
+
+**The three invariant responsibilities, regardless of approach:**
+
+1. **Resolve `shortCode → longUrl` from cache, falling back to metadata.** This is the redirect path; it must be cache-resident for hot codes and must never fan out (one lookup, one redirect). Click counting happens *after* the redirect decision, fire-and-forget.
+2. **Create: validate → allocate short code → persist mapping.** This is the write path; uniqueness is the hard part, and the approach decision is entirely about *how* uniqueness and range are achieved (range service vs random vs managed service).
+3. **Keep expired/revoked links returning 410 and reclaimed.** Lazy (410 on read) + active (sweeper) — identical to the pastebin expiry design.
+
+**Redirect flow**
+
+```mermaid
+sequenceDiagram
+    participant C as Clicker
+    participant CDN as CDN Edge
+    participant R as Redirect Service
+    participant Cache as Redis Cache
+    participant DB as Metadata Store
+
+    C->>CDN: GET /abc123
+    CDN->>CDN: lookup kv /abc123
+    alt cached redirect
+        CDN-->>C: 301/302 Location
+    else cold miss
+        CDN->>R: lookup
+        R->>Cache: GET abc123
+        alt in Redis
+            Cache-->>R: longUrl
+        else Redis miss
+            R->>DB: SELECT long_url WHERE short_code = 'abc123'
+            DB-->>R: longUrl
+            R->>Cache: SET cache:abc123 longUrl
+        end
+        R-->>CDN: longUrl (or 410/404)
+        CDN-->>C: 301/302 Location
+        R->>Stream: emit click event  (fire-and-forget)
+    end
+```
+
+The click event is emitted *after* the redirect decision is made and the response is already in flight to the client — analytics latency never enters the user-visible redirect latency.
+
+**Scaling strategy**
+
+- **Reads**: edge cache (CDN/KV) absorbs the hot tail; Redis cache-aside handles warm codes; metadata store sees only cold misses. Redirect service scales on cache-hit-ratio, not on CPU.
+- **Writes**: the create path is rare; the constraint is key uniqueness/range allocation, which is why Approach 1 uses a range service and random schemes use a large keyspace.
+- **The viral code problem**: cache the `410`/`404` outcome briefly too (don't let an exhausted or revoked code hammer the DB), and warm the cache for high-profile codes before promotion.
+
+**Failure handling**
+
+- Metadata store outage: cached redirects still work; uncached codes 404/5xx. The SLA goal is high cache hit ratio + long TTLs so this is rare.
+- Range service outage (Approach 1): creates fail (no new codes) but redirects keep working — the correct failure priority.
+- CDN outage: falls back to the redirect service, which falls back to Redis, which falls back to the metadata store — each layer a strict fallback, never a hard dependency for the others.
 
 ---
 
@@ -308,6 +674,22 @@ Metrics are buffered in-process to avoid per-request DB writes on the hot redire
 | Rate limiting | Token bucket per user/IP at the API gateway |
 | URL validation | Reject non-HTTP(S), oversized, or malformed URLs at ingress |
 | Security | HTTPS/HSTS, WAF, abuse/phishing URL blocklist |
+
+### Java and Spring Boot Implementation Guide
+
+Each architectural approach below ships a production-oriented Spring Boot (3.x) implementation. The three implementations are:
+
+- **Approach 1** (Cassandra + ID range service): a Spring Boot service backed by Cassandra, with a centralized range-ID service for unique short codes and Kafka for decoupled click events. See `Spring Boot Implementation (Approach 1 — Cassandra + Kafka)`.
+- **Approach 2** (PostgreSQL + replicas): a simpler, strongly-consistent Spring Boot service behind a PostgreSQL primary with read replicas — see `Spring Boot Implementation (Approach 2 — PostgreSQL + Kafka)`.
+- **Approach 3** (AWS-native): the write path implemented as AWS Lambda using Java + Spring Boot (Spring Cloud Function), with a Node.js `Lambda@Edge` redirector — see `AWS Lambda (Write) — Java / Spring Boot`.
+
+Common concerns across all three implementations:
+
+- The **redirect path** returns a `301`/`302` from the CDN/edge and must never synchronously hit the database for a hot code.
+- **Click counting is decoupled**: the redirect service emits a `ClickEvent` to Kafka/fire-and-forget and responds immediately.
+- The **create endpoint** validates the `longUrl` (SSRF-safe), reserves vanity aliases, and returns `400`/`409` clearly.
+- **External configuration** (DB contact points, cache TTLs, rate-limit thresholds, redirect type 301 vs 302) is injected via Spring `@Value`/`@ConfigurationProperties`, so no operational toggle requires a redeploy.
+- All three follow the same component split: the redirect logic is stateless and scales independently of the create service — which is the central system-design invariant for this domain.
 
 #### Spring Boot Implementation (Approach 1 — Cassandra + Kafka)
 
@@ -914,7 +1296,7 @@ flowchart LR
 
 ---
 
-### Component Deep Dives
+### Deep Dive
 
 ---
 
@@ -1466,3 +1848,165 @@ Costs drop significantly if the CloudFront cache-hit rate is high (99%+), since 
 | Small/medium team, single region, <50 TB, <500 writes/sec | Approach 2 (PostgreSQL + Replicas) |
 | Managed infra, AWS ecosystem, fast time-to-market | **Approach 3 (AWS-native)** |
 | Moderate scale today, expecting growth | Approach 2 now → Citus → Approach 1 later |
+
+---
+
+### Interview Questions and Answers
+
+#### Beginner
+
+- **Q: How does a URL shortener work at a high level?**
+  A shortener has two operations: `POST /url { longUrl }` returns a short code, and
+  `GET /{shortCode}` returns an HTTP `301`/`302` redirect to the long URL. The trick is not
+  the API — it's making the redirect fast and making short codes unique at scale.
+
+- **Q: What are the main design trade-offs in choosing a short code?**
+  Between a *short* code (small keyspace, collision-prone, enumerable) and a *long* code
+  (collision-free, hard to guess, less shareable). Random codes are unguessable; sequential
+  codes are cache/storage friendly but guessable. The classic answer: use a random or
+  range-allocated code, and size the keyspace so collision probability is negligible.
+
+- **Q: How would you generate a unique short code?**
+  Three common answers: (1) base62-encode a sequential DB auto-increment — simple but a hot
+  key and guessable; (2) a distributed ID generator (Snowflake) — monotonic and sharded;
+  (3) a cryptographically random string in a large base62 keyspace — unguessable but
+  collision-checked. Each trades simplicity, distribution, and security differently.
+
+- **Q: Would you use a relational database or NoSQL?**
+  Start with whatever the team knows (PostgreSQL is a fine starting point — see Approach 2).
+  Move to a wide-column store (Cassandra) or a managed key-value store when you need to shard
+  beyond a single node's capacity and when the access pattern is purely short-code lookup
+  with range writes. The store decision is the headline architecture decision.
+
+- **Q: What cache strategy do you use on the redirect path?**
+  Cache-aside: `GET cache:{shortCode}` → miss → `SELECT longUrl FROM links WHERE short_code = ?`
+  → `SET cache:{shortCode} longUrl EX ttl`. Because redirects are read-heavy and hot codes are
+  heavily skewed, this collapses almost all traffic to memory. Warm cache before promoting a
+  high-traffic code.
+
+#### Intermediate
+
+- **Q: How do you handle hot keys under sequential code generation?**
+  Don't use a single global counter. Give each application instance a *disjoint range* from a
+  range-ID service (`SELECT range_start FROM ranges ... RETURNING`), encode
+  `rangeStart + localCounter` to base62, and request a new range when the current one is
+  exhausted. This removes the single-writer bottleneck; writes now fan out across ranges.
+
+- **Q: How do you guarantee uniqueness under concurrent creates?**
+  With ranges, uniqueness comes from disjoint keyspaces (no coordination needed per create).
+  With random codes, the keyspace is so large that collisions are astronomically rare; handle
+  the rare collision with a `GET`-then-`retry` (or a unique DB constraint + retry on `23505`).
+  The wrong answer is a read-then-write check-then-insert on a shared counter under high
+  concurrency.
+
+- **Q: 301 or 302 for the redirect?**
+  `301` (permanent) lets browsers/CDNs cache the redirect — fewer origin hits, lower cost, but
+  you lose per-request analytics and changing the destination later breaks caching. `302`
+  (temporary) hits the server every time — full analytics visibility but higher infrastructure
+  cost. Many systems return `301` for the public redirect and `302` only during an override
+  window.
+
+- **Q: How do you prevent the redirect path from being slowed by click analytics?**
+  Emit a click event (to Kafka or a metrics sink) *after* the redirect decision and return the
+  30x immediately; never block the response on an analytics write. This is the "decouple
+  analytics from the redirect" pattern — and it's the single most important SLA protection.
+
+- **Q: How do you handle link expiration and revocation?**
+  Store `expires_at` on the link. Lazy path: on redirect, return `410 Gone` if expired/revoked
+  (and cache the 410 briefly to avoid DB hits). Active path: a sweeper deletes expired rows
+  (or marks them 410). Always prefer explicit `410` over silent `404` for a former live link.
+
+- **Q: How would you estimate capacity / storage?**
+  Traffic: ~500 writes/sec write + ~6000 reads/sec read ⇒ read/write ≈ 12:1. Key size: 128-bit
+  SHA-256 digest (base64 = 43 chars). 100B rows ⇒ 4KB/row ⇒ ~68 TB of data (plus replicas
+  and indexes, so ~200 TB). Storage grows ~64 GB/year, so 5 years ⇒ 1 TB/year storage. Use
+  these to size DynamoDB RCUs/WCUS, Cassandra nodes, or Postgres.
+
+- **Q: What are the differences between the approaches?**
+  Approach 1 (Cassandra + ID range service) — best for internet-scale, global, fully controlled;
+  highest ops burden. Approach 2 (PostgreSQL + replicas) — best for small/medium teams,
+  single region, simplest; scales to ~50 TB. Approach 3 (AWS-native) — best for teams embedded
+  in AWS wanting managed infra; fast time-to-market, pay-per-use.
+
+#### Advanced
+
+- **Q: How would you shard this system?**
+  By short code. The short code is derived from a key (hash or range-allocated), so the
+  sharding key is the short code itself — this means the redirect path is naturally
+  partition-tolerant: any shard can answer a redirect for its key range. The write path
+  (create) must go to the right shard, which the ID-generation scheme already controls.
+
+- **Q: How do you handle a cache stampede on a cold, suddenly-viral short code?**
+  Single-flight: one in-flight cache miss for a given code; all other concurrent misses wait
+  on the same DB fetch and then populate cache together. Or pre-warm the cache for a code
+  before it goes viral (e.g., cache it as soon as it's created for a "featured" link).
+
+- **Q: What are the security concerns with a URL shortener?**
+  (1) SSRF: never fetch the long URL server-side (preview/thumbnail) without private-IP
+  blocking; even redirect-only must re-resolve at serve time because a previously public IP
+  can become a metadata endpoint. (2) Abuse/phishing: short codes hide destinations, so
+  anonymous shortening is a scam vector — rate-limit creates and blocklist known-bad domains.
+  (3) Enumeration: short/predictable codes leak "private" pastes; use unguessable codes or
+  per-user ACLs. (4) A revoked live link can't be recalled — audit all destination mutations.
+
+- **Q: How would you do A/B testing of destinations for a short link?**
+  Don't: a short link is a stable contract. If you need A/B, introduce a *new* short link for
+  each variant and split at the application layer (the campaign), or use a routing layer in
+  front of the long URL that records the experiment and redirects.
+
+- **Q: How do you migrate from Approach 2 to Approach 1?**
+  Keep the short-code→long-URL API stable (short codes are forever). Dual-write new shortens
+  to both stores (or route by short-code prefix/shard), backfill read-side from the old store,
+  and cut over by key range. Because long URLs are immutable per code, the data model maps
+  cleanly; the hard part is the range-allocation cut-in on the write path.
+
+#### Senior-level / System-design-oriented
+
+- **Q: How do you keep a billion-row short-code table efficient?**
+  The lookup is by short code. In PostgreSQL, `short_code` as the primary key (hash or
+  btree) gives O(log n) and fits in RAM at scale. In Cassandra, the short code is the
+  partition key. Either way, the key is *single-row-point-lookup friendly* — never scan. Add a
+  `created_at` index only for the sweeper; don't index what you don't look up.
+
+- **Q: A short link in a billboard is broken — what do you do?**
+  You can't recall it. Your options: (a) `410` it (breaks the billboard, bad for UX),
+  (b) repoint the short code to a safe "link expired/removed" landing page (preserves the
+  link resolving, bad for trust if users expect the original destination), or (c) fix the
+  destination and restore (best, if safe). The lesson: destination mutation must be audited
+  and ideally immutable in production.
+
+- **Q: How do you make the redirect available-zone/region fault-tolerant?**
+  Serve redirects from the CDN edge (or an in-region cache with an active-active metadata
+  store). The metadata store should be multi-region with read replicas; a write to a new
+  short code in one region must replicate before the link is "live" (or accept a write-fail
+  race). Cache TTLs + stale-while-revalidate keep redirects serving during a region outage.
+
+- **Q: How do you design for GDPR "right to be forgotten" on a forever link?**
+  Soft-delete → return `410` (preserves the immutability contract for embeds), then hard-purge
+  the row on a schedule. Logs/Click events must be TTL'd too. The tension is the product
+  contract (links are forever) vs legal (data is deletable) — design `410` as the canonical
+  "unpublished link" state up front.
+
+- **Q: Walk me through the full redirect flow at a billion requests/month.**
+  Click hits the CDN edge; edge KV/cache lookup of `/{code}` → cache hit ⇒ return `301`
+  `Location` from the edge, emit a click event asynchronously. Cache miss ⇒ fall back to an
+  in-memory redirect service ⇒ Redis cache-aside ⇒ metadata store (Cassandra/DynamoDB) ⇒
+  populate Redis and serve. Creates are rare (range-ID service ⇒ Cassandra), clicks are
+  streamed to Kafka ⇒ click counter/analytics warehouse. The metadata store sees only cold
+  misses; the edge absorbs the viral tail.
+
+- **Q: What would you build first if you had to ship a MVP tomorrow?**
+  Approach 2: a single Spring Boot service with PostgreSQL, a `short_code` PK unique index,
+  base62-encoded auto-increment, Redis cache-aside for redirects, and a background sweeper for
+  TTL. It's correct, simple, and scales to ~500 writes/sec — enough to buy time. The moment the
+  counter becomes a hot key or writes exceed the shard, you introduce the range-ID service and
+  migrate to Approach 1. Ship the simplest correct thing first; restructure under measured
+  pressure, not hypothetical scale.
+
+- **Follow-up an interviewer often asks:** "Is the short code in your range scheme still
+  guessable, and does that matter?"
+  Discussion: range-allocated codes are monotonic and therefore guessable (an attacker can
+  enumerate `/000001`, `/000002`...). If links are public-by-default that's fine; if any link
+  is sensitive, add entropy (a random prefix/suffix) or move to a random keyspace and accept
+  collision checks. The honest answer is "it depends on the threat model" — public marketing
+  links don't need entropy; private/notes do.

@@ -32,7 +32,7 @@
 17. [When to Self-Host and When Not To](#when-to-self-host-and-when-not-to)
 18. [Use Cases](#use-cases)
 19. [Reference Architecture of a Self-Hosted Stack](#reference-architecture-of-a-self-hosted-stack)
-20. [Walkthrough: Self-Hosting a Spring Boot Application on a VPS](#walkthrough-self-hosting-a-spring-boot-application-on-a-vps)
+20. [Java and Spring Boot Implementation Guide: Self-Hosting a Spring Boot Application on a VPS](#java-and-spring-boot-implementation-guide-self-hosting-a-spring-boot-application-on-a-vps)
 21. [Interview Questions and Answers](#interview-questions-and-answers)
 
 ---
@@ -580,7 +580,7 @@ flowchart TB
 
 ---
 
-### Walkthrough: Self-Hosting a Spring Boot Application on a VPS
+### Java and Spring Boot Implementation Guide: Self-Hosting a Spring Boot Application on a VPS
 
 End-to-end: from an empty VPS to a TLS-secured, containerized Spring Boot API with Postgres, auto-renewed certificates, restart-on-boot, and config injected via environment. The app is a small notes API — the pattern works for any Spring Boot service.
 

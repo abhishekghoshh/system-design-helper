@@ -47,6 +47,7 @@
       - [2. Consumer service with deduplication](#2-consumer-service-with-deduplication)
       - [3. Webhook producer client](#3-webhook-producer-client)
       - [4. Asynchronous delivery with retry using Spring Retry](#4-asynchronous-delivery-with-retry-using-spring-retry)
+- [Interview Questions and Answers](#interview-questions-and-answers)
 
 ---
 
@@ -1270,5 +1271,67 @@ public class RetryableWebhookSender {
 
 - **Q: How do you test webhooks during local development?**
   **A:** Use a tunnel tool such as ngrok or a provider CLI such as the Stripe CLI to forward events to localhost.
+
+---
+
+### Interview Questions and Answers
+
+**Beginner**
+
+- **Q: What is a webhook?**
+  **A:** A webhook is an HTTP callback: when an event happens in a provider, the provider makes an HTTP request (POST) to a URL you registered, delivering the event payload. In other words, instead of your app polling "did anything happen?", the provider pushes the news to you as it happens. Expected contrast: *webhook vs REST API* — an API is pull (you ask), a webhook is push (they tell you).
+
+- **Q: How is a webhook different from an API?**
+  **A:** An API is a pull interface — the consumer initiates a request when it wants data. A webhook is a push interface — the provider initiates the request when an event occurs. They are complementary: most systems use both (REST API for queries/state changes, webhooks for notifications). The architectural shift is who holds the connection and who decides timing.
+
+- **Q: Why use webhooks instead of polling?**
+  **A:** Three reasons: near-real-time delivery (events show up in seconds, not on the next poll), reduced provider load (no empty polling requests), and lower operational cost (no scheduler spinning on empty intervals). For low-event-frequency systems the efficiency gain is enormous.
+
+- **Q: What does "at-least-once delivery" mean and why does it matter?**
+  **A:** It means the provider will deliver a payload one or more times — it retries on failure until the consumer responds with a 2xx. Unlike "exactly once", "at-least-once" is what real webhook systems provide. It matters because the consumer **must be idempotent** — receiving the same event twice must not produce two side effects.
+
+**Intermediate**
+
+- **Q: How do you make a webhook consumer idempotent?**
+  **A:** Each event carries an identifier (provider-assigned `X-Delivery-Id` / `X-Webhook-Id`). The consumer records the id (a unique DB constraint, or a Redis `SETNX` with a TTL) and skips reprocessing if it has already seen it. This is the canonical idempotency pattern: dedupe by the provider's event id, not by payload hash. Common mistake: deduplicating by payload hash — two distinct events with identical payloads (e.g. "status changed to X" twice) would be collapsed into one, losing a real event.
+
+- **Q: What HTTP status code should a consumer return, and when?**
+  **A:** `2xx` means "delivered, do not retry." `5xx` or a network timeout means "retry." `4xx` is ambiguous — most providers treat it as delivered (no retry) because it means the consumer's endpoint rejected the request as malformed, not that delivery failed. The subtle point: a `4xx` for a *logic* error (e.g. unknown event type) is correctly not retried, but a `4xx` caused by a bug in the handler would silently drop events — log and alert on repeated `4xx`s.
+
+- **Q: How do you verify that a webhook really came from the claimed provider?**
+  **A:** Signature verification: providers sign the payload (e.g. Stripe with `HMAC-SHA256(secret, body)` and send it in `Stripe-Signature`; GitHub with `sha256=<hmac>`; Square with a base64 HMAC). The consumer recomputes the HMAC with the shared secret and compares in constant time. Timestamp-windowing (reject if `t` is older than 5 minutes) prevents replay. This is non-negotiable — accepting unsigned webhooks is a remote code execution vector if the payload drives any unsafe handling.
+
+- **Q: Explain a webhook retry strategy and a dead-letter queue.**
+  **A:** Exponential backoff with jitter (e.g. 1s → 2s → 4s → … up to ~1 hour), with a max age/retries (e.g. stop after 24h / 30 attempts). Events that exhaust retries are routed to a dead-letter queue (DLQ) for manual inspection. The queue is essential because "no handler could process this" usually means a human decision (schema change, new event type, or a genuine malformed event), not a transient failure.
+
+- **Q: How do you handle ordering guarantees?**
+  **A:** Webhooks are *not* ordered — event A created before B may arrive after B. If your consumer needs ordering, it must enforce it: either by sequencing on the consumer side (per-entity queues, a `sequence` per entity) or by making operations commutative/idempotent enough that order doesn't matter. Do not assume provider order; state it in the contract.
+
+**Advanced**
+
+- **Q: Compare the Outbox pattern to direct webhook dispatch for the provider.**
+  **A:** Direct dispatch: on `INSERT INTO events`, the provider POSTs to the consumer immediately. If the POST fails or the provider crashes, the event is lost (or double-sent) — delivery is coupled to the request transaction, breaking its atomicity. Outbox: the event and an `outbox` row are written in the same DB transaction as the business change; a separate relay process reads committed outbox rows and dispatches, retrying independently. This guarantees the event is never sent without the state change that caused it (no phantom notifications, no lost events) at the cost of a relay component and at-least-once dispatch (hence the idempotency requirement on the consumer). The outbox is the correct default for any provider that cares about correctness.
+
+- **Q: How would you build a webhook provider that delivers 100K events/sec to 50K consumers?**
+  **A:** Decompose heavily: (1) events are appended to a log (Kafka), partitioned by `topic/consumer` for ordering guarantees scoped to what needs ordering; (2) the outbox is replaced by log append (the log *is* the outbox); (3) delivery workers are per-consumer, scaled horizontally, each with its own retry/backoff and DLQ; (4) consumer endpoint health is circuit-breaked and rate-limited per consumer so a slow consumer's backlog doesn't starve others; (5) signatures/delivery ids are produced at ingest. Expected scalability discussion: the per-consumer queue is the backpressure mechanism, and partitioning by consumer (not by event type) is what lets you scale delivery without cross-consumer fan-out thundering herds.
+
+- **Q: How do you handle schema evolution in webhook payloads?**
+  **A:** Versioned payloads (`X-Datadog-Event-Rule-Version`, or a `version` field in the JSON) with backward compatibility: never remove fields, only add optional ones; deprecate old fields for a long window. Document a change log and alert consumers via the registered contact. The consumer side should accept a range of versions and log unexpected fields rather than hard-fail. The senior move: pair a `version` field with a content-based signature that signs *the exact bytes delivered* — a signature over a normalized schema would break on additive changes.
+
+- **Q: A consumer reports intermittent duplicate processing despite returning 2xx. What's wrong?**
+  **A:** Either the duplicate is genuinely two distinct provider events (not a retry) — check the delivery ids; or the consumer's idempotency window (e.g. Redis `SETNX` TTL) is shorter than the provider's retry window — a late retry arrives after the dedupe key expired and is processed again. Other culprits: the consumer returns 2xx *after* the side effect but *before* recording the delivery id (crash window), or the idempotency store and the side-effect store aren't in the same transaction. The root-cause question is always: is the dedupe key durable for longer than the provider's retry lifetime?
+
+**Senior / System Design**
+
+- **Q: Design a webhook system where consumers can subscribe to many topics/filters. How do you fan out efficiently?**
+  **A:** Each event is published to a topic; subscribers express interest (topic + optional field filters). Naive broadcast to all subscribers is O(subscribers × topic) and doesn't scale. Efficient fan-out: (1) an inverted subscription index `topic → subscriber-list` so only relevant subscribers see the event; (2) for filtered subscriptions, evaluate the filter server-side before enqueueing (don't push work to slow consumers); (3) per-subscriber delivery queues with backpressure, so a slow consumer's backlog doesn't throttle everyone; (4) idempotency keys on the subscriber side so retries don't double-deliver. The design tension: richer filtering pushes more compute to the provider (good for slow consumers, bad for provider CPU) — the right granularity (filter by event type and top-level entity, not arbitrary nested fields) is a key decision.
+
+- **Q: When and how do you implement fan-out at the edge (e.g. webhook delivery via a CDN or push network)?**
+  **A:** When the fan-out is massive (one event → millions of consumer endpoints, e.g. a social platform like "user X followed" fanned to X's followers), the origin cannot open millions of connections. A push network (e.g. Kafka + a fleet of regional dispatcher workers, or a managed fan-out service) distributes the load; some architectures fan out through a CDN's edge functions for sub-second global delivery. The invariant: the event's source of truth is a durable log/queue, and edge dispatch is a cacheable, retryable projection — a failed edge dispatch falls back to origin delivery with a degraded SLA, never a lost event.
+
+- **Q: What are the most common production pitfalls in webhook systems?**
+  **A:** (1) No idempotency on the consumer — duplicates pile up during retries. (2) Replaying events without TTL/dedupe keys. (3) Dispatching inside the request transaction (Outbox violation) → duplicates or losses on crash. (4) Treating `4xx` as "retry" (most providers don't) — a misconfigured endpoint silently drops events. (5) No per-consumer rate limiting — one slow consumer's backlog starves the relay queue. (6) No circuit breaker per consumer — a dead endpoint causes the relay to retry forever. (7) Signing the normalized schema instead of the exact bytes — breaks on additive changes.
+
+---
 
 
