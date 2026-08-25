@@ -9,3 +9,5 @@
 - Keep headings, terminology, formatting, diagram style, code style, and explanation depth consistent across all topic files. Confidence: 0.9
 - Diagrams: prefer Mermaid, pick the right diagram type per concept (flowchart, sequence, class, ER, state, architecture, data-flow), keep them syntactically valid, and accompany every diagram with a clear explanation of what it shows and how to interpret it. Confidence: 0.85
 - Finished docs must contain no placeholders (`TODO`, `TBD`, incomplete sections); close out with a review pass verifying consistency, diagram syntax, and code correctness. Confidence: 0.85
+- Checkpoint files (`todo.md`) mirror across parallel directory structures (e.g., the `basic` and `advanced` directories each have their own `todo.md`) to track progress, document the canonical template, and reference a gold-standard file for resuming work. Confidence: 0.85
+- Topics Covered numbered items include anchor links (`[title](#anchor-slug)`) to their corresponding `###` subsections for jump navigation. Confidence: 0.8
