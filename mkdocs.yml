@@ -158,118 +158,118 @@ nav:
           - Programming Language: system-design/high-level/concepts/advanced/programming-language.md
           - GitHub Server: system-design/high-level/concepts/advanced/github-server.md
       - Designing:
-        - Overview: system-design/high-level/desgining/0-introduction.md
+        - Overview: system-design/high-level/designing/0-introduction.md
         - Basic:
           # Core Infrastructure & Platform Services
-          - URL Shortener: system-design/high-level/desgining/basic/url-shortner.md
-          - Rate Limiter: system-design/high-level/desgining/basic/rate-limiter.md
-          - Notification System: system-design/high-level/desgining/basic/notification-system.md
-          - Webhook: system-design/high-level/desgining/basic/webhook.md
-          - CDN: system-design/high-level/desgining/basic/cdn.md
-          - Autocomplete: system-design/high-level/desgining/basic/autocomplete.md
-          - Pastebin: system-design/high-level/desgining/basic/pastebin.md
-          - Leaderboard: system-design/high-level/desgining/basic/leaderboard.md
-          - Inventory Management System: system-design/high-level/desgining/basic/inventory-management-system.md
-          - Library Management System: system-design/high-level/desgining/basic/library-management-system.md
-          - Job Board: system-design/high-level/desgining/basic/job-board.md
-          - Bug/Issue Tracker: system-design/high-level/desgining/basic/bug-issue-tracker.md
-          - To-Do List App: system-design/high-level/desgining/basic/todo-list-app.md
-          - Attendance Tracking System: system-design/high-level/desgining/basic/attendance-tracking-system.md
-          - Customer Support Ticketing System: system-design/high-level/desgining/basic/customer-support-ticketing-system.md
+          - URL Shortener: system-design/high-level/designing/basic/url-shortner.md
+          - Rate Limiter: system-design/high-level/designing/basic/rate-limiter.md
+          - Notification System: system-design/high-level/designing/basic/notification-system.md
+          - Webhook: system-design/high-level/designing/basic/webhook.md
+          - CDN: system-design/high-level/designing/basic/cdn.md
+          - Autocomplete: system-design/high-level/designing/basic/autocomplete.md
+          - Pastebin: system-design/high-level/designing/basic/pastebin.md
+          - Leaderboard: system-design/high-level/designing/basic/leaderboard.md
+          - Inventory Management System: system-design/high-level/designing/basic/inventory-management-system.md
+          - Library Management System: system-design/high-level/designing/basic/library-management-system.md
+          - Job Board: system-design/high-level/designing/basic/job-board.md
+          - Bug/Issue Tracker: system-design/high-level/designing/basic/bug-issue-tracker.md
+          - To-Do List App: system-design/high-level/designing/basic/todo-list-app.md
+          - Attendance Tracking System: system-design/high-level/designing/basic/attendance-tracking-system.md
+          - Customer Support Ticketing System: system-design/high-level/designing/basic/customer-support-ticketing-system.md
           # Payments & Commerce
-          - Digital Wallet: system-design/high-level/desgining/basic/digital-wallet.md
-          - Vending Machine: system-design/high-level/desgining/basic/vending-machine.md
-          - Rate-and-Review System: system-design/high-level/desgining/basic/rate-and-review-system.md
+          - Digital Wallet: system-design/high-level/designing/basic/digital-wallet.md
+          - Vending Machine: system-design/high-level/designing/basic/vending-machine.md
+          - Rate-and-Review System: system-design/high-level/designing/basic/rate-and-review-system.md
           # Booking & Marketplace
-          - Hotel Booking: system-design/high-level/desgining/basic/hotel-booking.md
-          - App Store: system-design/high-level/desgining/basic/app-store.md
-          - Yelp: system-design/high-level/desgining/basic/yelp.md
-          - Carpooling System: system-design/high-level/desgining/basic/carpooling-system.md
+          - Hotel Booking: system-design/high-level/designing/basic/hotel-booking.md
+          - App Store: system-design/high-level/designing/basic/app-store.md
+          - Yelp: system-design/high-level/designing/basic/yelp.md
+          - Carpooling System: system-design/high-level/designing/basic/carpooling-system.md
           # Social & Content
-          - Blogging Platform: system-design/high-level/desgining/basic/blogging-platform.md
-          - Image Gallery with Tagging: system-design/high-level/desgining/basic/image-gallery-with-tagging.md
-          - Polling/Voting App: system-design/high-level/desgining/basic/polling-voting-app.md
-          - Online Voting System: system-design/high-level/desgining/basic/online-voting-system.md
+          - Blogging Platform: system-design/high-level/designing/basic/blogging-platform.md
+          - Image Gallery with Tagging: system-design/high-level/designing/basic/image-gallery-with-tagging.md
+          - Polling/Voting App: system-design/high-level/designing/basic/polling-voting-app.md
+          - Online Voting System: system-design/high-level/designing/basic/online-voting-system.md
           # Productivity & Utilities
-          - Expense-Splitting App: system-design/high-level/desgining/basic/expense-splitting-app.md
+          - Expense-Splitting App: system-design/high-level/designing/basic/expense-splitting-app.md
           # Networking & Security
-          - VPN: system-design/high-level/desgining/basic/vpn.md
+          - VPN: system-design/high-level/designing/basic/vpn.md
           # Gaming
-          - Chess Game: system-design/high-level/desgining/basic/chess-game.md
+          - Chess Game: system-design/high-level/designing/basic/chess-game.md
           # Other
-          - How to Host Your Own X: system-design/high-level/desgining/basic/how-to-host-your-own-x.md
+          - How to Host Your Own X: system-design/high-level/designing/basic/how-to-host-your-own-x.md
         - Advanced:
           # Core Infrastructure & Platform Services
-          - Key Value Store: system-design/high-level/desgining/advanced/key-value-store.md
-          - Log System: system-design/high-level/desgining/advanced/log-system.md
-          - Search Engine: system-design/high-level/desgining/advanced/search-engine.md
-          - Authentication System: system-design/high-level/desgining/advanced/authentication-system.md
-          - Distributed Counter: system-design/high-level/desgining/advanced/distributed-counter.md
-          - Distributed Cache: system-design/high-level/desgining/advanced/distributed-cache.md
-          - Distributed Locking Service: system-design/high-level/desgining/advanced/distributed-locking-service.md
-          - Distributed Job Scheduler: system-design/high-level/desgining/advanced/distributed-job-scheduler.md
-          - Distributed Rate Limiter: system-design/high-level/desgining/advanced/distributed-rate-limiter.md
-          - Distributed Rate-Limited API Gateway: system-design/high-level/desgining/advanced/distributed-rate-limited-api-gateway.md
-          - Distributed Configuration Management System: system-design/high-level/desgining/advanced/distributed-configuration-management-system.md
-          - Multi-Region Deployment System: system-design/high-level/desgining/advanced/multi-region-deployment-system.md
-          - Feature Flag and Experimentation Platform: system-design/high-level/desgining/advanced/feature-flag-experimentation-platform.md
-          - Notification Fan-Out Service: system-design/high-level/desgining/advanced/notification-fanout-service.md
+          - Key Value Store: system-design/high-level/designing/advanced/key-value-store.md
+          - Log System: system-design/high-level/designing/advanced/log-system.md
+          - Search Engine: system-design/high-level/designing/advanced/search-engine.md
+          - Authentication System: system-design/high-level/designing/advanced/authentication-system.md
+          - Distributed Counter: system-design/high-level/designing/advanced/distributed-counter.md
+          - Distributed Cache: system-design/high-level/designing/advanced/distributed-cache.md
+          - Distributed Locking Service: system-design/high-level/designing/advanced/distributed-locking-service.md
+          - Distributed Job Scheduler: system-design/high-level/designing/advanced/distributed-job-scheduler.md
+          - Distributed Rate Limiter: system-design/high-level/designing/advanced/distributed-rate-limiter.md
+          - Distributed Rate-Limited API Gateway: system-design/high-level/designing/advanced/distributed-rate-limited-api-gateway.md
+          - Distributed Configuration Management System: system-design/high-level/designing/advanced/distributed-configuration-management-system.md
+          - Multi-Region Deployment System: system-design/high-level/designing/advanced/multi-region-deployment-system.md
+          - Feature Flag and Experimentation Platform: system-design/high-level/designing/advanced/feature-flag-experimentation-platform.md
+          - Notification Fan-Out Service: system-design/high-level/designing/advanced/notification-fanout-service.md
           # Messaging & Real-Time Communication
-          - Chat System: system-design/high-level/desgining/advanced/chat-system.md
-          - WhatsApp: system-design/high-level/desgining/advanced/whatspp.md
-          - Live Comments: system-design/high-level/desgining/advanced/live-comments.md
-          - Distributed Messaging Queue: system-design/high-level/desgining/advanced/distributed-messaging-queue.md
-          - Slack: system-design/high-level/desgining/advanced/slack.md
-          - Fault-Tolerant Order Processing System: system-design/high-level/desgining/advanced/fault-tolerant-order-processing-system.md
+          - Chat System: system-design/high-level/designing/advanced/chat-system.md
+          - WhatsApp: system-design/high-level/designing/advanced/whatspp.md
+          - Live Comments: system-design/high-level/designing/advanced/live-comments.md
+          - Distributed Messaging Queue: system-design/high-level/designing/advanced/distributed-messaging-queue.md
+          - Slack: system-design/high-level/designing/advanced/slack.md
+          - Fault-Tolerant Order Processing System: system-design/high-level/designing/advanced/fault-tolerant-order-processing-system.md
           # Media & Streaming
-          - Video Streaming: system-design/high-level/desgining/advanced/video-streaming.md
-          - Netflix: system-design/high-level/desgining/advanced/netflix.md
-          - Spotify: system-design/high-level/desgining/advanced/spotify.md
-          - Live Streaming: system-design/high-level/desgining/advanced/live-streaming.md
-          - Image Optimisation On The Fly: system-design/high-level/desgining/advanced/Image-Optimisation-on-the-fly.md
+          - Video Streaming: system-design/high-level/designing/advanced/video-streaming.md
+          - Netflix: system-design/high-level/designing/advanced/netflix.md
+          - Spotify: system-design/high-level/designing/advanced/spotify.md
+          - Live Streaming: system-design/high-level/designing/advanced/live-streaming.md
+          - Image Optimisation On The Fly: system-design/high-level/designing/advanced/Image-Optimisation-on-the-fly.md
           # E-Commerce & Payments
-          - Amazon/Flipkart: system-design/high-level/desgining/advanced/amazon-flipkart.md
-          - E-Commerce: system-design/high-level/desgining/advanced/e-commerce.md
-          - E-Commerce Checkout: system-design/high-level/desgining/advanced/ecommerce-checkout.md
-          - Payment Gateway: system-design/high-level/desgining/advanced/payment-gateway.md
-          - Stripe: system-design/high-level/desgining/advanced/stripe.md
-          - UPI Payments: system-design/high-level/desgining/advanced/upi-payments.md
-          - Settlement and Reconciliation System: system-design/high-level/desgining/advanced/settlement-reconciliation-system.md
-          - Fraud Detection Pipeline: system-design/high-level/desgining/advanced/fraud-detection-pipeline.md
-          - Quick-Commerce Inventory System: system-design/high-level/desgining/advanced/quick-commerce-inventory-system.md
-          - E-Commerce Search & Ranking System: system-design/high-level/desgining/advanced/ecommerce-search-ranking-system.md
+          - Amazon/Flipkart: system-design/high-level/designing/advanced/amazon-flipkart.md
+          - E-Commerce: system-design/high-level/designing/advanced/e-commerce.md
+          - E-Commerce Checkout: system-design/high-level/designing/advanced/ecommerce-checkout.md
+          - Payment Gateway: system-design/high-level/designing/advanced/payment-gateway.md
+          - Stripe: system-design/high-level/designing/advanced/stripe.md
+          - UPI Payments: system-design/high-level/designing/advanced/upi-payments.md
+          - Settlement and Reconciliation System: system-design/high-level/designing/advanced/settlement-reconciliation-system.md
+          - Fraud Detection Pipeline: system-design/high-level/designing/advanced/fraud-detection-pipeline.md
+          - Quick-Commerce Inventory System: system-design/high-level/designing/advanced/quick-commerce-inventory-system.md
+          - E-Commerce Search & Ranking System: system-design/high-level/designing/advanced/ecommerce-search-ranking-system.md
           # Social Media & Content
-          - Twitter: system-design/high-level/desgining/advanced/twitter.md
-          - Social Media: system-design/high-level/desgining/advanced/social-media.md
-          - Hashtag Service: system-design/high-level/desgining/advanced/hashtag-service.md
-          - Recommendation Engine: system-design/high-level/desgining/advanced/recomendation-engine.md
-          - Facebook: system-design/high-level/desgining/advanced/facebook.md
-          - Instagram: system-design/high-level/desgining/advanced/instagram.md
-          - TikTok: system-design/high-level/desgining/advanced/tiktok.md
+          - Twitter: system-design/high-level/designing/advanced/twitter.md
+          - Social Media: system-design/high-level/designing/advanced/social-media.md
+          - Hashtag Service: system-design/high-level/designing/advanced/hashtag-service.md
+          - Recommendation Engine: system-design/high-level/designing/advanced/recomendation-engine.md
+          - Facebook: system-design/high-level/designing/advanced/facebook.md
+          - Instagram: system-design/high-level/designing/advanced/instagram.md
+          - TikTok: system-design/high-level/designing/advanced/tiktok.md
           # Booking & Marketplace
-          - BookMyShow: system-design/high-level/desgining/advanced/bookmyshow.md
-          - Uber: system-design/high-level/desgining/advanced/uber.md
-          - Food Delivery: system-design/high-level/desgining/advanced/food-delivery.md
-          - Flight Booking: system-design/high-level/desgining/advanced/flight-booking.md
-          - Google Maps: system-design/high-level/desgining/advanced/google-maps.md
+          - BookMyShow: system-design/high-level/designing/advanced/bookmyshow.md
+          - Uber: system-design/high-level/designing/advanced/uber.md
+          - Food Delivery: system-design/high-level/designing/advanced/food-delivery.md
+          - Flight Booking: system-design/high-level/designing/advanced/flight-booking.md
+          - Google Maps: system-design/high-level/designing/advanced/google-maps.md
           # Storage & Data
-          - Google Drive: system-design/high-level/desgining/advanced/google-drive.md
-          - Data Warehouse: system-design/high-level/desgining/advanced/data-warehouse.md
-          - Distributed Geospatial Data Platform: system-design/high-level/desgining/advanced/distributed-geospatial-data-platform.md
-          - Redis: system-design/high-level/desgining/advanced/redis.md
+          - Google Drive: system-design/high-level/designing/advanced/google-drive.md
+          - Data Warehouse: system-design/high-level/designing/advanced/data-warehouse.md
+          - Distributed Geospatial Data Platform: system-design/high-level/designing/advanced/distributed-geospatial-data-platform.md
+          - Redis: system-design/high-level/designing/advanced/redis.md
           # AI & Developer Tools
-          - Large Language Model: system-design/high-level/desgining/advanced/large-language-model.md
-          - LeetCode: system-design/high-level/desgining/advanced/leetcode.md
-          - Vercel: system-design/high-level/desgining/advanced/vercel.md
-          - Email Automation Platform: system-design/high-level/desgining/advanced/email-automation-platform.md
-          - Google Docs: system-design/high-level/desgining/advanced/google-docs.md
-          - Online Code Editor: system-design/high-level/desgining/advanced/online-code-editor.md
+          - Large Language Model: system-design/high-level/designing/advanced/large-language-model.md
+          - LeetCode: system-design/high-level/designing/advanced/leetcode.md
+          - Vercel: system-design/high-level/designing/advanced/vercel.md
+          - Email Automation Platform: system-design/high-level/designing/advanced/email-automation-platform.md
+          - Google Docs: system-design/high-level/designing/advanced/google-docs.md
+          - Online Code Editor: system-design/high-level/designing/advanced/online-code-editor.md
           # Distributed Systems & Financial Infrastructure
-          - Stock Broker System: system-design/high-level/desgining/advanced/stock-broker-system.md
-          - Distributed Transaction Banking System: system-design/high-level/desgining/advanced/distributed-transaction-banking-system.md
-          - Real-Time Bidding/Auction System: system-design/high-level/desgining/advanced/real-time-bidding-auction-system.md
+          - Stock Broker System: system-design/high-level/designing/advanced/stock-broker-system.md
+          - Distributed Transaction Banking System: system-design/high-level/designing/advanced/distributed-transaction-banking-system.md
+          - Real-Time Bidding/Auction System: system-design/high-level/designing/advanced/real-time-bidding-auction-system.md
           # Gaming
-          - Multiplayer Game: system-design/high-level/desgining/advanced/multiplayer-game.md
+          - Multiplayer Game: system-design/high-level/designing/advanced/multiplayer-game.md
       - Links:
         - Udemy: system-design/high-level/links/udemy.md
         - Websites: system-design/high-level/links/websites.md
