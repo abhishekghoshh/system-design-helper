@@ -6,7 +6,7 @@
 
 ## Youtube
 
-## Architechture choices
+## Architecture Choices
 
 ### Youtube
 

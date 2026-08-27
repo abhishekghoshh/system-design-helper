@@ -8,6 +8,23 @@
 
 ## Theory
 
+### What Is It?
+
+A distributed job scheduler coordinates when and where units of work (jobs/tasks) execute across a fleet of worker machines, ensuring they run at the right time, with the right resources, exactly-once semantics, and appropriate retries — even as workers fail, restart, or get rescheduled.
+
+### Why Does It Exist?
+
+In a single-node system, a cron daemon or timer can schedule jobs. But at fleet scale, a job must run on exactly one node at a specific time, survive node failures, respect resource constraints (CPU/memory), honor dependencies (Task B runs after Task A), and handle retries with backoff. A centralized scheduler provides the global coordination that distributed workloads require, decoupling *what* runs and *when* from *where* it happens to be scheduled.
+
+### What Problem Does It Solve?
+
+* **At-most-once / exactly-once scheduling**: prevents duplicate execution (critical for billing jobs) and ensures no job silently drops (critical for SLA guarantees).
+* **Resource contention**: multiple jobs competing for CPU/memory/disk — the scheduler must place jobs on nodes with available capacity, respecting priority and fairness.
+* **Failure recovery**: when a worker dies mid-job, the scheduler must re-queue the job (after a grace period to detect true failure vs. slow progress) on another node.
+* **Time accuracy and clock skew**: wall-clock-based scheduling across nodes with different clock offsets creates missed or duplicate triggers. Monotonic clocks and logical time sources help.
+* **Cron complexity**: timezone handling, DST transitions (skip/repeat an hour), missed-fire policies (run once? skip? accumulate?).
+* **Dependency orchestration**: DAGs of jobs (ETL pipelines) where Task C depends on Task A + Task B succeeding — requires topological scheduling and partial failure handling.
+
 ### Important Subtopics
 
 1. Job taxonomy: one-time, delayed, recurring/cron, dependent DAGs
@@ -306,6 +323,105 @@ Decision inputs: job volumes, latency precision needs, payload complexity, team 
 
 ---
 
+## Architecture
+
+### Architectural Style
+
+**Leader-elected scheduler + worker fleet + durable job queue**: one scheduler instance (chosen via leader election) acts as the global coordinator that evaluates schedules, dispatches jobs, and manages the queue. Workers are stateless and pull jobs from the queue. The job state is persisted in a durable store (SQL/NoSQL) with visibility-timeout semantics for at-least-once delivery. For DAG orchestration, a separate DAG engine manages topological ordering and dependencies.
+
+```mermaid
+flowchart TB
+    subgraph Schedulers
+        LEADER[Active Scheduler<br/>(leader)]
+        FOLLOWER[Standby Scheduler]
+    end
+    LEADER -->|leader elect| STORE[(Job Store<br/>SQL/NoSQL)]
+    FOLLOWER -- standby --> STORE
+    STORE -->|pull jobs| W1[Worker 1]
+    STORE -->|pull jobs| W2[Worker 2]
+    STORE -->|pull jobs| W3[Worker 3]
+    W1 -->|ack/done| STORE
+    W2 -->|ack/done| STORE
+    W3 -->|ack/done| STORE
+    SCHED[Schedule DB<br/>cron/interval] --> LEADER
+    ALERT[(Alerting/Monitoring)] <--> LEADER
+```
+
+### Component Responsibilities and Communication
+
+| Component | Responsibility | Communication |
+|---|---|---|
+| Active Scheduler | Evaluate schedules, dispatch jobs to queue | Reads from schedule DB; writes job state to store |
+| Standby Scheduler | Leader-elected backup; takes over on failure | Watches consensus for leader change |
+| Job Store | Durable job state (pending, running, done, failed) | SQL/NoSQL with visibility timeout; workers poll |
+| Worker Fleet | Execute jobs, report completion, heartbeat | PULL from job store; ack on completion |
+| Schedule Repository | Cron expressions, DAG definitions, dependencies | Config-driven; loaded by scheduler |
+| Visibility Timeout Manager | Track in-flight jobs, requeue on timeout | Store with TTL; workers extend lease |
+| Orchestrator (DAG) | Topological scheduling of dependent jobs | Reads DAG graph; triggers dependent jobs |
+
+**Data flow**: schedule definitions → active scheduler evaluates fire-time → creates job in store (status=pending) → worker polls store (visibility-timeout) → picks up job → executes → acks (status=done/failed) → requeue on timeout. DAG engine monitors job completion and triggers dependents.
+
+**Scaling strategy**: schedulers are leader-elected (one active); workers scale horizontally on job throughput; job store sharded by time-bucket or job-type for high throughput; visibility-timeout TTLs tuned per job class.
+
+**Failure handling**: scheduler crash → standby takes over via leader election; worker crash mid-job → visibility timeout expires → job requeued for retry; job store replication ensures durability; dead-letter queue for repeatedly failed jobs.
+
+## Design
+
+### Design Considerations
+
+The central design challenge: **at-least-once execution without duplicates**. Network partitions, worker crashes, and scheduler failures mean a job may be dispatched multiple times — the system must ensure idempotent execution (via client-generated job IDs and deduplication) while never silently dropping a job. Secondary concerns: preventing job loss on scheduler failover, managing hot queues during bursty workload, and handling DAG dependency failures gracefully.
+
+### Key Decisions
+
+- **Leader election for scheduler**: ensures exactly one scheduler dispatches jobs; prevents duplicate dispatch. Use etcd/Consul/Zookeeper or Raft-based election.
+- **Visibility timeout for at-least-once**: jobs become visible again if a worker doesn't ack within a timeout (TTL). The TTL defines the deduplication window.
+- **Job ID design**: client-generated UUID + dedup key → duplicate submissions collapse to one job.
+- **Retry backoff with jitter**: exponential backoff prevents thundering-herd retries; jitter spreads retries.
+- **DAG orchestration**: topological sort with dependency tracking; partial DAG failure handled by continuing independent branches.
+- **Dead-letter queue (DLQ)**: jobs failing N times are moved to DLQ for manual inspection.
+
+### Trade-offs
+
+| Decision | Pro | Con |
+|---|---|---|
+| Leader-election scheduler | No duplicate dispatch | One active scheduler is a single point; needs fast failover |
+| Visibility timeout | At-least-once without loss | Duplicate execution possible; requires idempotency |
+| Batch dispatch | Higher throughput | Higher latency for individual jobs |
+| DAG-aware orchestrator | Complex dependency graphs | Dependency hell; partial failure handling |
+| DLQ | Isolates poison jobs | Manual intervention required |
+
+### Scalability Considerations
+
+- Job store sharding by time-buckets or job-type reduces hot-spots.
+- Workers scale horizontally on queue depth.
+- Scheduler leader failover must be fast (<1s) to avoid dispatch gaps.
+- Visibility timeout tuned per job class (short for quick jobs, long for batch).
+
+### Reliability Considerations
+
+- **Durable job state**: all job state persisted before dispatch; no in-memory-only state on scheduler.
+- **Idempotent workers**: job execution must be safe to retry — use idempotency keys.
+- **Scheduler failover**: standby scheduler takes over via consensus; in-flight dispatches re-evaluated.
+- **DLQ for poison jobs**: prevents one bad job from blocking the queue.
+
+### Performance Considerations
+
+- Scheduler dispatch latency: schedule evaluation → job enqueue → worker pickup must be sub-second for interactive jobs.
+- Worker throughput: batch fetch from queue amortizes polling overhead.
+- Visibility-timeout tuning: too short → duplicate execution; too long → slow recovery from worker failure.
+
+### Security Considerations
+
+- **Job isolation**: malicious or buggy jobs must not access other jobs' resources or escape containers.
+- **Access control**: only authorized services can schedule jobs; job payloads validated.
+- **Rate limiting**: prevent job-spam DoS from compromised clients.
+
+### Maintainability Considerations
+
+- **Schema evolution**: job definition format versioned; backward-compatible changes only.
+- **Retry policy evolution**: can retry policies be changed for in-flight jobs? Usually not — define at submission.
+- **Monitoring**: queue depth, fire-time accuracy, success/failure rates, retry counts, scheduler leader-uptime.
+
 ## High-Level Design
 
 End-to-end lifecycle:
@@ -358,6 +474,128 @@ Failure handling: leader loss → lease expiry (≤15 s) → standby assumes wit
 - **Observability**: golden signals per job-class (submission rate, fire lag p50/p99/p999, success ratio, retry distribution, DLQ inflow); synthetic canary jobs every minute asserting end-to-end health; trace propagation from submission through execution for cross-service attribution.
 
 ---
+
+## API Contract
+
+### Job Operations API
+
+```
+POST   /api/v1/jobs                     # submit a job (one-time, delayed, or recurring)
+GET    /api/v1/jobs/{jobId}             # get job status + history
+PUT    /api/v1/jobs/{jobId}/cancel      # cancel pending/running job
+POST   /api/v1/jobs/{jobId}/retry       # force retry a failed job
+GET    /api/v1/schedules                # list all cron/recurring schedules
+POST   /api/v1/schedules                # create/update a schedule
+GET    /api/v1/dlq                      # dead-letter queue (failed jobs)
+POST   /api/v1/dags                     # submit a DAG workflow
+```
+
+### Submit Job
+
+```http
+POST /api/v1/jobs
+Content-Type: application/json
+Idempotency-Key: 97b8c302-...
+
+{
+  "name": "send-daily-email",
+  "type": "cron",
+  "schedule": "0 9 * * *",              // daily at 9 AM
+  "timezone": "Asia/Kolkata",
+  "payload": { "template": "daily_digest", "userId": "u_123" },
+  "maxRetries": 3,
+  "retryPolicy": {
+    "backoffType": "exponential",
+    "initialDelaySeconds": 10,
+    "jitter": true,
+    "maxDelaySeconds": 600
+  },
+  "timeoutSeconds": 300,
+  "priority": 10
+}
+```
+
+**Response** (HTTP 201):
+
+```json
+{
+  "jobId": "job-a1b2c3",
+  "status": "SCHEDULED",
+  "nextFireAt": "2024-02-15T09:00:00+05:30",
+  "createdAt": "2024-02-14T10:30:00Z"
+}
+```
+
+### Get Job Status
+
+```
+GET /api/v1/jobs/job-a1b2c3
+```
+
+```json
+{
+  "jobId": "job-a1b2c3",
+  "name": "send-daily-email",
+  "status": "COMPLETED",
+  "attempts": 1,
+  "lastAttemptAt": "2024-02-14T09:00:05Z",
+  "result": { "delivered": 98, "failed": 2 },
+  "history": [
+    { "attempt": 1, "status": "RUNNING", "startedAt": "2024-02-14T09:00:00Z" },
+    { "attempt": 1, "status": "COMPLETED", "completedAt": "2024-02-14T09:00:05Z" }
+  ]
+}
+```
+
+### Cancel Job
+
+```http
+PUT /api/v1/jobs/job-a1b2c3/cancel
+Idempotency-Key: 8831f456-...
+```
+
+```json
+{ "jobId": "job-a1b2c3", "status": "CANCELLED", "cancelledAt": "2024-02-14T10:35:00Z" }
+```
+
+### Submit DAG
+
+```http
+POST /api/v1/dags
+Content-Type: application/json
+
+{
+  "name": "etl-pipeline",
+  "nodes": [
+    { "id": "extract", "job": { "name": "extract-data", "payload": {...} } },
+    { "id": "transform", "job": { "name": "transform-data", "payload": {...} } },
+    { "id": "load", "job": { "name": "load-data", "payload": {...} } }
+  ],
+  "edges": [
+    { "from": "extract", "to": "transform" },
+    { "from": "transform", "to": "load" }
+  ]
+}
+```
+
+### Status Codes
+
+* `201` — job created
+* `200` — successful read/update
+* `202` — cancel/retry accepted (async)
+* `400` — invalid schedule expression, bad payload schema
+* `401` — unauthenticated
+* `403` — not authorized to schedule/manage jobs
+* `409` — job already exists (idempotency-key collision)
+* `429` — rate limited (per-client submission rate)
+* `503` — scheduler unavailable, queued for retry
+
+### Key Contracts
+
+- **Idempotency**: `POST /jobs` accepts `Idempotency-Key`; retries collapse to the same job. `PUT /cancel` is idempotent — cancelling an already-cancelled job returns 200.
+- **At-least-once**: if the scheduler crashes after writing the job to the store but before ack, the client retries with the same idempotency-key — the store dedups.
+- **Retry policy**: backoff type (exponential/linear), initial delay, jitter, and max delay are declared per job; dead-letter queue after `maxRetries`.
+- **Cron semantics**: timezone-aware; DST edge cases handled (skip or repeat based on `missedFirePolicy`).
 
 ## Data Modeling
 

@@ -16,7 +16,22 @@
 
 ## Theory
 
+### What Is It?
+
 A ticket-booking platform (BookMyShow, Ticketmaster, Fandango) sells **scarce, perishable inventory** — specific seats for specific showtimes — to a massive burst of concurrent demand the moment sales open. The defining engineering property: thousands of users want seat S12 in row J at the same second, and exactly one may win it. Everything in the design flows from that contention plus the fairness/perception requirements (nobody wants to pay for a crash, and regulators watch this industry).
+
+### Why Does It Exist?
+
+Online ticket booking exists because physical box offices cannot handle the scale, speed, and geographic reach of modern demand. Fans expect to browse and purchase seats from anywhere within seconds of a sale opening, while venues and organizers need to maximize revenue from perishable inventory and defend against bots that would corner the market. A centralised, highly available, fair booking platform bridges the gap between supply (fixed seats) and demand (bursting crowds).
+
+### What Problem Does It Solve?
+
+* **Seat contention**: thousands of users want the same seat simultaneously. The system must serialize seat-state transitions so that exactly one buyer wins each seat — no double-sells, no deadlocks.
+* **Perishable inventory economics**: unsold seats at showtime are worth zero. The platform must drive last-mile sales through dynamic pricing, last-minute discounts, and waitlist automation.
+* **Burst traffic at onsale**: traffic spikes 1000× from baseline in seconds. Without controlled admission (waiting rooms, pacing), the site crashes and fans blame the venue.
+* **Payment timing vs hold windows**: payment takes seconds to minutes; seats must be held during that window but released quickly on failure — the expiry-vs-capture race.
+* **Fairness and bot defense**: automated resellers with superior tooling can clean up inventory in milliseconds. Fair queuing and anti-bot measures keep inventory in human hands.
+* **Regulatory and legal exposure**: overselling seats creates lawsuits; payment failures create chargebacks; every transition must be auditable.
 
 ### Important Subtopics
 
@@ -249,6 +264,111 @@ Alternatives: managed ticketing SDKs, or general e-commerce frameworks adapted w
 
 ---
 
+## Architecture
+
+### Architectural Style
+
+**Event-driven microservices with per-event partitioning**: the booking service is sharded by `showId`, so all seat operations for one event route to a single owner — giving natural mutual exclusion without distributed locks. Discovery (search, seat maps) runs on separate, horizontally-scalable read projections fed by events. This is a ** CQRS-style split** where the write path (booking) is strongly consistent per event and the read path (catalog, availability) is eventually consistent.
+
+```mermaid
+flowchart TB
+    U[User] --> Q[Queue / Waiting Room - edge]
+    Q --> GW[API Gateway / BFF]
+    GW --> DISC[Discovery / Search]
+    GW --> SM[Seat Map svc]
+    SM -.reads projections.-> PROJ[(Availability projections - Redis)]
+    GW --> BK[Booking service<br/>partitioned per event]
+    BK <--> PAY[Payment orchestrator]
+    BK --> TIX[Ticket issuance]
+    BK --> BUS[[Event bus - Kafka]]
+    BUS --> PROJ
+    BUS --> NOTIF[Notifications]
+    BUS --> ANA[Analytics]
+    CAT[Catalog svc] --> BUS
+    ORG[Organizer portal] --> CAT
+```
+
+### Component Responsibilities and Communication
+
+| Component | Responsibility | Communication |
+|---|---|---|
+| Waiting Room | Admission control for onsale bursts, honest position tracking | Edge-level; issues tokens to admitted users |
+| API Gateway / BFF | Protocol translation, auth, rate limiting, response shaping | Frontend for all user-facing flows |
+| Catalog Service | Venues, events, showtimes, seat layouts | Writes → event bus; reads from its own store |
+| Discovery Service | Search and browse over event read models | Reads from Elasticsearch projections |
+| Seat Map Service | Live availability rendering, section heatmaps, delta streaming | Reads from Redis projections |
+| Booking Service | Seat-state machine (Available → Held → Booked), holds, confirmations, releases | Owned per showId; sync calls to payments |
+| Payment Orchestrator | PSP integration, capture, refund, webhook reconciliation | Sync to PSP; async to booking on outcome |
+| Ticket Issuance | Signed QR/barcode generation, pass delivery, revocation lists | Emits on booking confirmation |
+| Event Bus | Decouples booking writes from analytics, notifications, projections | Kafka topic per event type |
+
+**Data flow**: user joins onsale → admitted via waiting room → selects seats → booking service atomically acquires holds (Redis Lua) + persists durable truth → payment orchestrator captures funds → on webhook success, booking service confirms → emits `BookingConfirmed` event → projections update, tickets issued, notifications sent.
+
+**Scaling strategy**: booking partitions sized per forecast (mega-events get dedicated cells); seat-map projection cluster scales with viewership; waiting room and queue infrastructure scale independently at the edge. Multi-region: reads regional, booking partitioned per event.
+
+**Failure handling**: PSP timeout → keep hold until definitive outcome (webhook or reconciliation job); booking-service crash → partition fails over with WAL replay; Redis loss → rebuild holds from DB (DB is truth, Redis accelerates); booking partition CPU saturation → split by section or shed admissions.
+
+**Failure handling & monitoring**: funnel metrics (admitted → seated → held → paid), per-event hold-contention histograms, sweep-lag alerts, PSP latency burn rates; replay tooling to reconstruct any booking decision after the fact.
+
+## Design
+
+### Design Considerations
+
+The single most important design principle is: **seats are positional and perishable**. Unlike generic e-commerce stock (count-based), each seat is a unique unit with location meaning, a showtime deadline, and zero residual value after the event. This means the architecture optimizes for (a) strict per-seat serialization, (b) human-timescale holds (5–15 min for payment), and (c) burst admission control at onsale.
+
+### Key Decisions
+
+- **Partition-per-event booking**: all seat commands for one `showId` route to a single owner (shard leader or actor), so mutual exclusion is free — no distributed locks.
+- **Redis soft-hold + DB durable truth**: Redis acquires/releases holds in milliseconds (Lua atomic ops); the relational DB is the source of truth for audit and recovery.
+- **Waiting room at the edge**: admission control converts 1M simultaneous arrivals into a controlled, fair, paced flow matching system capacity.
+- **Idempotent payment webhooks as capture truth**: the PSP callback is the only authoritative signal for payment success; all internal state derives from it.
+- **WebSocket seat-map projection**: real-time availability via delta streaming to section-level subscribers, never raw seat reads from the transactional DB.
+
+### Trade-offs
+
+| Decision | Pro | Con |
+|---|---|---|
+| Per-event partitioning | Natural serialization, no distributed locks | Mega-events need cross-section coordination for group bookings |
+| Redis soft-hold layer | Millisecond UX, cheap TTL sweeps | Must stay in sync with DB truth; invalidation bugs cause phantom-available seats |
+| Waiting room | Converts crashes to controlled delays | Degrades UX for legitimate users; tuning release rate is an art |
+| WebSocket seat maps | Real-time feel without API hammering | Fanout complexity for 100K concurrent viewers |
+| Saga for book-and-pay | Isolates PSP flakiness from seat logic | Compensation complexity; intermediate visible states need UX handling |
+
+### Scalability Considerations
+
+- **Booking**: partitions scaled per forecast; mega-events get dedicated cells; per-SKU queue serialization for extreme contention.
+- **Seat maps**: projection cluster scales with viewership; section-level aggregates cached; deltas throttled/coalesced (max N msgs/sec/viewer); full refresh only on reconnect.
+- **Waiting room**: edge infrastructure scales independently; token + position tracking must be bot-resistant and fair (FIFO-ish).
+- **Catalog/search**: Elasticsearch scales horizontally; CDC from catalog service keeps indexes fresh.
+
+### Reliability Considerations
+
+- **Oversell prevention**: seat state transitions are atomic compare-and-set; the append-only `SEAT_LEDGER` provides an audit trail and enables replay/recovery.
+- **Payment-confirmation race**: total order established — `confirm` executes only if hold is `HELD` and before `expires_at`, OR payment already captured (grace rule). Every branch is idempotent.
+- **DR for in-flight holds**: WAL-replicated partition state; Redis loss rebuilds holds from DB rows (DB is truth).
+- **PSP outages mid-onsale**: queue payments, extend holds, retry with alternate PSP.
+
+### Performance Considerations
+
+- Seat-map loads served from cached section aggregates + delta streaming — never full seat-table reloads.
+- Hold acquisition: Redis Lua script (check all seats free → lock all atomically) = single round-trip, sub-millisecond.
+- Booking confirmation: `HELD→BOOKED` compare-and-set is a single indexed update.
+- WebSocket fanout: per-show topic; edge servers maintain subscriber lists; deltas coalesced.
+
+### Security Considerations
+
+- **Anti-bot at onsale**: device fingerprinting, identity verification tiers (verified-fan presales), purchase limits per identity/payment instrument, known-reseller-network detection.
+- **Ticket integrity**: Ed25519-signed QR codes with per-ticket nonces; rotating QR secrets defeat screenshot resale; scanner apps sync revocation lists near-real-time.
+- **Payment security**: webhook signature verification, idempotent processing, PSP tokenization to avoid handling card data directly.
+- **Seat theft**: holds are session-scoped (only the holder can confirm); stolen session tokens are mitigated by short hold TTLs and re-authentication gates for high-value seats.
+
+### Maintainability Considerations
+
+- **Schema evolution**: venue-map schema (new seat types, accessible seating, obstructed-view flags) evolves via versioned seat layouts; backward-compatible changes only.
+- **Seat ledger immutability**: append-only transition log makes dispute resolution and postmortems trivial; no in-place mutations of historical state.
+- **Observable holds**: every release logged with reason (expiry/failure/user); sweep-lag alerts and contention histograms guide capacity planning.
+- **Onsale rehearsals**: load-tests with realistic seat-pick patterns (adjacent groups dominate); pre-scale per event-calendar capacity plans.
+
 ## High-Level Design
 
 Booking sequence with compensation path:
@@ -296,6 +416,120 @@ Scaling strategy: booking partitions scaled per forecast (mega-events get dedica
 - **Observability**: funnel metrics (admitted→seated→held→paid), per-event hold-contention histograms, sweep-lag alerts, PSP latency burn rates; replay tooling to reconstruct any booking decision after the fact.
 
 ---
+
+## API Contract
+
+### Discovery & Catalog API
+
+```
+GET  /api/v1/events?city=Bangalore&date=2024-02-14&genre=classical
+GET  /api/v1/events/{eventId}
+GET  /api/v1/shows/{showId}/seats          # full seat map
+GET  /api/v1/shows/{showId}/availability    # section-level heatmap (cached)
+```
+
+**Event search response**:
+
+```json
+{
+  "results": [
+    {
+      "eventId": "e-9f3a",
+      "title": "Symphony Orchestra",
+      "venue": "Town Hall",
+      "startsAt": "2024-02-14T19:00:00+05:30",
+      "priceRange": { "min": 499, "max": 2999, "currency": "INR" },
+      "available": 120,
+      "total": 800,
+      "imageUrl": "https://cdn.example.com/events/e-9f3a.webp"
+    }
+  ],
+  "page": 1, "size": 20, "totalResults": 34
+}
+```
+
+### Seat Selection & Hold API
+
+```
+POST   /api/v1/shows/{showId}/holds
+DELETE /api/v1/shows/{showId}/holds/{holdId}
+POST   /api/v1/shows/{showId}/holds/{holdId}/confirm
+```
+
+**Hold request** (atomic multi-seat):
+
+```http
+POST /api/v1/shows/s-123/shows/holds
+Authorization: Bearer <jwt>
+
+{
+  "seatIds": ["J12", "J13", "J14"],
+  "holdDurationMinutes": 10
+}
+```
+
+**Hold response** (HTTP 201):
+
+```json
+{
+  "holdId": "hl-abc123",
+  "seats": ["J12", "J13", "J14"],
+  "expiresAt": "2024-02-14T10:05:00+05:30",
+  "totalAmount": { "amount": 12000, "currency": "INR" }
+}
+```
+
+### Checkout API
+
+```
+POST /api/v1/checkout
+Idempotency-Key: 97b8c302-...
+Authorization: Bearer <jwt>
+
+{
+  "holdId": "hl-abc123",
+  "paymentMethod": { "type": "upi", "vpa": "user@upi" },
+  "customer": { "name": "Jane Doe", "email": "jane@example.com", "phone": "+919876543210" }
+}
+```
+
+**Checkout response** (HTTP 202 — async completion):
+
+```json
+{
+  "orderId": "ord-7d2f9c",
+  "status": "PAYMENT_PENDING",
+  "amount": 12000,
+  "paymentLink": "https://pay.example.com/checkout/cp_9f3a"
+}
+```
+
+Client polls `GET /api/v1/orders/{orderId}` or receives a WebSocket update when payment completes.
+
+### Ticket API
+
+```
+GET  /api/v1/tickets/{ticketId}/qr        # signed, rotating QR
+GET  /api/v1/orders/{orderId}/tickets
+POST /api/v1/tickets/{ticketId}/transfer   # secondary market transfer
+```
+
+### Status Codes
+
+* `200/201` — success
+* `202` — checkout accepted, awaiting payment
+* `409` — seat conflict (seat taken / already held by another session)
+* `410` — hold expired, must re-hold
+* `409` — idempotency-key collision returns existing order
+* `429` — waiting room admission throttling
+* `402` — payment required (on failure paths)
+
+### Key Contracts
+
+- **Idempotency**: every mutating write (`POST /holds`, `POST /checkout`) accepts an `Idempotency-Key`; retries collapse to the same result.
+- **Seat conflict resolution**: if two concurrent hold requests target the same seat, the Lua atomic check ensures only one succeeds (`409 Conflict` for the loser).
+- **Webhook verification**: payment callbacks include `X-Signature` (HMAC-SHA256 of body with PSP secret); processed idempotently by `pspRef`.
+- **Rate limiting**: waiting-room tokens + per-user action quotas; headers return `Retry-After` and queue position.
 
 ## Data Modeling
 

@@ -8,6 +8,22 @@
 
 ## Theory
 
+### What Is It?
+
+A **distributed configuration management system** is a centralized, highly available store for runtime configuration of a fleet of service instances. It lets administrators change system behavior (timeouts, feature flags, thresholds, connection strings) without redeploying binaries, and propagates those changes to thousands of running instances within seconds.
+
+### Why Does It Exist?
+
+In monolithic or static-config deployments, every configuration change requires a code change, CI/CD pipeline run, and binary redeploy — a process taking minutes to hours. For incident response (tightening a timeout to stop a cascading failure) or experimentation (tweaking a rate limit), this latency is unacceptable. Dynamic config decouples operational tuning from release cadence, enabling instant response to production issues and gradual rollouts without service restarts.
+
+### What Problem Does It Solve?
+
+* **Slow operational feedback loop**: incidents that need config changes (kill switches, timeouts) suffer minutes-to-hours delay with redeploy cycles. Dynamic config delivers changes in seconds.
+* **Inconsistent runtime state across instances**: without a central config, individual deployments drift (snowflake servers). A distributed config system enforces fleet-wide consistency of behavior.
+* **Configuration as a fleet-wide weapon**: a single bad value can instantly propagate to thousands of instances, causing widespread outages. The system must provide staging, validation, rollback, and staged rollout to make this safe.
+* **Availability coupling**: if services depend on the config store being available on every request, the store becomes a single point of failure. Local caching with last-known-good snapshots decouples runtime behavior from store availability.
+* **Audit and compliance**: who changed what, when, and why? Config changes are first-class incident-investigation events — the system must retain an immutable audit trail.
+
 ### Important Subtopics
 
 1. Configuration taxonomy: static vs dynamic, bootstrap vs runtime config
@@ -232,9 +248,182 @@ Decision inputs: scale of instance count × change frequency, availability toler
 
 ---
 
-## High-Level Design
+## Architecture
 
-Change lifecycle end-to-end:
+### Architectural Style
+
+**Control-plane / data-plane split with consensus-backed source of truth**: the control plane (admin console + config API) writes changes through a Raft-backed consensus store (etcd/Consul), establishing a single, linearizable revision history. The data plane (client SDKs running in each service instance) holds local in-memory caches and receives updates via watch streams — reads never leave the process. This split exists because reads must be microsecond-latency at the call site, while writes are rare but must be strictly consistent and auditable.
+
+**Layered configuration model**: keys resolve through an overlay stack (global → region → environment → service → instance), most-specific wins. This is implemented mechanically in the data model (overrides keyed by specificity) and enforced by the resolution engine.
+
+```mermaid
+flowchart TB
+    DEV[Developer / CI] --> ADMIN[Admin Console]
+    ADMIN --> API[Config API]
+    API -->|schema validation| SCHEMA[Schema Registry]
+    API -->|CAS write| STORE[(Raft Store - etcd)]
+    STORE -->|revision events| WATCH[Watch Layer]
+    WATCH -->|gRPC streams| SDK1[SDK - svc A]
+    WATCH -->|gRPC streams| SDK2[SDK - svc B]
+    SDK1 --> SNAP[(disk last-known-good)]
+    SDK1 --> APP1[App reads local cache]
+    SDK2 --> SNAP2[(disk last-known-good)]
+    SDK2 --> APP2[App reads local cache]
+    MON[Metrics / staleness alerts] -.from SDKs.-> GRAF[Observability]
+```
+
+*Diagram: Distributed config architecture. The control plane (admin console + API + schema registry) writes through a Raft-backed store. The watch layer fans out revision events to client SDKs via streaming gRPC. Each SDK maintains a local cache (microsecond reads) and persists last-known-good snapshots to disk. Metrics flow independently for observability.*
+
+### Component Responsibilities and Communication
+
+| Component | Responsibility | Communication |
+|---|---|---|
+| Admin Console | UI for config edits, diff views, approvals, rollback, canary staging | Human-facing; calls Config API |
+| Config API | Write endpoint (CRUD + CAS-on-revision), activation workflow | Writes to Raft store; queries schema registry |
+| Schema Registry | Typed validators per namespace; evolution rules | Called by Config API at write time |
+| Raft Store | Linearizable key-value with MVCC revisions; watch event emission | Quorums (3–5 nodes); emits revision stream |
+| Watch Layer | Stream revision events to subscribed SDKs | Reads from store's event log; gRPC/HTTP2 streams |
+| Client SDK | Local cache + watch + reconciliation + disk persistence | Connects to watch layer; serves app reads locally |
+| Metrics/Observability | Staleness-age, propagation latency, validation rejections | Pushed from SDKs; consumed by alerting |
+
+**Data flow**: admin edits key → console validates → API CAS-writes to Raft store (new revision) → watch layer streams revision event → SDKs apply update to local cache + persist disk snapshot → applications read from local cache (microseconds).
+
+**Scaling strategy**: store is tiny-but-quorum-solid (data volume trivial, availability paramount); watch layer scales horizontally (stateless, each client connects to any node, nodes subscribe to store feed); SDKs carry the real read load entirely offline.
+
+**Failure handling**: store loss → SDKs continue on cached values + disk snapshots, alarm on staleness age; watch-stream death undetected by transport → periodic reconciliation poll catches divergence.
+
+## Design
+
+### Design Considerations
+
+The fundamental design tension: **config changes are rare and high-stakes, but config reads are frequent and must be fast.** This asymmetry means the write path optimizes for safety (consensus, validation, staging) while the read path optimizes for speed (local cache, zero network on hot path). The design must also ensure that config-store outages do not cascade to service outages (last-known-good caching) and that propagation failures are detectable (reconciliation backstop).
+
+### Key Decisions
+
+- **Consensus-backed store (Raft) for writes**: guarantees a single, linearizable revision history; prevents split-brain config where two nodes each believe they hold the latest, conflicting value.
+- **Local SDK cache with watch + periodic reconciliation**: streams deliver near-real-time updates; periodic polls (every 60 s) guarantee correctness if a stream silently dies. Never trust the transport alone.
+- **Immutable revision log**: each write appends revision N; "current" is a pointer. Enables audit trail, trivial rollback, and time-travel debugging.
+- **Staged rollout with auto-halt**: config publishes proceed cohort-by-cohort; health monitors compare error rates pre/post; regression auto-freezes rollout.
+- **CAS-on-revision writes**: concurrent admin edits don't silently clobber each other — the proposal carries the expected base revision; mismatch rejects.
+
+### Trade-offs
+
+| Decision | Pro | Con |
+|---|---|---|
+| Raft consensus store | Linearizable writes, no split-brain | Operational burden (quorum care, backups, upgrades); overkill for tiny data volumes |
+| Local SDK caching | µs reads; store outage tolerated | Staleness windows; SDK quality is critical |
+| Immutable revisions | Free audit/rollback/time-travel | Compaction policy needed |
+| Staged rollout | Bad-config blast radius minimized | Process overhead; emergency fixes need fast-track approvals |
+| Watch + reconcile | Stream timeliness + poll correctness | Stream failure still needs detection via reconciliation |
+
+### Scalability Considerations
+
+- **Write path**: consensus stores handle modest write volumes (dozens/day) easily; the bottleneck is not throughput but quorum coordination and careful upgrades.
+- **Watch fan-out**: 20K instances × 5 watched namespaces = 100K streams, manageable across a ~10-node watch tier; batch/coalesce events per stream window to reduce per-event overhead.
+- **SDK local cache**: read load entirely offline from the store — no scaling concern on the read path.
+- **Multi-region**: per-region Raft clusters with async global replication; clients connect region-locally; cross-region convergence monitored via revision-lag metrics.
+
+### Reliability Considerations
+
+- **Store outage**: SDKs continue on cached values + disk snapshots (stale-but-working beats dead); alerts fire on staleness age exceeding threshold.
+- **Watch-stream death**: silent stream failures caught by periodic reconciliation polls — the correctness backstop.
+- **Thundering herd on store recovery**: jittered reconnection pacing in SDKs prevents synchronized stampedes.
+- **Disk-full on small Raft clusters**: a notorious failure mode — compaction discipline and alerting on disk usage is critical.
+
+### Performance Considerations
+
+- **Read path**: in-memory cache lookup = microseconds, zero network. The store is never on the request hot path.
+- **Write path**: consensus quorum round-trips (ms-scale) — acceptable since config changes are rare.
+- **Propagation**: targeted at seconds (p50/p99) from write to fleet-wide application; cross-region adds RTT but regional watch tiers mitigate.
+- **Startup stampedes**: autoscale events triggering many simultaneous full-fetches — cache warm reads behind CDN-like tiers or fetch-throttling in SDKs.
+
+### Security Considerations
+
+- **Writer authentication rigor**: compromised CI pipeline = fleet-wide compromise via config. SSO or strict service-identity required for writes.
+- **Namespace ACLs**: least-privilege per team/service; cross-environment leaks are classic severe incidents (prod pointing at staging DBs).
+- **Secrets segregation**: never store secrets in ordinary KV — separate Vault/KMS-backed systems with different access logs.
+- **Audit trail**: immutable record of every change (who, what, when, why) — compliance requirement.
+
+### Maintainability Considerations
+
+- **Schema evolution**: typed validators with evolution rules (widening ranges OK, narrowing flagged); deprecation of old key paths tracked via usage metrics.
+- **Config versioning**: every change versioned; rollback tested under real conditions.
+- **Operational UX**: approval workflows must not be so heavy that emergency fixes bypass process; runbooks for store restore + fleet convergence verification.
+
+## API Contract
+
+### Config API Endpoints
+
+```
+GET  /api/v1/config/{ns}/{key}            # current value + revision
+PUT  /api/v1/config/{ns}/{key}            # CAS write (with If-Match: revision)
+GET  /api/v1/config/{ns}                   # list all keys in namespace
+POST /api/v1/config/{ns}/{key}/activate    # promote pending → canary → full
+POST /api/v1/config/{ns}/{key}/rollback     # revert to a previous revision
+GET  /api/v1/config/history/{ns}/{key}     # revision history
+```
+
+### Write Request (CAS)
+
+```http
+PUT /api/v1/config/payments/timeoutMs
+If-Match: 42
+Authorization: Bearer <sso-token>
+Content-Type: application/json
+
+{
+  "value": "1500",
+  "comment": "Reduce timeout during downstream provider slowdown",
+  "canaryPercentage": 1
+}
+```
+
+**Response** (HTTP 200):
+
+```json
+{
+  "revision": 43,
+  "status": "PENDING",
+  "appliedToCanary": false
+}
+```
+
+On revision mismatch, returns `412 Precondition Failed` with the current revision and value for rebase.
+
+### Watch API (streaming)
+
+```http
+GET /api/v1/config/watch?prefix=payments.&fromRevision=42
+Accept: text/stream  (or gRPC stream)
+```
+
+Streams JSON-lines of events:
+
+```json
+{"revision": 43, "ns": "payments", "key": "timeoutMs", "value": "1500", "action": "UPDATE"}
+{"revision": 44, "ns": "payments", "key": "maxRetries", "value": "5", "action": "UPDATE"}
+```
+
+### Status Codes
+
+* `200` — successful read/write
+* `201` — new revision created
+* `400` — invalid request body or schema violation
+* `401` — unauthenticated
+* `403` — authenticated but not authorized for namespace
+* `409` / `412` — CAS conflict (revision mismatch); returns current revision
+* `429` — rate limited (writes are rare; reads rate-limited per-instance)
+* `503` — store unavailable; SDKs fall back to local cache
+
+### Key Contracts
+
+- **Idempotency**: PUT with the same `(ns, key, value, expectedRevision)` is idempotent — retries return the same revision.
+- **CAS correctness**: the `If-Match` revision header prevents lost updates between concurrent writers.
+- **Versioning**: every write increments the global revision counter; clients report their applied revision in health/metrics endpoints.
+- **Watch resumption**: clients resume from their last observed revision, guaranteeing no missed events.
+- **Validation**: schema validators (JSON Schema, typed ranges) run before write persistence — rejects bad config before fleet propagation.
+
+## High-Level Design
 
 ```mermaid
 sequenceDiagram

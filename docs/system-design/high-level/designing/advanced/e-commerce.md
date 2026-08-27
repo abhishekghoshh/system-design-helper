@@ -12,7 +12,24 @@
 
 ## Theory
 
+### What Is It?
+
 An e-commerce system is the general form of the marketplace problem: catalog discovery, cart management, checkout, payments, order lifecycle, and fulfillment composed into one customer journey. Where the Amazon/Flipkart topic emphasizes planetary scale, this topic covers the **canonical architecture** — the design you'd build for a serious mid-to-large retailer — with fault tolerance as the organizing requirement: every subsystem must fail without taking revenue down.
+
+### Why Does It Exist?
+
+E-commerce systems exist to digitize commerce — replacing physical stores and manual order processing with software that can operate 24/7, at global scale, with rich personalization and analytics. Unlike traditional retail, e-commerce can instrument every interaction (browse, click, purchase, return), enabling data-driven optimization of catalog placement, pricing, and user experience. The system must also handle the full customer journey end-to-end: discovery → cart → payment → fulfillment → returns — each stage potentially handled by a different service team.
+
+### What Problem Does It Solve?
+
+* **Catalog scale**: millions of products with variants, SKUs, categories, and dynamic pricing — all searchable and browsable without overwhelming the user.
+* **Cart session management**: a user may add items across sessions and devices; the cart must persist and survive service failures.
+* **Checkout reliability**: the highest-stakes moment — a failure here means lost revenue. PSP calls, inventory checks, tax calculation, and address validation must all succeed or fail gracefully.
+* **Payment orchestration**: integrating multiple payment providers (credit cards, digital wallets, bank transfers), handling retries, refunds, and chargebacks.
+* **Inventory synchronization**: stock levels change in real time; the system must prevent overselling (selling more than available) under concurrent load.
+* **Order lifecycle**: tracking from placement through payment, picking, packing, shipping, delivery, and returns — each step potentially handled by different teams/systems.
+* **Fulfillment integration**: connecting to warehouses (WMS), shipping carriers (FedEx, UPS), and last-mile delivery providers.
+• **Fault isolation**: a failure in the recommendation service must not break checkout.
 
 ### Important Subtopics
 
@@ -223,6 +240,108 @@ Decision factors: expected GMV trajectory, team size/composition, uniqueness of 
 
 ---
 
+## Architecture
+
+An e-commerce platform follows a **microservice architecture** decomposed along business domains. Each service owns its data and exposes APIs; an API gateway routes external requests; an internal service mesh handles inter-service communication (mTLS, retries, circuit breaking). Key services include: Catalog (products, variants, pricing), Cart (session-based), Checkout (orchestrates payment + inventory), Payment (PSP integration), Order (lifecycle state machine), Inventory (stock levels), Fulfillment (picking, packing, shipping), Search (product discovery), and Recommendation.
+
+```mermaid
+graph TD
+  Client --> Gateway[API Gateway]
+  Gateway --> Catalog[Catalog Service]
+  Gateway --> Cart[Cart Service]
+  Gateway --> Checkout[Checkout Service]
+  Checkout --> Payment[Payment Service]
+  Checkout --> Inventory[Inventory Service]
+  Checkout --> Order[Order Service]
+  Checkout --> Fulfillment[Fulfillment Service]
+  Gateway --> Search[Search Service]
+  Gateway --> Recommend[Recommendation Service]
+  Catalog --> DB_Catalog[(Catalog DB)]
+  Cart --> DB_Cart[(Cart DB)]
+  Payment --> DB_Payment[(Payment DB)]
+  Order --> DB_Order[(Order DB)]
+  Inventory --> DB_Inventory[(Inventory DB)]
+  Fulfillment --> DB_Fulfillment[(Fulfillment DB)]
+```
+
+| Component | Purpose | Responsibilities | Real-world Example |
+|---|---|---|---|
+| API Gateway | Entry point | Routing, TLS, auth, rate limiting | AWS ALB, Kong |
+| Catalog Service | Product data | CRUD products, variants, categories, pricing | Shopify Products API |
+| Cart Service | Cart state | Add/remove items, persist across sessions | Redis + service |
+| Checkout Service | Orchestrate checkout | Validate cart, reserve stock, charge, create order | Custom orchestration |
+| Payment Service | PSP integration | Tokenize cards, charge, refund, handle webhooks | Stripe, Adyen |
+| Order Service | Order lifecycle | State machine (created→paid→shipped→delivered→returned) | Event-sourced state |
+| Inventory Service | Stock management | Track stock levels, prevent overselling | DB with reservations |
+| Fulfillment Service | Shipping | Create shipments, track carriers | FedEx/UPS API |
+| Search Service | Discovery | Indexing, querying, ranking | Elasticsearch, Solr |
+| Recommendation | Personalization | ML models, collaborative filtering | Amazon Personalize |
+
+**Communication**: Synchronous REST/gRPC between services; asynchronous events via message queue for eventual consistency (order created → inventory decrement → shipment creation). Database-per-service pattern: each service has its own schema, no shared DB.
+
+**Scaling**: Each service scales independently. Catalog is read-heavy (CDN caching); Cart is session-heavy (Redis); Checkout is critical-path (low-latency, autoscaling). Hot data (product prices, stock) cached in Redis with pub/sub invalidation.
+
+**Failure handling**: Circuit breakers on inter-service calls; fallback content for recommendations; dead-letter queues for failed events; retry with exponential backoff for PSP calls. The "bulkhead" pattern isolates failures — a recommendation engine outage must not affect checkout.
+
+## Design
+
+### Design Considerations
+
+* **Service decomposition**: split by business capability (not technical layer). Keep payment, inventory, and order as separate services — they have different scaling and reliability characteristics.
+* **Data consistency**: choose between strong (single DB transaction) and eventual (eventual consistency via events). Checkout requires strong consistency for payment+inventory; catalog updates can be eventually consistent.
+* **Database per service**: each service owns its database. Cross-service queries use APIs or event-driven denormalization, never shared DB joins.
+* **Fault isolation**: the checkout flow must not depend on non-critical services (recommendations, reviews). Use timeouts and circuit breakers aggressively.
+
+### Key Decisions
+
+| Decision | Options | Trade-off | Recommendation |
+|---|---|---|---|
+| Cart storage | Session DB | Persistent, survives crashes | Production |
+| | Redis | Fast, volatile | Cache layer |
+| | Client-side | Stateless server | Low scale |
+| Inventory | Strong consistency | Accurate, contention | High-value items |
+| | Eventual + reservation | Scalable, over-sell risk | General catalog |
+| Payment model | Synchronous | Simple, blocking | Low volume |
+| | Async + webhook | Resilient, complex | Production |
+| Search | Elasticsearch | Full-text, faceted | Standard |
+| | Solr | Mature, scalable | Alternative |
+| Event flow | Event-driven choreography | Decentralized | Simple flows |
+| | Orchestration | Centralized control | Complex sagas |
+
+### Scalability Considerations
+
+* **Read scaling**: CDN for static assets; catalog/search read from read replicas; cart from Redis.
+* **Write scaling**: inventory updates via reservation pattern (reserve-then-confirm) to distribute lock contention.
+* **Checkout autoscaling**: checkout is the critical path — scale preemptively based on traffic forecasts; keep warm pool to handle sudden spikes.
+* **Catalog sharding**: shard by product category or merchant ID; use global secondary indexes for cross-category queries.
+
+### Reliability Considerations
+
+* **Idempotency**: all mutating API calls accept an idempotent-request-id header, enabling safe retries without duplicate writes.
+* **Circuit breakers**: per-service circuit breakers with configurable failure thresholds; open state returns degraded but functional responses.
+* **Dead letter queues**: failed asynchronous events (order → inventory) go to DLQ for manual inspection; alert on DLQ growth.
+* **Graceful degradation**: if the recommendation service is down, show popular items; if search is down, fall back to category browsing.
+
+### Performance Considerations
+
+* **Latency budgets**: catalog browse ≤ 100 ms, search ≤ 50 ms, checkout ≤ 500 ms (including PSP call).
+* **Caching**: product details, pricing, and stock cached in Redis with TTL; invalidate on update via pub/sub.
+* **Database optimization**: connection pooling, read replicas, async materialized views for analytics.
+* **Connection pooling**: reuse HTTP/gRPC connections to downstream services to avoid connection overhead.
+
+### Security Considerations
+
+* **PCI-DSS compliance**: card data is never stored — only tokens from the PSP.
+* **Input validation**: validate all user input; sanitize for XSS in product descriptions.
+* **Rate limiting**: per-client rate limiting at the gateway; DDoS protection.
+* **Data encryption**: TLS in transit; PII encrypted at rest; database field-level encryption for sensitive data.
+
+### Maintainability Considerations
+
+* **Observability**: distributed tracing across services; metrics per endpoint (RED); centralized logging with correlation IDs.
+* **Deployment**: independent CI/CD per service; blue-green or canary deployments for checkout/payment.
+* **Testing**: contract tests between services (Pact); integration tests for the full checkout flow; chaos engineering for failure simulation.
+
 ## High-Level Design
 
 Checkout flow with compensation:
@@ -274,6 +393,100 @@ Failure handling: any step failure triggers defined compensation; ambiguous paym
 - **Observability**: business-funnel metrics as first-class alerts (conversion drops precede infra alerts!), synthetic purchase journeys per region hourly, per-step checkout latency attribution, inventory-drift reconciliations continuous.
 
 ---
+
+## API Contract
+
+The e-commerce platform exposes a REST/HTTP API for the customer journey, with separate admin and public endpoints.
+
+### Public Client API
+
+| Method | Endpoint | Purpose | Rate Limit |
+|---|---|---|---|
+| GET | `/api/v1/categories` | List categories | 1000 req/min |
+| GET | `/api/v1/categories/{id}/products` | Browse products in category | 500 req/min |
+| GET | `/api/v1/products/{id}` | Product detail | 1000 req/min |
+| GET | `/api/v1/search` | Search products | 200 req/min |
+| GET | `/api/v1/cart` | Get cart | 100 req/min |
+| POST | `/api/v1/cart/items` | Add to cart | 100 req/min |
+| POST | `/api/v1/checkout/sessions` | Start checkout | 30 req/min |
+| POST | `/api/v1/checkout/sessions/{id}/pay` | Submit payment | 10 req/min |
+| GET | `/api/v1/orders/{id}` | Order status | 200 req/min |
+| GET | `/api/v1/tracking/{id}` | Shipment tracking | 200 req/min |
+
+### Admin API
+
+| Method | Endpoint | Purpose | Auth Scope |
+|---|---|---|---|
+| POST | `/admin/api/v1/products` | Create product | `products:write` |
+| PATCH | `/admin/api/v1/products/{id}` | Update product | `products:write` |
+| POST | `/admin/api/v1/inventory/{sku}/reserve` | Reserve stock | `inventory:write` |
+| DELETE | `/admin/api/v1/inventory/{sku}/reserve` | Release stock | `inventory:write` |
+| GET | `/admin/api/v1/orders` | List orders (filtered) | `orders:read` |
+
+### Request Example — Create Checkout Session
+
+```http
+POST /api/v1/checkout/sessions
+Content-Type: application/json
+Authorization: Bearer <jwt>
+Idempotency-Key: <uuid>
+
+{
+  "cart_id": "cart_abc123",
+  "payment_method": {
+    "type": "card",
+    "token": "tok_xyz789"
+  },
+  "shipping_address": {
+    "line1": "123 Main St",
+    "city": "San Francisco",
+    "state": "CA",
+    "zip": "94102",
+    "country": "US"
+  },
+  "return_url": "https://shop.example.com/checkout/complete"
+}
+```
+
+### Response Example — Checkout Session Created
+
+```json
+HTTP/1.1 201 Created
+Content-Type: application/json
+{
+  "session_id": "cs_987xyz",
+  "status": "PENDING_PAYMENT",
+  "amount": 129.99,
+  "currency": "USD",
+  "expires_at": "2024-06-14T11:00:00Z"
+}
+```
+
+### Status Codes
+
+| Code | Meaning |
+|---|---|
+| 200 | Success |
+| 201 | Resource created |
+| 400 | Invalid request (validation error) |
+| 401 | Authentication required |
+| 403 | Insufficient permissions |
+| 404 | Resource not found |
+| 409 | Conflict (cart checkout in progress) |
+| 429 | Rate limited |
+| 503 | Service unavailable |
+
+### Idempotency
+
+* All `POST` mutating endpoints accept an `Idempotency-Key` header. Re-submitting with the same key returns the original response, enabling safe retries.
+
+### Filtering & Pagination
+
+* List endpoints (`GET /admin/api/v1/orders`) support `?limit=50&offset=100&status=shipped&date_from=2024-01-01`.
+
+### Versioning
+
+* API versioning via URL prefix (`/api/v1/`, `/api/v2/`).
 
 ## Data Modeling
 

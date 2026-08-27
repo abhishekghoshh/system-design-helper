@@ -12,7 +12,22 @@
 
 ## Theory
 
+### What Is It?
+
 A distributed message queue (or log) decouples producers from consumers: senders append messages and move on; receivers process at their own pace, in their own failure domain. Kafka generalizes this into a **persistent, partitioned, replayable log**; RabbitMQ represents the classic **broker-routed queue** with rich delivery semantics. The design space is dominated by three axes: *delivery guarantees* (at-most/at-least/exactly-once), *ordering scope* (per-partition vs per-queue), and *retention* (delete-after-consume vs time-based replayable log).
+
+### Why Does It Exist?
+
+Synchronous request-response coupling creates brittle systems: if a service is slow or down, its callers back up and cascade failures. A message queue introduces an asynchronous buffer — producers write into a durable log and continue immediately; consumers pick up work when ready and retry on failure. This enables load smoothing, decoupling of failure domains, and replayable event streams that power real-time analytics, audit trails, and event-driven microservices.
+
+### What Problem Does It Solve?
+
+* **Temporal decoupling**: producers and consumers run at different speeds; the queue absorbs bursts and allows consumers to catch up.
+* **Failure isolation**: if a consumer is down, messages persist until it recovers; the producer is unaffected.
+* **Delivery guarantees**: at-least-once (retries), at-most-once (no retries), exactly-once (idempotent producers + transactional writes) — each with latency and complexity trade-offs.
+* **Ordering**: per-partition or per-key ordering ensures consistency for related events (e.g., all events for user X processed in order).
+* **Scalability**: partitioned topics spread load across broker nodes; consumer groups allow parallel consumption within a partition limit.
+* **Replayability**: persistent logs let consumers re-read history for recovery, backfills, or new downstream systems.
 
 ### Important Subtopics
 
@@ -243,7 +258,96 @@ Decision inputs: throughput targets, subscriber multiplicity evolution, replay v
 - **Payment processing work distribution**
   *Problem*: PSP calls are slow/flaky; bursts at sales events. *Solution*: payment-request queue (SQS/RabbitMQ) with visibility timeouts matched to PSP latencies, bounded-retry DLQ topology, priority lanes separating card-present from batch settlements. *Trade-off*: push-broker chosen over log because per-message ack/priority semantics fit better than replay.
 
----
+## Architecture
+
+A distributed message queue follows a **broker-cluster** architecture — producers write messages to a cluster of broker nodes, and consumers read from those brokers. Kafka is a **partitioned-log** broker: each topic is split into N partitions, each an immutable, append-only log replicated across in-sync replicas (ISR). RabbitMQ is a **broker-routed** queue: messages arrive at an exchange, get routed to queues via bindings, and are delivered (and acknowledged) by consumers.
+
+```mermaid
+graph LR
+  subgraph "Producers"
+    P1[App Service]
+    P2[Web Frontend]
+  end
+  subgraph "Message Brokers"
+    B1[Broker 1]
+    B2[Broker 2]
+    B3[Broker 3]
+  end
+  subgraph "Consumers"
+    C1[Worker A]
+    C2[Worker B]
+  end
+  P1 -- produce --> B1
+  P2 -- produce --> B2
+  B1 -- topic-partition --> C1
+  B2 -- topic-partition --> C2
+  B1 -- replication --> B2
+  B2 -- replication --> B3
+```
+
+| Component | Purpose | Responsibilities | Real-world Example |
+|---|---|---|---|
+| Producer | Emit messages | Serialize, attach schema, retry on transient errors | Kafka producer clients |
+| Broker | Store and route messages | Accept writes, serve reads, replicate to followers, manage ISR | Kafka broker, RabbitMQ node |
+| Partition | Sharding unit | Provide ordering within key, enable parallelism | Kafka topic-partition |
+| Consumer Group | Scale-out unit | Each consumer reads exclusive partitions | Kafka consumer groups |
+| Coordinator | Group management | Assign partitions, track offsets, handle rebalances | Kafka group coordinator |
+| Offset Store | Tracking position | Persist last-consumed offset per group+partition | Kafka `__consumer_offsets` topic |
+| Schema Registry | Schema evolution | Enforce compatibility, serve schemas | Confluent Schema Registry |
+
+**Communication**: Producers connect to any broker (leader for that partition); the coordinator manages consumer group membership and rebalance. Inter-broker replication uses a leader-follower sync protocol (ISR shrinks on timeout).
+
+**Scaling**: Add brokers to increase storage/throughput; add partitions for parallelism; add consumer group members to parallelize.
+
+**Failure handling**: When a broker dies, its partitions fail over to an ISR replica; if no ISR replica exists, data is lost (availability chosen over consistency, configurable). Consumer rebalances on member failure.
+
+## Design
+
+### Design Considerations
+
+* **Delivery semantics vs. latency**: exactly-once requires idempotent producers + transactional writes (extra round-trips); at-least-once is simpler but risks duplicates; at-most-once is fastest but risks data loss.
+* **Partition count**: more partitions = more parallelism but higher memory overhead (each broker caches more partition state), more file handles, longer recovery times. Partitions ≥ max consumers in any group.
+* **Replication factor**: 3 is standard (tolerates one broker failure); 5 for critical topics (tolerates two failures).
+* **Retention policy**: time-based (e.g., 7 days) for logs, size-based capping, or compaction for changelog topics.
+
+### Key Decisions
+
+| Decision | Options | Trade-off | Recommendation |
+|---|---|---|---|
+| Broker engine | Kafka (log) | Ordered, replayable | High-throughput streams |
+| | RabbitMQ (queue) | Rich routing, ack | RPC-style decoupling |
+| Replication | RF=3 | Tolerates 1 failure | Standard |
+| | RF=5 | Tolerates 2 failures | Critical topics |
+| Consumer model | Consumer groups | Per-partition balance | Most use cases |
+| | Queue-per-consumer | Point-to-point | Competing consumers |
+
+### Scalability Considerations
+
+* **Horizontal**: Add broker nodes (scale storage + throughput); add partitions (scale parallelism); add consumer group members (scale processing).
+* **Vertical**: Larger brokers (more CPU, faster SSD) improve single-partition throughput.
+
+### Reliability Considerations
+
+* `min.insync.replicas` prevents data loss from ack=1 when RF ≥ 2.
+* Unclean leader election (off by default) prevents out-of-sync replicas from becoming leader, sacrificing availability for consistency.
+* Consumer offset commits must be idempotent or transactional.
+
+### Performance Considerations
+
+* Producer batching (linger.ms, batch.size) amortizes network round-trips.
+* Consumer fetch.min_bytes + fetch.max.wait balances latency vs. throughput.
+* Compression (snappy, lz4, zstd) reduces network and storage at CPU cost.
+
+### Security Considerations
+
+* TLS encryption in transit (producer↔broker, broker↔broker).
+* SASL/GSSAPI or OAuthBearer for authentication; ACLs for topic-level authorization.
+* Message encryption at rest if PII is stored in the log.
+
+### Maintainability Considerations
+
+* Schema evolution with compatibility rules (backward, forward, full) prevents breaking consumers.
+* Monitor partitions-per-broker balance, ISR shrink/expand events, consumer lag, rebalance frequency.
 
 ## High-Level Design
 
@@ -286,6 +390,69 @@ Failure handling: broker loss → ISR re-election (<seconds, no data loss with p
 - **Transactions internals**: producer obtains PID, bumps epochs; transaction coordinator logs markers; consumers filter uncommitted via LSO (last stable offset). Cost: added latency (~tens of ms) — reserve for pipelines genuinely needing atomic multi-partition effects.
 - **Tiered storage (modern)**: cold segments offloaded to object storage while local disk holds hot window — retention decoupled from broker disk, enabling cheap long retention; changes capacity planning math fundamentally (2023+ clusters).
 - **Observability**: bytes/sec in/out per topic, request-handler queue times, ISR shrink/expand events, rebalance frequency/duration histograms, per-group lag percentiles, end-to-end produce-to-consume latency sampled via embedded timestamps.
+
+## API Contract
+
+A distributed message queue typically exposes both a native binary protocol (Kafka's `Produce`/`Fetch` over TCP, RabbitMQ's AMQP) and an HTTP REST proxy for convenience and debugging.
+
+### Kafka REST Proxy API
+
+| Method | Endpoint | Purpose | Request Body | Response |
+|---|---|---|---|---|
+| POST | `/topics/{topic}` | Create a topic | `{ "partitions": 6, "configs": {"replication.factor": 3} }` | 201 Created |
+| POST | `/topics/{topic}/partitions` | Add partitions | `{ "count": 12 }` | 202 Accepted |
+| POST | `/topics/{topic}/records` | Produce a message | `{ "records": [{"key": "...", "value": "..."}] }` | 200 OK + offsets |
+| GET | `/topics/{topic}/records` | Consume (long-poll) | `?partition=0&offset=0&timeout=1000&max_bytes=1048576` | JSON array of records |
+| POST | `/consumers/{group}` | Create consumer | `{ "name": "my-consumer", "format": "json" }` | 200 OK + instance_id |
+| POST | `/consumers/{group}/instances/{name}/subscription` | Subscribe | `{ "topics": ["my-topic"] }` | 200 OK |
+| GET | `/consumers/{group}/instances/{name}/records` | Fetch records | `?timeout=1000&max_bytes=1048576` | JSON array |
+| POST | `/consumers/{group}/instances/{name}/offsets` | Commit offsets | `{ "offsets": [{"partition": 0, "offset": 100}] }` | 200 OK |
+| DELETE | `/consumers/{group}/instances/{name}` | Destroy consumer | — | 204 No Content |
+
+### RabbitMQ Management HTTP API
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| POST | `/api/exchanges/{vhost}/{name}` | Create exchange |
+| POST | `/api/queues/{vhost}/{name}` | Create queue |
+| POST | `/api/bindings/{vhost}/e/{exchange}/q/{queue}` | Bind queue to exchange |
+| POST | `/api/queues/{vhost}/{queue}/messages` | Publish message |
+| GET | `/api/queues/{vhost}/{queue}/messages` | Get messages |
+| POST | `/api/channels/{channel}/close` | Close channel |
+| GET | `/api/overview` | Cluster statistics |
+
+### HTTP Status Codes
+
+| Code | Meaning |
+|---|---|
+| 200 | Request successful, data returned |
+| 201 | Resource created |
+| 202 | Request accepted (async operation) |
+| 204 | No content (successful delete) |
+| 400 | Bad request (invalid payload) |
+| 401 | Authentication required |
+| 403 | Forbidden (insufficient permissions) |
+| 404 | Topic/consumer not found |
+| 409 | Conflict (topic already exists, concurrent modification) |
+| 429 | Rate limited |
+| 503 | Service unavailable (broker down) |
+
+### Authentication & Authorization
+
+* **Kafka**: SASL/GSSAPI or OAuthBearer for authentication; ACLs (Simple ACL Provider) control `READ`/`WRITE`/`DESCRIBE` on topics per principal.
+* **RabbitMQ**: Username/password (SASL) or OAuth; RBAC controls vhost/exchange/queue permissions.
+* **REST Proxy**: API key authentication, passed as `Authorization: Bearer <token>` header.
+
+### Idempotency & Durability
+
+* Producer `acks=0` (no ack), `acks=1` (leader ack), `acks=all` (ISR ack) — tradeoff between latency and durability.
+* Idempotent producer (`enable.idempotence=true`) prevents duplicates on retry without requiring exactly-once.
+* Transactional writes (`transactional.id`) provide exactly-once semantics across multiple partitions/topics.
+
+### Versioning
+
+* Kafka API versions negotiate protocol features; backward-compatible.
+* REST Proxy versioned via path (`/v1/`, `/v2/`) or `Accept` header.
 
 ---
 

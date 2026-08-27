@@ -12,7 +12,21 @@
 
 ## Theory
 
+### What Is It?
+
 Checkout is the highest-stakes flow in commerce: it converts intent into money movement and stock commitment within a few seconds while the user watches. Everything that can fail — PSPs, inventory, address validation, tax engines — sits directly on this path. The design goal is **linearizable correctness on the money/stock path wrapped in an experience that survives every dependency's bad day**, because every 100 ms of latency and every unexplained failure measurably reduces conversion.
+
+### Why Does It Exist?
+
+The checkout flow is the single point where user intent converts to revenue. Unlike browsing or cart management (where a timeout means a delayed UX), a checkout failure means a lost sale that may never come back. Checkout systems exist to make this critical path as reliable and fast as possible — orchestrating payment processors, inventory systems, tax calculators, and shipping estimators while maintaining data integrity across all of them.
+
+### What Problem Does It Solve?
+
+* **Atomicity of money + stock**: a successful charge but failed inventory reservation creates a phantom stockout that can't be fulfilled. The system must ensure both succeed or both roll back.
+* **PSP unreliability**: payment providers are slow and flaky, especially during sales events. The system must handle timeouts, retries, and ambiguous responses without double-charging.
+* **Address/tax validation**: incorrect addresses or tax calculations must be caught early, not after the user has entered payment details.
+* **Race conditions**: two concurrent checkouts for the last item must be serialized so only one succeeds.
+* **User experience under failure**: the system must gracefully degrade (offer alternative payment methods, suggest alternative shipping) rather than showing a generic error.
 
 ### Important Subtopics
 
@@ -255,6 +269,90 @@ Decision factors: GMV scale, method mix, team size, PCI appetite, differentiatio
 
 ---
 
+## Architecture
+
+The checkout system follows a **checkout orchestrator** architecture. The orchestrator coordinates a multi-step flow: cart finalization → inventory reservation → tax calculation → address validation → payment capture → order creation. Each step is handled by a dedicated service; the orchestrator manages the state machine and compensations (rollbacks) on failure. The payment service integrates with external PSPs (Stripe, Adyen) and must handle ambiguous responses (timeout before PSP confirms).
+
+```mermaid
+flowchart LR
+  A[Client Checkout] --> B[Checkout Orchestrator]
+  B --> C[Inventory Service]
+  B --> D[Tax Service]
+  B --> E[Address Validation]
+  B --> F[Payment Service]
+  B --> G[Order Service]
+  F --> H[PSP - Stripe/Adyen]
+  C --> I[(Inventory DB)]
+  F --> J[(Payment DB)]
+  G --> K[(Order DB)]
+```
+
+| Component | Purpose | Responsibilities | Real-world Example |
+|---|---|---|---|
+| Checkout Orchestrator | Drive the flow | Coordinate steps, manage state, trigger compensations | Temporal, Cadence |
+| Cart Service | Cart data | Retrieve finalized cart contents | Session store |
+| Inventory Service | Stock check | Reserve stock, release on failure | DB with row locks |
+| Tax Service | Tax calc | Calculate taxes based on address | Avalara, Vertex |
+| Address Validation | Verify inputs | Normalize, validate addresses | Google Maps API |
+| Payment Service | PSP integration | Charge cards, handle webhooks | Stripe, Adyen |
+| Order Service | Order creation | Create order record after payment | Event-sourced |
+
+**Communication**: Orchestrator → services (synchronous gRPC/REST with timeouts). Payment service ↔ PSP (async webhook for confirmation). Events published for downstream (fulfillment, analytics).
+
+**Scaling**: Orchestrator is stateless (horizontally scalable). Payment service handles PSP rate limits. Inventory service uses row-level locking or Redis locks for hot SKUs.
+
+**Failure handling**: If any step fails, orchestrator triggers compensating actions (release inventory, void payment). Idempotency on all steps prevents duplicates on retry.
+
+## Design
+
+### Design Considerations
+
+* **Atomicity of money + stock**: the critical invariant — if payment succeeds, stock must be reserved; if stock cannot be reserved, payment must be reversed. Use a two-phase approach: reserve stock → charge → confirm stock (or release if charge fails).
+* **Idempotency**: every step (reserve, charge, create order) must be idempotent — identified by a unique transaction key. Retries are safe.
+* **Payment ambiguity**: PSP calls may time out without a confirmed response. The system must reconcile via webhooks and polling before proceeding.
+* **Latency budgeting**: the entire checkout must complete in < 5 seconds. PSP calls can take 2+ seconds — parallelize non-dependent steps.
+
+### Key Decisions
+
+| Decision | Options | Trade-off | Recommendation |
+|---|---|---|---|
+| Flow model | Orchestration | Visible state machine, easy debug | Recommended |
+| | Choreography | Decentralized, harder to trace | Avoid for checkout |
+| Payment | Synchronous | Simple, blocking | Low volume |
+| | Async + compensation | Resilient, complex | Production |
+| Inventory | Pessimistic lock | Accurate, contention | Hot items |
+| | Optimistic | Scalable, retry overhead | General catalog |
+
+### Scalability Considerations
+
+* **Hot SKUs**: popular items (iPhone, PS5) have high concurrent checkout demand. Use Redis distributed locks with short TTLs to serialize.
+* **PSP rate limits**: payment providers rate-limit; queue payment requests and throttle gracefully.
+* **Parallelize steps**: tax calculation, address validation, and recommendation fetching can be done in parallel.
+
+### Reliability Considerations
+
+* **Compensating transactions**: if payment succeeds but order creation fails, issue a refund. If inventory reservation is confirmed but payment fails, release the stock.
+* **Timeout handling**: every external call has a timeout (e.g., 3s for PSP). On timeout, mark as "pending" and poll for confirmation.
+* **Idempotency keys**: all mutating operations accept an idempotency key (e.g., `checkout_session_id`) so retries are safe.
+
+### Performance Considerations
+
+* **Pre-fetching**: tax rates and address validation can be pre-fetched during cart finalization.
+* **Connection pooling**: reuse connections to PSP and payment gateway.
+* **Caching**: tax rates cached by ZIP code; shipping rates cached by destination.
+
+### Security Considerations
+
+* **PCI-DSS**: card data never touches your servers — use client-side tokenization (Stripe Elements).
+* **Fraud detection**: real-time risk scoring on transactions (velocity, geolocation, device fingerprinting).
+* **Encryption**: all PII encrypted at rest; TLS everywhere.
+
+### Maintainability Considerations
+
+* **State machine as code**: model checkout as an explicit state machine (e.g., Temporal workflow) so transitions are visible and testable.
+* **Compensation test suite**: every success path has a corresponding compensation test.
+* **PSP simulation sandbox**: test payment failures, timeouts, and ambiguous responses in CI.
+
 ## High-Level Design
 
 Full happy-path plus compensation branch:
@@ -315,6 +413,86 @@ Failure handling: orchestrator crash → another pod resumes from saga rows (lea
 - **Observability**: per-phase duration histograms, funnel-stage conversion dashboards, ambiguity-window aging alerts, compensation-rate monitors (>threshold = systemic issue), synthetic purchase probes per region/method continuously.
 
 ---
+
+## API Contract
+
+The checkout API manages the checkout session lifecycle — from cart finalization through payment confirmation and order creation.
+
+### Checkout Session API
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| POST | `/api/v1/checkout/sessions` | Create a new checkout session |
+| GET | `/api/v1/checkout/sessions/{id}` | Get session status + available actions |
+| POST | `/api/v1/checkout/sessions/{id}/payment` | Submit payment instrument |
+| POST | `/api/v1/checkout/sessions/{id}/confirm` | Confirm and finalize order |
+| POST | `/api/v1/checkout/sessions/{id}/cancel` | Cancel the session |
+| POST | `/api/v1/checkout/sessions/{id}/expire` | Expire due to timeout |
+
+**POST /api/v1/checkout/sessions — Request Body**:
+```json
+{
+  "cart_id": "cart_abc123",
+  "customer_id": "cus_xyz",
+  "return_url": "https://shop.example.com/checkout/complete",
+  "cancel_url": "https://shop.example.com/cart"
+}
+```
+
+**GET /api/v1/checkout/sessions/{id} — Response**:
+```json
+{
+  "session_id": "cs_987xyz",
+  "status": "AWAITING_PAYMENT",
+  "step": "payment",
+  "amount": { "total": 129.99, "currency": "USD", "tax": 11.23 },
+  "cart": {
+    "items": [{"name": "Widget", "quantity": 1, "price": 99.99}],
+    "shipping_options": ["standard", "express"]
+  },
+  "next_actions": ["submit_payment", "cancel"]
+}
+```
+
+### Payment API
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| POST | `/api/v1/payments/intents` | Create payment intent |
+| GET | `/api/v1/payments/intents/{id}` | Get payment status |
+| POST | `/api/v1/payments/intents/{id}/capture` | Capture authorized payment |
+
+**POST /api/v1/payments/intents** — Response:
+```json
+{
+  "intent_id": "pi_abc123",
+  "status": "REQUIRES_PAYMENT_METHOD",
+  "client_secret": "pi_abc123_secret_xyz",
+  "amount": 129.99,
+  "currency": "USD"
+}
+```
+
+### Status Codes
+
+| Code | Meaning |
+|---|---|
+| 200 | Session retrieved |
+| 201 | Session created |
+| 400 | Invalid request or session in wrong state |
+| 404 | Session not found |
+| 409 | State conflict (e.g., confirm while pending payment) |
+| 429 | Rate limited |
+| 503 | PSP unavailable |
+
+### Idempotency & Timeout
+
+* `POST /api/v1/checkout/sessions` accepts `Idempotency-Key` header for safe retries.
+* Sessions expire after 15 minutes of inactivity (`expires_at` field).
+
+### Versioning
+
+* Versioned via URL prefix (`/api/v1/`).
 
 ## Data Modeling
 

@@ -8,6 +8,22 @@
 
 ## Theory
 
+### What Is It?
+
+A distributed rate-limited API gateway sits at the edge of a service platform, enforcing per-client rate limits (requests/second, requests/minute) before requests reach backend services. It combines API gateway functionality (routing, authentication, TLS termination) with centralized rate limiting backed by a shared atomic store (Redis, consistent-hashing, or token buckets distributed across nodes).
+
+### Why Does It Exist?
+
+Without rate limiting, a misbehaving or malicious client can overwhelm backend services with traffic, causing cascading failures (the thundering herd problem). A centralized gateway enforces limits consistently across all backend instances — something per-service limits cannot do reliably when traffic is distributed. Rate limiting also enables fair resource sharing, protects paid-tier customers from abuse, and provides a first line of defense against DDoS attacks.
+
+### What Problem Does It Solve?
+
+* **Backend protection**: unbounded request rates from a single client can exhaust backend connections, memory, or CPU — rate limiting caps the blast radius.
+* **Fairness across clients**: premium customers get prioritized access; free-tier clients get rate-limited first during contention.
+* **DDoS absorption**: the gateway absorbs and sheds abusive traffic before it reaches backend services.
+* **Cost control**: protects expensive backend resources (databases, ML inference) from being overwhelmed by automated clients or scrapers.
+* **Consistent enforcement**: per-service limits are inconsistent across instances; a centralized gateway ensures uniform policy application.
+
 ### Important Subtopics
 
 1. Gateway responsibilities vs backend responsibilities (where cross-cutting concerns live)
@@ -218,7 +234,85 @@ Decision inputs: traffic geography, multi-tenancy shape, latency sensitivity, ex
 - **Internal platform consolidation**
   *Problem*: 40 teams each built ad-hoc auth/rate-limit logic, inconsistent and unauditable. *Solution*: central gateway with org-standard JWT validation + default quotas; teams opt out explicitly (audited) rather than opt in. *Trade-off*: platform team owns critical path infra — funded via clear SLA and paved-road tooling.
 
----
+## Architecture
+
+A rate-limited API gateway follows a **layered edge-proxy** architecture. Incoming requests hit an edge router (Envoy/NGINX/managed L7 LB), which terminates TLS and forwards to an **auth layer** (JWT/OAuth validation), then to the **rate-limiter**, then to the matched **backend service** (via service discovery). The rate-limiter is a **distributed counter** — a single node cannot be the bottleneck, so state is sharded across a Redis cluster using consistent hashing, with local caches for burst tolerance.
+
+```mermaid
+flowchart LR
+  Client --> EdgeRouter[Edge Router]
+  EdgeRouter --> Auth[Auth Layer]
+  Auth --> RateLimiter[Rate Limiter]
+  RateLimiter --> Redis[Redis Cluster]
+  RateLimiter --> Backend[Backend Service]
+```
+
+| Component | Purpose | Responsibilities | Real-world Example |
+|---|---|---|---|
+| Edge Router | Terminate TLS, route | Parse request, match route, terminate TLS | Envoy, NGINX, AWS ALB |
+| Auth Layer | Authenticate client | Validate JWT/OAuth, extract client identity | Keycloak, Auth0, Cognito |
+| Rate Limiter | Enforce quotas | Token bucket / counters, reject over-limit | Redis-based limiters |
+| Token Store | Shared state | Atomic counter increments across nodes | Redis cluster |
+| Service Discovery | Resolve backends | Map route to backend service(s) | Consul, Eureka, K8s DNS |
+| Circuit Breaker | Degradation | Shed load when backends unhealthy | Istio, resilience4j |
+
+**Communication**: Edge → Auth (local/remote) → Rate Limiter (Redis round-trip ~0.1–0.5 ms) → Backend. For low-latency, local token buckets with periodic sync to Redis.
+
+**Scaling**: Add edge-router pods; shard Redis by key (consistent hash ring); use local caches to reduce Redis round-trips.
+
+**Failure handling**: If Redis is down, fall back to local-only limiting (fail-open) or reject with 503 (fail-closed). Circuit breaker on backend calls.
+
+## Design
+
+### Design Considerations
+
+* **Rate limiting algorithm**: token bucket (smooths bursts) vs. fixed window (simple, boundary issues) vs. rolling log (accurate, memory-heavy). Token bucket is preferred for most gateway use cases.
+* **Key hierarchy**: limits per-API-key, per-user, per-IP, per-route, or combinations. Composite key (`client_id:route:ip`).
+* **Local vs. remote**: local counting is fast but inconsistent; centralized (Redis) is consistent but adds latency. Hybrid: local token buckets with periodic sync.
+* **Degradation mode**: fail-open (allow all, risk overload) vs. fail-closed (reject all, risk availability). Banking → fail-closed; public APIs → fail-open.
+
+### Key Decisions
+
+| Decision | Options | Trade-off | Recommendation |
+|---|---|---|---|
+| Algorithm | Token bucket | Smooth bursts, simple | Default choice |
+| | Sliding window log | Accurate, memory heavy | Low-volume, high-precision |
+| | Fixed window | Simple, bursty at edge | Avoid |
+| Counter store | Redis (single) | Simple, SPOF | < 100K req/s |
+| | Redis cluster + consistent hash | Scalable, eventual consistency | Production |
+| | In-memory per node | Fastest, inconsistent | With sync fallback |
+| Degradation | Fail-open | No downtime, DDoS risk | Non-critical APIs |
+| | Fail-closed | Protection, 503s | Critical APIs |
+
+### Scalability Considerations
+
+* Redis cluster with consistent hashing distributes keys; each shard handles ~100K-200K INCR ops/sec.
+* Local token buckets per gateway node with async sync reduce Redis load by 10–100x.
+* Hierarchical limits: global (Redis) + per-node (local).
+
+### Reliability Considerations
+
+* Set quorum for distributed counter updates to avoid split-brain double-counting.
+* Circuit breaker on Redis calls prevents gateway failure when Redis is slow/down.
+* Graceful degradation: local-only mode with relaxed limits when Redis is unreachable.
+
+### Performance Considerations
+
+* Token bucket check is O(1) (single INCR + EXPIRE in Redis); sliding log is O(log N).
+* Pipeline Redis operations into one round-trip.
+* Local cache with TTL reduces 90%+ of Redis calls for stable clients.
+
+### Security Considerations
+
+* Rate limit keys must not be spoofable (use JWT-derived client identity, not client-supplied).
+* Prevent key enumeration attacks on Redis cluster (use HMAC of client_id).
+* Rate-limiting itself can be a DoS vector — apply key-space limits per gateway node.
+
+### Maintainability Considerations
+
+* Centralized config store (etcd/Consul) for quota definitions; hot-reload without restart.
+* Audit logs of all limit changes for compliance.
+* Canary rollout of new limits on subset of routes.
 
 ## High-Level Design
 
@@ -263,6 +357,96 @@ Failure handling: backend pool unhealthy → outlier ejection routes away; gatew
 - **Header contract precision**: `RateLimit-Limit/Remaining/Reset` (IETF draft standardized) plus legacy `X-RateLimit-*` dual-emitted during migration windows; `Retry-After` seconds-based; clock alignment between gateway and store matters for reset honesty (use store-returned values, never local guesses).
 - **Degradation automation**: health-probe wrapper around Redis flips a circuit; gateway reads mode (OPEN/CLOSED) from local config watcher; switching logged + alerted; quarterly game-days flip it deliberately verifying both directions behave.
 - **Observability**: RED metrics per route (rate/errors/duration), limit-rejection ratios by tenant (abuse detection + fairness audits), auth-failure spikes (credential-stuffing alarms), upstream saturation signals feeding autoscalers, distributed traces sampled at edge with head-based decisions propagating downstream.
+
+## API Contract
+
+The rate-limited API gateway exposes both proxied backend endpoints and administrative endpoints for quota management.
+
+### Proxied Client Endpoints
+
+| Method | Endpoint | Purpose | Rate Limit |
+|---|---|---|---|
+| GET | `/api/v1/{route}` | Proxy GET to backend | 1000 req/min per client |
+| POST | `/api/v1/{route}` | Proxy POST to backend | 100 req/min per client |
+| PUT | `/api/v1/{route}` | Proxy PUT to backend | 100 req/min per client |
+| DELETE | `/api/v1/{route}` | Proxy DELETE to backend | 30 req/min per client |
+
+**Headers**:
+```
+Authorization: Bearer <JWT>
+X-API-Key: <key>
+X-Forwarded-For: <client_ip>
+User-Agent: <client>
+```
+
+**Response** (success): HTTP 200 with backend response body.
+
+**Response** (rate limited):
+```json
+HTTP/1.1 429 Too Many Requests
+Retry-After: 55
+Content-Type: application/json
+{
+  "error": "rate_limit_exceeded",
+  "message": "Rate limit exceeded for client abc123 on route /api/v1/search",
+  "limit": 1000,
+  "window": "1m",
+  "retry_after_seconds": 55
+}
+```
+
+### Administrative Endpoints
+
+| Method | Endpoint | Purpose | Auth |
+|---|---|---|---|
+| POST | `/admin/api-keys` | Create new API key | Admin JWT (POST /api-keys) |
+| GET | `/admin/api-keys/{key}/quotas` | Get quota for a key | Admin JWT |
+| PATCH | `/admin/api-keys/{key}/quotas` | Update quota | Admin JWT |
+| POST | `/admin/bulk-quota` | Update quotas for many keys | Admin JWT |
+| GET | `/metrics` | Prometheus metrics (RED, limit ratios) | IP allowlist |
+| GET | `/health` | Health check (Redis up, backends reachable) | None |
+| GET | `/ready` | Readiness probe | Kubernetes |
+
+### Request Structure (proxied)
+
+```
+GET /api/v1/users?page=1&limit=20 HTTP/1.1
+Host: api.example.com
+Authorization: Bearer <jwt>
+X-API-Key: <key>
+Accept: application/json
+```
+
+### Rate Limiting Response Headers
+
+```
+X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 999
+X-RateLimit-Reset: 1623456789  (epoch seconds)
+Retry-After: 55  (seconds, on 429)
+```
+
+### Status Codes
+
+| Code | Meaning |
+|---|---|
+| 200 | Request proxied successfully |
+| 401 | No/invalid authorization token |
+| 403 | Valid token but insufficient scope |
+| 429 | Rate limit exceeded |
+| 502 | Backend unavailable |
+| 503 | Gateway degraded / Redis down |
+| 504 | Backend timeout |
+
+### Authentication & Authorization
+
+* Client identity resolved from JWT sub + API key + IP. The resolved identity is part of the rate-limit key (hashed).
+* Admin endpoints require `scope: admin` in the JWT.
+
+### Versioning
+
+* API versioning via URL prefix (`/api/v1/`, `/api/v2/`).
+* Quota definitions stored in config store with versioning; hot-reloaded without gateway restart.
 
 ---
 

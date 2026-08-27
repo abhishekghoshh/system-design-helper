@@ -22,7 +22,23 @@
 
 ## Theory
 
+### What Is It?
+
 A chat system (WhatsApp, Messenger, Slack, Discord) delivers messages between users in **near real time**, durably stores conversation history, synchronizes state across a user's devices, and tracks presence — at billions-of-connections scale. The core architectural challenge is maintaining millions of **long-lived persistent connections** and routing messages to whichever server currently holds each recipient's connection, while guaranteeing delivery despite disconnects.
+
+### Why Does It Exist?
+
+Human communication is increasingly digital and real-time. People expect messages to appear instantly across devices, to see who is available, and to share media seamlessly. A chat system exists to bridge the gap between asynchronous communication (email) and synchronous communication (phone calls) — providing a medium where conversations feel immediate yet persist for later reference, across any device and any network condition.
+
+### What Problem Does It Solve?
+
+* **Persistent connection scale (C10M)**: millions of users maintain open TCP/WebSocket connections simultaneously. Most systems cannot handle this — each connection consumes file descriptors, memory, and kernel resources. The system must efficiently manage these connections at planetary scale.
+* **Message routing across a dynamic fleet**: when User A sends to User B, the system must know which server currently holds User B's connection. As users reconnect, switch networks, or go offline, this mapping is in constant flux.
+* **Delivery guarantees despite network failures**: messages must survive sender retries, network partitions, and recipient disconnections without loss or duplication. At-least-once semantics plus idempotent receivers achieve effective exactly-once UX.
+* **Offline message buffering and sync**: when recipients are offline, messages must be durably stored and delivered upon reconnect, with per-device cursors to maintain consistent state across a user's phone, laptop, and tablet.
+* **Presence and ephemeral events**: typing indicators and online status are valuable UX signals but must not compromise durability or overwhelm the system with transient updates.
+* **Group fan-out cost**: a message to a 100,000-member channel must not trigger 100,000 synchronous deliveries. The system must choose fan-out-on-write vs on-read based on group size.
+* **End-to-end encryption vs. functionality**: E2E encryption protects message content from the server but prevents server-side search, moderation, and spam detection — a fundamental product trade-off.
 
 ### Important Subtopics
 
@@ -276,6 +292,177 @@ Decision factors: differentiation value of messaging, scale trajectory, complian
   *Problem*: million-member channels where fan-out-on-write would explode. *Solution*: fan-out-on-read channels + presence-light design + event-driven permission updates. *Trade-off*: slower cold-open sync for lurkers; massively cheaper writes.
 
 ---
+
+## Architecture
+
+### Architectural Style
+
+**Stateful connection layer + stateless service layer + durable event-backed storage**: chat is one of the few systems where you cannot avoid holding per-connection state (the open WebSocket), so the gateway tier is inherently stateful while the chat/service tier is stateless and horizontally scalable. A Kafka-style event backbone decouples message persistence from fan-out delivery, and Cassandra/ScyllaDB provides the wide-column store for conversation logs keyed by `(conv_id, seq)`.
+
+```mermaid
+flowchart LR
+    A[Client A] <-->|WS| GA[Gateway A]
+    B[Client B] <-->|WS| GB[Gateway B]
+    C[Client C] <-->|WS| GC[Gateway C]
+    GA -->|send msg| CS[Chat svc]
+    CS --> ST[(Message store - Scylla)]
+    CS --> OB[[Kafka - outbox]]
+    OB --> FO[Fan-out workers]
+    FO --> REG[(Connection registry - Redis)]
+    REG -.lookup.-> FO
+    FO -->|deliver| GB
+    FO -->|deliver| GC
+    FO -->|offline| PUSH[APNs/FCM]
+    FO --> INBOX[(Unread/inbox state)]
+    PR[Presence svc] <--> GA
+    PR <--> GB
+    PR <--> GC
+    IDP[Auth/IdP] --> GA
+    IDP --> CS
+```
+
+**Data flow**: client → gateway (auth + frame) → chat service (validate + persist + emit event) → outbox → fan-out workers (lookup recipients in registry) → deliver to online gateways or enqueue push for offline.
+
+**Scaling strategy**: gateways scale on concurrent connections (memory + file descriptors); chat-service shards by `hash(convId)` for per-conversation sequencing; fan-out workers scale on consumer-group parallelism; message store partitions by `convId`; Redis cluster shards registry by `userId`.
+
+**Failure handling**: gateway crash → clients reconnect with backoff+jitter, registry TTLs expire stale entries, undelivered persisted messages synced on reconnect. Regional outage → DNS/anycast shift + client region fallback. Kafka lag → deliveries delayed but never lost (store already committed).
+
+### Component Responsibilities and Communication
+
+| Component | Responsibility | Communication |
+|---|---|---|
+| Gateway / Connection layer | Terminate WebSockets, auth on connect, heartbeat tracking, frame encode/decode, backpressure, reconnection handling | WS to clients; sync RPC or event bus to chat service |
+| Session/Connection registry | userId → gateway mapping with TTL | Redis cluster, heartbeat-refresh, batched lookups |
+| Chat/Message service | Accept messages, assign seq numbers, persist, emit events | Sync to message store + outbox; calls to registry |
+| Message store | Durable conversation logs | ScyllaDB/Cassandra, partitioned by convId |
+| Fan-out workers | Deliver persisted messages to recipients | Kafka consumers; calls to registry + gateways/push |
+| Push notification service | Offline delivery via APNs/FCM | Async; idempotent; rate-limited |
+| Presence service | Online status + last-seen | Heartbeat ingestion, subscription fanout |
+| Media/Blob service | Attachment upload/download, thumbnailing, AV scanning | S3 presigned URLs + CDN |
+
+## Design
+
+### Design Considerations
+
+The central tension in chat design is **connection state vs. horizontal scalability**. The gateway tier must hold millions of open sockets (inherently stateful), while the chat-service tier must remain stateless to scale independently. Bridging these requires a connection registry that can efficiently answer "which gateway serves user X?" without itself becoming a bottleneck. Secondary considerations: at-least-once delivery is achievable but effectively-once requires application-level idempotency; presence is best-effort (staleness is acceptable); and E2E encryption is a product decision (it disables server-side search/moderation).
+
+### Key Decisions
+
+- **Per-conversation sequence numbers assigned by a single-writer shard**: `hash(convId)` routes all writes for a conversation to one chat-service instance, so ordering is trivial via `UPDATE seq + 1 RETURNING seq`.
+- **Transactional outbox**: message-row + event-row persisted in one transaction; relay publishes to Kafka — guarantees the event exists iff the message was committed.
+- **Hybrid fan-out threshold**: groups ≤ ~100 members use fan-out-on-write (fast reads); larger groups use fan-out-on-read with incremental unread counters.
+- **Client-generated `clientMsgId` on every message**: dedupe is trivial and retry-safe.
+- **Acknowledgment-after-persistence**: the sender only sees "sent" ticks after the message is durably stored — prevents loss on crash after socket write but before disk write.
+
+### Trade-offs
+
+| Decision | Pro | Con |
+|---|---|---|
+| Stateful gateways | Direct push, low latency | Reattach complexity, file-descriptor limits, GC pause reconnect storms |
+| Stateless chat service | Easy horizontal scale | Per-conversation ordering requires sharding discipline |
+| At-least-once + dedupe | No distributed transactions | Client must be idempotent; storage cost for dedupe window |
+| E2E encryption | Content confidentiality | No server-side search/moderation; key verification UX needed |
+| Fan-out-on-write | Fast opens (everything pre-delivered) | Cost explodes with group size |
+| Fan-out-on-read | Cheap writes for large groups | Slow cold opens; unread counters add complexity |
+
+### Scalability Considerations
+
+- **C10M connections**: gateways sized by memory/file-descriptor budget; use off-heap or native (Netty/Erlang) connection handling; batch heartbeats; local gateway caching of own sessions (registry mainly for *other* users).
+- **Registry write amplification**: during mass reconnects, batch pipeline lookups and writes; local gateway caches reduce external registry pressure.
+- **Kafka hot spots**: key topics by `convId`; celebrity group traffic needs careful partition sizing.
+- **Message store**: ScyllaDB/Cassandra per-conversation partitioning; range queries on `seq`; TTL/archival for old history.
+
+### Reliability Considerations
+
+- **Zero message loss through gateway crashes**: ack only after durable persist; reconnection replay from store sync fills gaps.
+- **Reconnect storm mitigation**: rolling drains with GOAWAY, client backoff with heavy jitter (0–30 s), handshake rate-limiting/admission queues.
+- **Regional failover**: clients have a region fallback list; anycast/DNS shift routes new connections; in-flight messages replayed from store.
+- **Gap detection and repair**: clients detect missing sequence numbers and issue sync requests (`after=seq`).
+
+### Performance Considerations
+
+- Gateway p99 dominated by GC pauses — use ZGC/Shenandoah or off-heap solutions to minimize reconnect storms.
+- History pagination for decade-old conversations requires careful index design + archival tiers (cold storage for old messages).
+- Presence updates must be cheap — batched heartbeats, deferred fanout, staleness acceptable.
+- WebSocket frame overhead is minimal but connection-establishment cost is not — amortize with connection reuse and keepalive tuning.
+
+### Security Considerations
+
+- **Spam/abuse at scale**: ML classifiers on metadata + reports (content may be encrypted); phishing link protection; reputation scoring per sender.
+- **E2E encryption**: Signal protocol for content confidentiality; servers become blind couriers — no content indexing/search/moderation server-side.
+- **Metadata exposure**: even with E2E encryption, metadata (who talks to whom, when) remains visible unless actively minimized (sealed sender, private groups).
+- **Account takeover**: secure recovery flows, device verification, anomaly detection on login patterns.
+- **Push notification payload**: send metadata-only when E2E encrypted (actual content never touches push channels).
+
+### Maintainability Considerations
+
+- **Protocol evolution**: versioned frame schemas with long deprecation tails — billions of installed clients can't upgrade overnight.
+- **Connection draining**: deploy with GOAWAY frames, staggered reconnect windows, and client-side backoff.
+- **Chaos testing**: kill random gateways under load; assert zero message loss and bounded reconnect-storm amplitude.
+- **Observability**: delivery funnel metrics (sent→persisted→fanned→delivered→seen) with per-stage histograms; alert on fan-out lag, registry error rates, per-gateway connection churn.
+
+## API Contract
+
+### WebSocket Message API
+
+Messages are JSON frames exchanged over an authenticated WebSocket connection. Every message includes a client-generated `clientMsgId` for dedupe.
+
+**Client → Server (send message)**:
+
+```json
+{
+  "type": "message_send",
+  "conversationId": "conv-abc123",
+  "clientMsgId": "msg-9f3a",
+  "content": "Hello team!",
+  "attachments": []
+}
+```
+
+**Server → Client (message delivered)**:
+
+```json
+{
+  "type": "message_delivered",
+  "conversationId": "conv-abc123",
+  "seq": 4567,
+  "senderId": "user-123",
+  "clientMsgId": "msg-9f3a",
+  "content": "Hello team!",
+  "timestamp": "2024-02-14T10:30:00Z"
+}
+```
+
+**Receipt events**:
+
+```json
+{ "type": "message_delivered_ack", "conversationId": "conv-abc123", "seq": 4567 }
+{ "type": "message_seen_ack", "conversationId": "conv-abc123", "seq": 4567 }
+{ "type": "typing_start", "conversationId": "conv-abc123", "userId": "user-456" }
+```
+
+**Presence events** (ephemeral, not persisted):
+
+```json
+{ "type": "presence_update", "userId": "user-456", "status": "online", "lastSeen": "2024-02-14T10:29:00Z" }
+```
+
+### REST API (history, media, presence)
+
+```
+GET  /api/v1/conversations/{convId}/messages?afterSeq=4500&limit=50
+POST /api/v1/conversations/{convId}/messages         # REST fallback for sends
+POST /api/v1/media/upload                             # presigned URL for attachments
+GET  /api/v1/presence/{userId}
+GET  /api/v1/conversations                            # paginated list of user's conversations
+```
+
+**History request** supports cursor-based pagination via `afterSeq` and `limit`, ordering by `seq` ascending. Presence endpoint returns best-effort last-known status (may be stale by design).
+
+### Status Codes & Semantics
+
+* WebSocket close codes: `1000` (normal), `4401` (auth expired — reconnect with refresh), `4403` (banned).
+* REST: `200/201` success, `401` token invalid/expired, `403` not a member, `409` for idempotent retry collision, `429` rate-limited (with `Retry-After`), `503` degraded (waiting room / offline mode).
 
 ## High-Level Design
 

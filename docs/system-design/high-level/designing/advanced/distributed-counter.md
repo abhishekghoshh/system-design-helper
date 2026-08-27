@@ -8,6 +8,23 @@
 
 ## Theory
 
+### What Is It?
+
+A **distributed counter** is a counting primitive that maintains accurate (or approximately accurate) counts across a distributed system where the increment/decrement operations originate from many nodes simultaneously.
+
+### Why Does It Exist?
+
+In a single-node database, `UPDATE counters SET value = value + 1` is a simple row lock. But at scale — a viral TikTok video receiving 1M likes/second — that single row becomes a lock-contention hotspot that serializes all writes and creates a throughput ceiling. A distributed counter spreads the write load across multiple shards/nodes so throughput scales with the number of shards, not the number of cores on one machine.
+
+### What Problem Does It Solve?
+
+* **Hot-row lock contention**: a single counter row updated at high frequency becomes a bottleneck — every write waits on a lock. Sharding (sub-counters) distributes writes across many rows/nodes.
+* **Single-node throughput ceiling**: one machine cannot sustain 1M+ increments/sec indefinitely. Distributed counters scale horizontally.
+* **Global coordination cost**: computing the total count requires aggregating across all shards — this is the read-path cost that must be optimized (caching, rollups, approximation).
+* **Durability vs. latency trade-off**: synchronous replication per increment is too slow; asynchronous write buffering improves latency but risks losing a small window of counts on failure.
+* **Approximate vs. exact counting**: for metrics like "unique viewers," exact counting of billions of events is expensive — HyperLogLog provides 98% accuracy with 1KB of memory.
+* **Counter lifecycle management**: counters must be created, reset (daily/monthly), and archived (cold storage) without disrupting ongoing writes.
+
 ### Important Subtopics
 
 1. Why naive counting breaks (lock contention on hot rows)
@@ -335,6 +352,108 @@ Decision inputs: peak per-counter write rate, uniqueness semantics needed, fresh
 
 ---
 
+## Architecture
+
+### Architectural Style
+
+**Sharded sub-counter architecture with aggregated reads**: a single logical counter (e.g., "likes on video X") is physically split across N sub-shards (Redis keys `counter:{videoId}:shard:{0..N-1}`). Increments are distributed across shards using `hash(videoId) % N` or by spreading across a fixed number of shards. Reads aggregate the sub-shards (via `MGET` or `SCRIPT`) to compute the total. This pattern is used by Twitter's Fatcache, Instagram's like system, and Redis-based counters at scale.
+
+**Approximate structures for unique counts**: for "unique viewers," exact distinct counting is prohibitively expensive at billions of events. HyperLogLog (HLL) provides 0.81% standard error with only 12 KB of memory by hashing each element and tracking the longest run of leading zeros across registers. Count-Min Sketch serves similar purposes for frequency estimation.
+
+```mermaid
+flowchart TB
+    U[User/App] --> LB[Load Balancer]
+    LB --> S1[Counter Shard 1]
+    LB --> S2[Counter Shard 2]
+    LB --> S3[Counter Shard 3]
+    LB --> S4[Counter Shard 4]
+    S1 --> SH1[(Redis Hash<br/>counter:vid:s:0)]
+    S2 --> SH2[(Redis Hash<br/>counter:vid:s:1)]
+    S3 --> SH3[(Redis Hash<br/>counter:vid:s:2)]
+    S4 --> SH4[(Redis Hash<br/>counter:vid:s:3)]
+    AG[Aggregator] -->|MGET| SH1
+    AG -->|MGET| SH2
+    AG -->|MGET| SH3
+    AG -->|MGET| SH4
+    AG --> CACHE[(Cached total<br/>TTL=5s)]
+    CACHE --> U
+```
+
+*Diagram: Sharded counter architecture. Writes are distributed across N Redis hash shards based on the counter ID. Reads aggregate all shards via MGET, with results cached for a short TTL to reduce read amplification.*
+
+### Component Responsibilities and Communication
+
+| Component | Responsibility | Communication |
+|---|---|---|
+| Counter Shards | Store and increment sub-counter values | Key-value store (Redis/Memcached) per shard |
+| Aggregator | Sum sub-counter values on read | MGET or Lua script across shards |
+| Write Buffer | Batch increments before flushing | In-process buffer; periodic flush to shards |
+| Read Cache | Cache computed totals to reduce aggregation | Short TTL (seconds); invalidated on write burst |
+| HLL/Sketch Store | Approximate unique-count structures | Per-shard HLL registers for merging |
+| Admin API | Counter lifecycle (create, reset, delete) | Auth-gated; writes to metadata store |
+
+**Data flow**: client → load balancer → shard `hash(key) % N` → increment (Redis `HINCRBY` or `INCR`) → return. Read: aggregator `MGET` all shards → sum → cache with TTL → response.
+
+**Scaling strategy**: increase shard count N for counters with extreme write rates; aggregator cached reads handle read scaling; HLL registers merged across shards for approximate unique counts.
+
+**Failure handling**: lost increments during buffer flush → accept bounded loss window (document it); shard node down → route writes to remaining shards (reduced accuracy); read aggregation fails → serve stale cached total with grace.
+
+## Design
+
+### Design Considerations
+
+The distributed counter design walks a tightrope: **write throughput** (scale increments across shards), **read latency** (aggregate N shards quickly), **accuracy** (exact vs. approximate), and **durability** (no lost counts). The key decision is whether to accept approximation (98% accurate, 1KB memory with HLL) for unique counts, or pay the exact cost (billions of distinct elements to track).
+
+### Key Decisions
+
+- **Sharding factor N**: fixed vs. adaptive scaling. For viral content (1M+ writes/sec on one counter), auto-scale shard count based on write throughput. For most counters, a fixed N (e.g., 512) suffices.
+- **Write buffering**: batch increments in-process before flushing to reduce round-trips. Flush interval (e.g., 100 ms) defines the loss window on crash.
+- **Read caching**: cache aggregated totals with a short TTL (e.g., 5 s). Trade a few seconds of staleness for O(1) reads instead of O(N) aggregation.
+- **Approximate vs. exact**: use HLL for unique counting; exact counts for business-critical totals (e.g., payment metrics) where even 2% error is unacceptable.
+- **Consistency model**: eventual consistency on reads (staleness acceptable) vs. strong consistency (block until all shards respond).
+
+### Trade-offs
+
+| Decision | Pro | Con |
+|---|---|---|
+| Sharding | Scales writes linearly with shard count | Reads require aggregating N shards (O(N)) |
+| Write buffering | Fewer round-trips, higher throughput | Bounded loss window on crash |
+| Read caching | O(1) reads, low latency | Stale values (seconds of lag) |
+| HLL approximation | 98% accuracy, 1KB memory | Not exact; can't be used for business-critical totals |
+| Strong consistency | Exact counts | Higher latency, lower throughput |
+
+### Scalability Considerations
+
+- **Auto-sharding**: monitor per-shard write rate; split a counter's shard count when any shard exceeds a threshold (e.g., 50K writes/sec).
+- **Aggregator scaling**: cached reads handle the bulk; uncached reads batch MGET across shards in a single round-trip.
+- **HLL merge**: each shard maintains its own HLL registers; merging is a register-wise max — O(shards × registers), done server-side.
+- **Multi-region**: per-region counters with periodic cross-region aggregation for global totals.
+
+### Reliability Considerations
+
+- **Bounded loss window**: buffer flush interval defines maximum lost increments on crash; acceptable for analytics, not for financial totals.
+- **Shard failure**: route writes to remaining shards; reduced accuracy but system keeps functioning. Alert on shard health.
+- **Read degradation**: if aggregation fails, serve stale cached total with a staleness header.
+
+### Performance Considerations
+
+- Write path: Redis `HINCRBY` on sharded hash — sub-millisecond.
+- Read path: cached total = microseconds; uncached = O(N) MGET (still sub-ms for small N).
+- HLL memory: 1280 bytes for 0.81% error; merge is register-wise max.
+- Buffer flush: batch size tuned to balance throughput vs. loss window.
+
+### Security Considerations
+
+- **Key injection**: never use raw user input in counter key names without sanitization — prevents key-space pollution or enumeration.
+- **Rate limiting writes**: prevent a malicious client from inflating counters (DoS) — per-IP/per-user increment limits.
+- **Access control**: only authorized services can create/reset/delete counters; all mutations are authenticated.
+
+### Maintainability Considerations
+
+- **Shard count management**: auto-scaling shard logic must be idempotent and handle partial failures.
+- **Counter lifecycle**: daily/monthly resets via scheduled jobs; archival of historical counts to cold storage.
+- **Monitoring**: per-counter write rate, read cache hit ratio, stale-read percentage, HLL error bounds, shard health.
+
 ## High-Level Design
 
 ```mermaid
@@ -378,6 +497,119 @@ Failure handling: Kafka retained offsets enable aggregator replay after crashes 
 - **Observability**: per-class increment rates, shard heat maps, end-to-end lag (event→display percentiles), reconciliation drift metrics, dedup rejection ratios (fraud signal), and monotonicity-violation alarms treated as P1.
 
 ---
+
+## API Contract
+
+### Counter Operations API
+
+```
+POST   /api/v1/counters/{counterId}/increment
+POST   /api/v1/counters/{counterId}/increment/batch
+GET    /api/v1/counters/{counterId}
+PUT    /api/v1/counters/{counterId}/reset
+DELETE /api/v1/counters/{counterId}
+GET    /api/v1/counters/{counterId}/unique-users
+```
+
+### Increment
+
+```http
+POST /api/v1/counters/likes:vid_123/increment
+Content-Type: application/json
+
+{
+  "by": 1,
+  "userId": "user_456",
+  "timestamp": "2024-02-14T10:30:00Z"  // for time-windowed counters
+}
+```
+
+**Response** (HTTP 204 — no body for fire-and-forget writes; counter value returned only if `returnTotal=true` in query):
+
+```json
+{
+  "counterId": "likes:vid_123",
+  "value": 1428571,
+  "shardWritten": 3
+}
+```
+
+### Batch Increment
+
+```http
+POST /api/v1/counters/views:vid_123/increment/batch
+Content-Type: application/json
+
+{
+  "increments": [
+    {"by": 1, "userId": "user_1"},
+    {"by": 1, "userId": "user_2"}
+  ]
+}
+```
+
+**Response** (HTTP 202 — batch accepted, processed asynchronously):
+
+```json
+{
+  "accepted": 2,
+  "rejected": 0
+}
+```
+
+### Read Counter
+
+```
+GET /api/v1/counters/likes:vid_123
+```
+
+**Response** (cached total, with staleness metadata):
+
+```json
+{
+  "counterId": "likes:vid_123",
+  "value": 1428571,
+  "approximate": false,
+  "lastUpdated": "2024-02-14T10:30:05Z",
+  "stalenessSeconds": 2
+}
+```
+
+### Unique Users (approximate)
+
+```
+GET /api/v1/counters/streams:vid_123/unique-users?window=24h
+```
+
+```json
+{
+  "counterId": "streams:vid_123",
+  "uniqueUsers": 847332,
+  "approximate": true,
+  "errorBounds": 0.0081,
+  "algorithm": "hyperloglog"
+}
+```
+
+### Status Codes
+
+* `200` — successful read
+* `201` — counter created
+* `202` — batch increment accepted (async processing)
+* `204` — increment accepted (fire-and-forget)
+* `400` — invalid request (malformed body, `by` out of range)
+* `401` — unauthenticated
+* `403` — not authorized to write to this counter
+* `404` — counter not found
+* `412` — CAS conflict (reset during active writes)
+* `429` — rate limited (per-client increment limits prevent inflation/DoS)
+
+### Key Contracts
+
+- **Idempotency**: each increment carries a client-generated `eventId` UUID; the service dedupes by `(counterId, eventId)` within a retention window (e.g., 24 hours) to prevent double-counting on client retries.
+- **Sharded writes**: increments are distributed across N shards using consistent hashing; the shard number is deterministic from the counter ID.
+- **Approximate counters**: unique-user counts use HLL with bounded error; the API exposes `approximate: true` and `errorBounds` so consumers know the precision.
+- **Rate limiting**: per-client increment rate limits prevent abuse (inflating counters via malicious clients).
 
 ## Data Modeling
 

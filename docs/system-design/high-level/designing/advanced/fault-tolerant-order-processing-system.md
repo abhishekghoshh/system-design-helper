@@ -8,6 +8,22 @@
 
 ## Theory
 
+### What Is It?
+
+A fault-tolerant order processing system processes customer orders through a queue-based pipeline where each step (payment, inventory, fulfillment) is a discrete, independently retryable unit of work. Unlike monolithic transaction processing, the queue-based approach decouples each stage, absorbs bursts, and handles failures gracefully via retries, dead-letter queues, and compensations (rolling back completed steps when downstream steps fail permanently).
+
+### Why Does It Exist?
+
+In e-commerce, an order is the core business object — losing one means lost revenue; processing one twice means overcharging a customer and a support nightmare. But the systems involved (payment processors, inventory databases, shipping APIs) are inherently unreliable. A fault-tolerant order system exists to ensure that every order reaches a terminal state (completed or refunded) no matter which individual service fails, thanks to idempotency, retries, and compensations.
+
+### What Problem Does It Solve?
+
+* **At-least-once delivery**: queues deliver messages at-least-once; the system must make order processing effective-once via idempotency keys (order_id) to avoid double-charges or double-shipments.
+* **Transient failures**: payment API timeouts, database deadlocks — these require automated retries with exponential backoff, not human intervention.
+* **Permanent failures**: invalid addresses, fraud blocks — these require dead-letter queues (DLQ) for manual review and remediation workflows.
+* **Late-stage failures**: payment succeeds but fulfillment fails — the system must issue a refund (compensation) and notify the customer.
+* **Queue isolation**: payment failures should not block inventory processing for other orders. Each stage has its own queue for independent scaling and backpressure.
+
 ### Important Subtopics
 
 1. Order state machines as the backbone (explicit states, guarded transitions)
@@ -270,6 +286,120 @@ Decision inputs: order complexity/stage count, peak volumes, team size, existing
 
 ---
 
+## Architecture
+
+A fault-tolerant order processing system uses a **queue-based architecture** with explicit state management and idempotent workers. The Order API accepts requests and writes them to a durable message queue (RabbitMQ, SQS, or Kafka). Worker pools consume from per-stage queues (validation, payment, fulfillment) with retry policies, dead-letter queues, and compensation handlers. Each stage is isolated — a failure in payment doesn't block order creation. Idempotency keys ensure "exactly once" processing semantics despite retries. The Compensation Engine handles partial failures by reversing completed steps (e.g., refund payment if fulfillment fails).
+
+```mermaid
+graph TD
+  Client[Client App] --> API[Order API]
+  API --> OrderDB[(Order DB)]
+  API --> Queue1[Validation Queue]
+  Queue1 --> ValidWorker[Validation Workers]
+  ValidWorker --> Queue2[Payment Queue]
+  Queue2 --> PaymentWorker[Payment Workers]
+  PaymentWorker --> Queue3[Fulfillment Queue]
+  Queue3 --> FulfillWorker[Fulfillment Workers]
+  Queue1 --> DLQ1[Dead Letter Queue]
+  Queue2 --> DLQ2[Dead Letter Queue]
+  Queue3 --> DLQ3[Dead Letter Queue]
+  ValidWorker --> Comp[Compensation Engine]
+  PaymentWorker --> Comp
+  FulfillWorker --> Comp
+  PaymentWorker --> PaymentGW[Payment Gateway]
+  FulfillWorker --> InvSvc[Inventory Service]
+  FulfillWorker --> ShipSvc[Shipping Service]
+  API --> NotifySvc[Notification Service]
+```
+
+### Architecture Structure
+
+* **Edge layer**: Order API behind an API Gateway with auth, rate limiting, input validation.
+* **Queue layer**: Durable message queues (RabbitMQ/SQS) with per-stage queues and DLQs for failed messages.
+* **Worker layer**: Stateless workers that process messages; can be scaled independently per stage.
+* **State layer**: Order DB stores order state and idempotency keys; payment/inventory are external.
+* **Recovery layer**: Dead Letter Queue consumer and Compensation Engine for manual or automatic recovery.
+
+### Communication
+
+* **Synchronous**: Client → Order API → Order DB (initial order creation with "PLACED" status).
+* **Asynchronous**: Order API → Queue → Workers (process stages; failure → retry/DLQ).
+* **External**: Workers → Payment Gateway, Inventory API, Shipping API (idempotent operations).
+
+### Data Flow
+
+1. Client submits order → Order API → stores in Order DB (status=PLACED, idempotency_key set) → publishes to Validation Queue.
+2. Validation Worker picks message → validates order → on success, publishes to Payment Queue.
+3. Payment Worker charges customer → publishes to Fulfillment Queue → updates Order DB (status=PAID).
+4. Fulfillment Worker reserves inventory, creates shipment → updates Order DB (status=FULFILLED).
+5. On any failure → retry with exponential backoff → if exhausted → DLQ → Compensation Engine triggers rollback.
+
+### Scaling Strategy
+
+* **Workers**: Scale per-stage based on queue depth (autoscaling per queue). Payment workers may need more capacity during sales.
+* **Queues**: Partition by order type (B2C vs B2B) or geographic region.
+* **Order DB**: Shard by order_id hash; or by customer_id for customer-centric queries.
+
+### Failure Handling
+
+* **Retry with backoff**: 3 immediate retries, then exponential backoff (1s, 5s, 30s, 5min, 30min).
+* **DLQ after max retries**: Move to DLQ for manual review or compensation.
+* **Idempotency**: Every external call is idempotent (idempotency_key header to payment gateway; check-then-reserve for inventory).
+* **Compensation**: If payment succeeded but fulfillment failed, refund the payment automatically.
+
+## Design
+
+### Design Considerations
+
+* **Idempotency**: Design every operation to be safely retryable — use idempotency keys for payment, check-and-set for inventory.
+* **State machine clarity**: Explicit states and transitions make debugging and auditing easier.
+* **Isolation of concerns**: Each stage (validation, payment, fulfillment) in its own queue — failures in one don't block others.
+* **Visibility**: Each stage should be independently monitorable (queue depth, retry count, error rate).
+
+### Key Decisions
+
+| Decision | Options | Trade-off | Recommendation |
+|---|---|---|---|
+| Queue type | RabbitMQ (AMQP) | Flexible routing, no message limit | High feature need |
+| | SQS | Managed, but 256KB message limit | Simplicity |
+| | Kafka | High throughput, ordering | Event-heavy |
+| Retry strategy | Fixed backoff | Simple, predictable | Non-critical |
+| | Exponential backoff | Reduces thundering herd | Standard |
+| | Exponential + jitter | Best for distributed retry storms | Production |
+| DLQ handling | Dead letter → manual | Full control, operational overhead | Low volume |
+| | Auto-compensate | Automatic but risky | High confidence |
+| | Alerting only | Operator intervention | All cases |
+
+### Scalability Considerations
+
+* **Queue partitioning**: Partition payment queue by payment provider or geographic region.
+* **Worker concurrency**: Each worker handles 1 message at a time (ordering); scale workers horizontally.
+* **Batch payments**: For high volume, batch payment requests (reduce API calls to payment gateway).
+
+### Reliability Considerations
+
+* **Circuit breaker**: If payment gateway is down, open circuit → queue payments → close when gateway recovers.
+* **Poison message handling**: Messages that always fail (corrupt data) go to a separate "poison" queue for analysis.
+* **Compensation idempotency**: Compensation actions must also be idempotent (check if already compensated before proceeding).
+
+### Performance Considerations
+
+* **Async processing**: Return 202 Accepted immediately; process asynchronously. Reduces API latency.
+* **Parallelism within order**: Validate payment method and validate shipping address in parallel.
+* **Caching**: Cache customer payment methods and inventory availability to reduce external API calls.
+
+### Security Considerations
+
+* **Payment data**: Never log full card numbers; tokenize payment data.
+* **Idempotency key**: Use client-generated UUID as idempotency key; store in Order DB.
+* **Authorization**: Verify customer has permission to use the selected payment method.
+
+### Maintainability Considerations
+
+* **Schema evolution**: Order DB schema must evolve (new fields, statuses) without downtime.
+* **Worker versioning**: Rolling updates of workers without message loss.
+* **Observability**: Every stage must emit metrics (throughput, latency, error rate) and logs.
+
 ## High-Level Design
 
 End-to-end with compensation branch:
@@ -325,6 +455,87 @@ Failure handling: broker loss → messages persist replicated, offsets resume; w
 - **Observability**: funnel conversion per stage, state-age histograms (oldest-in-state leaderboards), retry-distribution tracking, DLQ inflow rates, reconciliation-drift counters, end-to-end order-completion-time percentiles segmented by payment method.
 
 ---
+
+## API Contract
+
+The order processing system exposes HTTP APIs for order submission and status tracking, plus webhook endpoints for PSP and carrier integrations.
+
+### Order API
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| POST | `/api/v1/orders` | Submit a new order |
+| GET | `/api/v1/orders/{id}` | Get order status and history |
+| POST | `/api/v1/orders/{id}/cancel` | Request cancellation |
+| GET | `/api/v1/orders` | List orders (filtered) |
+
+### Webhooks
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| POST | `/api/v1/webhooks/psp` | Payment provider callbacks |
+| POST | `/api/v1/webhooks/carrier` | Shipping carrier callbacks |
+
+**POST /api/v1/orders — Request Body**:
+```json
+{
+  "order_id": "ord_abc123",
+  "customer_id": "cus_xyz",
+  "items": [
+    {"sku": "SKU-001", "quantity": 1, "price": 99.99}
+  ],
+  "payment_method": {"type": "card", "token": "pm_tok"},
+  "shipping_address": {
+    "line1": "123 Main St", "city": "SF", "state": "CA",
+    "zip": "94102", "country": "US"
+  },
+  "idempotency_key": "ord_abc123"
+}
+```
+
+**GET /api/v1/orders/{id} — Response**:
+```json
+{
+  "order_id": "ord_abc123",
+  "status": "SHIPPED",
+  "created_at": "2024-06-14T10:00:00Z",
+  "updated_at": "2024-06-14T14:30:00Z",
+  "total_amount": 99.99,
+  "currency": "USD",
+  "steps": [
+    {"step": "payment", "status": "SUCCESS", "timestamp": "2024-06-14T10:00:05Z"},
+    {"step": "inventory", "status": "SUCCESS", "timestamp": "2024-06-14T10:00:07Z"},
+    {"step": "fulfillment", "status": "SUCCESS", "timestamp": "2024-06-14T14:30:00Z"}
+  ],
+  "tracking_number": "1Z9999W99999999999"
+}
+```
+
+### Status Codes
+
+| Code | Meaning |
+|---|---|
+| 200 | Order retrieved |
+| 201 | Order created |
+| 202 | Order accepted (processing in queue) |
+| 400 | Invalid request |
+| 401 | Authentication required |
+| 409 | Conflict (duplicate order_id) |
+| 429 | Rate limited |
+| 503 | Service degraded |
+
+### Idempotency
+
+* The `idempotency_key` field in the request body ensures that re-submission of the same order returns `200 OK` with the existing order (not `201 Created`).
+
+### Webhook Security
+
+* Webhooks are signed with HMAC-SHA256 (`X-Order-Signature` header) and verified within 5 seconds.
+* Webhook processing is decoupled — events go to a queue for async handling.
+
+### Pagination & Filtering
+
+* `GET /api/v1/orders?status=pending&customer_id=cus_xyz&limit=50&offset=0`
 
 ## Data Modeling
 

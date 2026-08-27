@@ -8,6 +8,23 @@
 
 ## Theory
 
+### What Is It?
+
+A distributed transaction system in banking coordinates money movements across multiple accounts, services, or databases while preserving **monetary invariants**: debits always equal credits, no double-spending, and balances never go negative without explicit overdraft handling. In a microservices world, a single "transfer" may touch a user-balance service, a ledger service, a notification service, and an external payment provider — all of which must succeed or fail together atomically.
+
+### Why Does It Exist?
+
+Traditional ACID transactions (single-database `BEGIN/COMMIT`) guarantee atomicity and consistency. But in a distributed system — especially banking, where money moves across services and databases — no single database transaction can span multiple services. A distributed transaction system exists to coordinate these multi-service operations, ensuring that either all services commit the transfer or all roll back, preserving the conservation of money across the entire system.
+
+### What Problem Does It Solve?
+
+* **Atomicity across services**: a transfer must debit Account A and credit Account B — if the debit succeeds but the credit fails, money vanishes. The system must ensure all-or-nothing.
+* **Distributed deadlock**: concurrent transfers involving the same accounts can deadlock (A→B and B→A) — the system must detect and resolve these.
+* **Partial failure recovery**: if a service crashes mid-transfer, the system must determine the outcome and compensate (refund, reverse) without losing or duplicating the transaction.
+* **Concurrency control on hot accounts**: celebrity accounts receive thousands of concurrent transfers — the system must serialize these without contention bottlenecks.
+* **Audit and immutability**: financial transactions are legally required to be auditable and immutable — every state change must be append-only and traceable.
+* **Regulatory compliance**: banking regulations (PCI-DSS, SOX, RBI) mandate specific consistency, retention, and audit requirements that generic transaction systems cannot meet.
+
 ### Important Subtopics
 
 1. Money invariants: conservation (debits = credits), no double-spend, monotonic balances where required
@@ -263,7 +280,100 @@ Decision inputs: org topology, TPS targets, consistency-latency tolerance, regul
 - **Card authorization with offline risk**
   *Problem*: network partitions must not enable double-spending. *Solution*: issuer-side reservation holds with strict TTLs, risk-based online-forcing thresholds, offline queue reconciliation prioritizing high-value reversals. *Trade-off*: occasional false declines under degraded connectivity — tuned against fraud-loss economics.
 
----
+## Architecture
+
+A distributed banking transaction system follows a **saga-orchestrator** architecture layered over microservices. Incoming requests hit an API gateway, then a **transaction orchestrator** that drives a sequence of local transactions across services (account, ledger, notification, fraud) via an **event bus** or direct RPC. Each service performs its local ACID commit independently; if any step fails, the orchestrator triggers **compensations** (reverse debit, send refund) for already-completed steps. An **audit service** appends immutable records for compliance, and a **reconciliation engine** periodically checks invariants (debits = credits) to detect drift.
+
+```mermaid
+sequenceDiagram
+  participant Client
+  participant Gateway
+  participant Orchestrator
+  participant Account
+  participant Ledger
+  participant Notification
+  participant Fraud
+
+  Client->>Gateway: POST /transfer
+  Gateway->>Orchestrator: Start transaction
+  Orchestrator->>Account: Debit A (local Tx)
+  Account-->>Orchestrator: OK
+  Orchestrator->>Ledger: Credit B (local Tx)
+  Ledger-->>Orchestrator: OK
+  Orchestrator->>Notification: Send receipt
+  Notification-->>Orchestrator: OK
+  Orchestrator->>Fraud: Log for review
+  Fraud-->>Orchestrator: OK
+  Orchestrator-->>Gateway: Success
+  Gateway-->>Client: 200 OK
+```
+
+| Component | Purpose | Responsibilities | Real-world Example |
+|---|---|---|---|
+| API Gateway | Entry point | Auth, rate limiting, routing | Kong, Ambassador |
+| Transaction Orchestrator | Coordinate flows | Drive saga steps, handle rollbacks | Temporal, Cadence |
+| Account Service | Manage balances | Debit/credit, balance check, overdraft | Core banking services |
+| Ledger Service | Record transactions | Append-only double-entry, tamper-proof | Event-sourced ledgers |
+| Notification Service | Inform users | Send emails, SMS, push | Twilio, FCM integrations |
+| Event Bus | Decouple services | Event propagation, async processing | Kafka, RabbitMQ |
+| Audit Service | Compliance trail | Immutable logging, export for regulators | Append-only audit store |
+| Compensation Engine | Rollback failed txns | Generate and execute reversals | Saga compensations |
+
+**Communication**: Orchestrator → services (synchronous RPC with timeouts). Event bus for async notifications and audit. All services write to their own local DB (transactional outbox pattern for event publishing).
+
+**Scaling**: Partition by account_id hash; account service instances scaled per shard. Orchestrator scaled horizontally (stateless).
+
+**Failure handling**: If any service fails, orchestrator triggers compensations for completed steps. If the orchestrator crashes, recovery from persisted state (event log). Timeouts at each step to prevent hanging.
+
+## Design
+
+### Design Considerations
+
+* **Orchestration vs. choreography**: orchestration gives the orchestrator full visibility and control (easier to debug/reason about); choreography is more decentralized but harder to maintain complex flows. Banking prefers orchestration for regulatory traceability.
+* **Saga granularity**: coarse-grained sagas (one per transfer) vs. fine-grained (one per step) — finer gives more recovery points but more overhead.
+* **Compensation semantics**: compensations must be idempotent (a refund may be invoked multiple times); use a dedup table keyed by transaction_id + step.
+* **Hot account contention**: accounts with high transaction volume need special handling (sharding, queue depth monitoring, batching).
+
+### Key Decisions
+
+| Decision | Options | Trade-off | Recommendation |
+|---|---|---|---|
+| Pattern | Saga orchestration | Centralized control, visible history | Banking (traceability required) |
+| | Saga choreography | Decentralized, flexible | Microservices with simple flows |
+| Locking | Pessimistic (row locks) | Simple, contention on hot keys | Low concurrency |
+| | Optimistic (MVCC) | High concurrency, retry overhead | High throughput |
+| | No locks (saga + compensation) | Highest throughput, complex | Banking (with reservations) |
+| Consistency | Strong | ACID, available if single DB | Single service |
+| | Eventual | Scalable, stale reads | Cross-service |
+
+### Scalability Considerations
+
+* Partition accounts by hash for parallel processing.
+* Use eventual consistency for non-critical reads (e.g., balance display) with strong consistency for transaction processing.
+* Horizontal scaling of orchestrator (stateless) and account service (sharded).
+
+### Reliability Considerations
+
+* **Reservations with TTLs**: For a transfer, lock/reserve funds in both accounts with a short TTL; if the saga doesn't complete, the reservation expires and funds are released. Prevents double-spending under network partitions.
+* **Idempotency**: All saga steps and compensations must be idempotent. Use a deduplication table with (transaction_id, step_name) as the key.
+* **Timeouts at every step**: Prevent indefinite hanging if a service is slow/dead.
+
+### Performance Considerations
+
+* **Hot account bottleneck**: Celebrity accounts receive thousands of concurrent transfers. Use queue-based processing with a per-account lock (Redis lock or DB advisory lock). Batch small transfers for the same account.
+* **Two-phase commit overhead**: Sagas avoid 2PC but add compensation complexity. For single-service operations, use local ACID transactions.
+
+### Security Considerations
+
+* **Fencing tokens**: When a lock is acquired, the lock manager issues a token; the service includes it in its DB update. If the lock expires due to timeout, the token invalidates the update (prevents a slow/stale writer from corrupting data).
+* **Network partition protection**: Never allow a debit without a credit. Reserve with strict TTLs; offline queue reconciliation prioritizes high-value reversals.
+* **PII handling**: Transaction data must be encrypted at rest; access logs must be audit-trail-compliant.
+
+### Maintainability Considerations
+
+* **State machine diagrams**: Model each saga as an explicit state machine (e.g., using Temporal workflows) so the lifecycle is visible and testable.
+* **Reconciliation jobs**: Run periodic invariant checks (total debits = total credits) with automated alerting on drift.
+* **Audit trail**: Every state transition must be append-logged for regulatory compliance (SOX, PCI-DSS).
 
 ## High-Level Design
 
@@ -315,6 +425,130 @@ Failure handling: orchestrator crash → another instance resumes saga from dura
 - **Exactly-once composition**: at-least-once Kafka + idempotent consumers (dedupe table keyed eventId) + conditional SQL mutations = effectively-once pipeline; each layer's residual gap enumerated and covered by reconciliation sweeps (defense-in-depth, not any-single-guarantee).
 - **Ledger physical layout**: entries partitioned monthly, clustered by account_id within partition; covering index `(account_id, seq)` serves balance-window scans; older partitions compressed columnar for archival analytics. Hash-chain per partition segment; chain heads anchored externally (published digests) for tamper evidence.
 - **Observability**: per-step saga latency histograms, pending-age distributions (aging pendings = incidents forming), invariant-check results dashboard, compensation-rate alarms (>x% = systemic issue), end-to-end money-flow canaries executing tiny real transfers hourly.
+
+## API Contract
+
+The banking transaction system exposes REST/HTTP and gRPC endpoints for initiating transfers, checking status, and querying transaction history.
+
+### Transfer API
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| POST | `/api/v1/transfers` | Initiate a transfer |
+| GET | `/api/v1/transfers/{id}` | Get transfer status |
+| POST | `/api/v1/transfers/{id}/cancel` | Cancel a pending transfer |
+| GET | `/api/v1/transfers` | List transfers (filtered) |
+| GET | `/api/v1/accounts/{id}/balance` | Get account balance |
+
+**POST /api/v1/transfers — Request Body**:
+```json
+{
+  "transaction_id": "txn_abc123",
+  "debit_account": "ACC_001",
+  "credit_account": "ACC_002",
+  "amount": 1500.00,
+  "currency": "USD",
+  "description": "Invoice payment",
+  "reference_id": "INV-2024-001"
+}
+```
+
+**POST /api/v1/transfers — Response (201 Created)**:
+```json
+{
+  "transaction_id": "txn_abc123",
+  "status": "PENDING",
+  "debit_account": "ACC_001",
+  "credit_account": "ACC_002",
+  "amount": 1500.00,
+  "currency": "USD",
+  "created_at": "2024-06-14T10:30:00Z",
+  "estimated_completion": "2024-06-14T10:30:05Z"
+}
+```
+
+**GET /api/v1/transfers/{id} — Response (200 OK)**:
+```json
+{
+  "transaction_id": "txn_abc123",
+  "status": "COMPLETED",
+  "debit_account": "ACC_001",
+  "credit_account": "ACC_002",
+  "amount": 1500.00,
+  "currency": "USD",
+  "created_at": "2024-06-14T10:30:00Z",
+  "completed_at": "2024-06-14T10:30:04Z",
+  "steps": [
+    {"step": "DEBIT", "status": "SUCCESS", "timestamp": "2024-06-14T10:30:01Z"},
+    {"step": "CREDIT", "status": "SUCCESS", "timestamp": "2024-06-14T10:30:03Z"},
+    {"step": "NOTIFY", "status": "SUCCESS", "timestamp": "2024-06-14T10:30:04Z"}
+  ]
+}
+```
+
+### Pagination, Filtering, Sorting
+
+**GET /api/v1/transfers**:
+```
+GET /api/v1/transfers?from=2024-06-01&to=2024-06-14&account=ACC_001&status=COMPLETED&sort=-created_at&limit=50&offset=100
+```
+
+| Parameter | Type | Description |
+|---|---|---|
+| from | date | Filter: created after this date |
+| to | date | Filter: created before this date |
+| account | string | Filter: debit or credit account |
+| status | string | Filter: PENDING, COMPLETED, FAILED, CANCELLED |
+| sort | string | `-created_at` (desc) or `created_at` (asc) |
+| limit | int | Page size (max 100, default 20) |
+| offset | int | Pagination offset |
+
+### HTTP Status Codes
+
+| Code | Meaning |
+|---|---|
+| 200 | Request successful |
+| 201 | Transfer created |
+| 202 | Transfer submitted (async processing) |
+| 400 | Invalid request (malformed amount, same account) |
+| 401 | Authentication required |
+| 403 | Insufficient authorization |
+| 404 | Account or transfer not found |
+| 409 | Conflict (duplicate transaction_id, concurrent modification) |
+| 429 | Too many requests |
+| 503 | Service unavailable |
+
+### Error Response
+
+```json
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+{
+  "error": "invalid_request",
+  "message": "debit_account and credit_account must be different",
+  "field_errors": [
+    {"field": "credit_account", "message": "must differ from debit_account"}
+  ],
+  "request_id": "req_98765"
+}
+```
+
+### Idempotency
+
+* The `transaction_id` field serves as an idempotency key. Re-submitting a transfer with the same `transaction_id` returns the existing transfer (200 OK) instead of creating a new one (201 Created).
+* All mutating operations (transfer initiation, cancellation) are idempotent.
+* The orchestrator dedupes by `transaction_id` via a deduplication table.
+
+### Authentication & Authorization
+
+* OAuth 2.0 with scope-based authorization: `scope: transfers:write` for initiating transfers, `scope: transfers:read` for querying.
+* PKI/mTLS between internal services (orchestrator ↔ account service).
+* All requests are logged with audit metadata (who, when, what, from where) for compliance.
+
+### Versioning
+
+* API versioning via URL path (`/api/v1/`, `/api/v2/`) — v1 supports single transfer; v2 may add batch transfers.
+* Internal gRPC APIs use proto3 with field numbers reserved for backward compatibility.
 
 ---
 

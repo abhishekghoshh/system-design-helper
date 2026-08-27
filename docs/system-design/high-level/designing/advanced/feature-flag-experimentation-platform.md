@@ -8,6 +8,23 @@
 
 ## Theory
 
+### What Is It?
+
+A feature flag and experimentation platform lets engineering teams decouple feature deployment from release, enabling controlled rollouts (canary, percentage-based, targeted) and A/B testing of hypotheses. Feature flags are runtime switches that turn code paths on/off per environment or user segment. Experiments run multiple variants concurrently to measure which variant performs better on a chosen metric (conversion rate, latency, retention).
+
+### Why Does It Exist?
+
+Deploying code to production is risky — a single bug can take down a service for all users. Feature flags allow deploying code in a dormant state (flag off) and flipping it on gradually (canary → 1% → 10% → 100%), so if something goes wrong, the flag can be instantly turned off. Experimentation platforms let teams scientifically validate product decisions — instead of guessing whether a new UI increases conversions, teams can measure it with statistical significance.
+
+### What Problem Does It Solve?
+
+* **Safe releases**: Gradually roll out features to a subset of users, monitor for anomalies, and roll back instantly if needed.
+* **Targeted rollouts**: Enable features for specific users (internal teams, beta testers, geographic regions) without separate deployments.
+* **Kill switches**: Disable buggy or dangerous features immediately without a code rollback (which may be slow or unavailable).
+* **A/B testing**: Run controlled experiments comparing variants, measuring statistical significance on key metrics.
+* **Configuration management**: Toggle non-feature settings (database connection strings, timeout values) without redeploying.
+* **Personalization**: Serve different experiences to different user segments based on behavior, demographics, or experimental assignment.
+
 ### Important Subtopics
 
 1. Flags vs experiments: different lifecycles, shared substrate
@@ -262,6 +279,120 @@ Decision inputs: release cadence, traffic scale, statistical sophistication appe
 
 ---
 
+## Architecture
+
+A feature flag platform uses a **control plane + data plane** architecture. The control plane (Flag Service, Experiment Engine, Segment Engine) manages flag definitions, targeting rules, and experiment configurations. The data plane (SDK, CDN edge cache, streaming layer) evaluates flags at request time for applications. A **bucketing service** uses deterministic hashing to consistently assign users to flag variations. A **metrics pipeline** collects exposure and outcome events for experiment analysis.
+
+```mermaid
+graph TD
+  Admin[Admin UI] --> FlagSvc[Flag Service]
+  Admin --> ExpEngine[Experiment Engine]
+  Admin --> SegEngine[Segment Engine]
+  FlagSvc --> FlagDB[(Flag DB)]
+  ExpEngine --> ExpDB[(Experiment DB)]
+  SegEngine --> SegDB[(Segment DB)]
+  FlagSvc --> Bus[Change Bus - Kafka]
+  Bus --> CDN[CDN Edge Cache]
+  Bus --> Stream[Streaming Layer]
+  App[Application] --> SDK[SDK]
+  SDK -->|Long-poll/Stream| Stream
+  SDK -->|Fallback| CDN
+  SDK -->|Evaluate| Bucketing[Bucketing Service]
+  SDK --> ExpLog[(Local Exposure Log)]
+  ExpLog -->|Async batch| Bus
+  Stream --> MetricsPipe[Metrics Pipeline]
+  MetricsPipe --> MetricsDB[(Metrics DB - ClickHouse)]
+  MetricsPipe --> ExpAnalysis[Experiment Analysis]
+```
+
+### Architecture Structure
+
+* **Control plane**: Flag Service (CRUD flags), Experiment Engine (design A/B tests), Segment Engine (compute user segments). Stores in Postgres.
+* **Distribution layer**: Change bus (Kafka) carries flag/rule updates → CDN edge cache (for offline/polling SDKs) + streaming layer (for real-time SDKs).
+* **Data plane**: SDK embedded in applications; evaluates flags locally using cached config + remote calls for fresh data.
+* **Bucketing**: Deterministic hashing (MurmurHash + modulo) ensures consistent user-to-variant assignment across evaluations.
+* **Metrics**: SDK logs exposure events (which variant a user saw) → Kafka → ClickHouse → experiment analysis.
+
+### Communication
+
+* **Control → Distribution**: Kafka event stream of flag changes (new flag, updated rules, experiment started).
+* **Distribution → SDK**: CDN (HTTP polling, ~60-second TTL) or streaming (WebSocket/Server-Sent Events for real-time).
+* **SDK → Metrics**: Async batched HTTP to metrics pipeline.
+* **Admin → Control**: REST API for flag/experiment management.
+
+### Data Flow
+
+1. Admin creates a flag in the UI → Flag Service → stores in Flag DB → publishes to Change Bus.
+2. Change Bus → CDN edge cache updated (push) + Streaming Layer (push to connected SDKs).
+3. Next time the app evaluates the flag → SDK uses cached config or fetches fresh → Bucketing Service determines variant → returns result.
+4. SDK logs exposure event → Change Bus → Metrics Pipeline → ClickHouse → experiment analysis determines winner.
+
+### Scaling Strategy
+
+* **SDK**: Stateless — runs in the application process. Scales with application instances.
+* **CDN**: Global edge cache — scales automatically.
+* **Bucketing**: Stateless — can be replicated.
+* **Metrics pipeline**: Kafka partitions by experiment_id; ClickHouse scales horizontally.
+
+### Failure Handling
+
+* **CDN stale**: If CDN is stale, SDK falls back to last-known-good config; flag changes delayed but evaluations continue.
+* **Streaming failure**: SDK falls back to polling CDN; real-time push degrades to eventual consistency.
+* **Bucketing unavailable**: SDK falls back to cached bucketing; users may get different variants (acceptable, logged as degraded).
+
+## Design
+
+### Design Considerations
+
+* **Determinism**: The same user must get the same flag variation across all evaluations and SDK restarts. Use `hash(user_id + flag_key) % num_variants`.
+* **Latency**: Flag evaluation should be < 1 ms (local cache) to avoid impacting request performance. Avoid remote calls in the critical path.
+* **Resilience**: If the flag service is down, SDKs must continue evaluating using last-known-good configuration.
+* **Privacy**: Don't send PII to the metrics pipeline — only send a hash of user_id, flag_key, variant, and timestamp.
+
+### Key Decisions
+
+| Decision | Options | Trade-off | Recommendation |
+|---|---|---|---|
+| Config distribution | CDN polling (60s TTL) | Simple, cached, 60s delay | Default |
+| | Real-time streaming | Immediate, but stateful | High-stakes flags |
+| | Hybrid | Best of both | Production |
+| Bucketing hash | MurmurHash | Fast, good distribution | Standard |
+| | SHA-256 | Cryptographically strong | Not needed for bucketing |
+| | Random per eval | Not deterministic | Never |
+| Metric aggregation | Server-side | Centralized, consistent | Standard |
+| | Client-side | Simple, error-prone | Don't use |
+
+### Scalability Considerations
+
+* **Flag config size**: Keep flag configs small (KB not MB) for fast CDN delivery and SDK evaluation.
+* **SDK connections**: Streaming connections are expensive (1 per app instance) — use connection pooling at the application level; prefer polling for lower-traffic apps.
+* **Segment computation**: Pre-compute segments (not at evaluation time) — run batch jobs hourly.
+* **Metrics volume**: Each exposure event is small (~100 bytes); 1M QPS = 100MB/s of metrics — batch and compress.
+
+### Reliability Considerations
+
+* **Config staleness**: If CDN is stale for > 2 minutes, alert (flag changes taking too long to propagate).
+* **SDK offline**: Offline SDKs use last-known config; queue exposure events for later upload.
+* **Bucketing consistency**: Verify that bucketing produces consistent assignments — include the bucketing algorithm version in the SDK and config.
+
+### Performance Considerations
+
+* **Evaluation cache**: Cache flag evaluation results (key: `user_id + flag_key + variant`) for the duration of a request to avoid recomputing.
+* **Config fetch caching**: Cache flag configs with TTL; refresh asynchronously (not on every request).
+* **Segment caching**: Cache precomputed segments (user sets) in Redis.
+
+### Security Considerations
+
+* **Config tampering**: CDN config is signed (HMAC) — SDK verifies signature before use; prevents tampering.
+* **PII in metrics**: Never send raw user IDs — use hashed IDs.
+- **Targeted attacks**: Malicious users might spam flag variations to skew experiment results — implement bot detection on metric events. - **Access control**: Flag management requires admin role; experiment data requires analyst role.
+
+### Maintainability Considerations
+
+* **SDK versioning**: Rolling updates of SDK; old versions must be supported for months. Include version in config to alert on outdated SDKs.
+* **Flag lifecycle**: Archive old flags after 30 days of inactivity; prevent flag sprawl.
+* **Experiment governance**: Require experiment design doc, hypothesis, sample size calculation before launch.
+
 ## High-Level Design
 
 Evaluation + exposure flow:
@@ -307,6 +438,94 @@ Failure handling: distribution outage → SDKs serve persisted last-known-good w
 - **Observability**: staleness-age percentiles per SDK fleet-wide, eval-latency histograms, exposure-to-warehouse lag SLOs, experiment-health monitors (sample-ratio mismatch detection — SRM alerts catch broken instrumentation instantly), guardrail dashboards per active experiment.
 
 ---
+
+## API Contract
+
+The feature flag platform exposes evaluation APIs for SDKs and management APIs for administrators.
+
+### Evaluation API (for SDKs and services)
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/api/v1/evaluate` | Evaluate all flags for a user |
+| GET | `/api/v1/evaluate/{flag_key}` | Evaluate a single flag |
+| POST | `/api/v1/exposure` | Log experiment exposure |
+
+**GET /api/v1/evaluate?customer_id=cus_123&user_id=user_456 — Response**:
+```json
+{
+  "flags": {
+    "new_checkout_ui": {"enabled": true, "variant": "B"},
+    "enable_beta_feature": {"enabled": false, "variant": "control"},
+    "payment_provider": {"enabled": true, "variant": "stripe"}
+  },
+  "experiments": {
+    "checkout_v2_experiment": {"variant": "checkout_v2", "bucket": 42}
+  },
+  "etag": "abc123",
+  "cached_for": 30
+}
+```
+
+### Management API
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| POST | `/admin/api/v1/flags` | Create a feature flag |
+| PATCH | `/admin/api/v1/flags/{key}` | Update flag config |
+| POST | `/admin/api/v1/experiments` | Create experiment |
+| GET | `/admin/api/v1/experiments/{id}/results` | Get experiment results |
+| POST | `/admin/api/v1/audits` | Audit log of changes |
+
+**POST /admin/api/v1/flags — Request Body**:
+```json
+{
+  "key": "new_checkout_ui",
+  "name": "New Checkout UI",
+  "description": "Roll out the new checkout flow",
+  "default": false,
+  "targeting": {
+    "rules": [
+      {"if": {"user.plan": "premium"}, "then": true},
+      {"if": {"percentage": 10}, "then": true}
+    ]
+  }
+}
+```
+
+**POST /admin/api/v1/experiments — Request Body**:
+```json
+{
+  "name": "Checkout V2 Test",
+  "metric": "checkout_conversion",
+  "variants": [
+    {"key": "control", "weight": 5000},
+    {"key": "checkout_v2", "weight": 5000}
+  ],
+  "status": "running"
+}
+```
+
+### Status Codes
+
+| Code | Meaning |
+|---|---|
+| 200 | Evaluation result |
+| 201 | Resource created |
+| 400 | Invalid flag/experiment definition |
+| 401 | Authentication required |
+| 403 | Insufficient permissions |
+| 404 | Flag/experiment not found |
+| 429 | Rate limited |
+
+### Caching & Versioning
+
+* Evaluation responses include `etag` and `cached_for` (seconds). SDKs cache locally and only re-fetch when expired.
+* Flag updates trigger real-time push via streaming SDK (Server-Sent Events) or periodic polling fallback.
+
+### Idempotency
+
+* Flag creation is idempotent — re-submitting with the same `key` updates the flag (PATCH semantics via PUT).
 
 ## Data Modeling
 

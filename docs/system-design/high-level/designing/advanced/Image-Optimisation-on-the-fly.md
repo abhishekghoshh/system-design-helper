@@ -15,7 +15,20 @@
 
 ## Theory
 
+### What Is It?
+
 A dynamic image optimisation service transforms, compresses, resizes, and delivers images **on demand** — at request time — instead of pre-generating every possible variant offline. Cloudinary, imgix, and AWS's Lambda@Edge image optimisation all work this way: the client asks for `image.jpg?w=300&h=200&fit=crop&q=80&fmt=webp` and receives exactly that variant, generated on first request and cached thereafter.
+
+### Why Does It Exist?
+
+Modern web pages embed dozens of images, yet the same assets must be served across an explosion of device viewports, pixel densities, and browser codec support. Pre-generating every combination of size, crop, format, and quality is combinatorially impossible — one product photo would need thousands of variants — while serving original uploads to every device wastes 80–95% of the bytes delivered. An on-the-fly optimiser collapses that combinatorial explosion into zero storage until a variant is actually requested, then caches the result.
+
+### What Problem Does It Solve?
+
+* **Oversized payloads** — shipping a 6 MB phone-camera photo to a 320 px thumbnail slot wastes bandwidth, hurts Core Web Vitals (LCP), and burns mobile battery.
+* **Variant explosion** — a catalogue of 1 M assets × 20 widths × 4 formats × 3 crops = 240 M variants. No team pre-builds all of these.
+* **Art-direction drift** — marketing changes a crop ratio; with pre-generation the entire catalogue must be reprocessed. With on-the-fly, a single URL parameter change takes effect instantly.
+* **Format fragmentation** — browsers support different modern codecs (AVIF, WebP, JPEG XL). A static asset can only pick one; on-the-fly negotiation serves the best format per client automatically.
 
 ### Important Subtopics
 
@@ -305,6 +318,62 @@ flowchart TB
   *Problem*: every app needs round avatars in 5 sizes with face-centred crop. *Solution*: single master + `g_face,c_thumb` chain reused org-wide. *Trade-off*: face-detection failures on non-person logos fall back to entropy-based gravity.
 
 ---
+
+## Design
+
+### Design Considerations
+
+- **URL-as-contract**: every transformation is fully expressed in the request URL so that the output is a pure function of the URL. This makes the system CDN-friendly (plain GET caching) and makes cache keys trivially derivable.
+- **Determinism**: identical (input, parameters) must always yield byte-identical output. Non-deterministic encoders poison caches because different workers produce different bytes for the same URL.
+- **Lazy evaluation**: never compute a derivative until it is requested. This bounds storage and compute to the actual access pattern rather than the theoretical cross-product.
+- **Graceful degradation**: when transforms fail (timeout, memory limit, codec error) the system must serve a valid image (master or nearest cached variant) rather than a hard error that breaks the page.
+- **Security as a default**: the URL is attacker-controlled input. Every parameter must be validated, clamped, and bounded before it reaches decode/encode paths.
+
+### Key Decisions
+
+- **Cache tier placement**: placing a derivative cache between the CDN and the worker turns repeated misses (CDN cold, eviction, new POPs) into cache hits without recomputation.
+- **Single-flight on miss**: only one worker processes a given cache key; concurrent misses wait on the result. This prevents 1,000× redundant transforms on viral spikes.
+- **Immutable masters + versioned URLs**: changing an asset changes its URL version, so caches never serve stale data and purges are unnecessary.
+- **Format negotiation behind `f_auto`**: the server inspects `Accept` and picks AVIF → WebP → JPEG, emitting `Vary: Accept` so caches store distinct variants per browser family.
+
+### Trade-offs
+
+- On-the-fly adds cold-miss latency in exchange for unbounded variant storage. Pre-generation inverts this: zero cold latency but unbounded (and mostly wasted) storage.
+- Native codec libraries (libvips, ImageMagick) are fast and feature-rich but carry a CVE surface; JVM-based decoders (ImageIO/BufferedImage) are safer to sandbox but slower and memory-hungrier for huge inputs.
+- Per-worker statelessness enables horizontal scaling but requires an external shared cache; embedding logic in edge functions avoids the shared cache round-trip but hits serverless time/memory limits.
+
+### Scalability Considerations
+
+- **Edge hit ratio**: target ≥95% edge cache hit; every 1% of misses is 1% of traffic hitting origin compute.
+- **Worker autoscaling**: scale workers on queue depth and CPU utilisation; keep workers CPU-bound (one core per worker) and overlap object-store fetch with decode.
+- **Hot-key protection**: viral assets must trigger single-flight locks and popularity-based admission into the derivative cache to prevent stampede.
+- **Multi-region**: masters replicated cross-region asynchronously; derivative caches regional (recomputation on regional cold-start is acceptable).
+
+### Reliability Considerations
+
+- **Failure ladder**: transform timeout or worker crash → serve the master bytes un-resized → if master unavailable → serve the nearest cached variant → if nothing cached → 5xx with `Retry-After`.
+- **Origin shield**: absorbs CDN node stampedes and provides a second caching layer before reaching workers.
+- **Circuit breakers**: object-store or encoder-pool failures trip circuits to prevent cascading latency.
+
+### Performance Considerations
+
+- P99 warm delivery is dominated by CDN round-trip (~10–50 ms). P99 cold delivery is dominated by the largest allowed input image plus encoder choice (AVIF can be 10–50× slower to encode than JPEG).
+- Pixel-budget checks (parse dimensions from header before allocation) prevent memory-bounded DoS and let the system fail fast.
+- Tiered derivative cache: hot NVMe/RAM tier (LRU, hours–days) + warm object-store tier (weeks) for expensive-to-make variants.
+
+### Security Considerations
+
+- Decompression bombs: enforce `width × height ≤ MAX_PIXELS` parsed from image headers before allocating decode buffers; stream-decode with abort-on-exceed.
+- SSRF via fetch URLs: route remote fetches through an egress proxy with scheme/allowlist/DNS-pinning/private-CIDR blocking.
+- Polyglot files (image + script payload): magic-byte sniffing, not extension, determines processing.
+- EXIF leakage: strip all metadata except explicit copyright fields.
+- Sandbox workers: seccomp/containers, no network egress, CPU/memory caps.
+
+### Maintainability Considerations
+
+- DSL evolution: transformation parameters are public and forever once issued — every URL ever returned continues to work. New ops must be backward-compatible.
+- Codec version pinning: workers are versioned; internal cache keys include a codec-version salt so rolling upgrades don't serve mixed bytes under one public URL.
+- Observability: trace IDs flowing from browser → edge → worker make hit-ratio regressions and coalesce-queue growth diagnosable.
 
 ## High-Level Design
 

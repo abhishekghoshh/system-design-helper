@@ -8,6 +8,22 @@
 
 ## Theory
 
+### What Is It?
+
+Facebook (Meta) is a social network platform that lets users create profiles, share content, connect with friends, and consume a personalized feed of posts from their network. At its core, it's a **social graph** — a massive directed graph of users and their relationships — combined with a **news feed** that ranks and presents content in an engaging order. The challenge is doing this at planetary scale: billions of users, hundreds of billions of friendships, millions of new posts per minute.
+
+### Why Does It Exist?
+
+Social media platforms exist to connect people across geography, keep them engaged with relevant content, and create network effects that make the platform more valuable as more people join. The news feed is the central product — it must surface the most relevant content to each user from their social graph, balancing recency, relationship strength, content type, and engagement signals, all in under 200 ms.
+
+### What Problem Does It Solve?
+
+* **Social graph storage**: Storing and querying hundreds of billions of friendships efficiently, supporting operations like "find mutual friends" or "get friends of friends" at scale.
+* **Feed generation**: Pre-computing or on-demand generating each user's feed from hundreds of posts per second from their network — the classic fan-out problem (fan-out on write vs. read vs. hybrid).
+* **Feed ranking**: Deciding which posts to show and in what order, using ML models that consider engagement history, relationship strength, content type, and timeliness.
+* **Real-time updates**: Notifying millions of followers that someone posted new content, without overwhelming the feed generation system.
+* **Content storage**: Storing text posts, photos, videos, and live streams — from billions of users — with high durability and fast retrieval.
+
 ### Important Subtopics
 
 1. Social graph modeling & storage (TAO-style associations, sharding)
@@ -280,6 +296,152 @@ Decision factors: user scale trajectory, graph shape (symmetric vs follower), me
 
 ---
 
+## Architecture
+
+Facebook's architecture centers on a **massively scaled social graph** (TAO) and **hybrid feed fan-out**. The social graph (follows, friendships, reactions) is stored in TAO — a graph-aware distributed cache backed by MySQL. Feeds use a hybrid model: fan-out-on-write for most users, fan-out-on-read for celebrity accounts. The **feed ranking** pipeline combines hundreds of ML signals (engagement prediction, relationship strength, recency, content type) in a two-stage process: candidate generation then ranking. Real-time delivery uses a WebSocket-like layer for comments and reactions.
+
+```mermaid
+graph TD
+  subgraph "Clients"
+    FB[Facebook App/iOS/Android/Web]
+  end
+  subgraph "Edge"
+    APIGW[API Gateway]
+    EdgeCache[Edge Cache (Varnish)]
+  end
+  subgraph "Core Services"
+    PostSvc[Post Service]
+    GraphSvc[TAO - Social Graph]
+    FeedSvc[Feeds Service<br/>- Fan-out<br/>- Candidate Gen]
+    RankSvc[Feeds Ranking Service]
+    NotifSvc[Notification Service]
+    SearchSvc[Search Service]
+    MediaSvc[Media Service]
+    CommentSvc[Comment Service]
+  end
+  subgraph "Data"
+    PostDB[(Post Storage<br/>TAO/MySQL)]
+    FeedStore[(Feed Store<br/>Cassandra + Cache)]
+    GraphDB[(MySQL Sharded)]
+    Features[(ML Feature Store)]
+    Logs[(Logging<br/>Hadoop/S3)]
+  end
+  FB --> APIGW
+  APIGW --> EdgeCache
+  EdgeCache --> PostSvc
+  EdgeCache --> GraphSvc
+  EdgeCache --> FeedSvc
+  EdgeCache --> RankSvc
+  EdgeCache --> NotifSvc
+  PostSvc --> PostDB
+  PostSvc --> Logs
+  GraphSvc --> GraphDB
+  FeedSvc --> FeedStore
+  FeedSvc --> GraphSvc
+  FeedSvc --> Features
+  RankSvc --> Features
+  NotifSvc --> EdgeCache
+  CommentSvc --> PostDB
+  CommentSvc --> NotifSvc
+  FeedSvc -->|write feed| PostSvc
+  subgraph "Batch Processing"
+    Hadoop[Hadoop Cluster<br/>(Scuba, Hive, Presto)]
+  end
+  Logs --> Hadoop
+  Features --> Hadoop
+  PostSvc -->|events| Logs
+  GraphSvc -->|events| Logs
+```
+
+### Architecture Structure
+
+* **Edge layer**: API Gateway + Edge Cache (Varnish) serving 95%+ of requests from cache. Handles auth, rate limiting, geo-routing.
+* **Service layer**: Stateless microservices — Post, Feeds, Graph (TAO), Ranking, Notifications, Search, Comments, Media.
+* **Data layer**: TAO (graph cache + MySQL), Cassandra (feed store), Hadoop (batch processing), ML Feature Store.
+* **Batch layer**: Hadoop processes petabytes of log data for offline ML training and analytics.
+
+### Communication
+
+* **Synchronous**: Client → Edge Cache → Services (thrift/REST). Most reads from cache.
+* **Asynchronous**: Services publish events to Scribe (Facebook's messaging system, Kafka-compatible) → consumed by batch processing for ML features.
+* **Real-time**: Notification Service → Push connections for live comments, reactions, and notifications.
+
+### Data Flow
+
+1. **Post creation**: User posts → Post Service → TAO (stores post + updates graph) → publishes to Scribe → batch processing generates ML features.
+2. **Feed generation (push)**: Fan-out Service consumes post event → queries TAO for followers → writes `post_id` to followers' feed entries in Cassandra.
+3. **Feed generation (pull)**: For celebrity posts, Feed API fetches at read time (no fan-out-at-write).
+4. **Feed ranking**: Feed API → candidate generation (from feed store) → Ranking Service applies ML model → returns ranked feed.
+5. **Real-time**: New comments/reactions → Notification Service → push to connected users via persistent connections.
+
+### Scaling Strategy
+
+* **TAO**: Graph cache sharded 1000+ ways; each shard handles a subset of entities. Cache hit rate > 99%.
+* **Feeds**: Write fan-out to Cassandra; Cassandra cluster scaled by adding nodes; vnode-based partitioning.
+* **Ranking**: Pre-compute features (daily batch); real-time features (recency, live engagement) computed on-demand; model inference served from GPU/ML clusters.
+* **Edge cache**: Varnish instances globally; 95%+ cache hit rate for reads.
+
+### Failure Handling
+
+* **Feed lag**: If fan-out falls behind, feeds are stale — users see slightly delayed posts. Acceptable (eventual consistency).
+* **Ranking failure**: If ranking service is down, fall back to chronological feed ordering.
+* **TAO unavailable**: Serve from cache if possible; if cache is cold, temporarily fall back to "most recent posts from close friends."
+* **Cassandra outage**: Feed reads fail; fall back to fetching recent posts directly from Post Store.
+
+## Design
+
+### Design Considerations
+
+* **Fan-out strategy**: Most users have moderate follow counts (< 1000) → fan-out-on-write (push). Celebrity accounts (1M+ followers) → fan-out-on-read (pull). Dynamic switching based on follower count.
+* **Ranking freshness**: Features updated hourly (offline) or in real-time (for breaking news). Rank model weights adjusted weekly based on A/B test results.
+* **Privacy and safety**: Content filtered based on user privacy settings before appearing in feeds; spam detection at post creation time.
+
+### Key Decisions
+
+| Decision | Options | Trade-off | Facebook's Choice |
+|---|---|---|---|
+| Fan-out | Pure push | Fast reads, expensive writes | Hybrid (push normal, pull celebrities) |
+| | Pure pull | Cheap writes, slow reads | |
+| | Hybrid | Complex but balanced | ✓ |
+| Feed storage | Redis cache | Fast, limited capacity | Cache layer |
+| | Cassandra | Scalable, persistent | Primary store |
+| Ranking | Chronological | Simple, fair | Fallback only |
+| | ML ranking | Engaging, complex | ✓ (100+ signals) |
+| Graph storage | Pure DB | Strongly consistent | TAO (cache + DB) |
+| | Cache + DB | Fast, complex | ✓ (99%+ cache hit) |
+
+### Scalability Considerations
+
+* **TAO cache**: 1000+ shard replicas; cache warming for new data centers.
+* **Fan-out workers**: 1000+ workers partitioned by author_id; each handles fan-out for a subset of posts.
+* **Candidate generation**: Each user can follow 5000+ accounts → candidate set is huge → use pre-computed feed store (Cassandra) to limit candidate count.
+* **Ranking**: Model inference must be < 30 ms for 10+ candidates; pre-compute expensive features offline.
+
+### Reliability Considerations
+
+* **Eventual consistency**: Posts appear in feeds within seconds — acceptable for social content.
+* **Degraded modes**: If ranking is down, serve chronological; if TAO is down, serve from cache.
+* **Content safety**: Posts must be checked against community standards before appearing in feeds.
+
+### Performance Considerations
+
+* **P90 feed latency**: < 200 ms (95% of users get their feed within 200 ms).
+* **Fan-out latency**: < 5 seconds (posts appear in most followers' feeds within 5 seconds).
+* **Ranking latency**: < 30 ms per user (100+ ML features evaluated).
+* **Cache hit rate**: 95%+ for feed reads (Varnish + Redis).
+
+### Security Considerations
+
+* **Privacy controls**: Each post has privacy settings (public, friends, custom list); enforced at Post Service and Fan-out Service.
+* **Content moderation**: ML models detect hate speech, misinformation, violence before/while in feed.
+- **Data access**: TAO enforces read permissions — a user can only see graph data they have permission to (e.g., friends' posts, not strangers'). - **Rate limiting**: Prevent scraping and abuse via per-IP/user rate limits.
+
+### Maintainability Considerations
+
+* **Feature store**: Centralized ML feature store (FBLearner Flow) so ranking models can share features.
+* **A/B testing**: Thousands of experiments run simultaneously; careful experiment design and conflict detection.
+* **Model versioning**: Deploy new ranking model versions gradually (1% → 100% of users) with rollback.
+
 ## High-Level Design
 
 Post-to-feed journey:
@@ -328,6 +490,109 @@ Failure handling: fan-out lag visible as delayed appearance (SLO alarms before u
 - **Observability**: end-to-end feed latency attribution per stage, cache-hit ratios per key-class per region, fan-out lag distributions, ranking-model serving health (feature-freshness age!), integrity-metric dashboards (spam prevalence estimates).
 
 ---
+
+## API Contract
+
+Facebook's API is a graph-based REST API where every object (user, post, photo, comment) is a node, and relationships (friends, likes, comments) are edges.
+
+### Graph API
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/api/v1/me/feed` | Get user's news feed |
+| GET | `/api/v1/{user-id}/feed` | Get another user's feed |
+| POST | `/api/v1/{user-id}/feed` | Create a post |
+| POST | `/api/v1/{post-id}/comments` | Comment on a post |
+| POST | `/api/v1/{post-id}/likes` | Like a post |
+| POST | `/api/v1/{user-id}/friends` | Send friend request |
+| GET | `/api/v1/search` | Search posts, users, pages |
+
+### GET /api/v1/me/feed
+
+**Query Parameters**:
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| limit | int | 25 | Results per page (max 100) |
+| after | string | — | Cursor for pagination |
+| rank | bool | true | Apply ML ranking (vs chronological) |
+| include | string | — | Comma-separated: `comments,likes,attachments` |
+
+**Response**:
+```json
+{
+  "data": [
+    {
+      "post_id": "post_789",
+      "author_id": "user_123",
+      "author_name": "Alice",
+      "content": "Having a great time at the beach!",
+      "created_time": "2024-06-14T10:00:00Z",
+      "type": "text",
+      "attachments": [{"type": "photo", "url": "https://..."}],
+      "statistics": {"likes": 120, "comments": 15, "shares": 3},
+      "user_reacted": "LIKE",
+      "rank_score": 0.92
+    }
+  ],
+  "paging": {
+    "cursors": {"after": "QVFI..."},
+    "next": "https://graph.facebook.com/v1/api/v1/me/feed?after=QVFI..."
+  },
+  "client_time": "2024-06-14T10:05:00Z"
+}
+```
+
+### POST /api/v1/{user-id}/feed
+
+**Request Body**:
+```json
+{
+  "message": "Having a great time at the beach!",
+  "attached_photo": "photo_abc123",
+  "privacy": {"value": "ALL_FRIENDS"},
+  "place_id": "place_xyz"
+}
+```
+
+**Response**:
+```json
+HTTP/1.1 201 Created
+{
+  "post_id": "post_789",
+  "status": "PROCESSING",
+  "created_time": "2024-06-14T10:00:00Z"
+}
+```
+
+### Real-Time Updates (WebSockets)
+
+* Clients subscribe to `POST /api/v1/live/like` and `POST /api/v1/live/comment` for real-time feed updates.
+* Server pushes events: `{"type": "NEW_LIKE", "post_id": "post_789", "count": 42}`.
+
+### Status Codes
+
+| Code | Meaning |
+|---|---|
+| 200 | Success |
+| 201 | Created |
+| 204 | No content (delete) |
+| 400 | Invalid request |
+| 401 | Authentication required |
+| 403 | Insufficient permissions |
+| 404 | Object not found |
+| 429 | Rate limited |
+| 503 | Service temporarily unavailable |
+
+### Rate Limiting
+
+* App-level rate limit: 200 calls/user/access-token/hour.
+* Read calls: higher quota; write calls: lower quota.
+* Returns `X-App-Usage` header with usage percentage.
+
+### Versioning
+
+* Versioned via URL path (`/api/v1/`). Old versions are supported for 2 years with migration warnings.
 
 ## Data Modeling
 

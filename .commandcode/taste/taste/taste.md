@@ -1,5 +1,5 @@
 # Taste
-- For long multi-step tasks (e.g., enhancing many files), wants the work done sequentially, one file/item at a time, without delegating to subagents. Confidence: 0.95
+- For large multi-file documentation projects, the user explicitly requested parallel multi-agent delegation ("use 10 agent to do this") rather than sequential one-file-at-a-time work without subagents; however, may still prefer sequential work for other task types. Confidence: 0.8
 - Chunked writes: large files must be created in ≤250-line chunks (write_file for the first chunk, then edit_file appends) to avoid output limits; a single ~1300-line write_file call fails. Confidence: 0.85
 - Use a completed gold-standard file as the template/reference when enhancing other files in the same directory (e.g., key-value-store.md for the advanced directory). Confidence: 0.8
 - Uses Java with Spring Boot for code examples. Confidence: 0.9

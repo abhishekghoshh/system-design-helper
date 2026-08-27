@@ -15,7 +15,21 @@
 
 ## Theory
 
+### What Is It?
+
 Designing an e-commerce giant like Amazon or Flipkart is a **system-of-systems** problem: a storefront that must survive traffic spikes 10–100× baseline (Big Billion Days, Prime Day), a catalog of hundreds of millions of SKUs, an inventory engine that stays correct under concurrent buying, an order pipeline with money attached, and a payments integration that cannot lose or duplicate a rupee. The interview version focuses on the core loop — *browse → search → cart → checkout → pay → fulfil → deliver* — and the trade-offs at each step.
+
+### Why Does It Exist?
+
+Traditional monoliths fail at e-commerce scale because read/write asymmetry is extreme (browsing dwarfs buying ~1000:1), inventory must be strongly consistent under contention (oversell is a legal and financial liability), and sales events create short-lived 100× traffic bursts that idle-capacity provisioning cannot absorb. Decomposing into bounded services lets each sub-problem scale and fail independently while an event backbone keeps them coordinated.
+
+### What Problem Does It Solve?
+
+* **Read/write imbalance**: millions browse a product for every one person who buys it. A single shared database cannot serve both patterns efficiently — caching, denormalization, and CDN offload handle the read flood.
+* **Oversell risk**: the "last unit" problem — two concurrent buyers both seeing stock=1. Solved with reservation/TTL and serialized decrement patterns.
+* **Sale-day overload**: flash sales produce request bursts that exceed steady-state capacity by orders of magnitude. Cell-based isolation, waiting rooms, and pre-warming keep the site up.
+* **Cross-system consistency**: an order touches pricing, inventory, payment, and fulfilment. Distributed sagas with idempotent compensation replace impossible distributed transactions.
+* **Global latency and data residency**: customers expect sub-200-ms page loads while data laws (e.g., India's Digital Personal Data Protection Act) may require regional residency.
 
 ### Important Subtopics
 
@@ -249,6 +263,100 @@ Decision factors: SKU count, traffic profile (spikiness), seller count, payment 
 
 ---
 
+## Architecture
+
+### Architectural Style
+
+This system follows a **microservice architecture** with **layered service internals** and an **event-driven backbone**:
+
+- **Layered within a service**: each service exposes a REST/gRPC API layer → business-logic/orchestration layer → data-access layer → persistent store. This keeps responsibilities separated and makes each service independently deployable.
+- **Microservices across the domain**: catalog, search, cart, pricing, inventory, order, payment, notification, fulfilment each own their data and scale independently.
+- **Event-driven integration**: an append-only log (Kafka) carries domain events between services, decoupling producers from consumers and enabling replay for recovery and analytics.
+- **API-gateway/BFF pattern**: a Backend-for-Frontend sits at the edge, aggregating and adapting responses per client (web, mobile) while handling cross-cutting concerns (auth, rate limiting, protocol translation).
+
+```mermaid
+flowchart TB
+    subgraph Edge
+        GW[API Gateway / BFF]
+    end
+    subgraph Services
+        CAT[Catalog] -->|CDC| BUS[(Event Bus Kafka)]
+        SRCH[Search] <-->|index feed| BUS
+        CART[Cart] --> BUS
+        INV[Inventory] --> BUS
+        OMS[Order Mgmt] --> BUS
+        PAY[Payment] --> BUS
+        NOTIF[Notifications]
+    end
+    BUS --> NOTIF
+    BUS --> FUL[Fulfillment]
+    BUS --> ANA[Analytics]
+    GW --> CAT
+    GW --> SRCH
+    GW --> CART
+    GW --> OMS
+    GW --> INV
+    GW --> PAY
+```
+
+**Trade-offs**: microservices enable independent scaling and team autonomy, but add distributed-system complexity (network failures, eventual consistency, distributed tracing). The event backbone absorbs bursts and decouples consumers, but introduces replay-ordering concerns. The layered style inside each service keeps code maintainable but adds a hop; for ultra-low-latency paths (inventory decrement) you can fuse layers or move logic into stored procedures / Redis scripts. **When to use**: marketplace with many sellers, SKU count in the millions, spiky traffic, and a team large enough to own multiple services.
+
+### Design
+
+### Design Considerations
+
+- **Read vs. write asymmetry**: design the read path (CDN + Redis read-models) to be near-infinitely scalable and the write path (inventory, payments) to be correct and bounded. Most early-stage teams over-build the write path and under-build the read path.
+- **Burst tolerance**: provision for 100× peaks, not average load. Use autoscaling, cell isolation for sales, and graceful degradation (drop non-essential features under load).
+- **Failure isolation**: a review-service outage must not block checkout. Bulkheads and circuit breakers keep revenue-critical paths alive.
+- **Monetary correctness**: every financial calculation happens server-side; client-sent totals are advisory. Idempotency keys protect against duplicate charges.
+
+### Key Decisions
+
+- **Event backbone over RPC orchestration**: order placement emits events that downstream consumers react to, rather than synchronous fan-out at checkout time. This bounds checkout latency and absorbs downstream failures.
+- **Inventory reservation with TTL**: reserve stock at checkout start with a finite hold window; confirm on payment success, release on timeout/failure. This balances oversell prevention against abandoned-cart stock-hogging.
+- **Denormalized read models**: a single `product_detail` blob assembled from catalog + pricing + inventory + reviews is cached and refreshed via CDC events. PDP rendering becomes one cache lookup instead of N service calls.
+- **Idempotency on every write**: every mutating endpoint accepts a client-supplied key so retries collapse safely.
+
+### Trade-offs
+
+- Microservices give independent scaling but at the cost of distributed-system complexity and operational overhead.
+- Eventual consistency on catalog/cart reads simplifies the read path but surfaces as "price changed at checkout" UX friction.
+- Cell-based sale isolation protects mainstream traffic but adds infrastructure that is idle most of the year.
+
+### Scalability Considerations
+
+- Catalog: CDN + Redis read-model cluster scaled on read RPS; ~95% cache hit target.
+- Cart: eventually-consistent KV store (DynamoDB/Cassandra) with per-user sharding.
+- Inventory: per-SKU serialization via queue or row locking; bucketed counters for hot SKUs.
+- Orders: Kafka partitions keyed by `orderId` preserve per-order ordering.
+- Checkout: autoscale pods on RPS; payment/inventory pools sized for peak writes with headroom.
+
+### Reliability Considerations
+
+- **Degradation ladders**: drop reviews/recommendations before slowing PDPs; disable non-critical features during sales via feature flags.
+- **Payment-gateway brownout**: retry with alternate PSP behind circuit breaker; queue-and-notify for async completion.
+- **Saga recovery**: persistent saga-state rows allow crash recovery; compensations are idempotent and retryable.
+
+### Performance Considerations
+
+- PDP p95 < 200 ms achieved via read-model caching, not faster RPCs.
+- Sale-open stampede mitigated with pre-warming, request coalescing, and jittered cache expiries.
+- Inventory display can be soft-realtime (approximate) while checkout enforces exact truth.
+
+### Security Considerations
+
+- **PCI scope minimization**: tokenize card data; never log full PANs.
+- **Account-takeover defense**: MFA, device fingerprinting, anomalous-login detection.
+- **Bot/scalper mitigation**: CAPTCHAs, rate limiting, and waiting rooms for flash sales.
+- **Price tampering**: always recompute totals server-side; treat client values as untrusted.
+- **Fraud**: inline risk scoring at checkout + offline clawback pipelines.
+
+### Maintainability Considerations
+
+- **Schema evolution**: contract tests and backward-compatible API versions across hundreds of services.
+- **Contract testing**: consumer-driven contracts prevent breaking downstream services.
+- **Deprecation discipline**: sunset old clients slowly; keep monolith releasable during migration.
+
 ## High-Level Design
 
 Request flow for checkout:
@@ -291,6 +399,118 @@ Scaling: CDN/static + PDP edge caching → Redis read-model cluster → service 
 - **Outbox pattern**: OMS writes order row + outbox event in one local transaction; relay publishes to Kafka. Guarantees event exists iff order committed, avoiding dual-write anomalies.
 - **Consistency choices table**: catalog (eventual, minutes) · cart (eventual, session-scoped) · inventory display (approximate ok) · inventory reservation (strict, serialized) · payments (strict + external reconciliation) · order status read-your-writes via sticky routing to owning partition.
 - **Observability**: distributed tracing on checkout (every ms visible), per-step saga success/failure dashboards, stock-vs-orders drift alarms, PSP latency/error burn-rate alerts tied to automated failover.
+
+---
+
+## API Contract
+
+### Catalog API
+
+```
+GET    /api/v1/products/search?q=laptop&category=electronics&sort=price_asc&page=1&size=40
+GET    /api/v1/products/{productId}
+GET    /api/v1/products/{productId}/offers?seller=abc123
+GET    /api/v1/categories/electronics/subcategories
+```
+
+**Search response**:
+
+```json
+{
+  "results": [
+    {
+      "productId": "B0ABCD1234",
+      "title": "Laptop XYZ",
+      "price": { "amount": 71900, "currency": "INR", "display": "₹71,900" },
+      "imageUrl": "https://cdn.example.com/products/B0ABCD1234.webp",
+      "rating": 4.3,
+      "reviewCount": 1284,
+      "shippingInfo": { "deliveryDays": 2, "free": true },
+      "badge": ["Deal of the Day"]
+    }
+  ],
+  "filters": { "brands": [...], "priceRanges": [...] },
+  "facets": { "brands": [{"name":"Dell","count":42}], "ratings": [...] },
+  "page": 1, "size": 40, "totalHits": 1240, "nextCursor": "cursor-token"
+}
+```
+
+- Supports pagination via cursor-based tokens, filtering on facets, and sorting by relevance/price/rating.
+- PDP response is a single cached `product_detail` blob combining catalog + pricing + inventory + reviews.
+
+### Cart API
+
+```
+GET    /api/v1/cart                       # for logged-in or guest (cookie token)
+POST   /api/v1/cart/items                 # { skuId, quantity }
+PUT    /api/v1/cart/items/{skuId}         # update quantity
+DELETE /api/v1/cart/items/{skuId}
+POST   /api/v1/cart/merge                 # merge guest cart at login
+```
+
+- Every write is idempotent within a short window; stale prices are revalidated at checkout.
+
+### Checkout/Order API
+
+```
+POST   /api/v1/checkout                   # Idempotency-Key: <uuid>
+GET    /api/v1/orders/{orderId}
+GET    /api/v1/orders?cursor=...           # customer order history (read-your-writes via sticky routing)
+```
+
+**Checkout request**:
+
+```json
+POST /api/v1/checkout
+Idempotency-Key: 97b8c302-...
+Authorization: Bearer <jwt>
+
+{
+  "cartId": "cart-abc123",
+  "addressId": "addr-456",
+  "paymentMethod": { "type": "card", "token": "tok_xxx" }
+}
+```
+
+**Checkout response** (HTTP 202 — async completion via polling/websocket):
+
+```json
+{
+  "orderId": "ord-7d2f9c",
+  "status": "PAYMENT_PENDING",
+  "amount": { "amount": 71900, "currency": "INR" },
+  "nextAction": "redirect_to_psp"
+}
+```
+
+- `Idempotency-Key` guarantees that retries collapse to the same order.
+- Order history is served from a materialized view partitioned by `userId`; critical path uses sticky routing to the owning Kafka partition for read-after-write consistency.
+
+### Payment Webhook API
+
+```
+POST /api/v1/payments/webhook
+X-Signature: sha256=<hmac>
+{
+  "event": "payment.captured",
+  "orderId": "ord-7d2f9c",
+  "pspRef": "pay_xxx",
+  "amount": 71900,
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+- All webhook endpoints verify HMAC signatures and are idempotent (dedup by `pspRef`).
+
+### Status Codes
+
+* `200/201` — success (202 for async checkout)
+* `400` — invalid request body / bad params (e.g., missing `Idempotency-Key`)
+* `401` — unauthenticated
+* `403` — authenticated but not authorized
+* `409` — inventory insufficient or order already exists (idempotency collision returns existing order)
+* `429` — rate limited (token-bucket per user/account)
+* `503` — degraded during sale (fallback to waiting room / static page)
 
 ---
 

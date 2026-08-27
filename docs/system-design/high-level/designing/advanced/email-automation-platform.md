@@ -12,7 +12,21 @@
 
 ## Theory
 
+### What Is It?
+
 An email automation platform lets marketers build audience segments, design campaigns, and orchestrate triggered flows (welcome series, abandoned cart, post-purchase) — then delivers billions of emails reliably while maximizing deliverability and measuring everything. It's a hybrid of three systems: a **workflow engine** (flows), a **segmentation/query engine** (audiences), and a **high-scale delivery infrastructure** (sending IPs, bounce processing, reputation management).
+
+### Why Does It Exist?
+
+Email is the highest-ROI marketing channel (average $36 return per $1 spent). But at scale — billions of emails per day across millions of campaigns — manual sending is impossible. Automation platforms exist to let marketers define audience segments and workflows once, then reliably execute them at planetary scale while navigating the treacherous landscape of email deliverability (spam filters, sender reputation, domain authentication).
+
+### What Problem Does It Solve?
+
+* **Segmentation at scale**: selecting the right recipients from tables of hundreds of millions of users, based on complex criteria (demographics, behavior, purchase history) — all refreshed in near-real-time.
+* **Trigger orchestration**: reacting to user events (signup, cart abandonment, purchase) with multi-step email sequences, each step with its own delay and conditions.
+* **High-scale delivery**: sending millions of emails per hour requires IP warming, rate limiting per ISP, and adaptive throttling based on bounce/complaint feedback.
+* **Deliverability**: SPF/DKIM/DMARC authentication, IP reputation management, spam-content detection, and ISP-specific routing to maximize inbox placement.
+* **Measurement**: tracking opens, clicks, bounces, and conversions across billions of sends, with proper attribution and A/B testing.
 
 ### Important Subtopics
 
@@ -228,6 +242,96 @@ Decision inputs: volume trajectory, marketing sophistication, engineering capaci
 
 ---
 
+## Architecture
+
+An email automation platform follows a **hybrid workflow + delivery** architecture. The **workflow engine** manages campaign orchestration (when to send, to whom, what content) based on triggers and schedules. The **segmentation engine** evaluates audience rules against user profiles to produce recipient lists. The **delivery pipeline** handles the actual email sending: template rendering → queueing → MTA (Mail Transfer Agent) → ISP. A **reputation service** manages sending IP warm-up, ISP feedback loops, and deliverability metrics. Analytics track opens, clicks, bounces, and conversions.
+
+```mermaid
+graph LR
+  A[Marketer] --> B[Campaign Designer]
+  B --> C[Workflow Engine]
+  C --> D[Segment Engine]
+  C --> E[Template Renderer]
+  D --> F[Recipient List]
+  F --> G[Delivery Queue]
+  E --> G
+  G --> H[MTA Pool]
+  H --> I[ISP - Gmail/Outlook]
+  H --> J[Bounce Processor]
+  H --> K[Feedback Loop]
+  C --> L[Scheduling Service]
+  L --> C
+```
+
+| Component | Purpose | Responsibilities | Real-world Example |
+|---|---|---|---|
+| Campaign Designer | UI builder | Visual flow/campaign editor | Klaviyo Builder |
+| Workflow Engine | Orchestrate sends | Decision logic, scheduling, conditions | AWS Step Functions |
+| Segment Engine | Audience selection | Evaluate rules against user profiles | SQL/Elasticsearch |
+| Template Renderer | Content generation | Merge templates with user data | Handlebars, MJML |
+| Delivery Queue | Queue emails | Priority queuing, rate limiting | Kafka, SQS |
+| MTA Pool | Send emails | SMTP delivery, connection pooling | Postfix, SendGrid |
+| Reputation Service | Deliverability | IP warm-up, spam complaint handling | Dedicated IP pools |
+| Bounce Processor | Handle bounces | Parse bounces, update suppression | SES, Postmark |
+| Analytics | Track metrics | Opens, clicks, conversions | Segment, GA4 |
+
+**Communication**: Workflow engine publishes email tasks to the delivery queue; MTA workers consume and send. Bounce processor and feedback loops feed back into reputation management.
+
+**Scaling**: Queue-based delivery decouples submission from sending; scale MTA workers based on ISP rate limits. Segment engine uses distributed query (Spark/Elasticsearch) for large audiences.
+
+**Failure handling**: Failed sends go to retry queues with exponential backoff; persistent bounces go to suppression list; hard failures go to DLQ for manual review.
+
+## Design
+
+### Design Considerations
+
+* **Delivery rate control**: ISPs throttle senders based on reputation; the platform must adapt send rates dynamically (start slow for new IPs, increase gradually based on engagement metrics).
+* **Suppression management**: hard bounces and spam complaints must be immediately suppressed to protect sender reputation.
+* **Segment evaluation**: evaluating "all users who visited /pricing but didn’t convert" against 500M users requires efficient indexing.
+* **Idempotency**: duplicate flow executions (from retries or webhook replays) must not result in duplicate emails.
+
+### Key Decisions
+
+| Decision | Options | Trade-off | Recommendation |
+|---|---|---|---|
+| Delivery | Push (queue-based) | Decouples, scalable | Standard |
+| | Pull (on-demand) | Simpler, limited scale | Small senders |
+| MTA | Shared pool | Cost-effective | Low volume |
+| | Dedicated IPs | Better reputation | 1M+/day |
+| Segmentation | Real-time evaluation | Fresh, slow | Targeted sends |
+| | Pre-computed lists | Fast, stale | Large campaigns |
+| Idempotency | Deduplication table | Strong guarantee | Required |
+| | At-most-once delivery | Simple | Not recommended |
+
+### Scalability Considerations
+
+* **MTA parallelism**: distribute sends across multiple MTA instances; respect per-ISP rate limits.
+* **Queue sharding**: partition delivery queue by recipient domain (gmail, yahoo, etc.) for targeted rate control.
+* **Segment pre-computation**: nightly materialization of large audience segments into lookup tables for fast send execution.
+
+### Reliability Considerations
+
+* **Idempotency keys**: each email has a unique composite key (recipient + campaign + template_version); the MTA pool checks a dedup table before sending.
+* **Dead letter queues**: emails that fail after N retries go to DLQ for manual intervention.
+* **Warm-up scheduling**: new IP addresses start with low volume and ramp up over days based on engagement and complaint rates.
+
+### Performance Considerations
+
+* **Template caching**: rendered templates cached in Redis for repeated sends to similar users.
+* **Batch sending**: MTA connection reuse; batch envelope commands (PIPELINING, STARTTLS session reuse) to reduce overhead.
+
+### Security Considerations
+
+* **PII protection**: recipient email addresses are the core PII — encrypt at rest, never log raw addresses.
+* **Domain authentication**: SPF/DKIM/DMARC records must be correctly configured for all sending domains.
+* **Suppression list security**: access to suppression lists must be auditable (legal requirement for spam compliance).
+
+### Maintainability Considerations
+
+* **Deliverability dashboard**: monitor inbox placement rates, spam complaint rates, bounce rates per ISP and IP.
+* **A/B testing of templates**: test subject lines, content variations, and sending times.
+| **Observability**: track per-domain send rates, bounce classification (hard/soft/complaint), open/click rates by segment — anomalies trigger automated IP reputation throttling.
+
 ## High-Level Design
 
 Campaign blast journey:
@@ -275,6 +379,111 @@ Failure handling: renderer backlog → scheduler slows intake (backpressure upst
 - **Observability**: funnel metrics (queued→rendered→accepted→delivered→opened→clicked), per-domain reputation panels, flow-step conversion rates, suppression-lag monitors (unsubscribe honored <seconds), warmup progress trackers.
 
 ---
+
+## API Contract
+
+The email automation platform exposes REST APIs for campaign/flow management and an internal API for delivery infrastructure.
+
+### Campaign & Flow API
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| POST | `/api/v1/campaigns` | Create a campaign |
+| GET | `/api/v1/campaigns/{id}` | Get campaign details |
+| PATCH | `/api/v1/campaigns/{id}` | Update campaign |
+| POST | `/api/v1/campaigns/{id}/send` | Trigger send to audience |
+| POST | `/api/v1/flows` | Create automation flow |
+| GET | `/api/v1/flows/{id}` | Get flow details |
+| POST | `/api/v1/audiences/{id}/evaluate` | Evaluate segment recipients |
+
+### Delivery API
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| POST | `/api/v1/emails` | Queue a single email |
+| POST | `/api/v1/bulk-emails` | Queue bulk emails |
+| GET | `/api/v1/bulk-emails/{job_id}` | Get bulk send status |
+| POST | `/api/v1/webhooks/bounce` | Bounce webhook endpoint |
+| POST | `/api/v1/webhooks/feedback` | Spam complaint webhook |
+
+**POST /api/v1/campaigns — Request Body**:
+```json
+{
+  "name": "Welcome Series",
+  "type": "triggered",
+  "trigger": "user.signup",
+  "steps": [
+    {
+      "delay_seconds": 0,
+      "template_id": "tmpl_welcome",
+      "conditions": {"segment_id": "new_users"}
+    },
+    {
+      "delay_seconds": 86400,
+      "template_id": "tmpl_day1",
+      "conditions": {"engaged": true}
+    }
+  ],
+  "from_email": "hello@company.com",
+  "from_name": "Company"
+}
+```
+
+**POST /api/v1/campaigns — Response**:
+```json
+HTTP/1.1 201 Created
+{
+  "campaign_id": "camp_abc123",
+  "name": "Welcome Series",
+  "status": "draft",
+  "created_at": "2024-06-14T10:00:00Z",
+  "estimated_recipients": 0
+}
+```
+
+**GET /api/v1/campaigns/{id}/analytics — Response**:
+```json
+{
+  "campaign_id": "camp_abc123",
+  "sent": 10000,
+  "delivered": 9800,
+  "opened": 4900,
+  "clicked": 980,
+  "bounced": 120,
+  "complained": 15,
+  "unsubscribed": 30,
+  "open_rate": 50.0,
+  "click_rate": 10.0,
+  "bounce_rate": 1.2
+}
+```
+
+### Webhook Authentication
+
+* Webhooks signed with HMAC-SHA256 using a shared secret. Header: `X-Email-Signature: sha256=<hmac>`.
+* Must be acknowledged with HTTP 200 within 5 seconds; failed deliveries retried with exponential backoff.
+
+### Status Codes
+
+| Code | Meaning |
+|---|---|
+| 200 | Success |
+| 201 | Resource created |
+| 202 | Request accepted (async processing) |
+| 400 | Invalid request |
+| 401 | Authentication required |
+| 403 | Insufficient permissions |
+| 404 | Resource not found |
+| 429 | Rate limited |
+| 503 | Service unavailable |
+
+### Idempotency
+
+* `POST /api/v1/emails` accepts `Idempotency-Key` header. Duplicate keys within 24 hours return the original response.
+
+### Versioning
+
+* Versioned via URL prefix (`/api/v1/`). Webhook payloads include a `version` field.
 
 ## Data Modeling
 

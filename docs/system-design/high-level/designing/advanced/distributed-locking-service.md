@@ -8,6 +8,22 @@
 
 ## Theory
 
+### What Is It?
+
+A **distributed lock** coordinates exclusive access to a shared resource across multiple processes/machines in a distributed system. Unlike a local mutex, it works when the contenders are on different nodes with no shared memory.
+
+### Why Does It Exist?
+
+In a single-node system, a mutex suffices to prevent concurrent access to a shared resource. In a distributed system, there is no shared memory to coordinate. A distributed locking service exists to provide mutual exclusion across machines — for example, ensuring only one scheduler instance fires a cron job, or only one process rebalances a partitioned resource at a time.
+
+### What Problem Does It Solve?
+
+* **Race conditions across nodes**: without a distributed lock, two nodes can both believe they hold leadership of the same shard simultaneously, leading to duplicate work, data corruption, or split-brain.
+* **Leader election**: choosing exactly one node as coordinator among a cluster of N, where membership is dynamic (nodes crash, restart).
+* **Distributed critical sections**: ensuring a configuration change, a cache rebuild, or a financial reconciliation runs on only one node at a time.
+* **Fencing/stale-holder protection**: even after a lock expires (TTL), a slow or suspended holder might still act on its authority — fencing tokens (monotonically increasing) let the resource reject stale requests.
+* **Deadlock and liveliness**: unlike local mutexes, distributed locks can fail silently (GC pause, clock skew, network partition) — the system must guarantee safety (no two holders) even if liveness (progress) is temporarily sacrificed.
+
 ### Important Subtopics
 
 1. Mutual exclusion semantics: safety vs liveness guarantees
@@ -330,9 +346,107 @@ Decision inputs: cost of dual-execution vs stall, pause probabilities, existing 
 
 ---
 
-## High-Level Design
+## Architecture
+
+### Architectural Style
+
+**Consensus-backed lock manager**: the locking service uses a strongly consistent store (etcd, ZooKeeper) as the source of truth for lock ownership. Lock acquisition is a write to the consensus store (create ephemeral znode / lease-bound key); release is deletion. Fencing tokens — monotonically increasing values stored with the lock — are returned to the holder so the protected resource can reject requests from stale holders (GC pauses, network delays) after the lock has been taken over. This is the **layered architecture** approach: the lock store provides safety (strong consistency), the fencing token provides the resource-side check (no stale writes).
 
 ```mermaid
+flowchart TB
+    subgraph "Lock Acquirer"
+        C1[Client A]
+        C2[Client B]
+    end
+    subgraph "Lock Service"
+        STORE[(etcd / ZooKeeper<br/>consensus store)]
+        LEADER[(Leader/followers<br/>quorum)]
+    end
+    subgraph "Protected Resource"
+        RES[Database / File / Job]
+    end
+    C1 -->|acquire(lockKey, lease)| STORE
+    C2 -->|acquire(lockKey, lease)| STORE
+    STORE -->|fencing token + lease| C1
+    C1 -->|write with token| RES
+    C2 -- waits --> STORE
+    STORE -->|reject: already locked| C2
+    C1 -- renew lease --> STORE
+```
+
+*Diagram: Consensus-backed distributed lock. Clients acquire locks through the consensus store (etcd/ZooKeeper), which returns a fencing token and lease. The protected resource validates the fencing token on every write, rejecting requests from stale lock holders. The consensus store guarantees only one client holds the lock at any time (safety); fencing tokens protect the resource even if a holder is slow to release.*
+
+### Component Responsibilities and Communication
+
+| Component | Responsibility | Communication |
+|---|---|---|
+| Consensus Store | Linearizable lock state (who holds which key) | Raft/Zab quorum; clients write ephemeral/lease-bound keys |
+| Lease Manager | Track lock TTL, auto-release on session expiry | Built into etcd/ZooKeeper sessions |
+| Fencing Token Generator | Monotonic token per lock acquisition | Stored alongside lock; returned to holder |
+| Client Library | Acquire/release lock, renew lease, handle reconnection | gRPC/ZooKeeper client protocol |
+| Protected Resource | Validate fencing token on every write | Rejects tokens lower than last seen |
+
+**Data flow**: client requests lock → store creates ephemeral/lease key (atomic, via consensus) → returns fencing token → client uses token in resource writes → resource validates token ≥ last-seen → on lease expiry, store deletes key → new acquirer gets higher token.
+
+**Scaling strategy**: lock operations are quorum-coordinated (fast for small clusters). Sharding lock keys across multiple stores reduces per-shard contention. The resource-side check is stateless (just track max token).
+
+**Failure handling**: client crash → lease expires → lock released; network partition → quorum prevents dual ownership; resource crash → fencing token persists in its own durable log.
+
+## Design
+
+### Design Considerations
+
+The fundamental tension in distributed locking is **safety vs. liveness**: safety (at most one holder) is non-negotiable — a double-allocation bug can corrupt data; liveness (eventually a holder makes progress) is best-effort and may sacrifice progress during partitions. The key design decision is whether to use a **consensus-backed store** (etcd, ZooKeeper — strong consistency, but requires quorum) or a **clock-based approach** (Redis Redlock — faster, but only probabilistically safe under clock skew and network partitions).
+
+### Key Decisions
+
+- **Store choice**: etcd/ZooKeeper for safety-critical locks (databases, leader election); Redis Redlock for best-effort locks where brief double-holds are tolerable.
+- **Lease/TTL duration**: trade off lock-hold duration vs. recovery speed. Too short → premature release under GC pause; too long → slow recovery from crash. Typically 10–30 s with auto-renewal.
+- **Fencing tokens**: always issue a monotonically increasing token to the lock holder; the resource validates it on every write. This is the only defense against stale-holder writes.
+- **Single-instance vs. Redlock**: a single Redis instance is unsafe (no fault tolerance); Redlock's safety proof is debated — most production systems use etcd/ZooKeeper for critical locks and accept Redlock's limitations for non-critical ones.
+- **Reentrancy**: allow the same client to re-acquire a lock it already holds (for layered code); implement via lock counting with the same fencing token.
+
+### Trade-offs
+
+| Decision | Pro | Con |
+|---|---|---|
+| etcd/ZooKeeper | Strong safety (quorum-based) | Requires quorum; slower than single Redis |
+| Redis Redlock | Faster, simpler infra | Debate about safety under clock skew/party |
+| Fencing tokens | Resource protected even if holder is slow | Resource must track token; extra complexity |
+| Long TTL + auto-renew | Stable during GC pauses | Slow recovery from true crashes |
+| Short TTL | Fast recovery | Premature release under load/pauses |
+
+### Scalability Considerations
+
+- Lock keys sharded across multiple etcd clusters reduces per-shard contention.
+- For leader election at scale (e.g., Kafka partitions), use a small number of leadership locks, not one per entity.
+- Redlock requires 3+ independent Redis instances — infrastructure cost.
+
+### Reliability Considerations
+
+- **GC pause risk**: a GC pause longer than the TTL releases the lock prematurely; mitigate with auto-renewal and fencing tokens.
+- **Network partition**: the non-quorum side must not grant locks (etcd/ZooKeeper handles this via quorum); Redlock's safety under partitions is the subject of the Kleiner-Saks/Stripe debate.
+- **Clock skew**: matters for time-based locks; lease-based locks (etcd) are more robust than TTL-only (Redis).
+
+### Performance Considerations
+
+- etcd lock acquisition: ~2–5 ms (quorum round trip). Acceptable for infrequent critical sections.
+- Redis lock acquisition: ~0.5 ms (single instance). Faster but less safe.
+- Fencing token validation: O(1) at the resource (track max token).
+
+### Security Considerations
+
+- **Lock hijacking**: an attacker who can write to the lock store can steal any lock — strict ACLs and mutual TLS are mandatory.
+- **Lease hijacking**: ensure lease tokens are cryptographically unguessable and bound to the acquiring client's identity.
+- **Denial of service**: a malicious client holding a long-TTL lock can starve others — rate-limit lock creation, enforce max TTL.
+
+### Maintainability Considerations
+
+- **TTL tuning**: revisit TTL values per workload; document the rationale for each.
+- **Monitoring**: lock acquisition latency, lease expiration rate, fencing-token rejection rate, quorum availability.
+- **Testing**: chaos-test store partitions, GC pause injection, and clock skew to verify liveness/safety boundaries.
+
+## High-Level Design
 sequenceDiagram
     participant A as Client A
     participant L as Lock Svc (etcd quorum)
@@ -371,6 +485,107 @@ Failure handling: minority node loss → quorum continues; whole-cluster loss �
 - **Observability**: histograms of acquire-wait, hold-time, renewal-failure counts, fence-rejection rate (spike = paused/stale holders active!), per-resource contention top-K dashboards feeding auto-sharding suggestions.
 
 ---
+
+## API Contract
+
+### Lock Operations API
+
+```
+POST /api/v1/locks/acquire
+PUT  /api/v1/locks/{lockId}/release
+PUT  /api/v1/locks/{lockId}/renew
+POST /api/v1/locks/try-acquire
+GET  /api/v1/locks/{lockId}           # get current holder + fencing token
+```
+
+### Acquire Lock (blocking)
+
+```http
+POST /api/v1/locks/acquire
+Content-Type: application/json
+
+{
+  "resource": "job:scheduler:leadership",
+  "ttlSeconds": 30,
+  "waitTimeSeconds": 10,
+  "clientIdentity": "scheduler-3.prod.example.com"
+}
+```
+
+**Response** (HTTP 200):
+
+```json
+{
+  "lockId": "lock-f1e2d3",
+  "resource": "job:scheduler:leadership",
+  "fencingToken": 42,
+  "expiresAt": "2024-02-14T10:30:30Z",
+  "grantedAt": "2024-02-14T10:30:00Z"
+}
+```
+
+### Try-Acquire (non-blocking)
+
+```http
+POST /api/v1/locks/try-acquire
+Content-Type: application/json
+
+{
+  "resource": "shard:14:update",
+  "ttlSeconds": 15
+}
+```
+
+**Response on success** (same structure as acquire). **Response on failure** (HTTP 409):
+
+```json
+{
+  "error": "LOCK_HELD",
+  "resource": "shard:14:update",
+  "heldBy": "worker-7.prod.example.com",
+  "retryAfterSeconds": 12
+}
+```
+
+### Renew Lock
+
+```http
+PUT /api/v1/locks/lock-f1e2d3/renew
+Content-Type: application/json
+
+{ "extendSeconds": 30 }
+```
+
+### Release Lock
+
+```http
+PUT /api/v1/locks/lock-f1e2d3/release
+Idempotency-Key: 97b8c302-...
+```
+
+```json
+{ "lockId": "lock-f1e2d3", "status": "RELEASED" }
+```
+
+### Status Codes
+
+* `200` — lock acquired/released/renewed successfully
+* `202` — renew accepted (async lease extension)
+* `409` — resource already locked (try-acquire failed)
+* `410` — lock expired or already released (stale)
+* `400` — invalid TTL/window parameter
+* `401` — unauthenticated
+* `403` — not authorized to lock this resource
+* `429` — rate limited (per-client lock-acquisition rate)
+* `503` — lock store unavailable or quorum lost
+
+### Key Contracts
+
+- **Fencing tokens**: every successful acquire returns a monotonically increasing `fencingToken`; the protected resource must reject any request with a token lower than the last seen token. This is the only defense against stale holders during GC pauses or network delays.
+- **Idempotency**: release and renew are idempotent; releasing an already-released lock returns `200` with `status: RELEASED`.
+- **TTL semantics**: locks auto-release when TTL expires without renewal; clients must renew before TTL to hold the lock. TTL must exceed expected GC pause duration.
+- **Quorum requirement**: lock acquisition requires quorum (W+R > N) on the consensus store; if quorum is lost, no new locks are granted.
+- **Watchdog renewal**: critical sections use a background watchdog thread that renews the lease every TTL/3 seconds; if the watchdog fails (process frozen), the lock expires.
 
 ## Data Modeling
 

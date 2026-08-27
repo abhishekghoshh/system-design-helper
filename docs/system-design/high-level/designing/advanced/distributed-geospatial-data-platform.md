@@ -12,7 +12,21 @@
 
 ## Theory
 
+### What Is It?
+
 A geospatial platform stores, indexes, queries, and serves data whose defining dimension is **location on Earth** — points (drivers, POIs), lines (roads), polygons (delivery zones), and rasters (satellite tiles) — at global scale with millisecond query expectations. The core problem: Earth is a sphere that must be mapped onto finite, balanced data structures so "everything within 5 km of me" or "which zone contains this point?" stays fast at billions of objects.
+
+### Why Does It Exist?
+
+Modern applications — ride-hailing, food delivery, logistics, social check-ins, asset tracking, ad targeting — all depend on answering "what is near what?" at planet-wide scale. A naive approach (store lat/lng, compute distances one-by-one) fails because Earth's surface cannot be naively projected into a flat grid without distortion, and brute-force scans over billions of points are orders of magnitude too slow. A geospatial platform exists to map 2D spherical space into 1D sortable keys that existing key-value and search infrastructure can index and query efficiently.
+
+### What Problem Does It Solve?
+
+* **Spherical geometry on flat indexes**: longitude lines converge at the poles, so "nearest neighbors" in lat/lng space are not nearest in a naive grid. Spatial indexing systems (S2, H3, geohash) map Earth into hierarchical cells that preserve locality.
+* **Query efficiency at scale**: "all taxis within 5 km" over millions of records must return in milliseconds. Pre-filtering via spatial indexes (cell IDs) narrows candidates before precise distance computation.
+* **Dynamic data ingestion**: millions of moving objects (ride-hailing drivers) update positions every few seconds while staying queryable — requires real-time indexing pipelines, not batch rebuilds.
+* **Multi-resolution analytics**: heatmaps, density analysis, and region-based aggregation need hierarchical spatial decompositions that support roll-up from fine to coarse cells.
+* **Privacy of location data**: precise coordinates must be generalized/obfuscated for analytics while preserving utility — a system-level design concern.
 
 ### Important Subtopics
 
@@ -237,9 +251,122 @@ Decision inputs: query latency budgets, update rates, engineering geo-expertise,
 
 ---
 
-## High-Level Design
+## Architecture
 
-Live geofence evaluation flow:
+### Architectural Style
+
+**Spatial index + geo-partitioned storage + tile pipeline**: geospatial data is mapped into hierarchical spatial cells (S2/H3/geohash) that preserve locality when sorted as 1D keys. Data is partitioned by these cell IDs, enabling geo-partitioned sharding. A query engine resolves spatial predicates (range, KNN, polygon containment) via cell-prefix scans, then refines with exact geometry. A separate tile pipeline serves map tiles (vector or raster) through a CDN for visualization.
+
+```mermaid
+flowchart TB
+    subgraph Ingest
+        MO[Moving objects<br/>GPS pings]
+        POIS[Static POIs<br/>boundaries]
+        RASTER[Satellite imagery]
+    end
+    subgraph Spatial Index
+        GEOIDX[Geometry index<br/>PostGIS/ES geo]
+        CELL[Cell index<br/>S2/H3]
+    end
+    subgraph Query
+        QP[Query Processor<br/>spatial joins, KNN, geofence]
+        CACHE[Tile cache<br/>Redis CDN]
+    end
+    subgraph Serve
+        BI[BI / Analytics]
+        MAP[Tile server<br/>Mapbox vector tiles]
+        APP[App API<br/>nearby search]
+    end
+    MO --> GEOIDX
+    POIS --> GEOIDX
+    RASTER --> CELL
+    GEOIDX --> CELL
+    CELL --> QP
+    GEOIDX --> QP
+    QP --> CACHE
+    QP --> BI
+    CACHE --> MAP
+    MAP --> APP
+```
+
+*Diagram: Geospatial platform architecture. Moving objects and static POIs feed into geometry indexes (PostGIS/Elasticsearch), while satellite imagery feeds into hierarchical cell indexes (S2/H3). A query processor resolves spatial predicates using both index types, cached results feed tile serving and app APIs.*
+
+### Component Responsibilities and Communication
+
+| Component | Responsibility | Communication |
+|---|---|---|
+| Spatial Ingest Pipeline | Decode GPS pings, normalize coordinates, assign cell IDs | Kafka → ingest workers → storage |
+| Geometry Index | Store exact geometries (points, polygons) with spatial indexes | PostGIS R-tree / Elasticsearch geo-shapes |
+| Cell Index | Map geometries to hierarchical cell IDs for partitioning | S2/H3 libraries; cell → shard mapping |
+| Query Processor | Spatial joins, KNN, geofencing, range queries | Reads from both geometry and cell indexes |
+| Tile Cache | Pre-rendered tiles (vector/raster) for map display | CDN-backed; populated by tile workers |
+| Tile Server | Serve vector/raster tiles with style layers | HTTP/2; cache-aware |
+| App API | Nearby search, geofence evaluation for applications | Low-latency queries via cached aggregates |
+
+**Data flow**: raw GPS/stream → ingest pipeline normalizes + assigns cell ID → stored in cell-partitioned storage → query processor joins cell prefix scan with geometry refinement → results cached + served to tiles/APIs.
+
+**Scaling strategy**: cell-based sharding distributes data; query processors scale horizontally on request volume; tile pipeline is embarrassingly parallel (generate tiles per cell in parallel).
+
+**When to use**: applications with spatial queries at scale (ride-hailing, logistics, mapping, real estate). **Avoid**: when you have <10K spatial records and simple queries — a single PostGIS instance suffices.
+
+## Design
+
+### Design Considerations
+
+The core design problem is **how to represent spherical geometry in flat, sortable storage**. Earth's lat/lng cannot be naively indexed as two numeric columns because longitude convergence breaks sorting locality. Spatial indexing systems (S2, H3, geohash) solve this by mapping 2D spherical coordinates to hierarchical 1D cell IDs that preserve spatial locality when sorted. The secondary decision is cell **resolution**: too coarse loses precision for nearby queries; too fine inflates storage and index size.
+
+### Key Decisions
+
+- **Cell system choice**: S2 (Google's, balanced, global coverage, used by Uber, Foursquare), H3 (Hexagon, uniform cell area, strong at aggregation), Geohash (simple, variable cell size, edge artifacts). Choose based on use case: H3 for heatmaps/analytics, S2 for general-purpose proximity, Geohash for simplicity.
+- **Dual index (geometry + cell)**: store exact geometries in a geometry index (PostGIS/Elasticsearch) AND cell IDs in a sorted KV for fast pre-filtering. Cell prefix scan narrows candidates; exact geometry check refines.
+- **Resolution hierarchy**: store multiple resolutions of the same geometry — coarse cells for city-level, fine cells for street-level — enabling multi-resolution queries without recomputation.
+- **Tile scheme**: vector tiles (smaller, styleable client-side) vs. raster tiles (pre-rendered, simpler). Vector tiles scale better for interactive maps.
+- **Privacy generalization**: at ingest time, reduce cell resolution for sensitive data in analytics layers while keeping full precision for real-time dispatch.
+
+### Trade-offs
+
+| Decision | Pro | Con |
+|---|---|---|
+| S2 cells | Balanced, battle-tested (Google/Uber) | Complex library; learning curve |
+| H3 hexagons | Uniform area, great for aggregation | Less natural for point proximity |
+| Geohash | Simple, wide tool support | Variable cell size, edge boundary issues |
+| Dual index | Fast pre-filter + exact refinement | 2× storage + sync complexity |
+| Vector tiles | Smaller, client-styled | Requires client support |
+| High resolution | Precise proximity | More cells per object, larger indexes |
+
+### Scalability Considerations
+
+- Cell-ID sharding: objects partitioned by leading cell-ID bytes; hotspots concentrated in dense urban areas need finer sharding or cell splitting.
+- Query fan-out: KNN and polygon queries may touch many cells — parallelize across query processors.
+- Tile generation pipeline: per-cell tile generation is embarrassingly parallel; CDN caches absorb read load.
+- Real-time ingestion: millions of GPS pings/sec → Kafka → ingest workers with batching.
+
+### Reliability Considerations
+
+- Cell boundary continuity: a query near a cell edge must also check neighbor cells; boundary bugs cause missing results (silent correctness failures).
+- Index rebuild safety: regenerating cell indexes must not block queries — dual-write during migration.
+- Tile cache invalidation: when underlying data changes, stale tiles must be invalidated within a known window.
+
+### Performance Considerations
+
+- Cell prefix scan: O(log N + results) on sorted KV; narrows millions of points to a few hundred candidates.
+- Exact geometry check: Haversine or PostGIS ST_Distance on the narrowed candidate set.
+- Tile rendering: generate tiles lazily (on request) for rare views, eagerly (pre-seed) for hot areas.
+- KNN queries: use spatial indexes (R-tree) to avoid full scans; bound the search radius.
+
+### Security Considerations
+
+- Privacy of location traces: GPS data is highly sensitive PII — encrypt at rest, minimize retention, apply k-anonymity generalization for analytics.
+- Geofence injection: user-supplied polygons must be validated (no massive multi-polygon attacks that trigger O(N²) intersection checks).
+- Access control: restrict which clients can query which geographic regions (data-residency compliance).
+
+### Maintainability Considerations
+
+- Schema evolution in geometry format (GeoJSON → WKB vs proprietary): standardize on WKB/PostGIS binary for storage, GeoJSON for API.
+- Cell resolution migration: changing resolution affects existing queries; provide migration tools and backward-compatible dual indexing.
+- Tile versioning: style changes require cache busting; use versioned tile URLs.
+
+## High-Level Design
 
 ```mermaid
 sequenceDiagram
@@ -281,6 +408,70 @@ Failure handling: Flink checkpoint-restart resumes from committed offsets (at-le
 - **Observability**: spatial correctness sampling (random ground-truth audits), cell-assignment drift metrics across library versions, per-engine query percentiles, stream lag per key-group, staleness histograms of served positions.
 
 ---
+
+## API Contract
+
+### Spatial Query API
+
+```
+GET  /api/v1/geofence/{fenceId}/contains?lat=12.97&lng=77.64
+GET  /api/v1/nearby?lat=12.97&lng=77.64&radiusKm=5&type=restaurant
+GET  /api/v1/search?bbox=12.9,77.6,13.0,77.7&category=hotel
+GET  /api/v1/tiles/{z}/{x}/{y}.pbf              # vector tile
+GET  /api/v1/distance?fromLat=12.97&fromLng=77.64&toLat=13.0&toLng=77.7
+POST /api/v1/geofence/{fenceId}/evaluate         # bulk geofence check
+```
+
+**Nearby search response**:
+
+```json
+{
+  "results": [
+    {
+      "id": "rest_abc123",
+      "name": "MTR Restaurant",
+      "location": { "lat": 12.9716, "lng": 77.6415 },
+      "distanceMeters": 214,
+      "category": "restaurant",
+      "rating": 4.3
+    }
+  ],
+  "center": { "lat": 12.97, "lng": 77.64 },
+  "radiusKm": 5,
+  "returned": 20, "total": 1542
+}
+```
+
+**Geofence contains check**:
+
+```http
+GET /api/v1/geofence/zone_north/contains?lat=12.97&lng=77.64
+```
+
+```json
+{
+  "fenceId": "zone_north",
+  "inside": true,
+  "distanceToBoundaryMeters": 1250
+}
+```
+
+### Status Codes
+
+* `200` — successful query
+* `400` — invalid parameters (lat/lng out of range, malformed bbox)
+* `404` — fence ID or tile not found
+* `413` — query too broad (radius too large, bbox too big)
+* `429` — rate limited (spatial queries are expensive; per-key rate limits)
+* `503` — spatial index degraded; fall back to approximate results
+
+### Key Contracts
+
+- **Coordinate system**: all inputs/outputs in WGS84 (lat/lng); internal computation uses the configured cell system (S2/H3).
+- **Pagination**: cursor-based via `afterCellId` for large result sets.
+- **Tile caching**: vector tiles cached with versioned URLs for cache busting on style updates.
+- **Rate limiting**: per-API-key rate limits; complex polygon queries rate-limited more strictly.
+- **Spatial precision**: results within radius/bbox are pre-filtered by cell prefix then refined by exact geometry; error bounds are sub-meter.
 
 ## Data Modeling
 

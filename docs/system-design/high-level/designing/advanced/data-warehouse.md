@@ -12,7 +12,21 @@
 
 ## Theory
 
+### What Is It?
+
 A **data warehouse (DW)** is a centralized analytical store that integrates data from many operational systems (OLTP) into a form optimized for **analytics (OLAP)**: complex aggregations, historical trend analysis, and decision support — not transactional throughput. Classic definition (Bill Inmon): *subject-oriented, integrated, time-variant, and non-volatile*. Modern warehouses (Snowflake, BigQuery, Redshift, Databricks) separate storage from compute, run on object stores with columnar formats, and scale elastically.
+
+### Why Does It Exist?
+
+Transactional applications (OLTP) are optimized for single-row inserts, updates, and point reads at high QPS. Running analytics on them — multi-hour aggregations over billions of rows — would lock tables, bloat row stores, and degrade user-facing performance. A data warehouse exists to separate these two workloads: operational systems stay fast for transactions, while analytics run against a purpose-built, columnar, denormalized, and massively parallel store that can scan petabytes efficiently.
+
+### What Problem Does It Solve?
+
+* **Workload isolation**: analytics queries (full-table scans, joins, aggregations) degrade transactional databases. The warehouse absorbs analytical load without impacting OLTP systems.
+* **Data integration**: operational systems each have their own schema, encoding, and semantics ("country" as "IN" vs "India", different currencies). The warehouse enforces a single, consistent, integrated representation across all sources.
+* **Historical analysis**: transactional systems retain only current state; the warehouse preserves history (months/years) with SCD tracking so trends, seasonality, and "as-of" queries are answerable.
+* **Performance via columnar + MPP**: analytics touch few columns across billions of rows; columnar storage, compression, zone maps, and massively parallel processing make these queries tractable in seconds rather than hours.
+* **Governance and auditability**: a governed, catalogued, lineage-tracked dataset meets compliance (GDPR, SOX, RBI) requirements that scattered operational databases cannot.
 
 ### Important Subtopics
 
@@ -267,9 +281,182 @@ Decision factors: data volume/variety, freshness requirements, query concurrency
 
 ---
 
-## High-Level Design
+## Architecture
 
-End-to-end flow with failure handling:
+### Architectural Style
+
+**Layered lakehouse / medallion architecture**: data flows through three layers — Bronze (raw, untouched, idempotent ingestion), Silver (cleaned, deduplicated, conformed dimensions), and Gold (business-ready star-schema marts). This separates concerns: ingestion is replayable, cleansing is centralized, and analytics consumers see curated, governed tables. Modern implementations (Databricks, Snowflake, BigQuery) separate compute from storage and run on object stores, enabling elastic scaling.
+
+**Batch + streaming blend**: batch handles backfills and heavy transforms (Spark, EMR Serverless); streaming/CDC handles real-time ingestion (Debezium → Kafka → warehouse). The two streams converge at the Silver layer.
+
+```mermaid
+flowchart TB
+    subgraph Sources
+        OLTP[(OLTP DBs)]
+        API[REST Events]
+        FILES[S3 Logs]
+    end
+    subgraph Ingestion
+        CDC[CDC Connector<br/>Debezium]
+        BATCH[Bulk Loader<br/>Airflow]
+        KAFKA[(Kafka)]
+    end
+    subgraph Storage
+        RAW[(Bronze - S3<br/>Parquet)]
+        CLEAN[(Silver - S3/DB<br/>Parquet + SCD2)]
+        MARTS[(Gold - DWH<br/>Star schemas)]
+    end
+    subgraph Consumers
+        BI[BI Tools]
+        ML[ML Pipelines]
+        STREAM[Real-time Analytics]
+    end
+    OLTP --> CDC --> KAFKA
+    API -->|events| KAFKA
+    FILES --> BATCH
+    KAFKA --> RAW
+    BATCH --> RAW
+    RAW -->|Spark/dbt| CLEAN
+    CLEAN -->|dbt| MARTS
+    MARTS --> BI
+    MARTS --> ML
+    KAFKA -->|streams| STREAM
+    META[(Metadata Catalog<br/>Governance)] -.-> MARTS
+```
+
+*Diagram: Layered data-warehouse architecture. Sources feed ingestion (CDC + batch) into bronze raw storage. Transforms (Spark/dbt) clean into silver, then curate into gold star-schema marts. BI and ML consume gold tables; a metadata catalog governs access and lineage.*
+
+### Component Responsibilities and Communication
+
+| Component | Responsibility | Communication |
+|---|---|---|
+| CDC Connector | Log-based change capture from OLTP | Reads DB binlog → Kafka (exactly-once semantics) |
+| Bulk Loader | Periodic full snapshots, backfills | Orchestrated by Airflow; writes to raw zone |
+| Bronze Zone | Raw landed data, immutable, idempotent | Parquet files in S3, partitioned by ingestion date |
+| Transform Engine | Cleaning, dedup, SCD handling, conformed dimensions | Reads bronze, writes silver; SQL/dbt models |
+| Gold Marts | Business-ready dimensional tables | Curated schemas; read by BI/ML |
+| Metadata Catalog | Schema registry, data lineage, access control, GDPR tags | API consumed by all layers; integrates with tools like Unity Catalog, AWS Glue |
+| Orchestrator | DAG scheduling, dependency management, alerting | Airflow/Kestra; monitors quality tests |
+| Quality/Observability | Row-count checks, freshness, anomaly detection | Emits metrics/alerts; gates DAG completion |
+
+**Data flow**: source OLTP → CDC captures binlog → Kafka → bronze Parquet (idempotent) → Silver (dedup, conformed dims, SCD2) → Gold (star-schema marts) → BI/ML via governed endpoints. Quality checks on every stage; failures quarantine bad data rather than halting the pipeline.
+
+**Scaling strategy**: ingestion scales via Kafka partitions; transformation on elastic Spark/EMR sized per DAG stage; warehouse concurrency via separate virtual warehouses per workload class; storage inherently elastic on object store.
+
+**When to use this architecture**: analytics on integrated, historical, multi-source data where query performance and governance matter. **Avoid**: when you only need real-time serving of current data (use a serving layer like DynamoDB + cache) or when data variety and volume are low (a single database suffices).
+
+## Design
+
+### Design Considerations
+
+The warehouse design centers on three decisions: (1) **data modeling approach** — dimensional (star schema) vs. normalized vs. data-vault; (2) **ingestion strategy** — batch ETL vs. streaming CDC vs. hybrid; (3) **storage-compute separation** — shared-disks cluster vs. decoupled elastic compute. Each has cascading effects on query performance, data freshness, and operational cost.
+
+### Key Decisions
+
+- **Star schema for analytics**: facts (events with measures) joined to denormalized dimensions (customers, products, dates). Minimizes joins on columnar engines where joins are the cost.
+- **Silver-layer SCD2**: conformed dimensions track history with `valid_from`/`valid_to`/`is_current` so "as-of" queries and trend analysis are always correct.
+- **Idempotent ingestion**: CDC keys (topic+partition+offset) and batch watermarks ensure re-runs never duplicate or miss data.
+- **Compute isolation**: separate virtual warehouses per workload class (BI dashboards, ML training, ad-hoc analysis) prevents noisy-neighbor interference.
+- **Governed metadata catalog**: schema, lineage, and access control centralized and queryable.
+
+### Trade-offs
+
+| Decision | Pro | Con |
+|---|---|---|
+| Star schema | Fast analytics, intuitive for analysts | ETL complexity, dimension maintenance overhead |
+| SCD Type 2 | Full history, "as-of" queries | Row explosion, complex joins |
+| Streaming CDC | Near-real-time freshness | Operational complexity, ordering challenges |
+| Batch ELT | Simpler, cheaper, replayable | Data freshness = batch interval |
+| Compute-storage separation | Pay-per-use, independent scaling | Cold-start latency, metadata service as bottleneck |
+
+### Scalability Considerations
+
+- Ingestion scales horizontally via Kafka partitions and parallel Spark executors.
+- Transform complexity managed with dbt modularization and incremental models.
+- Warehouse virtual warehouses scale independently; concurrency scaling for bursty BI loads.
+- Gold marts partitioned by date and clustered by hot query dimensions.
+
+### Reliability Considerations
+
+- CDC gap detection via heartbeat tables → targeted re-snapshot of affected range.
+- Transform tasks retry idempotently (deterministic writes keyed by partition).
+- Bad-data quarantine zone isolates poison records instead of failing whole runs.
+- Schema evolution with backward compatibility (additive changes only in Bronze/Silver).
+
+### Performance Considerations
+
+- Columnar file formats (Parquet) with zone maps for partition pruning.
+- Clustering/sorting by frequently filtered columns (customer_id, date).
+- Result caching for repeated BI queries.
+- Materialized views for expensive aggregations.
+
+### Security Considerations
+
+- Row/column-level security on gold marts (PII masking).
+- Encryption at rest (S3 SSE) and in transit (TLS between layers).
+- Access control via catalog (Grants/AACLs) — least-privilege for service accounts.
+
+### Maintainability Considerations
+
+- dbt as the transformation framework — SQL-first, tested, documented, version-controlled.
+- Data quality tests (schema, not-null, uniqueness) gate DAG completion.
+- Lineage tracking for impact analysis on schema/source changes.
+
+## API Contract
+
+### SQL Interface (Primary Consumer API)
+
+Modern cloud warehouses expose ANSI SQL as the primary interface — BI tools, notebooks, and applications connect via standard JDBC/ODBC drivers.
+
+```sql
+-- Dimension query
+SELECT customer_id, name, city, registration_date
+FROM dim_customer
+WHERE city = 'Bangalore' AND registration_date >= '2024-01-01'
+
+-- Fact aggregation with SCD2-corrected dimension
+SELECT d.date_month, p.category, SUM(f.net_amount) AS revenue
+FROM fact_order_line f
+JOIN dim_date d ON f.date_key = d.date_key
+JOIN dim_product p ON f.product_key = p.product_key
+WHERE d.date_year = 2024
+GROUP BY d.date_month, p.category
+ORDER BY d.date_month
+```
+
+### Query Endpoints
+
+| Endpoint | Purpose |
+|---|---|
+| JDBC/ODBC driver | BI tools (Tableau, Power BI, Looker) |
+| REST API (BigQuery, Databricks SQL) | Programmatic query execution |
+| Python/R notebooks | Data science / ML feature engineering |
+| Airflow hooks | Pipeline orchestration |
+
+### SQL API Semantics
+
+- **Pagination**: `LIMIT`/`OFFSET` or keyset pagination for large result sets.
+- **Filtering**: standard SQL predicates; partitioning/clustering makes date/category filters efficient.
+- **Sorting**: `ORDER BY` supported; results sorted by clustering key are cheaper.
+- **Versioning**: schema versions tracked in metadata catalog; additive changes (new columns) are backward-compatible.
+- **Authentication**: service-account keys, OAuth, or cloud IAM integration.
+- **Rate limiting**: per-warehouse concurrency limits; queueing for BI dashboards.
+
+### Status Codes & Error Handling
+
+```json
+{
+  "error": {
+    "code": "INVALID_QUERY",
+    "message": "Column 'nonexistent' not found in table 'fact_order_line'",
+    "errors": [{ "reason": "invalid", "location": "SELECT" }]
+  }
+}
+```
+
+Standard codes: `200` (success with results), `400` (invalid query — syntax/semantics), `401` (auth required), `403` (access denied), `429` (rate/concurrency limit), `503` (warehouse overloaded, retry with backoff).
+
+## High-Level Design
 
 ```mermaid
 sequenceDiagram

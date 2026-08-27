@@ -8,6 +8,22 @@
 
 ## Theory
 
+### What Is It?
+
+An e-commerce search and ranking system is the engine that turns a user's typed query into a ranked list of products from a catalog of millions. It combines information retrieval (fast text search via inverted indexes) with machine-learning ranking (scoring products by relevance, price, availability, and personalization signals). Unlike general web search, e-commerce search must also handle faceted navigation (filter by price, brand, rating), query understanding (typos, synonyms, intent), and conversion optimization (rank products that are more likely to be purchased higher).
+
+### Why Does It Exist?
+
+Without search, e-commerce sites rely on category browsing — which fails when users know what they want but not where to find it. Search drives 20–40% of revenue on major platforms. But unlike web search (where "better ranking" is subjective), e-commerce search has a clear business metric: conversion rate. The system must balance relevance (show what the user wants) with business goals (promote high-margin, in-stock, fast-shipping items) — all within 50–100 ms.
+
+### What Problem Does It Solve?
+
+* **Query understanding**: users type "iPhone 14 Pro Max 256GB" or "iphone 14pm" or "iphone 14 pro max blck" — the system must normalize, detect typos, map synonyms, and infer intent.
+* **Scale**: catalogs with 10M+ products must be searchable in milliseconds. Inverted indexes must be sharded and updated in real-time (CDC from product DB).
+* **Ranking**: BM25 scoring provides a baseline, but ML models (GBDT, deep nets) add personalization, business rules, and conversion prediction — all re-trained daily on click/conversion logs.
+* **Faceted search**: filtering by price range, brand, rating, category — aggregations must be computed efficiently across millions of products.
+* **Freshness**: price drops, stock-outs, and new products must be reflected in search results within seconds, not hours.
+
 ### Important Subtopics
 
 1. Query understanding: tokenization, normalization, typo tolerance, synonyms, intent classification
@@ -265,6 +281,90 @@ Decision inputs: catalog size, query complexity distribution, data-science capac
 
 ---
 
+## Architecture
+
+E-commerce search follows a **two-stage retrieval + re-rank** architecture. The query processing pipeline: user query → query understanding (tokenization, synonyms, spell correction) → candidate retrieval (inverted index, BM25 scoring) → top-K candidates → re-ranking (ML model) → results with facets and filters. Indexes are built from a real-time pipeline (CDC from product DB → transformer → indexer → refresh). A feature store pre-computes ranking features (CTR, CVR, product score, user embeddings) for the ML model.
+
+```mermaid
+flowchart LR
+  Query[User Query] --> QUP[Query Understanding Pipeline]
+  QUP --> Retriever[Inverted Index Retriever<br/>BM25 Scoring]
+  Retriever --> Candidates[Top-K Candidates]
+  Candidates --> FeatureStore[Feature Store]
+  FeatureStore --> RankingModel[ML Ranking Model]
+  RankingModel --> Results[Ranked Results]
+  Results --> Facets[Facets & Filters]
+  Results --> Client[Client]
+  ProductDB[Product DB] --> CDC[CDC Pipeline]
+  CDC --> Indexer[Index Builder]
+  Indexer --> Retriever
+```
+
+| Component | Purpose | Responsibilities | Real-world Example |
+|---|---|---|---|
+| Query Processor | Parse query | Tokenization, normalization, synonym expansion | Elasticsearch analyzer |
+| Inverted Index | Candidate retrieval | Terms→postings, BM25 scoring | Lucene/Solr/Elasticsearch |
+| Feature Store | Pre-compute features | CTR, CVR, product recency, user embedding | Feast, Tecton |
+| Ranking Model | Re-rank candidates | ML scoring for relevance, personalization | TensorFlow Ranking |
+| Indexer | Build indexes | CDC from DB, transform, refresh | Logstash, custom indexer |
+| Facet Engine | Aggregations | Filter counts, price ranges | Elasticsearch aggregations |
+
+**Communication**: Stateless query processors in front of stateful index shards. The index is sharded by product ID; the ranking model calls the feature store for pre-computed features.
+
+**Scaling**: Add index shards for more parallelism; add query processors for more QPS. Feature store serves pre-computed features at low latency.
+
+**Failure handling**: If the ranking model is down, fall back to BM25-only scoring. If the feature store is down, use cached/zero features.
+
+## Design
+
+### Design Considerations
+
+* **Two-stage retrieval**: inverted index for first-pass filtering (fast, recall-oriented), ML model for second-pass ranking (slow, precision-oriented). Balances latency and relevance.
+* **Index freshness**: product catalog changes (price, stock) must be reflected in search within seconds. CDC pipeline + frequent index refresh (every 1–5 s).
+* **Feature engineering**: ranking quality depends on features. Pre-compute (CTR, CVR, revenue) offline; serve online features (query intent, session context) at query time.
+* **Query understanding**: handle typos, synonyms, intent classification — 15% of queries have typos; missing synonyms cause relevant products to be missed.
+
+### Key Decisions
+
+| Decision | Options | Trade-off | Recommendation |
+|---|---|---|---|
+| Index engine | Elasticsearch | Full-featured, managed | Standard |
+| | Solr | Mature, configurable | Alternative |
+| | Custom (Lucene) | Full control | Large scale |
+| Ranking | BM25 only | Fast, basic relevance | MVP |
+| | ML re-rank | High relevance, latency | Production |
+| Freshness | Batch (hourly) | Simple, stale | Low-change catalog |
+| | Near-real-time (seconds) | Fresh, expensive | Dynamic pricing |
+
+### Scalability Considerations
+
+* **Sharding**: index partitioned by product category or ID hash; query fanned out to all shards, results merged.
+* **Replicator pattern**: index replicas for read availability and latency (users routed to nearest replica).
+* **Caching**: popular queries cached in a query cache (Redis); results cached for 5–30 seconds.
+
+### Reliability Considerations
+
+* **Degraded mode**: if ML model fails, return BM25-only results with a flag for monitoring.
+* **Circuit breaker**: if feature store is slow (>50 ms), skip online features and fall back to cached values.
+* **Index health**: monitor shard allocation, replica lag, and refresh latency.
+
+### Performance Considerations
+
+* **Latency**: target < 100 ms for query processing + retrieval; < 50 ms for re-ranking (100 candidates).
+* **Batching**: re-rank candidates in batches (batch size 32–64) for GPU/CPU utilization.
+* **Compression**: store postings with frame-of-reference + varint encoding to reduce index size.
+
+### Security Considerations
+
+* **Query isolation**: prevent slow queries (regex, wildcard) from degrading cluster performance via timeout and resource limits.
+* **Data privacy**: personally identifiable search history must be anonymized for click logs.
+
+### Maintainability Considerations
+
+* **A/B testing framework**: route a percentage of traffic to a new ranking model; compare CTR, CVR, revenue.
+* **Index rollback**: if a bad deploy corrupts the index, rollback to the previous snapshot.
+* **Training/serving skew monitoring**: track feature distribution drift between training and serving environments.
+
 ## High-Level Design
 
 End-to-end query flow:
@@ -315,6 +415,95 @@ Failure handling: retrieval partial-shard loss → degraded-but-valid results wi
 - **Observability**: per-stage latency breakdowns, candidate-recall audits (did rerank drop known-good items?), feature-drift monitors, zero-result/tail dashboards, experiment-guardrail metrics (return-rate, NCSAT) alongside CTR/revenue.
 
 ---
+
+## API Contract
+
+The search API provides query-based product discovery with faceted filtering, autocomplete, and personalization.
+
+### Search API
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/api/v1/search` | Search products |
+| GET | `/api/v1/search/suggest` | Autocomplete suggestions |
+| GET | `/api/v1/products/{id}` | Product details |
+| POST | `/api/v1/facets` | Get facet aggregations |
+
+### GET /api/v1/search
+
+**Query Parameters**:
+
+| Parameter | Type | Required | Default | Description |
+|---|---|---|---|---|
+| q | string | yes | — | Search query |
+| page | int | no | 1 | Page number |
+| limit | int | no | 20 | Results per page (max 100) |
+| sort | string | no | relevance | `relevance`, `price_asc`, `price_desc`, `rating` |
+| category_id | string | no | — | Filter by category |
+| min_price | float | no | — | Minimum price |
+| max_price | float | no | — | Maximum price |
+| brand | string[] | no | — | Filter by brand(s) |
+| in_stock | bool | no | — | Filter in-stock only |
+| customer_id | string | no | — | For personalization |
+
+**Response**:
+```json
+{
+  "query": "iphone 14",
+  "total_hits": 847,
+  "page": 1,
+  "limit": 20,
+  "results": [
+    {
+      "product_id": "prod_123",
+      "title": "Apple iPhone 14 Pro Max 256GB",
+      "price": 1099.00,
+      "currency": "USD",
+      "image_url": "https://...",
+      "rating": 4.7,
+      "review_count": 1250,
+      "in_stock": true,
+      "shipping_info": "Free shipping",
+      "score": 0.92
+    }
+  ],
+  "facets": {
+    "brands": {"Apple": 340, "Samsung": 200, "Google": 120},
+    "price_ranges": [{"range": "$1000+", "count": 450}],
+    "categories": [{"id": "phones", "name": "Phones", "count": 847}]
+  },
+  "suggestions": ["iphone 14 pro", "iphone 14 case", "iphone 13"]
+}
+```
+
+### GET /api/v1/search/suggest
+
+**Parameters**: `q` (string, required), `limit` (int, default 5)
+
+**Response**:
+```json
+{
+  "query": "iph",
+  "suggestions": [
+    {"text": "iphone 14", "type": "query", "score": 0.95},
+    {"text": "iphone case", "type": "category", "score": 0.80}
+  ]
+}
+```
+
+### HTTP Status Codes
+
+| Code | Meaning |
+|---|---|
+| 200 | Search successful |
+| 400 | Invalid query (empty, too short) |
+| 429 | Rate limited |
+| 503 | Search service unavailable |
+
+### Performance & Timeout
+
+* Search queries must respond within 100 ms (99th percentile). Queries exceeding 500 ms return a degraded BM25-only result.
+* Pagination beyond 1000th result (`offset > 1000`) returns a `400` — use cursor-based pagination for deep pages.
 
 ## Data Modeling
 
