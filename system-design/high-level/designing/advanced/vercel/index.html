@@ -1,0 +1,4089 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="https://abhishekghoshh.github.io/system-design-helper/system-design/high-level/designing/advanced/vercel/" rel="canonical"/>
+<link href="../leetcode/" rel="prev"/>
+<link href="../email-automation-platform/" rel="next"/>
+<link href="../../../../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.50" name="generator"/>
+<title>Vercel - System Design Helper</title>
+<link href="../../../../../assets/stylesheets/main.a40c8224.min.css" rel="stylesheet"/>
+<link href="../../../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+<meta content="website" property="og:type"/>
+<meta content="Vercel - System Design Helper" property="og:title"/>
+<meta content="None" property="og:description"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/system-design/high-level/designing/advanced/vercel.png" property="og:image"/>
+<meta content="image/png" property="og:image:type"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/system-design/high-level/designing/advanced/vercel/" property="og:url"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Vercel - System Design Helper" name="twitter:title"/>
+<meta content="None" name="twitter:description"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/system-design/high-level/designing/advanced/vercel.png" name="twitter:image"/>
+</head>
+<body data-md-color-accent="purple" data-md-color-primary="teal" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#design-a-system-like-vercel">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="System Design Helper" class="md-header__button md-logo" data-md-component="logo" href="../../../../.." title="System Design Helper">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            System Design Helper
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Vercel
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="purple" data-md-color-media="" data-md-color-primary="teal" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="lime" data-md-color-media="" data-md-color-primary="teal" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../..">
+        
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../../basics/cpu/">
+          
+  
+  Basics
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../../ai/ai/">
+          
+  
+  AI
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../../devops/">
+          
+  
+  DevOps
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../../security/introduction/">
+          
+  
+  Security
+
+        </a>
+</li>
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../../../../books/">
+          
+  
+  System Design
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="System Design Helper" class="md-nav__button md-logo" data-md-component="logo" href="../../../../.." title="System Design Helper">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    System Design Helper
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../..">
+<span class="md-ellipsis">
+    Home
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Basics
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            Basics
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/cpu/">
+<span class="md-ellipsis">
+    CPU
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/pointers/">
+<span class="md-ellipsis">
+    Pointers
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/maths/">
+<span class="md-ellipsis">
+    Maths
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/behavioural/">
+<span class="md-ellipsis">
+    Behavioural
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/developer-experiences/">
+<span class="md-ellipsis">
+    Developer Experiences
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/open-source-tools/">
+<span class="md-ellipsis">
+    Open Source Tools
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/software-architect/">
+<span class="md-ellipsis">
+    Software Architect
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/wisdom/">
+<span class="md-ellipsis">
+    Wisdom
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+<span class="md-ellipsis">
+    AI
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            AI
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/ai/">
+<span class="md-ellipsis">
+    AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/ai-tools/">
+<span class="md-ellipsis">
+    AI Tools
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/agentic-ai/">
+<span class="md-ellipsis">
+    Agentic AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/gen-ai/">
+<span class="md-ellipsis">
+    Gen AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/langchain-and-langgraph/">
+<span class="md-ellipsis">
+    LangChain and LangGraph
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/MCP/">
+<span class="md-ellipsis">
+    MCP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/RAG/">
+<span class="md-ellipsis">
+    RAG
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/llm-wiki/">
+<span class="md-ellipsis">
+    LLM Wiki
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/vector-embeddings/">
+<span class="md-ellipsis">
+    Vector Embeddings
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/vibe-coding/">
+<span class="md-ellipsis">
+    Vibe Coding
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/courses/">
+<span class="md-ellipsis">
+    Courses
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    DevOps
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            DevOps
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../devops/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../devops/deployment-strategies/">
+<span class="md-ellipsis">
+    Deployment Strategies
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+<span class="md-ellipsis">
+    Security
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            Security
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/authentication-and-authorization/">
+<span class="md-ellipsis">
+    Authentication &amp; Authorization
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/oauth/">
+<span class="md-ellipsis">
+    OAuth
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/rbac/">
+<span class="md-ellipsis">
+    RBAC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/sso/">
+<span class="md-ellipsis">
+    SSO
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/ssl/">
+<span class="md-ellipsis">
+    SSL
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/ssh/">
+<span class="md-ellipsis">
+    SSH
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/jwt/">
+<span class="md-ellipsis">
+    JWT
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/encryption/">
+<span class="md-ellipsis">
+    Encryption
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/environment-variables/">
+<span class="md-ellipsis">
+    Environment Variables
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/devsecops/">
+<span class="md-ellipsis">
+    DevSecOps
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/firewall/">
+<span class="md-ellipsis">
+    Firewall
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+<span class="md-ellipsis">
+    Certificate
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_13_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_13">
+<span class="md-nav__icon md-icon"></span>
+            Certificate
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/certificate/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/certificate/certificate-authority/">
+<span class="md-ellipsis">
+    Certificate Authority
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/certificate/client-certificates/">
+<span class="md-ellipsis">
+    Client Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/certificate/server-certificates/">
+<span class="md-ellipsis">
+    Server Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/certificate/self-signed-certificates/">
+<span class="md-ellipsis">
+    Self-Signed Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/certificate/links/">
+<span class="md-ellipsis">
+    Links
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_14" id="__nav_5_14_label" tabindex="0">
+<span class="md-ellipsis">
+    Reverse Proxy
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_14_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_14">
+<span class="md-nav__icon md-icon"></span>
+            Reverse Proxy
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/reverse-proxy/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/reverse-proxy/haproxy/">
+<span class="md-ellipsis">
+    HAProxy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/reverse-proxy/nginx/">
+<span class="md-ellipsis">
+    Nginx
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    System Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            System Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../books/">
+<span class="md-ellipsis">
+    Books
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../courses/">
+<span class="md-ellipsis">
+    Courses
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../interview/">
+<span class="md-ellipsis">
+    Interview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4" id="__nav_6_4_label" tabindex="">
+<span class="md-ellipsis">
+    High Level Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_6_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_4">
+<span class="md-nav__icon md-icon"></span>
+            High Level Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1" id="__nav_6_4_1_label" tabindex="0">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_1_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_1">
+<span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_1_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1_2" id="__nav_6_4_1_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Basic
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_1_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_1_2">
+<span class="md-nav__icon md-icon"></span>
+            Basic
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/philosophy-of-system-design/">
+<span class="md-ellipsis">
+    Philosophy of System Design
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/client-server-architecture/">
+<span class="md-ellipsis">
+    Client-Server Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/separation-of-concerns/">
+<span class="md-ellipsis">
+    Separation of Concerns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/state-and-data-flow/">
+<span class="md-ellipsis">
+    State and Data Flow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/back-of-envelope-calculation/">
+<span class="md-ellipsis">
+    Back of Envelope Calculation
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/cloud-computing/">
+<span class="md-ellipsis">
+    Cloud Computing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/ip-addresses-and-ports/">
+<span class="md-ellipsis">
+    IP Addresses &amp; Ports
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/sockets/">
+<span class="md-ellipsis">
+    Sockets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/dns-server/">
+<span class="md-ellipsis">
+    DNS Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/networking/">
+<span class="md-ellipsis">
+    Networking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/tcp/">
+<span class="md-ellipsis">
+    TCP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/udp/">
+<span class="md-ellipsis">
+    UDP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/http/">
+<span class="md-ellipsis">
+    HTTP / HTTPS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/websockets/">
+<span class="md-ellipsis">
+    WebSockets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/smtp-server/">
+<span class="md-ellipsis">
+    SMTP Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/api/">
+<span class="md-ellipsis">
+    API
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/restfull-architecture/">
+<span class="md-ellipsis">
+    RESTful Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/data-serialization/">
+<span class="md-ellipsis">
+    Data Serialization
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/webhooks/">
+<span class="md-ellipsis">
+    Webhooks
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/load-balancer-and-proxy-server/">
+<span class="md-ellipsis">
+    Load Balancer &amp; Proxy Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/cdn/">
+<span class="md-ellipsis">
+    CDN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/hashing/">
+<span class="md-ellipsis">
+    Hashing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/storage/">
+<span class="md-ellipsis">
+    Storage
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/s3/">
+<span class="md-ellipsis">
+    S3
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/caching/">
+<span class="md-ellipsis">
+    Caching
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/scalability/">
+<span class="md-ellipsis">
+    Scalability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/browser-rendering-pipeline/">
+<span class="md-ellipsis">
+    Browser Rendering Pipeline
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/availability-and-reliability/">
+<span class="md-ellipsis">
+    Availability &amp; Reliability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/architecture-patterns/">
+<span class="md-ellipsis">
+    Architecture Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/security-basics/">
+<span class="md-ellipsis">
+    Security Basics
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/passwords/">
+<span class="md-ellipsis">
+    Passwords
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/environment-configuration-and-secrets/">
+<span class="md-ellipsis">
+    Environment Configuration &amp; Secrets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/process/">
+<span class="md-ellipsis">
+    Process
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/code-documentation/">
+<span class="md-ellipsis">
+    Code Documentation
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/additional-concepts/">
+<span class="md-ellipsis">
+    Additional Concepts
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_1_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1_3" id="__nav_6_4_1_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Advanced
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_1_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_1_3">
+<span class="md-nav__icon md-icon"></span>
+            Advanced
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/webrtc/">
+<span class="md-ellipsis">
+    WebRTC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/voice-over-internet-protocol/">
+<span class="md-ellipsis">
+    VoIP (Voice Over Internet Protocol)
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/graphql/">
+<span class="md-ellipsis">
+    GraphQL
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/grpc/">
+<span class="md-ellipsis">
+    gRPC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/asynchronus-communication/">
+<span class="md-ellipsis">
+    Asynchronous Communication
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/nats/">
+<span class="md-ellipsis">
+    NATS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/api-gateway/">
+<span class="md-ellipsis">
+    API Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/service-discovery/">
+<span class="md-ellipsis">
+    Service Discovery
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/service-mesh/">
+<span class="md-ellipsis">
+    Service Mesh
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/consistent-hashing/">
+<span class="md-ellipsis">
+    Consistent Hashing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/distributed-caches-and-caching-strategies/">
+<span class="md-ellipsis">
+    Distributed Caches &amp; Caching Strategies
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/scaling-to-one-million/">
+<span class="md-ellipsis">
+    Scaling to One Million
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/adaptive-bitrate-streaming/">
+<span class="md-ellipsis">
+    Adaptive Bitrate Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/consistency/">
+<span class="md-ellipsis">
+    Consistency
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/cap-theorm/">
+<span class="md-ellipsis">
+    CAP Theorem
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/fault-tolerance/">
+<span class="md-ellipsis">
+    Fault Tolerance
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/clean-architecture/">
+<span class="md-ellipsis">
+    Clean Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/microservices-patterns/">
+<span class="md-ellipsis">
+    Microservices Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/raft-consensus-algorithm/">
+<span class="md-ellipsis">
+    Raft Consensus Algorithm
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/gossip-protocol/">
+<span class="md-ellipsis">
+    Gossip Protocol
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/ditributed-transaction-and-concurrency-control/">
+<span class="md-ellipsis">
+    Distributed Transaction &amp; Concurrency Control
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/cdc/">
+<span class="md-ellipsis">
+    CDC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/resilience-patterns/">
+<span class="md-ellipsis">
+    Resilience Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/thundering-effect/">
+<span class="md-ellipsis">
+    Thundering Herd Effect
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/observability/">
+<span class="md-ellipsis">
+    Observability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/cqrs/">
+<span class="md-ellipsis">
+    CQRS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/event-sourcing/">
+<span class="md-ellipsis">
+    Event Sourcing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/saga-pattern/">
+<span class="md-ellipsis">
+    Saga Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/data-processing/">
+<span class="md-ellipsis">
+    Data Processing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/programming-language/">
+<span class="md-ellipsis">
+    Programming Language
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/github-server/">
+<span class="md-ellipsis">
+    GitHub Server
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2" id="__nav_6_4_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Designing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_6_4_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Designing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_2_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2_2" id="__nav_6_4_2_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Basic
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_2_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_2_2">
+<span class="md-nav__icon md-icon"></span>
+            Basic
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/url-shortner/">
+<span class="md-ellipsis">
+    URL Shortener
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/rate-limiter/">
+<span class="md-ellipsis">
+    Rate Limiter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/notification-system/">
+<span class="md-ellipsis">
+    Notification System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/webhook/">
+<span class="md-ellipsis">
+    Webhook
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/cdn/">
+<span class="md-ellipsis">
+    CDN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/autocomplete/">
+<span class="md-ellipsis">
+    Autocomplete
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/pastebin/">
+<span class="md-ellipsis">
+    Pastebin
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/leaderboard/">
+<span class="md-ellipsis">
+    Leaderboard
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/inventory-management-system/">
+<span class="md-ellipsis">
+    Inventory Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/library-management-system/">
+<span class="md-ellipsis">
+    Library Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/job-board/">
+<span class="md-ellipsis">
+    Job Board
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/bug-issue-tracker/">
+<span class="md-ellipsis">
+    Bug/Issue Tracker
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/todo-list-app/">
+<span class="md-ellipsis">
+    To-Do List App
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/attendance-tracking-system/">
+<span class="md-ellipsis">
+    Attendance Tracking System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/customer-support-ticketing-system/">
+<span class="md-ellipsis">
+    Customer Support Ticketing System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/digital-wallet/">
+<span class="md-ellipsis">
+    Digital Wallet
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/vending-machine/">
+<span class="md-ellipsis">
+    Vending Machine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/rate-and-review-system/">
+<span class="md-ellipsis">
+    Rate-and-Review System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/hotel-booking/">
+<span class="md-ellipsis">
+    Hotel Booking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/app-store/">
+<span class="md-ellipsis">
+    App Store
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/yelp/">
+<span class="md-ellipsis">
+    Yelp
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/carpooling-system/">
+<span class="md-ellipsis">
+    Carpooling System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/blogging-platform/">
+<span class="md-ellipsis">
+    Blogging Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/image-gallery-with-tagging/">
+<span class="md-ellipsis">
+    Image Gallery with Tagging
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/polling-voting-app/">
+<span class="md-ellipsis">
+    Polling/Voting App
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/online-voting-system/">
+<span class="md-ellipsis">
+    Online Voting System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/expense-splitting-app/">
+<span class="md-ellipsis">
+    Expense-Splitting App
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/vpn/">
+<span class="md-ellipsis">
+    VPN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/chess-game/">
+<span class="md-ellipsis">
+    Chess Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/how-to-host-your-own-x/">
+<span class="md-ellipsis">
+    How to Host Your Own X
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6_4_2_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2_3" id="__nav_6_4_2_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Advanced
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_6_4_2_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_2_3">
+<span class="md-nav__icon md-icon"></span>
+            Advanced
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../key-value-store/">
+<span class="md-ellipsis">
+    Key Value Store
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../log-system/">
+<span class="md-ellipsis">
+    Log System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../search-engine/">
+<span class="md-ellipsis">
+    Search Engine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../authentication-system/">
+<span class="md-ellipsis">
+    Authentication System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-counter/">
+<span class="md-ellipsis">
+    Distributed Counter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-cache/">
+<span class="md-ellipsis">
+    Distributed Cache
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-locking-service/">
+<span class="md-ellipsis">
+    Distributed Locking Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-job-scheduler/">
+<span class="md-ellipsis">
+    Distributed Job Scheduler
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-rate-limiter/">
+<span class="md-ellipsis">
+    Distributed Rate Limiter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-rate-limited-api-gateway/">
+<span class="md-ellipsis">
+    Distributed Rate-Limited API Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-configuration-management-system/">
+<span class="md-ellipsis">
+    Distributed Configuration Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../multi-region-deployment-system/">
+<span class="md-ellipsis">
+    Multi-Region Deployment System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../feature-flag-experimentation-platform/">
+<span class="md-ellipsis">
+    Feature Flag and Experimentation Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../notification-fanout-service/">
+<span class="md-ellipsis">
+    Notification Fan-Out Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../chat-system/">
+<span class="md-ellipsis">
+    Chat System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../whatspp/">
+<span class="md-ellipsis">
+    WhatsApp
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../live-comments/">
+<span class="md-ellipsis">
+    Live Comments
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-messaging-queue/">
+<span class="md-ellipsis">
+    Distributed Messaging Queue
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../slack/">
+<span class="md-ellipsis">
+    Slack
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../fault-tolerant-order-processing-system/">
+<span class="md-ellipsis">
+    Fault-Tolerant Order Processing System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../video-streaming/">
+<span class="md-ellipsis">
+    Video Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../netflix/">
+<span class="md-ellipsis">
+    Netflix
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../spotify/">
+<span class="md-ellipsis">
+    Spotify
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../live-streaming/">
+<span class="md-ellipsis">
+    Live Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../Image-Optimisation-on-the-fly/">
+<span class="md-ellipsis">
+    Image Optimisation On The Fly
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../amazon-flipkart/">
+<span class="md-ellipsis">
+    Amazon/Flipkart
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../e-commerce/">
+<span class="md-ellipsis">
+    E-Commerce
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ecommerce-checkout/">
+<span class="md-ellipsis">
+    E-Commerce Checkout
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../payment-gateway/">
+<span class="md-ellipsis">
+    Payment Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../stripe/">
+<span class="md-ellipsis">
+    Stripe
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../upi-payments/">
+<span class="md-ellipsis">
+    UPI Payments
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../settlement-reconciliation-system/">
+<span class="md-ellipsis">
+    Settlement and Reconciliation System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../fraud-detection-pipeline/">
+<span class="md-ellipsis">
+    Fraud Detection Pipeline
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../quick-commerce-inventory-system/">
+<span class="md-ellipsis">
+    Quick-Commerce Inventory System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ecommerce-search-ranking-system/">
+<span class="md-ellipsis">
+    E-Commerce Search &amp; Ranking System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../twitter/">
+<span class="md-ellipsis">
+    Twitter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../social-media/">
+<span class="md-ellipsis">
+    Social Media
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hashtag-service/">
+<span class="md-ellipsis">
+    Hashtag Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../recomendation-engine/">
+<span class="md-ellipsis">
+    Recommendation Engine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../facebook/">
+<span class="md-ellipsis">
+    Facebook
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../instagram/">
+<span class="md-ellipsis">
+    Instagram
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tiktok/">
+<span class="md-ellipsis">
+    TikTok
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../bookmyshow/">
+<span class="md-ellipsis">
+    BookMyShow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../uber/">
+<span class="md-ellipsis">
+    Uber
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../food-delivery/">
+<span class="md-ellipsis">
+    Food Delivery
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../flight-booking/">
+<span class="md-ellipsis">
+    Flight Booking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../google-maps/">
+<span class="md-ellipsis">
+    Google Maps
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../google-drive/">
+<span class="md-ellipsis">
+    Google Drive
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../data-warehouse/">
+<span class="md-ellipsis">
+    Data Warehouse
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-geospatial-data-platform/">
+<span class="md-ellipsis">
+    Distributed Geospatial Data Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../redis/">
+<span class="md-ellipsis">
+    Redis
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../large-language-model/">
+<span class="md-ellipsis">
+    Large Language Model
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../leetcode/">
+<span class="md-ellipsis">
+    LeetCode
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    Vercel
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    Vercel
+  </span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#blogs-and-websites">
+<span class="md-ellipsis">
+      Blogs and websites
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#medium">
+<span class="md-ellipsis">
+      Medium
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#youtube">
+<span class="md-ellipsis">
+      Youtube
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#theory">
+<span class="md-ellipsis">
+      Theory
+    </span>
+</a>
+<nav aria-label="Theory" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#topics-covered">
+<span class="md-ellipsis">
+      Topics Covered
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#introduction-problem-statement">
+<span class="md-ellipsis">
+      Introduction / Problem Statement
+    </span>
+</a>
+<nav aria-label="Introduction / Problem Statement" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#why-does-it-exist">
+<span class="md-ellipsis">
+      Why Does It Exist?
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-problem-does-it-solve">
+<span class="md-ellipsis">
+      What Problem Does It Solve?
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#important-subtopics">
+<span class="md-ellipsis">
+      Important Subtopics
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#problem-statement">
+<span class="md-ellipsis">
+      Problem Statement
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#functional-requirements">
+<span class="md-ellipsis">
+      Functional Requirements
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#non-functional-requirements">
+<span class="md-ellipsis">
+      Non-Functional Requirements
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#characteristics">
+<span class="md-ellipsis">
+      Characteristics
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#components">
+<span class="md-ellipsis">
+      Components
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#architectural-patterns">
+<span class="md-ellipsis">
+      Architectural Patterns
+    </span>
+</a>
+<nav aria-label="Architectural Patterns" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#git-first-deployment">
+<span class="md-ellipsis">
+      Git-First Deployment
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#benefits">
+<span class="md-ellipsis">
+      Benefits
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pros">
+<span class="md-ellipsis">
+      Pros
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cons">
+<span class="md-ellipsis">
+      Cons
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#challenges">
+<span class="md-ellipsis">
+      Challenges
+    </span>
+</a>
+<nav aria-label="Challenges" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#technical-challenges">
+<span class="md-ellipsis">
+      Technical Challenges
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#scalability-challenges">
+<span class="md-ellipsis">
+      Scalability Challenges
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-challenges">
+<span class="md-ellipsis">
+      Performance Challenges
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#reliability-challenges">
+<span class="md-ellipsis">
+      Reliability Challenges
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#maintainability-challenges">
+<span class="md-ellipsis">
+      Maintainability Challenges
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#security-concerns">
+<span class="md-ellipsis">
+      Security Concerns
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#best-practices">
+<span class="md-ellipsis">
+      Best Practices
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#when-to-use-when-not-to-use">
+<span class="md-ellipsis">
+      When to Use / When Not to Use
+    </span>
+</a>
+<nav aria-label="When to Use / When Not to Use" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#appropriate">
+<span class="md-ellipsis">
+      Appropriate
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#not-appropriate">
+<span class="md-ellipsis">
+      Not Appropriate
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#decision-factors">
+<span class="md-ellipsis">
+      Decision Factors
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#use-cases">
+<span class="md-ellipsis">
+      Use Cases
+    </span>
+</a>
+<nav aria-label="Use Cases" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#global-e-commerce-front-end">
+<span class="md-ellipsis">
+      Global E-commerce Front-end
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#architecture">
+<span class="md-ellipsis">
+      Architecture
+    </span>
+</a>
+<nav aria-label="Architecture" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#architecture-structure">
+<span class="md-ellipsis">
+      Architecture Structure
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-flow">
+<span class="md-ellipsis">
+      Data Flow
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#scaling-strategy">
+<span class="md-ellipsis">
+      Scaling Strategy
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#failure-handling">
+<span class="md-ellipsis">
+      Failure Handling
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#high-level-design">
+<span class="md-ellipsis">
+      High-Level Design
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#deep-dive">
+<span class="md-ellipsis">
+      Deep Dive
+    </span>
+</a>
+<nav aria-label="Deep Dive" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-functions-vs-serverless">
+<span class="md-ellipsis">
+      Edge Functions vs Serverless
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#build-caching">
+<span class="md-ellipsis">
+      Build Caching
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#deployment-model">
+<span class="md-ellipsis">
+      Deployment Model
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#api-contract">
+<span class="md-ellipsis">
+      API Contract
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-model-and-api">
+<span class="md-ellipsis">
+      Data Model and API
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#replication-strategies">
+<span class="md-ellipsis">
+      Replication Strategies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#failure-detection-and-membership">
+<span class="md-ellipsis">
+      Failure Detection and Membership
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#high-availability-and-scalability">
+<span class="md-ellipsis">
+      High Availability and Scalability
+    </span>
+</a>
+<nav aria-label="High Availability and Scalability" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#auto-scaling">
+<span class="md-ellipsis">
+      Auto-Scaling
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#load-balancing">
+<span class="md-ellipsis">
+      Load Balancing
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#failover">
+<span class="md-ellipsis">
+      Failover
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-and-optimization">
+<span class="md-ellipsis">
+      Performance and Optimization
+    </span>
+</a>
+<nav aria-label="Performance and Optimization" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#caching-strategies">
+<span class="md-ellipsis">
+      Caching Strategies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#latency-optimization">
+<span class="md-ellipsis">
+      Latency Optimization
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#throughput-optimization">
+<span class="md-ellipsis">
+      Throughput Optimization
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cap-theorem-and-consistency-trade-offs">
+<span class="md-ellipsis">
+      CAP Theorem and Consistency Trade-offs
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#encryption-and-key-management">
+<span class="md-ellipsis">
+      Encryption and Key Management
+    </span>
+</a>
+<nav aria-label="Encryption and Key Management" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#encryption-at-rest">
+<span class="md-ellipsis">
+      Encryption at Rest
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#encryption-in-transit">
+<span class="md-ellipsis">
+      Encryption in Transit
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-management">
+<span class="md-ellipsis">
+      Key Management
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#authorization-example-environment-variable-decryption">
+<span class="md-ellipsis">
+      Authorization Example — Environment Variable Decryption
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#authentication-and-authorization">
+<span class="md-ellipsis">
+      Authentication and Authorization
+    </span>
+</a>
+<nav aria-label="Authentication and Authorization" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#authentication-methods">
+<span class="md-ellipsis">
+      Authentication Methods
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#authorization-models">
+<span class="md-ellipsis">
+      Authorization Models
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#security-threats-and-mitigations">
+<span class="md-ellipsis">
+      Security Threats and Mitigations
+    </span>
+</a>
+<nav aria-label="Security Threats and Mitigations" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#threat-container-escape-via-malicious-code">
+<span class="md-ellipsis">
+      Threat: Container Escape via Malicious Code
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#threat-dependency-vulnerabilities">
+<span class="md-ellipsis">
+      Threat: Dependency Vulnerabilities
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#threat-ddos-abuse">
+<span class="md-ellipsis">
+      Threat: DDoS / Abuse
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#threat-data-breach-credentials-secrets">
+<span class="md-ellipsis">
+      Threat: Data Breach (Credentials / Secrets)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#threat-supply-chain-attack-compromised-git-provider">
+<span class="md-ellipsis">
+      Threat: Supply Chain Attack (Compromised Git Provider)
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#observability-and-logging">
+<span class="md-ellipsis">
+      Observability and Logging
+    </span>
+</a>
+<nav aria-label="Observability and Logging" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#architecture_1">
+<span class="md-ellipsis">
+      Architecture
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-metrics">
+<span class="md-ellipsis">
+      Key Metrics
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#logging">
+<span class="md-ellipsis">
+      Logging
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#distributed-tracing">
+<span class="md-ellipsis">
+      Distributed Tracing
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#alerting-strategy">
+<span class="md-ellipsis">
+      Alerting Strategy
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#java-and-spring-boot-implementation-guide">
+<span class="md-ellipsis">
+      Java and Spring Boot Implementation Guide
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#real-world-implementations">
+<span class="md-ellipsis">
+      Real-World Implementations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#interview-questions-and-answers">
+<span class="md-ellipsis">
+      Interview Questions and Answers
+    </span>
+</a>
+<nav aria-label="Interview Questions and Answers" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#beginner-questions">
+<span class="md-ellipsis">
+      Beginner Questions
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#intermediate-questions">
+<span class="md-ellipsis">
+      Intermediate Questions
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#advanced-questions">
+<span class="md-ellipsis">
+      Advanced Questions
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#senior-level-questions">
+<span class="md-ellipsis">
+      Senior-Level Questions
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#common-mistakes">
+<span class="md-ellipsis">
+      Common Mistakes
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../email-automation-platform/">
+<span class="md-ellipsis">
+    Email Automation Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../google-docs/">
+<span class="md-ellipsis">
+    Google Docs
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../online-code-editor/">
+<span class="md-ellipsis">
+    Online Code Editor
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../stock-broker-system/">
+<span class="md-ellipsis">
+    Stock Broker System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-transaction-banking-system/">
+<span class="md-ellipsis">
+    Distributed Transaction Banking System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../real-time-bidding-auction-system/">
+<span class="md-ellipsis">
+    Real-Time Bidding/Auction System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../multiplayer-game/">
+<span class="md-ellipsis">
+    Multiplayer Game
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_3" id="__nav_6_4_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Links
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Links
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../links/udemy/">
+<span class="md-ellipsis">
+    Udemy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../links/websites/">
+<span class="md-ellipsis">
+    Websites
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../links/youtube/">
+<span class="md-ellipsis">
+    YouTube
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="">
+<span class="md-ellipsis">
+    Low Level Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_5">
+<span class="md-nav__icon md-icon"></span>
+            Low Level Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_2" id="__nav_6_5_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_2">
+<span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/concepts/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/concepts/hashmap/">
+<span class="md-ellipsis">
+    HashMap
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/concepts/mvc/">
+<span class="md-ellipsis">
+    MVC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/concepts/null-object-pattern/">
+<span class="md-ellipsis">
+    Null Object Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/concepts/solid-principles/">
+<span class="md-ellipsis">
+    SOLID Principles
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/concepts/technical-debt/">
+<span class="md-ellipsis">
+    Technical Debt
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3" id="__nav_6_5_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Design Patterns
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_3">
+<span class="md-nav__icon md-icon"></span>
+            Design Patterns
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/design-pattern/">
+<span class="md-ellipsis">
+    Design Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_2" id="__nav_6_5_3_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Creational
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_2">
+<span class="md-nav__icon md-icon"></span>
+            Creational
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/creational/creational/">
+<span class="md-ellipsis">
+    All Creational Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/creational/singleton/">
+<span class="md-ellipsis">
+    Singleton
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/creational/prototype/">
+<span class="md-ellipsis">
+    Prototype
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/creational/builder/">
+<span class="md-ellipsis">
+    Builder
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/creational/factory/">
+<span class="md-ellipsis">
+    Factory
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/creational/abstract-factory/">
+<span class="md-ellipsis">
+    Abstract Factory
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/creational/object-pool/">
+<span class="md-ellipsis">
+    Object Pool
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_3" id="__nav_6_5_3_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Structural
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_3">
+<span class="md-nav__icon md-icon"></span>
+            Structural
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/structural/">
+<span class="md-ellipsis">
+    All Structural Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/adapter/">
+<span class="md-ellipsis">
+    Adapter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/bridge/">
+<span class="md-ellipsis">
+    Bridge
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/composite/">
+<span class="md-ellipsis">
+    Composite
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/decorator/">
+<span class="md-ellipsis">
+    Decorator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/facade/">
+<span class="md-ellipsis">
+    Facade
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/flyweight/">
+<span class="md-ellipsis">
+    Flyweight
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/proxy/">
+<span class="md-ellipsis">
+    Proxy
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_4" id="__nav_6_5_3_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Behavioral
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_4_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_4">
+<span class="md-nav__icon md-icon"></span>
+            Behavioral
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/behavioral/">
+<span class="md-ellipsis">
+    All Behavioral Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/chain-of-responsibility/">
+<span class="md-ellipsis">
+    Chain of Responsibility
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/command/">
+<span class="md-ellipsis">
+    Command
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/interpreter/">
+<span class="md-ellipsis">
+    Interpreter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/iterator/">
+<span class="md-ellipsis">
+    Iterator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/mediator/">
+<span class="md-ellipsis">
+    Mediator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/memento/">
+<span class="md-ellipsis">
+    Memento
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/observer/">
+<span class="md-ellipsis">
+    Observer
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/state/">
+<span class="md-ellipsis">
+    State
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/strategy/">
+<span class="md-ellipsis">
+    Strategy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/template/">
+<span class="md-ellipsis">
+    Template
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/visitor/">
+<span class="md-ellipsis">
+    Visitor
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_4" id="__nav_6_5_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Designing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_4_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_4">
+<span class="md-nav__icon md-icon"></span>
+            Designing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/access-management-system/">
+<span class="md-ellipsis">
+    Access Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/account-balance-tracker/">
+<span class="md-ellipsis">
+    Account Balance Tracker
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/air-traffic-controller/">
+<span class="md-ellipsis">
+    Air Traffic Controller
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/apply-coupons-on-shopping-cart/">
+<span class="md-ellipsis">
+    Apply Coupons on Shopping Cart
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/atm/">
+<span class="md-ellipsis">
+    ATM
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/bookmyshow/">
+<span class="md-ellipsis">
+    BookMyShow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/cache-system/">
+<span class="md-ellipsis">
+    Cache System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/car-rental-service/">
+<span class="md-ellipsis">
+    Car Rental Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/chess-game/">
+<span class="md-ellipsis">
+    Chess Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/cricbuzz/">
+<span class="md-ellipsis">
+    Cricbuzz
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/elevator-system/">
+<span class="md-ellipsis">
+    Elevator System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/inventory-management-system/">
+<span class="md-ellipsis">
+    Inventory Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/locker-allocation-system/">
+<span class="md-ellipsis">
+    Locker Allocation System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/logging-system/">
+<span class="md-ellipsis">
+    Logging System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/meeting-scheduler/">
+<span class="md-ellipsis">
+    Meeting Scheduler
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/parking-lot/">
+<span class="md-ellipsis">
+    Parking Lot
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/payment-gateway/">
+<span class="md-ellipsis">
+    Payment Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/snake-and-ladder/">
+<span class="md-ellipsis">
+    Snake and Ladder
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/splitwise/">
+<span class="md-ellipsis">
+    Splitwise
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/stock-exchange-book/">
+<span class="md-ellipsis">
+    Stock Exchange Book
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/tic-tac-toe/">
+<span class="md-ellipsis">
+    Tic Tac Toe
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/vending-machine/">
+<span class="md-ellipsis">
+    Vending Machine
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="design-a-system-like-vercel">Design a system like Vercel</h1>
+<h2 id="blogs-and-websites">Blogs and websites</h2>
+<h2 id="medium">Medium</h2>
+<h2 id="youtube">Youtube</h2>
+<ul>
+<li>
+<p><a href="https://www.youtube.com/watch?v=c8_tafixiAs">Code along - I built Vercel in 4 Hours (System Design, AWS, Redis, S3)</a></p>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=o7O-BuZwkW0">Vercel Clone Code Review - Pass or Fail? | Hindi</a></li>
+</ul>
+</li>
+<li>
+<p><a href="https://www.youtube.com/watch?v=0A_JpLYG7hM">I built Vercel in 2 Hours (System Design, AWS, Docker, Redis, S3)</a></p>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=-rCI-utuYig">Firse Vercel Code Review - PART 2</a></li>
+</ul>
+</li>
+<li>
+<p><a href="https://www.youtube.com/watch?v=QPzrIp5kyho">I Built Vercel in 2 Hours (Kafka, ClickHouse, Postgres) | Log Collection and Pipeline</a></p>
+</li>
+</ul>
+<hr/>
+<h2 id="theory">Theory</h2>
+<h3 id="topics-covered">Topics Covered</h3>
+<ol>
+<li><a href="#introduction--problem-statement">Introduction / Problem Statement</a></li>
+<li><a href="#characteristics">Characteristics</a></li>
+<li><a href="#pros">Pros</a></li>
+<li><a href="#cons">Cons</a></li>
+<li><a href="#use-cases">Use Cases</a></li>
+<li><a href="#components">Components</a></li>
+<li><a href="#architectural-patterns">Architectural Patterns</a></li>
+<li><a href="#benefits">Benefits</a></li>
+<li><a href="#challenges">Challenges</a></li>
+<li><a href="#best-practices">Best Practices</a></li>
+<li><a href="#when-to-use--when-not-to-use">When to Use / When Not to Use</a></li>
+<li><a href="#data-model-and-api">Data Model and API</a></li>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#high-level-design">High-Level Design</a></li>
+<li><a href="#deep-dive">Deep Dive</a></li>
+<li><a href="#api-contract">API Contract</a></li>
+<li><a href="#replication-strategies">Replication Strategies</a></li>
+<li><a href="#failure-detection-and-membership">Failure Detection and Membership</a></li>
+<li><a href="#high-availability-and-scalability">High Availability and Scalability</a></li>
+<li><a href="#performance-and-optimization">Performance and Optimization</a></li>
+<li><a href="#cap-theorem-and-consistency-trade-offs">CAP Theorem and Consistency Trade-offs</a></li>
+<li><a href="#encryption-and-key-management">Encryption and Key Management</a></li>
+<li><a href="#authentication-and-authorization">Authentication and Authorization</a></li>
+<li><a href="#security-threats-and-mitigations">Security Threats and Mitigations</a></li>
+<li><a href="#observability-and-logging">Observability and Logging</a></li>
+<li><a href="#real-world-implementations">Real-World Implementations</a></li>
+<li><a href="#java-and-spring-boot-implementation-guide">Java and Spring Boot Implementation Guide</a></li>
+<li><a href="#interview-questions-and-answers">Interview Questions and Answers</a></li>
+</ol>
+<hr/>
+<h3 id="introduction-problem-statement">Introduction / Problem Statement</h3>
+<p>Vercel is a cloud platform for developing, building, deploying, and hosting front-end applications with serverless functions and edge computing. It provides git-first CI/CD (deploy on push), automatic SSL, global edge network for static + dynamic content, and serverless/edge functions — all managed via a simple developer experience (vercel.json config).</p>
+<h4 id="why-does-it-exist">Why Does It Exist?</h4>
+<p>Traditional hosting (VPS, containers) requires manual scaling, SSL management, CDN setup, and deployment orchestration. Vercel abstracts all of this into a git-push-to-deploy model — developers focus on code, not infrastructure.</p>
+<h4 id="what-problem-does-it-solve">What Problem Does It Solve?</h4>
+<ul>
+<li><strong>Global distribution</strong>: Deploy once → serve worldwide via edge network.
+• <strong>Zero-downtime deployment</strong>: Atomic deploys; instant rollback.
+• <strong>Serverless</strong>: No server management; auto-scaling to zero + infinite.
+• <strong>Build caching</strong>: Incremental builds → faster CI/CD.
+• <strong>Edge computing</strong>: Functions run closer to users → lower latency.
+• <strong>Automatic scaling</strong>: Scale to millions of requests; no manual intervention.</li>
+</ul>
+<h4 id="important-subtopics">Important Subtopics</h4>
+<ol>
+<li>Static file serving (CDN edge cache)</li>
+<li>Serverless functions (Node.js, Go, Python, Ruby)</li>
+<li>Edge functions (V8 isolates, sub-ms cold starts)</li>
+<li>Build system (git trigger, caching, incremental)</li>
+<li>Routing (dynamic, static, custom domains)</li>
+<li>Deployment model (immutable, atomic, rollback)</li>
+<li>Domain management (custom domains, SSL, redirects)</li>
+<li>Analytics (real user monitoring, edge logs)</li>
+</ol>
+<h4 id="problem-statement">Problem Statement</h4>
+<p>Design a deployment platform (like Vercel) that allows developers to deploy front-end applications with git integration, automatic SSL, global edge distribution, serverless/edge functions, zero-downtime deployments, and automatic scaling.</p>
+<h4 id="functional-requirements">Functional Requirements</h4>
+<ul>
+<li>Git integration (deploy on push to branch)</li>
+<li>Build system (dependency install, build command, output directory)</li>
+<li>Deploy static files to edge CDN</li>
+<li>Serverless functions (API routes)</li>
+<li>Edge functions (middleware, sub-ms)</li>
+<li>Custom domains with automatic SSL</li>
+<li>Routing (path-based + dynamic)</li>
+<li>Deployment history + rollback</li>
+<li>Build caching (incremental)</li>
+</ul>
+<h4 id="non-functional-requirements">Non-Functional Requirements</h4>
+<ul>
+<li><strong>Latency</strong>: Edge: sub-ms cold start; &lt; 10ms response for edge functions</li>
+<li><strong>Scale</strong>: Auto-scale to millions of requests/sec; scale to zero when idle</li>
+<li><strong>Availability</strong>: 99.9%+ (edge redundancy)</li>
+<li><strong>Deployment speed</strong>: Build + deploy &lt; 60s for typical app</li>
+<li><strong>Global</strong>: Edge in 100+ regions</li>
+</ul>
+<hr/>
+<h3 id="characteristics">Characteristics</h3>
+<table>
+<thead>
+<tr>
+<th>Characteristic</th>
+<th>What it means</th>
+<th>Why it matters</th>
+<th>How it works</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Serverless</strong></td>
+<td>No server management; scales to zero</td>
+<td>Zero cost when idle; infinite scale</td>
+<td>Containers + auto-scale</td>
+</tr>
+<tr>
+<td><strong>Edge deployment</strong></td>
+<td>Code runs at edge PoPs</td>
+<td>Sub-ms latency for users</td>
+<td>V8 isolates / WASM</td>
+</tr>
+<tr>
+<td><strong>Atomic deploys</strong></td>
+<td>Deploy is immutable (new version)</td>
+<td>Instant rollback; no partial state</td>
+<td>Immutable deploy objects</td>
+</tr>
+<tr>
+<td><strong>Build caching</strong></td>
+<td>Reuse previous build output</td>
+<td>Faster CI/CD</td>
+<td>Cache key = file hash</td>
+</tr>
+<tr>
+<td><strong>Zero-downtime</strong></td>
+<td>No downtime during deploy</td>
+<td>Always available</td>
+<td>Load balancer switch</td>
+</tr>
+<tr>
+<td><strong>Git-first</strong></td>
+<td>Deploy triggered by git push</td>
+<td>Developer simplicity</td>
+<td>Git webhook → build queue</td>
+</tr>
+<tr>
+<td><strong>Auto SSL</strong></td>
+<td>Free SSL for custom domains</td>
+<td>Security (HTTPS)</td>
+<td>Let's Encrypt + ACM</td>
+</tr>
+</tbody>
+</table>
+<h3 id="components">Components</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Purpose</th>
+<th>Responsibilities</th>
+<th>Relationship</th>
+<th>Real-world Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Git Integration</strong></td>
+<td>Trigger deployment</td>
+<td>Webhook from git providers</td>
+<td>Client ↔ Build Queue</td>
+<td>GitHub App</td>
+</tr>
+<tr>
+<td><strong>Build Queue</strong></td>
+<td>Manage build jobs</td>
+<td>Queue + retry + prioritize</td>
+<td>Git → Builder</td>
+<td>Redis + workers</td>
+</tr>
+<tr>
+<td><strong>Builder</strong></td>
+<td>Build application</td>
+<td>Install deps, run build, collect output</td>
+<td>Build Queue ↔ Storage</td>
+<td>Node.js builder</td>
+</tr>
+<tr>
+<td><strong>Build Cache</strong></td>
+<td>Speed up builds</td>
+<td>Cache deps + output</td>
+<td>Builder</td>
+<td>S3/Redis</td>
+</tr>
+<tr>
+<td><strong>Edge Network</strong></td>
+<td>Serve static + functions</td>
+<td>CDN + edge compute</td>
+<td>Build → CDN</td>
+<td>100+ PoPs</td>
+</tr>
+<tr>
+<td><strong>Edge Functions</strong></td>
+<td>Run code at edge</td>
+<td>Serverless/edge functions</td>
+<td>CDN ↔ Client</td>
+<td>V8 isolates</td>
+</tr>
+<tr>
+<td><strong>Load Balancer</strong></td>
+<td>Route traffic</td>
+<td>Zero-downtime deploy</td>
+<td>Client ↔ Edge</td>
+<td>LB + health check</td>
+</tr>
+<tr>
+<td><strong>Domain Manager</strong></td>
+<td>Custom domains + SSL</td>
+<td>DNS + cert provisioning</td>
+<td>Edge + User</td>
+<td>ACM + Route53</td>
+</tr>
+<tr>
+<td><strong>Deploy Store</strong></td>
+<td>Store deployment artifacts</td>
+<td>Immutable deploy versions</td>
+<td>Builder</td>
+<td>S3</td>
+</tr>
+<tr>
+<td><strong>Analytics</strong></td>
+<td>Performance + usage</td>
+<td>RUM + edge logs</td>
+<td>Edge ↔ User</td>
+<td>ClickHouse</td>
+</tr>
+</tbody>
+</table>
+<h3 id="architectural-patterns">Architectural Patterns</h3>
+<h4 id="git-first-deployment">Git-First Deployment</h4>
+<ul>
+<li><strong>What</strong>: Git push to a branch → triggers a build → deploys a new version. The deployment is immutable (each deploy gets a unique URL like <code>app-git--branch.vercel.app</code>).</li>
+<li><strong>Problem solved</strong>: Eliminates manual deployment; every git commit = a deployable preview.
+• <strong>How it works</strong>: (1) Git webhook on push → Vercel → fetch repo → enqueue build. (2) Builder: install deps → run <code>vercel build</code> → collect output (.next, dist). (3) Cache: node_modules + build output (key = file hash). (4) Deploy: upload artifacts → edge CDN → atomic alias switch. (5) Rollback: alias back to previous deploy (instant).</li>
+<li><strong>When to use</strong>: Front-end apps with git workflow; CI/CD simplicity.
+• <strong>When not to use</strong>: Stateful backends; complex multi-step deployment.</li>
+<li><strong>Advantages</strong>: Simple; preview URLs; instant rollback; build caching.</li>
+<li><strong>Disadvantages</strong>: Build isolation; cold starts; vendor lock-in.</li>
+</ul>
+<h3 id="benefits">Benefits</h3>
+<ul>
+<li><strong>Developer experience</strong>: Push to git → live URL instantly.
+• <strong>Global scale</strong>: 100+ edge locations → worldwide low latency.
+• <strong>Zero maintenance</strong>: No servers, no scaling, no SSL management.
+• <strong>Zero-downtime</strong>: Atomic deploys + instant rollback.
+• <strong>Cost efficiency</strong>: Scale to zero; only pay for actual usage.</li>
+</ul>
+<h3 id="pros">Pros</h3>
+<ul>
+<li><strong>Speed</strong>: Build cache + edge → deploys in seconds.
+• <strong>Edge functions</strong>: Sub-ms cold starts (V8 isolates).
+• <strong>Automatic SSL</strong>: Free cert for custom domains.
+• <strong>Rollback</strong>: Instant (switch alias to previous deploy).
+• <strong>Preview URLs</strong>: Every PR = unique URL for testing.
+• <strong>Analytics</strong>: Real-user monitoring built-in.</li>
+</ul>
+<h3 id="cons">Cons</h3>
+<ul>
+<li><strong>Vendor lock-in</strong>: Vercel-specific config (vercel.json); hard to migrate.
+• <strong>Cold starts</strong>: Serverless functions (not edge) still have cold start latency.
+• <strong>Build limits</strong>: Time + memory limits per build.
+• <strong>Cost</strong>: High traffic → CDN + function costs.
+• <strong>Limited control</strong>: No root access; opinionated build process.
+• <strong>Regional availability</strong>: Some regions may have limited edge presence.</li>
+</ul>
+<h3 id="challenges">Challenges</h3>
+<h4 id="technical-challenges">Technical Challenges</h4>
+<ul>
+<li><strong>Edge runtime</strong>: V8 isolates (not full Node.js); limited APIs (no filesystem, no network sockets).</li>
+<li><strong>Build isolation</strong>: Each build in ephemeral container; dependency caching.
+• <strong>Routing:</strong> Static + dynamic + function routes unified into one config.</li>
+</ul>
+<h4 id="scalability-challenges">Scalability Challenges</h4>
+<ul>
+<li><strong>Edge PoPs</strong>: 100+ locations; deployment propagation (active-active).
+• <strong>Function scaling</strong>: Scale to zero + infinite; concurrent execution limits.</li>
+</ul>
+<h4 id="performance-challenges">Performance Challenges</h4>
+<ul>
+<li><strong>Cold starts</strong>: Serverless functions (Node.js) = 100ms–2s; Edge functions (V8) = &lt; 1ms.
+• <strong>Build time</strong>: Large monorepo → optimized build graph + caching.</li>
+</ul>
+<h4 id="reliability-challenges">Reliability Challenges</h4>
+<ul>
+<li><strong>Build failures</strong>: Retry + dead-letter; notify on failure.
+• <strong>Edge propagation</strong>: Stale cache + invalidation; CDN cache purge.
+• <strong>SSL provisioning</strong>: Certificate issuance delays + renewal.</li>
+</ul>
+<h4 id="maintainability-challenges">Maintainability Challenges</h4>
+<ul>
+<li><strong>Build cache invalidation</strong>: Cache key strategy (file hash + deps lock file).
+• <strong>Edge runtime updates</strong>: V8 version changes; API deprecation.
+• <strong>Observability</strong>: Distributed tracing across edge + serverless.</li>
+</ul>
+<h4 id="security-concerns">Security Concerns</h4>
+<ul>
+<li><strong>Code injection</strong>: Function sandboxing (V8 isolates).
+• <strong>Dependency vulnerabilities</strong>: Automated scanning (npm audit).
+• <strong>DDoS protection</strong>: Edge-level rate limiting + WAF.
+• <strong>Secret management</strong>: Environment variables encrypted at rest.</li>
+</ul>
+<h3 id="best-practices">Best Practices</h3>
+<ul>
+<li><strong>Edge functions</strong>: Use for low-latency requests (auth, A/B, redirects); serverless for heavy compute.
+• <strong>Build caching</strong>: Cache node_modules + build output; key = lockfile hash.
+• <strong>Immutable deploys</strong>: Each deploy is immutable; rollback = switch alias.
+• <strong>Small functions</strong>: Keep edge functions &lt; 1MB; cold start + cache.
+• <strong>Graceful degradation</strong>: Static fallback for function failures.
+• <strong>Monitoring</strong>: Edge error rate + latency + function duration.</li>
+</ul>
+<h3 id="when-to-use-when-not-to-use">When to Use / When Not to Use</h3>
+<h4 id="appropriate">Appropriate</h4>
+<ul>
+<li>Front-end applications (React, Vue, Next.js, SvelteKit).
+• Apps needing global low-latency (edge).
+• Prototypes + rapid iteration (git-first).
+• Static sites + dynamic API routes.</li>
+</ul>
+<h4 id="not-appropriate">Not Appropriate</h4>
+<ul>
+<li>Stateful backends (databases, long-running processes).
+• Complex multi-service architectures.
+• When you need full OS control.</li>
+</ul>
+<h4 id="decision-factors">Decision Factors</h4>
+<ul>
+<li>Frontend vs backend needs; latency requirements; cost; vendor lock-in tolerance.</li>
+</ul>
+<h3 id="use-cases">Use Cases</h3>
+<h4 id="global-e-commerce-front-end">Global E-commerce Front-end</h4>
+<ul>
+<li><strong>Problem</strong>: A global e-commerce storefront needs to load instantly for users in Tokyo, London, and São Paulo, with dynamic pricing + A/B testing.</li>
+<li><strong>Solution</strong>: Next.js app → Vercel → static pages (SSG) cached at edge → edge functions for A/B testing + geo-pricing (sub-ms). Serverless functions for cart/checkout API.</li>
+<li><strong>Why suitable</strong>: Edge = global low latency; SSG = fast pages; edge functions = instant A/B; serverless = auto-scale checkout.</li>
+<li><strong>How it works</strong>: (1) Git push → Vercel build → Next.js SSG export → static HTML + JSON to edge CDN. (2) Edge function: /api/ab-test → check cookie → select variant (sub-ms, no cold start). (3) Edge function: /api/geo-price → IP → currency + price (sub-ms). (4) Serverless: /api/cart → Node.js lambda → Redis + PostgreSQL. (5) Rollback: if error → instant rollback to previous deploy. (6) Custom domain + auto SSL.</li>
+<li><strong>Trade-offs</strong>: Edge function size limit (1MB); serverless cold start for checkout; vendor lock-in.</li>
+</ul>
+<h3 id="architecture">Architecture</h3>
+<pre class="mermaid"><code>graph TD
+  subgraph "Developers"
+    DEV[GitHub/GitLab]
+  end
+  subgraph "CI/CD"
+    WH[Webhook<br/>Git Trigger]
+    BQ[Build Queue<br/>Redis]
+    Builder[Builder<br/>Ephemeral Container]
+    Cache[(Build Cache<br/>S3)]
+  end
+  subgraph "Edge"
+    Edge[Edge Network<br/>100+ PoPs]
+    Funcs[Edge + Serverless<br/>Functions]
+  end
+  subgraph "Customers"
+    C1[Viewer - Tokyo]
+    C2[Viewer - London]
+    C3[Viewer - São Paulo]
+  end
+  DEV --&gt; WH
+  WH --&gt; BQ
+  BQ --&gt; Builder
+  Builder --&gt; Cache
+  Builder --&gt; Storage[(Deploy Store<br/>S3)]
+  Storage --&gt; Edge
+  Cache --&gt; Builder
+  Edge --&gt; Funcs
+  Funcs --&gt; C1
+  Funcs --&gt; C2
+  Funcs --&gt; C3
+  C1 --&gt; Edge
+  C2 --&gt; Edge
+  C3 --&gt; Edge
+</code></pre>
+<h4 id="architecture-structure">Architecture Structure</h4>
+<ul>
+<li><strong>CI/CD</strong>: Git webhook → Build Queue → Build worker (ephemeral container + cache).
+• <strong>Storage</strong>: Immutable deploy artifacts (S3).
+• <strong>Edge</strong>: CDN + edge functions (100+ PoPs).
+• <strong>Functions</strong>: Edge (V8 isolates) + Serverless (Node.js/Go).</li>
+<li><strong>Domains</strong>: Custom domains + auto SSL (Let's Encrypt).</li>
+</ul>
+<h4 id="data-flow">Data Flow</h4>
+<ol>
+<li><strong>Deploy</strong>: Git push → webhook → fetch repo → enqueue build.</li>
+<li><strong>Build</strong>: Worker → cache mount → install deps → build → output → upload to S3.</li>
+<li><strong>Deploy</strong>: Artifacts → edge CDN → atomic alias switch.</li>
+<li><strong>Serve</strong>: Viewer → DNS → edge PoP → static (cached) → or edge function (V8).</li>
+</ol>
+<h4 id="scaling-strategy">Scaling Strategy</h4>
+<ul>
+<li><strong>Builders</strong>: Scale by build queue; 100+ builders.
+• <strong>Edge</strong>: Immutable artifacts → scales to millions; auto-scale to zero.</li>
+<li><strong>Functions</strong>: Edge (V8) → instant scale; Serverless → 1–1000 concurrent.</li>
+</ul>
+<h4 id="failure-handling">Failure Handling</h4>
+<ul>
+<li><strong>Build failure</strong>: Retry 3x → dead-letter + notify.
+• <strong>Edge outage</strong>: Traffic routed to next PoP; global anycast.</li>
+<li><strong>Function error</strong>: Edge → return error; fallback to static if configured.</li>
+</ul>
+<h3 id="high-level-design">High-Level Design</h3>
+<pre class="mermaid"><code>flowchart LR
+  GIT[GitHub Repo] --&gt; WH[Git Webhook]
+  WH --&gt; BQ[Build Queue]
+  BQ --&gt; B[Builder<br/>Container + Cache]
+  B --&gt; S3[(Deploy Store<br/>S3)]
+  S3 --&gt; EDGE[Edge Network<br/>CDN + Functions]
+  U1[User - Tokyo] --&gt; EDGE
+  U2[User - London] --&gt; EDGE
+  U3[User - SP] --&gt; EDGE
+  EDGE --&gt; U1
+  EDGE --&gt; U2
+  EDGE --&gt; U3
+</code></pre>
+<h3 id="deep-dive">Deep Dive</h3>
+<h4 id="edge-functions-vs-serverless">Edge Functions vs Serverless</h4>
+<p>The existing Theory section covers: edge functions run at the edge (V8 isolates) for sub-ms latency; serverless functions run in centralized regions for heavier compute. Edge function size limit (1MB); no filesystem/network access. Serverless: full Node.js runtime but cold starts.</p>
+<h4 id="build-caching">Build Caching</h4>
+<p>The existing Theory section covers: build cache stores node_modules + build output; cache key = content hash of lockfile; incremental builds reuse cache; stale cache detection via dependency changes.</p>
+<h4 id="deployment-model">Deployment Model</h4>
+<p>The existing Theory section covers: each deploy is immutable; new version gets unique URL; alias switches traffic atomically (zero-downtime); rollback = alias back.</p>
+<h3 id="api-contract">API Contract</h3>
+<ul>
+<li><strong>API purpose</strong>: Manage deployments, projects, domains, environment variables.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/v1/projects</code></td>
+<td>Create a new project</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/projects/{id}/deployments</code></td>
+<td>Create a new deployment</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/projects/{id}/deployments</code></td>
+<td>List deployments</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/projects/{id}/deployments/{dep}</code></td>
+<td>Get deployment status</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/projects/{id}/deployments/{dep}</code></td>
+<td>Delete deployment</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/projects/{id}/domains</code></td>
+<td>Add custom domain</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/projects/{id}/domains/{dom}/certs</code></td>
+<td>Get SSL cert status</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Create deployment (POST /deployments)</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my-app"</span><span class="p">,</span><span class="w"> </span><span class="nt">"git_branch"</span><span class="p">:</span><span class="w"> </span><span class="s2">"main"</span><span class="p">,</span><span class="w"> </span><span class="nt">"project_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"proj_123"</span><span class="p">}</span>
+</code></pre></div>
+<strong>Response</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="p">{</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">  </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dpl_abc123"</span><span class="p">,</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my-app"</span><span class="p">,</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">  </span><span class="nt">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BUILDING"</span><span class="p">,</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">  </span><span class="nt">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my-app-git-main--username.vercel.app"</span><span class="p">,</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">  </span><span class="nt">"created"</span><span class="p">:</span><span class="w"> </span><span class="mi">1723456789</span>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Error responses</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="p">{</span><span class="nt">"error"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bad_request"</span><span class="p">,</span><span class="w"> </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Build timeout"</span><span class="p">,</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dep_123"</span><span class="p">}}</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="p">{</span><span class="nt">"error"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"forbidden"</span><span class="p">,</span><span class="w"> </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Project not found"</span><span class="p">}}</span>
+</code></pre></div></p>
+<p><strong>Authentication</strong>: Bearer token (personal token or team token).</p>
+<h3 id="data-model-and-api">Data Model and API</h3>
+<pre class="mermaid"><code>erDiagram
+    USER ||--o{ PROJECT : "owns"
+    PROJECT ||--o{ DEPLOYMENT : "has"
+    DEPLOYMENT ||--o{ DOMAIN : "maps"
+    PROJECT ||--o{ ENV_VAR : "has"
+
+    USER {
+      string user_id PK
+      string email
+      string name
+    }
+    PROJECT {
+      string project_id PK
+      string user_id FK
+      string name
+      string framework
+      datetime created_at
+    }
+    DEPLOYMENT {
+      string dep_id PK
+      string project_id FK
+      string git_branch
+      string state BUILDING_READY_ERROR
+      string url
+      datetime created_at
+      datetime ready_at
+    }
+    DOMAIN {
+      string domain_id PK
+      string project_id FK
+      string name
+      string ssl_status PENDING_READY_ERROR
+    }
+    ENV_VAR {
+      string var_id PK
+      string project_id FK
+      string key
+      string value_encrypted
+    }
+</code></pre>
+<p><strong>Consistency</strong>: Strong consistency for project/deployment metadata; eventual for edge cache.</p>
+<hr/>
+<h3 id="replication-strategies">Replication Strategies</h3>
+<p>Vercel's deployment artifacts are replicated across edge PoPs. The replication strategy balances
+freshness against latency.</p>
+<ul>
+<li><strong>Active-active edge distribution</strong>: When a new deployment is ready, artifacts (static files,
+  serverless function packages) are pushed to all 100+ edge PoPs simultaneously. Each PoP has
+  local storage (SSD-backed) and serves from its local copy.</li>
+<li><strong>Cache invalidation</strong>: When a new deployment supersedes an old one (via alias switch), the edge
+  network receives an invalidation broadcast. Stale artifacts are evicted based on TTL (default
+  7 days) and LRU eviction for less-popular deploys.</li>
+<li><strong>Function package replication</strong>: Serverless function deployment packages are replicated to all
+  region-based function pools. Edge function packages (V8 isolates) are replicated to all PoPs.</li>
+<li><strong>Real-world mapping</strong>: Vercel uses a custom edge distribution system (based on SmartNICs and
+  custom protocols) to propagate artifacts to 100+ PoPs within 30 seconds of deployment.</li>
+</ul>
+<pre class="mermaid"><code>flowchart LR
+    DEPLOY[New Deployment] --&gt;|propagate| POPS[Edge PoPs\n100+ locations]
+    POPS --&gt;|replicate| REPLICA1[(Edge Cache\nPoP 1)]
+    POPS --&gt;|replicate| REPLICA2[(Edge Cache\nPoP 2)]
+    POPS --&gt;|replicate| REPLICA3[(Edge Cache\nPoP N)]
+    INVALID[Invalidation\nBroadcast] -.-&gt;|evict stale| REPLICA1
+    INVALID -.-&gt;|evict stale| REPLICA2
+    INVALID -.-&gt;|evict stale| REPLICA3
+</code></pre>
+<p><em>Vercel's replication topology: deployment artifacts are pushed to all edge PoPs simultaneously (active-active). A global invalidation broadcast evicts stale artifacts when new deployments are aliased. TTL-based eviction handles long-tail cache cleanup.</em></p>
+<hr/>
+<h3 id="failure-detection-and-membership">Failure Detection and Membership</h3>
+<p>Vercel's edge network must detect failed PoPs and route traffic away from unhealthy nodes.</p>
+<ul>
+<li><strong>Health checks</strong>: Each edge PoP reports health metrics (CPU, memory, request latency, error
+  rate) to the control plane every 5 seconds. Health checks include synthetic requests that test
+  the full serve path (CDN → edge function → response).</li>
+<li><strong>Membership</strong>: The control plane maintains a global view of all PoPs and their health status.
+  Edge routing decisions (GeoDNS + anycast) use this view to route traffic to healthy PoPs.</li>
+<li><strong>Failure detection</strong>: If a PoP's health check fails 3 consecutive times (15 seconds), it is
+  marked unhealthy and removed from the routing pool. Traffic is automatically routed to the next
+  nearest healthy PoP.</li>
+<li><strong>Graceful degradation</strong>: If an edge PoP loses connectivity to the origin (not the internet),
+  it continues serving cached static assets (which are immutable) while returning errors for
+  dynamic requests (serverless/edge functions). This ensures static sites remain fully available
+  even during origin outages.</li>
+</ul>
+<hr/>
+<h3 id="high-availability-and-scalability">High Availability and Scalability</h3>
+<h4 id="auto-scaling">Auto-Scaling</h4>
+<ul>
+<li><strong>Edge PoPs</strong>: Static assets and edge functions scale to infinity (they run on demand at each
+  PoP). No scaling needed — the PoP serves requests as they arrive.</li>
+<li><strong>Serverless functions</strong>: Function pools in each region auto-scale based on concurrent request
+  count. Starting at 1 instance, they scale up to 1000 concurrent per project per region. When
+  idle for 15 minutes, they scale to zero.</li>
+<li><strong>Builder fleet</strong>: Build workers (ephemeral containers) auto-scale based on queue depth. Target:
+  95% of builds start within 5 seconds of the webhook.</li>
+</ul>
+<h4 id="load-balancing">Load Balancing</h4>
+<pre class="mermaid"><code>flowchart LR
+    USER[Users] --&gt;|GeoDNS| EDGE1[Edge PoP 1\nTokyo]
+    USER --&gt;|GeoDNS| EDGE2[Edge PoP 2\nLondon]
+    USER --&gt;|GeoDNS| EDGE3[Edge PoP 3\nSan Francisco]
+    EDGE1 --&gt;|nearest| S1[(Serverless Pool)]
+    EDGE2 --&gt;|nearest| S2[(Serverless Pool)]
+    EDGE3 --&gt;|nearest| S3[(Serverless Pool)]
+    BACKEND[(Deployment Store\nS3)]
+    BACKEND --&gt; EDGE1
+    BACKEND --&gt; EDGE2
+    BACKEND --&gt; EDGE3
+</code></pre>
+<p><em>Vercel's global edge architecture: GeoDNS routes users to the nearest edge PoP (Tokyo, London,
+San Francisco). Each PoP serves cached static assets locally and executes edge functions (V8
+isolates) or routes dynamic requests to regional serverless pools. Deployment artifacts are stored
+in a central S3 bucket and replicated to all PoPs.</em></p>
+<h4 id="failover">Failover</h4>
+<ul>
+<li><strong>Edge PoP failure</strong>: GeoDNS detects the failure (via health checks) and reroutes traffic to
+  the next nearest PoP. Recovery time: &lt; 30 seconds.</li>
+<li><strong>Serverless function failure</strong>: The edge routes the request to another healthy instance in the
+  same region. Circuit breakers prevent cascading failures.</li>
+<li><strong>Origin failure</strong>: If the central deployment store (S3) is down, edge nodes continue serving
+  cached assets (which are immutable) but cannot serve new deployments until recovery.</li>
+</ul>
+<hr/>
+<h3 id="performance-and-optimization">Performance and Optimization</h3>
+<h4 id="caching-strategies">Caching Strategies</h4>
+<ul>
+<li><strong>Multi-layer caching</strong>: (1) Browser cache (HTTP headers), (2) CDN edge cache (Cloudflare /
+  Vercel Edge Network), (3) Application cache (Redis for function results), (4) Build cache
+  (S3 for dependencies).</li>
+<li><strong>Cache key design</strong>: For static assets, the cache key is the file hash (immutable → infinite
+  TTL). For edge functions, the cache key includes the URL path + query params + <code>Accept</code> header
+  for content negotiation.</li>
+<li><strong>Stale-while-revalidate</strong>: Edge caches serve stale content (up to 30 seconds past TTL) while
+  fetching fresh content in the background, ensuring zero-latency responses even during revalidation.</li>
+</ul>
+<h4 id="latency-optimization">Latency Optimization</h4>
+<ul>
+<li><strong>Edge-first serving</strong>: Static assets and edge functions are served from the edge PoP closest
+  to the user (median latency: &lt; 10 ms).</li>
+<li><strong>Function cold start elimination</strong>: Edge functions (V8 isolates) have sub-millisecond cold
+  starts. Serverless functions use provisioned concurrency for predictable cold start times.</li>
+<li><strong>Preconnect and preload</strong>: The edge injects <code>&lt;link rel="preconnect"&gt;</code> and <code>&lt;link rel="preload"&gt;</code>
+  headers to warm up browser connections before resource requests.</li>
+</ul>
+<h4 id="throughput-optimization">Throughput Optimization</h4>
+<ul>
+<li><strong>Request coalescing</strong>: Simultaneous requests for the same cache-miss resource are coalesced
+  into a single origin fetch, reducing load during traffic spikes.</li>
+<li><strong>Connection pooling</strong>: HTTP/2 and keep-alive are enforced between edge nodes and origin to
+  reduce connection setup overhead.</li>
+</ul>
+<hr/>
+<h3 id="cap-theorem-and-consistency-trade-offs">CAP Theorem and Consistency Trade-offs</h3>
+<p>Vercel's deployment platform makes explicit CAP trade-offs per component:</p>
+<ul>
+<li><strong>Deployment metadata (PostgreSQL)</strong>: CP — strong consistency. A deployment must be immediately
+  visible to all regions after alias switch. Write latency is higher (cross-region sync) but
+  correctness is critical.</li>
+<li><strong>Edge static assets (S3 + CDN)</strong>: AP — availability is prioritized. Assets are immutable
+  (content-addressed by hash), so eventual consistency is safe. If a new edge PoP is behind,
+  it eventually catches up; stale caches still serve correct (immutable) content.</li>
+<li><strong>Environment variables</strong>: CP — strong consistency required. A secret rotation must be visible
+  to all running functions immediately.</li>
+<li><strong>Analytics data</strong>: AP — eventual consistency is fine. Analytics events are buffered and
+  flushed asynchronously; late or dropped events are acceptable.</li>
+</ul>
+<pre class="mermaid"><code>pie
+    title CAP Trade-offs by Component
+    "CP - Metadata" : 30
+    "AP - Edge Assets" : 40
+    "CP - Env Vars" : 15
+    "AP - Analytics" : 15
+</code></pre>
+<p><em>CAP trade-offs in Vercel: deployment metadata and environment variables require strong consistency
+(CP) for correctness; edge static assets are immutable so availability is prioritized (AP);
+analytics events tolerate eventual consistency (AP).</em></p>
+<hr/>
+<h3 id="encryption-and-key-management">Encryption and Key Management</h3>
+<h4 id="encryption-at-rest">Encryption at Rest</h4>
+<ul>
+<li><strong>Deployment artifacts</strong>: Static assets and serverless function packages are stored in S3 with
+  SSE-KMS encryption. Each deployment gets a unique KMS key that is rotated every 90 days.</li>
+<li><strong>Environment variables</strong>: Encrypted at rest using envelope encryption — the variable value
+  is encrypted with a DEK, which is encrypted with a KEK managed by HashiCorp Vault. The encrypted
+  value is stored in PostgreSQL. At runtime, the builder decrypts the DEK using Vault's transit
+  engine.</li>
+<li><strong>Build cache</strong>: Cached dependencies and build outputs are stored in S3 with SSE-S3 encryption.</li>
+</ul>
+<h4 id="encryption-in-transit">Encryption in Transit</h4>
+<ul>
+<li><strong>Client-to-edge</strong>: All traffic uses HTTPS/TLS 1.3. Vercel terminates TLS at the edge (V8
+  isolates have native TLS support) and re-encrypts to origin for dynamic requests.</li>
+<li><strong>Service-to-service</strong>: Internal APIs (deployment store, builder coordination) use mTLS with
+  short-lived certificates (1 hour TTL, auto-rotated via SPIFFE).</li>
+</ul>
+<h4 id="key-management">Key Management</h4>
+<ul>
+<li><strong>Key hierarchy</strong>: Root keys in HashiCorp Vault (HSM-backed), DEKs for each deployment/secret,
+  rotated per deployment. Vault's transit engine handles encryption/decryption without exposing
+  keys to application code.</li>
+</ul>
+<h4 id="authorization-example-environment-variable-decryption">Authorization Example — Environment Variable Decryption</h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="nd">@Service</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SecretDecryptionService</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">VaultTemplate</span><span class="w"> </span><span class="n">vaultTemplate</span><span class="p">;</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">SecretDecryptionService</span><span class="p">(</span><span class="n">VaultTemplate</span><span class="w"> </span><span class="n">vaultTemplate</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">vaultTemplate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vaultTemplate</span><span class="p">;</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w">    </span><span class="nd">@Value</span><span class="p">(</span><span class="s">"${app.secret.encryption-context:production}"</span><span class="p">)</span>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">encryptionContext</span><span class="p">;</span>
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">decryptSecret</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">encryptedValue</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="w">        </span><span class="c1">// Use Vault's transit engine to decrypt — key never leaves Vault</span>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="w">        </span><span class="n">VaultTransitContext</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VaultTransitContext</span><span class="p">.</span><span class="na">builder</span><span class="p">()</span>
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="w">                </span><span class="p">.</span><span class="na">plaintext</span><span class="p">(</span><span class="kc">null</span><span class="p">)</span>
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="w">                </span><span class="p">.</span><span class="na">ciphertext</span><span class="p">(</span><span class="n">encryptedValue</span><span class="p">)</span>
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="w">                </span><span class="p">.</span><span class="na">build</span><span class="p">();</span>
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a>
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="w">        </span><span class="n">VaultTransitData</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vaultTemplate</span><span class="p">.</span><span class="na">opsForTransit</span><span class="p">()</span>
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="w">                </span><span class="p">.</span><span class="na">decrypt</span><span class="p">(</span><span class="s">"deployment-secrets"</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">);</span>
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a>
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="n">Base64</span><span class="p">.</span><span class="na">getDecoder</span><span class="p">().</span><span class="na">decode</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="na">getPlaintext</span><span class="p">()),</span>
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a><span class="w">                </span><span class="n">StandardCharsets</span><span class="p">.</span><span class="na">UTF_8</span><span class="p">);</span>
+<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a><span class="p">}</span>
+</code></pre></div>
+<p><em>The <code>SecretDecryptionService</code> bean decrypts environment variables using Vault's transit engine.
+The encryption key never leaves Vault (HSM-backed), eliminating key exposure risk. The service is
+called by the builder at deploy time to inject secrets into the build environment. The encryption
+context (environment name) provides tenant isolation for multi-tenant deployments.</em></p>
+<hr/>
+<h3 id="authentication-and-authorization">Authentication and Authorization</h3>
+<h4 id="authentication-methods">Authentication Methods</h4>
+<ul>
+<li><strong>Developer web dashboard</strong>: OAuth 2.0 with SSO (Google, GitHub, GitLab). Short-lived access
+  tokens (15 min) with refresh token rotation.</li>
+<li><strong>API tokens</strong>: Personal access tokens (for CI/CD integration) with scoped permissions
+  (read projects, create deployments, manage domains). Tokens are hashed (SHA-256) before storage.</li>
+<li><strong>Git provider integration</strong>: GitHub Apps / GitLab OAuth for git-triggered deployments. The
+  webhook payload is verified using the provider's signature.</li>
+<li><strong>Edge-to-edge</strong>: mTLS between edge PoPs and the origin for artifact replication.</li>
+</ul>
+<h4 id="authorization-models">Authorization Models</h4>
+<ul>
+<li><strong>RBAC</strong>: Roles: <code>owner</code> (full account access), <code>member</code> (deploy + view), <code>viewer</code> (view only),
+  <code>developer</code> (deploy to preview, limited production access).</li>
+<li><strong>Resource scoping</strong>: Permissions are scoped per project. A token can deploy to project A but
+  only view project B.</li>
+<li><strong>Team-based access</strong>: Projects are organized into teams; access is granted at the team level.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="nd">@Service</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">DeploymentAuthService</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">TeamRepository</span><span class="w"> </span><span class="n">teamRepository</span><span class="p">;</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">DeploymentAuthService</span><span class="p">(</span><span class="n">TeamRepository</span><span class="w"> </span><span class="n">teamRepository</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">teamRepository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">teamRepository</span><span class="p">;</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">canDeploy</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">userId</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">projectId</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">teamId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="w">        </span><span class="c1">// Check: user must be a member of the team that owns the project</span>
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">teamRepository</span><span class="p">.</span><span class="na">isUserInTeam</span><span class="p">(</span><span class="n">userId</span><span class="p">,</span><span class="w"> </span><span class="n">teamId</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="w">               </span><span class="n">teamRepository</span><span class="p">.</span><span class="na">hasProjectAccess</span><span class="p">(</span><span class="n">projectId</span><span class="p">,</span><span class="w"> </span><span class="n">teamId</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a><span class="w">               </span><span class="n">teamRepository</span><span class="p">.</span><span class="na">hasRole</span><span class="p">(</span><span class="n">userId</span><span class="p">,</span><span class="w"> </span><span class="n">teamId</span><span class="p">,</span><span class="w"> </span><span class="s">"developer"</span><span class="p">);</span>
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">canAccessDeployment</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">userId</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">deploymentId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a><span class="w">        </span><span class="c1">// Check: user must own the deployment or be on the owning team with at least viewer role</span>
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a><span class="w">        </span><span class="n">Deployment</span><span class="w"> </span><span class="n">deployment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">deploymentRepository</span><span class="p">.</span><span class="na">findById</span><span class="p">(</span><span class="n">deploymentId</span><span class="p">);</span>
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">deployment</span><span class="p">.</span><span class="na">getOwnerUserId</span><span class="p">().</span><span class="na">equals</span><span class="p">(</span><span class="n">userId</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a><span class="w">               </span><span class="p">(</span><span class="n">teamRepository</span><span class="p">.</span><span class="na">isUserInTeam</span><span class="p">(</span><span class="n">userId</span><span class="p">,</span><span class="w"> </span><span class="n">deployment</span><span class="p">.</span><span class="na">getTeamId</span><span class="p">())</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a><span class="w">                </span><span class="n">teamRepository</span><span class="p">.</span><span class="na">hasRole</span><span class="p">(</span><span class="n">userId</span><span class="p">,</span><span class="w"> </span><span class="n">deployment</span><span class="p">.</span><span class="na">getTeamId</span><span class="p">(),</span><span class="w"> </span><span class="s">"viewer"</span><span class="p">));</span>
+<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a><span class="p">}</span>
+</code></pre></div>
+<p><em>The <code>DeploymentAuthService</code> bean enforces RBAC for deployment operations. <code>canDeploy</code> checks
+that the user is a team member with at least the <code>developer</code> role for the specific project.
+<code>canAccessDeployment</code> allows access if the user owns the deployment or is on the owning team
+with a <code>viewer</code> or higher role. Team membership is checked via <code>TeamRepository</code>.</em></p>
+<hr/>
+<h3 id="security-threats-and-mitigations">Security Threats and Mitigations</h3>
+<h4 id="threat-container-escape-via-malicious-code">Threat: Container Escape via Malicious Code</h4>
+<ul>
+<li><strong>Mitigation</strong>: Serverless functions run in sandboxed containers (gVisor / Firecracker microVMs).
+  Edge functions run in V8 isolates with no filesystem or network access. All function code is
+  scanned for known vulnerabilities before deployment.</li>
+</ul>
+<h4 id="threat-dependency-vulnerabilities">Threat: Dependency Vulnerabilities</h4>
+<ul>
+<li><strong>Mitigation</strong>: Automated dependency scanning (Snyk / GitHub Dependabot) on every build. Known
+  CVEs trigger a build failure. Dependency trees are verified against a blocklist of 10,000+
+  known-vulnerable packages.</li>
+</ul>
+<h4 id="threat-ddos-abuse">Threat: DDoS / Abuse</h4>
+<ul>
+<li><strong>Mitigation</strong>: Edge-level rate limiting (1000 req/min per IP) via the global edge network.
+  WAF rules block known attack patterns (SQLi, XSS). Suspicious traffic is challenged with
+  JSChallenge or CAPTCHA.</li>
+</ul>
+<h4 id="threat-data-breach-credentials-secrets">Threat: Data Breach (Credentials / Secrets)</h4>
+<ul>
+<li><strong>Mitigation</strong>: Environment variables are encrypted at rest (Vault transit engine). Build
+  logs are sanitized to strip secrets. API tokens are scoped and hashed before storage. Access
+  requires SSO + MFA for admin actions.</li>
+</ul>
+<h4 id="threat-supply-chain-attack-compromised-git-provider">Threat: Supply Chain Attack (Compromised Git Provider)</h4>
+<ul>
+<li><strong>Mitigation</strong>: Git webhook payloads are verified via HMAC signature. Builds run in ephemeral
+  containers with no persistent state. Third-party dependencies must be pinned to exact versions.</li>
+</ul>
+<hr/>
+<h3 id="observability-and-logging">Observability and Logging</h3>
+<h4 id="architecture_1">Architecture</h4>
+<pre class="mermaid"><code>flowchart LR
+    POPUL[Edge PoPs\n100+ locations] --&gt;|metrics+logs| AGG[Aggregation\nOpenTelemetry]
+    BUILD[Builders] --&gt;|logs+metrics| AGG
+    FUNC[Functions] --&gt;|traces+metrics| AGG
+    AGG --&gt;|logs| ELK[Elasticsearch\n+ Kibana]
+    AGG --&gt;|metrics| GRAF[Grafana\n+ ClickHouse]
+    AGG --&gt;|traces| JAE[JAEGER\nTrace Store]
+    MON[Monitoring\nuMonitor] --&gt;|alerts| OPS[On-Call]
+</code></pre>
+<p><em>Vercel's observability pipeline: all edge PoPs, builders, and functions emit structured logs,
+metrics, and traces via OpenTelemetry. Logs are stored in Elasticsearch (7-day hot, 90-day cold),
+metrics in ClickHouse (for high-cardinality), and traces in JAEGER. Grafana dashboards visualize
+key metrics; uMonitor generates alerts. The system processes 50+ million requests per second
+across 100+ PoPs.</em></p>
+<h4 id="key-metrics">Key Metrics</h4>
+<ul>
+<li><strong>Edge</strong>: Request rate (RPS), p50/p95/p99 latency (&lt; 10 ms for static, &lt; 200 ms for edge
+  functions), error rate (&lt; 0.1%), cache hit ratio (&gt; 95%).</li>
+<li><strong>Builds</strong>: Build time p95 (&lt; 60s), build success rate (&gt; 99%), queue wait time (&lt; 5s).</li>
+<li><strong>Functions</strong>: Cold start frequency (&lt; 1%), function duration p95, concurrent execution count.</li>
+<li><strong>Business</strong>: Deployment count, preview URL count, domain count, revenue (for paid tiers).</li>
+</ul>
+<h4 id="logging">Logging</h4>
+<p>Structured JSON logs are emitted to Kafka and stored in Elasticsearch. Each log entry includes
+trace ID (for cross-service correlation), project ID, deployment ID, request ID, user ID (hashed),
+and structured error details. Logs are retained for 7 days (hot) and 90 days (cold). PII is
+redacted at the SDK level.</p>
+<h4 id="distributed-tracing">Distributed Tracing</h4>
+<p>OpenTelemetry traces follow each request from the edge through serverless/edge functions to the
+origin. Trace context propagates via W3C TraceContext headers. Critical paths (deploy → build →
+index → edge serve) are always sampled; background paths are sampled at 10%.</p>
+<h4 id="alerting-strategy">Alerting Strategy</h4>
+<ul>
+<li><strong>Critical (pages on-call)</strong>: Edge error rate &gt; 1%, p99 latency &gt; 1000ms, build failure rate &gt;
+  5%, origin unreachable from all PoPs.</li>
+<li><strong>Warning (Slack)</strong>: Cache hit ratio dropping below 90%, build queue &gt; 30s, function cold start
+  rate &gt; 5%.</li>
+</ul>
+<hr/>
+<h3 id="java-and-spring-boot-implementation-guide">Java and Spring Boot Implementation Guide</h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="nd">@RestController</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="nd">@RequestMapping</span><span class="p">(</span><span class="s">"/api/v1/deployments"</span><span class="p">)</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="nd">@RequiredArgsConstructor</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">DeploymentController</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">DeploymentService</span><span class="w"> </span><span class="n">deployService</span><span class="p">;</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">    </span><span class="nd">@PostMapping</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">ResponseEntity</span><span class="o">&lt;</span><span class="n">DeploymentResponse</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">createDeployment</span><span class="p">(</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">            </span><span class="nd">@AuthenticationPrincipal</span><span class="w"> </span><span class="n">UserDetails</span><span class="w"> </span><span class="n">user</span><span class="p">,</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w">            </span><span class="nd">@RequestBody</span><span class="w"> </span><span class="n">CreateDeploymentRequest</span><span class="w"> </span><span class="n">request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w">        </span><span class="c1">// Trigger build + deploy</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w">        </span><span class="n">CompletableFuture</span><span class="o">&lt;</span><span class="n">Deployment</span><span class="o">&gt;</span><span class="w"> </span><span class="n">future</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">deployService</span><span class="p">.</span><span class="na">deploy</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="w">        </span><span class="c1">// Webhook: notify user on completion</span>
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ResponseEntity</span><span class="p">.</span><span class="na">accepted</span><span class="p">().</span><span class="na">build</span><span class="p">();</span>
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a><span class="w">    </span><span class="nd">@GetMapping</span><span class="p">(</span><span class="s">"/{deploymentId}"</span><span class="p">)</span>
+<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">ResponseEntity</span><span class="o">&lt;</span><span class="n">DeploymentResponse</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">getDeployment</span><span class="p">(</span>
+<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a><span class="w">            </span><span class="nd">@PathVariable</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">deploymentId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a><span class="w">        </span><span class="n">Deployment</span><span class="w"> </span><span class="n">dep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">deployService</span><span class="p">.</span><span class="na">getStatus</span><span class="p">(</span><span class="n">deploymentId</span><span class="p">);</span>
+<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ResponseEntity</span><span class="p">.</span><span class="na">ok</span><span class="p">(</span><span class="n">DeploymentResponse</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">dep</span><span class="p">));</span>
+<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a><span class="p">}</span>
+<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a>
+<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a><span class="nd">@Service</span>
+<a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">DeploymentService</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">BuildQueue</span><span class="w"> </span><span class="n">buildQueue</span><span class="p">;</span>
+<a href="#__codelineno-5-30" id="__codelineno-5-30" name="__codelineno-5-30"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">S3Storage</span><span class="w"> </span><span class="n">s3Storage</span><span class="p">;</span>
+<a href="#__codelineno-5-31" id="__codelineno-5-31" name="__codelineno-5-31"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">EdgeManager</span><span class="w"> </span><span class="n">edgeManager</span><span class="p">;</span>
+<a href="#__codelineno-5-32" id="__codelineno-5-32" name="__codelineno-5-32"></a>
+<a href="#__codelineno-5-33" id="__codelineno-5-33" name="__codelineno-5-33"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">CompletableFuture</span><span class="o">&lt;</span><span class="n">Deployment</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">deploy</span><span class="p">(</span><span class="n">CreateDeploymentRequest</span><span class="w"> </span><span class="n">req</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-34" id="__codelineno-5-34" name="__codelineno-5-34"></a><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">deployId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">UUID</span><span class="p">.</span><span class="na">randomUUID</span><span class="p">().</span><span class="na">toString</span><span class="p">();</span>
+<a href="#__codelineno-5-35" id="__codelineno-5-35" name="__codelineno-5-35"></a>
+<a href="#__codelineno-5-36" id="__codelineno-5-36" name="__codelineno-5-36"></a><span class="w">        </span><span class="c1">// Enqueue build</span>
+<a href="#__codelineno-5-37" id="__codelineno-5-37" name="__codelineno-5-37"></a><span class="w">        </span><span class="n">buildQueue</span><span class="p">.</span><span class="na">enqueue</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">BuildJob</span><span class="p">(</span><span class="n">deployId</span><span class="p">,</span><span class="w"> </span><span class="n">req</span><span class="p">.</span><span class="na">getProjectId</span><span class="p">(),</span><span class="w"> </span><span class="n">req</span><span class="p">.</span><span class="na">getGitBranch</span><span class="p">()));</span>
+<a href="#__codelineno-5-38" id="__codelineno-5-38" name="__codelineno-5-38"></a>
+<a href="#__codelineno-5-39" id="__codelineno-5-39" name="__codelineno-5-39"></a><span class="w">        </span><span class="c1">// Listen for build completion → upload → edge deploy</span>
+<a href="#__codelineno-5-40" id="__codelineno-5-40" name="__codelineno-5-40"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">CompletableFuture</span><span class="p">.</span><span class="na">supplyAsync</span><span class="p">(()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-41" id="__codelineno-5-41" name="__codelineno-5-41"></a><span class="w">            </span><span class="n">BuildResult</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">buildQueue</span><span class="p">.</span><span class="na">waitFor</span><span class="p">(</span><span class="n">deployId</span><span class="p">);</span>
+<a href="#__codelineno-5-42" id="__codelineno-5-42" name="__codelineno-5-42"></a><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">buildId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s3Storage</span><span class="p">.</span><span class="na">upload</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="na">getArtifacts</span><span class="p">());</span>
+<a href="#__codelineno-5-43" id="__codelineno-5-43" name="__codelineno-5-43"></a><span class="w">            </span><span class="n">edgeManager</span><span class="p">.</span><span class="na">deploy</span><span class="p">(</span><span class="n">buildId</span><span class="p">,</span><span class="w"> </span><span class="n">req</span><span class="p">.</span><span class="na">getProjectId</span><span class="p">());</span>
+<a href="#__codelineno-5-44" id="__codelineno-5-44" name="__codelineno-5-44"></a><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Deployment</span><span class="p">(</span><span class="n">deployId</span><span class="p">,</span><span class="w"> </span><span class="n">buildId</span><span class="p">,</span><span class="w"> </span><span class="s">"READY"</span><span class="p">);</span>
+<a href="#__codelineno-5-45" id="__codelineno-5-45" name="__codelineno-5-45"></a><span class="w">        </span><span class="p">});</span>
+<a href="#__codelineno-5-46" id="__codelineno-5-46" name="__codelineno-5-46"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-5-47" id="__codelineno-5-47" name="__codelineno-5-47"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="real-world-implementations">Real-World Implementations</h3>
+<ul>
+<li><strong>Vercel</strong>: Next.js integration; edge network; Git-deploy; preview URLs.
+• <strong>Netlify</strong>: Similar git-first deployment; serverless functions; edge handlers.
+• <strong>Cloudflare Pages</strong>: Git integration; edge functions; Workers.
+• <strong>GitHub Pages + Cloudflare</strong>: Static hosting + edge cache (DIY Vercel).</li>
+</ul>
+<h3 id="interview-questions-and-answers">Interview Questions and Answers</h3>
+<h4 id="beginner-questions">Beginner Questions</h4>
+<p><strong>Q: What is a serverless function?</strong>
+A: A function-as-a-service (FaaS) — you write a function, the platform runs it on-demand. Auto-scales to zero (no cost when idle) → infinite scale. Cold start (container init) on first invocation. Vercel + AWS Lambda + Cloudflare Workers.</p>
+<p><strong>Q: What is edge computing?</strong>
+A: Running compute (functions) at the edge (PoP closest to user) instead of centralized region. Reduces latency (round-trip to user). Vercel Edge Functions (V8 isolates), Cloudflare Workers (V8), AWS Lambda@Edge.</p>
+<p><strong>Q: What is a build cache?</strong>
+A: Cache of dependencies + build output from previous builds. Key = content hash of lockfile. On rebuild → if cache hit → skip install/build steps. Speeds up CI/CD from minutes to seconds.</p>
+<h4 id="intermediate-questions">Intermediate Questions</h4>
+<p><strong>Q: How does Vercel achieve zero-downtime deployments?</strong>
+A: (1) Each deploy is immutable (unique URL). (2) Build → upload artifacts to S3. (3) Deploy → propagate to edge CDN (all PoPs). (4) Atomic alias switch (traffic → new version). (5) Rollback = alias back to previous (instant). (6) Old deploys retained (3–7 days) for rollback.</p>
+<p><strong>Q: What is the difference between edge functions and serverless functions on Vercel?</strong>
+A: Edge functions: run on V8 isolates at edge PoPs; sub-ms cold start; 1MB size limit; no filesystem/network; ideal for auth, A/B, redirects. Serverless: full Node.js runtime in centralized region; 100ms–2s cold start; no size limit; for heavy compute.</p>
+<p><strong>Q: How does the build cache work?</strong>
+A: (1) Cache key = hash of lockfile (package-lock.json/yarn.lock). (2) Cache stores node_modules + build output. (3) On rebuild: if lockfile unchanged → cache hit → skip install + build. (4) Cache invalidation: if dependencies change → cache miss → rebuild. (5) Cache stored in S3; shared across deploys.</p>
+<h4 id="advanced-questions">Advanced Questions</h4>
+<p><strong>Q: Design a git-first deployment platform (like Vercel) supporting 1M builds/day, edge functions with &lt; 1ms cold start, and zero-downtime deploys.</strong></p>
+<p>A: (1) <strong>Git webhook</strong>: GitHub App → webhook on push → enqueue build (200 build queue instances; Redis + Kafka). (2) <strong>Builder</strong>: Ephemeral Docker containers (1000 builders); mount cache (S3); install deps + cache + build → collect output. (3) <strong>Build cache</strong>: S3 sharded by project_id; cache key = lockfile hash + output hash; invalidation on dependency change. (4) <strong>Deploy</strong>: Artifacts → edge CDN (S3 → 100+ PoPs); propagate within 30s. (5) <strong>Edge functions</strong>: V8 isolates (QuickJS); sub-ms cold start; 1MB limit; sandboxed (no filesystem). (6) <strong>Serverless functions</strong>: Node.js containers in 5 regions; auto-scale to 1000/node. (7) <strong>Atomic deploy</strong>: Immutable version → alias switch (zero-downtime). (8) <strong>Scale</strong>: 1M builds/day = 12 builds/sec → 1000 builders; edge: 100+ PoPs. (9) <strong>Monitoring</strong>: Build time P99 &lt; 60s; cold start P99 &lt; 5ms (edge) / &lt; 500ms (serverless); deploy propagation &lt; 30s.</p>
+<h4 id="senior-level-questions">Senior-Level Questions</h4>
+<p><strong>Q: How does Vercel handle edge function cold starts and the 1MB size limit?</strong></p>
+<p>A: <strong>V8 isolates vs Node.js cold starts</strong>:
+* Vercel Edge Functions run on V8 isolates (same engine as Chrome/QuickJS). These start in &lt; 1ms — the V8 runtime loads once and isolates (not containers) are spun up instantly. This eliminates the Node.js cold start (100–2000ms for container init).
+* <strong>1MB limit</strong>: Enforced because edge functions must load fast (&lt; 1ms) at every PoP. &gt; 1MB → bundle splitting + lazy loading. Use <code>export const config = { runtime: 'edge' }</code> in Next.js.
+* <strong>Sandboxing</strong>: Edge functions run in V8 isolate sandbox — no filesystem access, no <code>net</code> module, limited Node.js APIs (only Web APIs: fetch, crypto, TextEncoder). This limits functionality but ensures security + isolation.
+* <strong>Size optimization</strong>: (1) Bundle analysis → tree-shaking. (2) Split large functions into smaller routes. (3) Move heavy work to serverless (not edge). (4) Use <code>fetch</code> to external APIs instead of npm packages.
+* <strong>Trade-off</strong>: Speed (sub-ms) vs. functionality (limited API surface). Use edge for: auth, A/B, redirects, geolocation. Use serverless for: database calls, file processing, ML inference.</p>
+<h4 id="common-mistakes">Common Mistakes</h4>
+<ul>
+<li>Large edge functions (&gt; 1MB) → build failure + slow cold start.</li>
+<li>No build cache → slow deployments.
+• Ignoring cold starts → serverless functions appear slow.
+• No monitoring → edge errors silently affect users.</li>
+<li>Putting heavy compute in edge functions → violates 1MB limit.
+• No rollback plan → broken deploys affect all users.
+• Large monorepo → slow builds; use build filtering.
+• Edge function uses Node.js APIs → runtime error; use Web APIs (fetch).</li>
+<li>No graceful degradation → edge function error → full request failure.</li>
+<li>Deploy on every commit → not every change needs deployment.
+• No cost monitoring → unexpected bills from function invocations.</li>
+<li>Static + dynamic mix → edge serving static fine; dynamic via serverless → need caching strategy.</li>
+</ul>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      © 2025 <a href="https://github.com/abhishekghoshh" rel="noopener" target="_blank">Abhishek Ghosh</a>
+</div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+<div class="md-social">
+<a class="md-social__link" href="https://github.com/abhishekghoshh" rel="noopener" target="_blank" title="github.com">
+<svg viewbox="0 0 480 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"></path></svg>
+</a>
+<a class="md-social__link" href="https://x.com/abhishek_ghoshh" rel="noopener" target="_blank" title="x.com">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253"></path></svg>
+</a>
+<a class="md-social__link" href="https://www.linkedin.com/in/abhishek-ghosh-220679132/" rel="noopener" target="_blank" title="www.linkedin.com">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5m282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"></path></svg>
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../../../..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy"], "search": "../../../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+<script src="../../../../../assets/javascripts/bundle.60a45f97.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+window.mermaidConfig = {default: {
+    startOnLoad: false
+}};</script></body>
+</html>

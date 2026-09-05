@@ -1,0 +1,3382 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="https://abhishekghoshh.github.io/system-design-helper/system-design/high-level/concepts/advanced/microservices-patterns/" rel="canonical"/>
+<link href="../clean-architecture/" rel="prev"/>
+<link href="../raft-consensus-algorithm/" rel="next"/>
+<link href="../../../../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.50" name="generator"/>
+<title>Microservices Patterns - System Design Helper</title>
+<link href="../../../../../assets/stylesheets/main.a40c8224.min.css" rel="stylesheet"/>
+<link href="../../../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+<meta content="website" property="og:type"/>
+<meta content="Microservices Patterns - System Design Helper" property="og:title"/>
+<meta content="None" property="og:description"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/system-design/high-level/concepts/advanced/microservices-patterns.png" property="og:image"/>
+<meta content="image/png" property="og:image:type"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/system-design/high-level/concepts/advanced/microservices-patterns/" property="og:url"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Microservices Patterns - System Design Helper" name="twitter:title"/>
+<meta content="None" name="twitter:description"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/system-design/high-level/concepts/advanced/microservices-patterns.png" name="twitter:image"/>
+</head>
+<body data-md-color-accent="purple" data-md-color-primary="teal" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#microservices-patterns">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="System Design Helper" class="md-header__button md-logo" data-md-component="logo" href="../../../../.." title="System Design Helper">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            System Design Helper
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Microservices Patterns
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="purple" data-md-color-media="" data-md-color-primary="teal" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="lime" data-md-color-media="" data-md-color-primary="teal" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../..">
+        
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../../basics/cpu/">
+          
+  
+  Basics
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../../ai/ai/">
+          
+  
+  AI
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../../devops/">
+          
+  
+  DevOps
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../../security/introduction/">
+          
+  
+  Security
+
+        </a>
+</li>
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../../../../books/">
+          
+  
+  System Design
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="System Design Helper" class="md-nav__button md-logo" data-md-component="logo" href="../../../../.." title="System Design Helper">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    System Design Helper
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../..">
+<span class="md-ellipsis">
+    Home
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Basics
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            Basics
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/cpu/">
+<span class="md-ellipsis">
+    CPU
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/pointers/">
+<span class="md-ellipsis">
+    Pointers
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/maths/">
+<span class="md-ellipsis">
+    Maths
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/behavioural/">
+<span class="md-ellipsis">
+    Behavioural
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/developer-experiences/">
+<span class="md-ellipsis">
+    Developer Experiences
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/open-source-tools/">
+<span class="md-ellipsis">
+    Open Source Tools
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/software-architect/">
+<span class="md-ellipsis">
+    Software Architect
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/wisdom/">
+<span class="md-ellipsis">
+    Wisdom
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+<span class="md-ellipsis">
+    AI
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            AI
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/ai/">
+<span class="md-ellipsis">
+    AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/ai-tools/">
+<span class="md-ellipsis">
+    AI Tools
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/agentic-ai/">
+<span class="md-ellipsis">
+    Agentic AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/gen-ai/">
+<span class="md-ellipsis">
+    Gen AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/langchain-and-langgraph/">
+<span class="md-ellipsis">
+    LangChain and LangGraph
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/MCP/">
+<span class="md-ellipsis">
+    MCP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/RAG/">
+<span class="md-ellipsis">
+    RAG
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/llm-wiki/">
+<span class="md-ellipsis">
+    LLM Wiki
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/vector-embeddings/">
+<span class="md-ellipsis">
+    Vector Embeddings
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/vibe-coding/">
+<span class="md-ellipsis">
+    Vibe Coding
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/courses/">
+<span class="md-ellipsis">
+    Courses
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    DevOps
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            DevOps
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../devops/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../devops/deployment-strategies/">
+<span class="md-ellipsis">
+    Deployment Strategies
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+<span class="md-ellipsis">
+    Security
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            Security
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/authentication-and-authorization/">
+<span class="md-ellipsis">
+    Authentication &amp; Authorization
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/oauth/">
+<span class="md-ellipsis">
+    OAuth
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/rbac/">
+<span class="md-ellipsis">
+    RBAC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/sso/">
+<span class="md-ellipsis">
+    SSO
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/ssl/">
+<span class="md-ellipsis">
+    SSL
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/ssh/">
+<span class="md-ellipsis">
+    SSH
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/jwt/">
+<span class="md-ellipsis">
+    JWT
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/encryption/">
+<span class="md-ellipsis">
+    Encryption
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/environment-variables/">
+<span class="md-ellipsis">
+    Environment Variables
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/devsecops/">
+<span class="md-ellipsis">
+    DevSecOps
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/firewall/">
+<span class="md-ellipsis">
+    Firewall
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+<span class="md-ellipsis">
+    Certificate
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_13_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_13">
+<span class="md-nav__icon md-icon"></span>
+            Certificate
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/certificate/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/certificate/certificate-authority/">
+<span class="md-ellipsis">
+    Certificate Authority
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/certificate/client-certificates/">
+<span class="md-ellipsis">
+    Client Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/certificate/server-certificates/">
+<span class="md-ellipsis">
+    Server Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/certificate/self-signed-certificates/">
+<span class="md-ellipsis">
+    Self-Signed Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/certificate/links/">
+<span class="md-ellipsis">
+    Links
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_14" id="__nav_5_14_label" tabindex="0">
+<span class="md-ellipsis">
+    Reverse Proxy
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_14_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_14">
+<span class="md-nav__icon md-icon"></span>
+            Reverse Proxy
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/reverse-proxy/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/reverse-proxy/haproxy/">
+<span class="md-ellipsis">
+    HAProxy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/reverse-proxy/nginx/">
+<span class="md-ellipsis">
+    Nginx
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    System Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            System Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../books/">
+<span class="md-ellipsis">
+    Books
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../courses/">
+<span class="md-ellipsis">
+    Courses
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../interview/">
+<span class="md-ellipsis">
+    Interview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4" id="__nav_6_4_label" tabindex="">
+<span class="md-ellipsis">
+    High Level Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_6_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_4">
+<span class="md-nav__icon md-icon"></span>
+            High Level Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6_4_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1" id="__nav_6_4_1_label" tabindex="0">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_6_4_1_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_1">
+<span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_1_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1_2" id="__nav_6_4_1_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Basic
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_1_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_1_2">
+<span class="md-nav__icon md-icon"></span>
+            Basic
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/philosophy-of-system-design/">
+<span class="md-ellipsis">
+    Philosophy of System Design
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/client-server-architecture/">
+<span class="md-ellipsis">
+    Client-Server Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/separation-of-concerns/">
+<span class="md-ellipsis">
+    Separation of Concerns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/state-and-data-flow/">
+<span class="md-ellipsis">
+    State and Data Flow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/back-of-envelope-calculation/">
+<span class="md-ellipsis">
+    Back of Envelope Calculation
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/cloud-computing/">
+<span class="md-ellipsis">
+    Cloud Computing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/ip-addresses-and-ports/">
+<span class="md-ellipsis">
+    IP Addresses &amp; Ports
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/sockets/">
+<span class="md-ellipsis">
+    Sockets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/dns-server/">
+<span class="md-ellipsis">
+    DNS Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/networking/">
+<span class="md-ellipsis">
+    Networking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/tcp/">
+<span class="md-ellipsis">
+    TCP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/udp/">
+<span class="md-ellipsis">
+    UDP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/http/">
+<span class="md-ellipsis">
+    HTTP / HTTPS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/websockets/">
+<span class="md-ellipsis">
+    WebSockets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/smtp-server/">
+<span class="md-ellipsis">
+    SMTP Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/api/">
+<span class="md-ellipsis">
+    API
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/restfull-architecture/">
+<span class="md-ellipsis">
+    RESTful Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/data-serialization/">
+<span class="md-ellipsis">
+    Data Serialization
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/webhooks/">
+<span class="md-ellipsis">
+    Webhooks
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/load-balancer-and-proxy-server/">
+<span class="md-ellipsis">
+    Load Balancer &amp; Proxy Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/cdn/">
+<span class="md-ellipsis">
+    CDN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/hashing/">
+<span class="md-ellipsis">
+    Hashing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/storage/">
+<span class="md-ellipsis">
+    Storage
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/s3/">
+<span class="md-ellipsis">
+    S3
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/caching/">
+<span class="md-ellipsis">
+    Caching
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/scalability/">
+<span class="md-ellipsis">
+    Scalability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/browser-rendering-pipeline/">
+<span class="md-ellipsis">
+    Browser Rendering Pipeline
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/availability-and-reliability/">
+<span class="md-ellipsis">
+    Availability &amp; Reliability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/architecture-patterns/">
+<span class="md-ellipsis">
+    Architecture Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/security-basics/">
+<span class="md-ellipsis">
+    Security Basics
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/passwords/">
+<span class="md-ellipsis">
+    Passwords
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/environment-configuration-and-secrets/">
+<span class="md-ellipsis">
+    Environment Configuration &amp; Secrets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/process/">
+<span class="md-ellipsis">
+    Process
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/code-documentation/">
+<span class="md-ellipsis">
+    Code Documentation
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/additional-concepts/">
+<span class="md-ellipsis">
+    Additional Concepts
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6_4_1_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1_3" id="__nav_6_4_1_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Advanced
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_6_4_1_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_1_3">
+<span class="md-nav__icon md-icon"></span>
+            Advanced
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../webrtc/">
+<span class="md-ellipsis">
+    WebRTC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../voice-over-internet-protocol/">
+<span class="md-ellipsis">
+    VoIP (Voice Over Internet Protocol)
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../graphql/">
+<span class="md-ellipsis">
+    GraphQL
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../grpc/">
+<span class="md-ellipsis">
+    gRPC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../asynchronus-communication/">
+<span class="md-ellipsis">
+    Asynchronous Communication
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../nats/">
+<span class="md-ellipsis">
+    NATS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../api-gateway/">
+<span class="md-ellipsis">
+    API Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../service-discovery/">
+<span class="md-ellipsis">
+    Service Discovery
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../service-mesh/">
+<span class="md-ellipsis">
+    Service Mesh
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../consistent-hashing/">
+<span class="md-ellipsis">
+    Consistent Hashing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-caches-and-caching-strategies/">
+<span class="md-ellipsis">
+    Distributed Caches &amp; Caching Strategies
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../scaling-to-one-million/">
+<span class="md-ellipsis">
+    Scaling to One Million
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../adaptive-bitrate-streaming/">
+<span class="md-ellipsis">
+    Adaptive Bitrate Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../consistency/">
+<span class="md-ellipsis">
+    Consistency
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cap-theorm/">
+<span class="md-ellipsis">
+    CAP Theorem
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../fault-tolerance/">
+<span class="md-ellipsis">
+    Fault Tolerance
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../clean-architecture/">
+<span class="md-ellipsis">
+    Clean Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    Microservices Patterns
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    Microservices Patterns
+  </span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#blogs-and-websites">
+<span class="md-ellipsis">
+      Blogs and websites
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#medium">
+<span class="md-ellipsis">
+      Medium
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#youtube">
+<span class="md-ellipsis">
+      Youtube
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#theory">
+<span class="md-ellipsis">
+      Theory
+    </span>
+</a>
+<nav aria-label="Theory" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#introduction">
+<span class="md-ellipsis">
+      Introduction
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#monolithic-architecture">
+<span class="md-ellipsis">
+      Monolithic Architecture
+    </span>
+</a>
+<nav aria-label="Monolithic Architecture" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#disadvantages-of-monolithic-architecture">
+<span class="md-ellipsis">
+      Disadvantages of Monolithic Architecture
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#why-microservices">
+<span class="md-ellipsis">
+      Why Microservices?
+    </span>
+</a>
+<nav aria-label="Why Microservices?" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#advantages-of-microservices">
+<span class="md-ellipsis">
+      Advantages of Microservices
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#disadvantages-of-microservices">
+<span class="md-ellipsis">
+      Disadvantages of Microservices
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#microservices-design-phases">
+<span class="md-ellipsis">
+      Microservices Design Phases
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#decomposition-patterns">
+<span class="md-ellipsis">
+      Decomposition Patterns
+    </span>
+</a>
+<nav aria-label="Decomposition Patterns" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-decompose-by-business-capability">
+<span class="md-ellipsis">
+      1. Decompose by Business Capability
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-decompose-by-subdomain-domain-driven-design">
+<span class="md-ellipsis">
+      2. Decompose by Subdomain (Domain-Driven Design)
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#strangler-fig-pattern">
+<span class="md-ellipsis">
+      Strangler Fig Pattern
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-management-in-microservices">
+<span class="md-ellipsis">
+      Data Management in Microservices
+    </span>
+</a>
+<nav aria-label="Data Management in Microservices" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#database-per-service-recommended-default">
+<span class="md-ellipsis">
+      Database per Service (recommended default)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#shared-database-anti-pattern-for-true-microservices-sometimes-pragmatic">
+<span class="md-ellipsis">
+      Shared Database (anti-pattern for true microservices, sometimes pragmatic)
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#saga-pattern">
+<span class="md-ellipsis">
+      Saga Pattern
+    </span>
+</a>
+<nav aria-label="Saga Pattern" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#choreography-based-saga">
+<span class="md-ellipsis">
+      Choreography-based Saga
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#orchestration-based-saga">
+<span class="md-ellipsis">
+      Orchestration-based Saga
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cqrs-pattern">
+<span class="md-ellipsis">
+      CQRS Pattern
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#summary-pattern-cheat-sheet">
+<span class="md-ellipsis">
+      Summary: Pattern Cheat Sheet
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#interview-questions-recap">
+<span class="md-ellipsis">
+      Interview Questions Recap
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../raft-consensus-algorithm/">
+<span class="md-ellipsis">
+    Raft Consensus Algorithm
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../gossip-protocol/">
+<span class="md-ellipsis">
+    Gossip Protocol
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ditributed-transaction-and-concurrency-control/">
+<span class="md-ellipsis">
+    Distributed Transaction &amp; Concurrency Control
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cdc/">
+<span class="md-ellipsis">
+    CDC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../resilience-patterns/">
+<span class="md-ellipsis">
+    Resilience Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../thundering-effect/">
+<span class="md-ellipsis">
+    Thundering Herd Effect
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../observability/">
+<span class="md-ellipsis">
+    Observability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cqrs/">
+<span class="md-ellipsis">
+    CQRS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../event-sourcing/">
+<span class="md-ellipsis">
+    Event Sourcing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../saga-pattern/">
+<span class="md-ellipsis">
+    Saga Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../data-processing/">
+<span class="md-ellipsis">
+    Data Processing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../programming-language/">
+<span class="md-ellipsis">
+    Programming Language
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../github-server/">
+<span class="md-ellipsis">
+    GitHub Server
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2" id="__nav_6_4_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Designing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Designing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_2_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2_2" id="__nav_6_4_2_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Basic
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_2_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_2_2">
+<span class="md-nav__icon md-icon"></span>
+            Basic
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/url-shortner/">
+<span class="md-ellipsis">
+    URL Shortener
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/rate-limiter/">
+<span class="md-ellipsis">
+    Rate Limiter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/notification-system/">
+<span class="md-ellipsis">
+    Notification System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/webhook/">
+<span class="md-ellipsis">
+    Webhook
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/cdn/">
+<span class="md-ellipsis">
+    CDN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/autocomplete/">
+<span class="md-ellipsis">
+    Autocomplete
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/pastebin/">
+<span class="md-ellipsis">
+    Pastebin
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/leaderboard/">
+<span class="md-ellipsis">
+    Leaderboard
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/inventory-management-system/">
+<span class="md-ellipsis">
+    Inventory Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/library-management-system/">
+<span class="md-ellipsis">
+    Library Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/job-board/">
+<span class="md-ellipsis">
+    Job Board
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/bug-issue-tracker/">
+<span class="md-ellipsis">
+    Bug/Issue Tracker
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/todo-list-app/">
+<span class="md-ellipsis">
+    To-Do List App
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/attendance-tracking-system/">
+<span class="md-ellipsis">
+    Attendance Tracking System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/customer-support-ticketing-system/">
+<span class="md-ellipsis">
+    Customer Support Ticketing System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/digital-wallet/">
+<span class="md-ellipsis">
+    Digital Wallet
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/vending-machine/">
+<span class="md-ellipsis">
+    Vending Machine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/rate-and-review-system/">
+<span class="md-ellipsis">
+    Rate-and-Review System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/hotel-booking/">
+<span class="md-ellipsis">
+    Hotel Booking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/app-store/">
+<span class="md-ellipsis">
+    App Store
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/yelp/">
+<span class="md-ellipsis">
+    Yelp
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/carpooling-system/">
+<span class="md-ellipsis">
+    Carpooling System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/blogging-platform/">
+<span class="md-ellipsis">
+    Blogging Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/image-gallery-with-tagging/">
+<span class="md-ellipsis">
+    Image Gallery with Tagging
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/polling-voting-app/">
+<span class="md-ellipsis">
+    Polling/Voting App
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/online-voting-system/">
+<span class="md-ellipsis">
+    Online Voting System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/expense-splitting-app/">
+<span class="md-ellipsis">
+    Expense-Splitting App
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/vpn/">
+<span class="md-ellipsis">
+    VPN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/chess-game/">
+<span class="md-ellipsis">
+    Chess Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/basic/how-to-host-your-own-x/">
+<span class="md-ellipsis">
+    How to Host Your Own X
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_2_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2_3" id="__nav_6_4_2_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Advanced
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_2_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_2_3">
+<span class="md-nav__icon md-icon"></span>
+            Advanced
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/key-value-store/">
+<span class="md-ellipsis">
+    Key Value Store
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/log-system/">
+<span class="md-ellipsis">
+    Log System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/search-engine/">
+<span class="md-ellipsis">
+    Search Engine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/authentication-system/">
+<span class="md-ellipsis">
+    Authentication System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/distributed-counter/">
+<span class="md-ellipsis">
+    Distributed Counter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/distributed-cache/">
+<span class="md-ellipsis">
+    Distributed Cache
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/distributed-locking-service/">
+<span class="md-ellipsis">
+    Distributed Locking Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/distributed-job-scheduler/">
+<span class="md-ellipsis">
+    Distributed Job Scheduler
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/distributed-rate-limiter/">
+<span class="md-ellipsis">
+    Distributed Rate Limiter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/distributed-rate-limited-api-gateway/">
+<span class="md-ellipsis">
+    Distributed Rate-Limited API Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/distributed-configuration-management-system/">
+<span class="md-ellipsis">
+    Distributed Configuration Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/multi-region-deployment-system/">
+<span class="md-ellipsis">
+    Multi-Region Deployment System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/feature-flag-experimentation-platform/">
+<span class="md-ellipsis">
+    Feature Flag and Experimentation Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/notification-fanout-service/">
+<span class="md-ellipsis">
+    Notification Fan-Out Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/chat-system/">
+<span class="md-ellipsis">
+    Chat System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/whatspp/">
+<span class="md-ellipsis">
+    WhatsApp
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/live-comments/">
+<span class="md-ellipsis">
+    Live Comments
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/distributed-messaging-queue/">
+<span class="md-ellipsis">
+    Distributed Messaging Queue
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/slack/">
+<span class="md-ellipsis">
+    Slack
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/fault-tolerant-order-processing-system/">
+<span class="md-ellipsis">
+    Fault-Tolerant Order Processing System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/video-streaming/">
+<span class="md-ellipsis">
+    Video Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/netflix/">
+<span class="md-ellipsis">
+    Netflix
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/spotify/">
+<span class="md-ellipsis">
+    Spotify
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/live-streaming/">
+<span class="md-ellipsis">
+    Live Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/Image-Optimisation-on-the-fly/">
+<span class="md-ellipsis">
+    Image Optimisation On The Fly
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/amazon-flipkart/">
+<span class="md-ellipsis">
+    Amazon/Flipkart
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/e-commerce/">
+<span class="md-ellipsis">
+    E-Commerce
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/ecommerce-checkout/">
+<span class="md-ellipsis">
+    E-Commerce Checkout
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/payment-gateway/">
+<span class="md-ellipsis">
+    Payment Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/stripe/">
+<span class="md-ellipsis">
+    Stripe
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/upi-payments/">
+<span class="md-ellipsis">
+    UPI Payments
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/settlement-reconciliation-system/">
+<span class="md-ellipsis">
+    Settlement and Reconciliation System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/fraud-detection-pipeline/">
+<span class="md-ellipsis">
+    Fraud Detection Pipeline
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/quick-commerce-inventory-system/">
+<span class="md-ellipsis">
+    Quick-Commerce Inventory System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/ecommerce-search-ranking-system/">
+<span class="md-ellipsis">
+    E-Commerce Search &amp; Ranking System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/twitter/">
+<span class="md-ellipsis">
+    Twitter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/social-media/">
+<span class="md-ellipsis">
+    Social Media
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/hashtag-service/">
+<span class="md-ellipsis">
+    Hashtag Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/recomendation-engine/">
+<span class="md-ellipsis">
+    Recommendation Engine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/facebook/">
+<span class="md-ellipsis">
+    Facebook
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/instagram/">
+<span class="md-ellipsis">
+    Instagram
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/tiktok/">
+<span class="md-ellipsis">
+    TikTok
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/bookmyshow/">
+<span class="md-ellipsis">
+    BookMyShow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/uber/">
+<span class="md-ellipsis">
+    Uber
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/food-delivery/">
+<span class="md-ellipsis">
+    Food Delivery
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/flight-booking/">
+<span class="md-ellipsis">
+    Flight Booking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/google-maps/">
+<span class="md-ellipsis">
+    Google Maps
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/google-drive/">
+<span class="md-ellipsis">
+    Google Drive
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/data-warehouse/">
+<span class="md-ellipsis">
+    Data Warehouse
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/distributed-geospatial-data-platform/">
+<span class="md-ellipsis">
+    Distributed Geospatial Data Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/redis/">
+<span class="md-ellipsis">
+    Redis
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/large-language-model/">
+<span class="md-ellipsis">
+    Large Language Model
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/leetcode/">
+<span class="md-ellipsis">
+    LeetCode
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/vercel/">
+<span class="md-ellipsis">
+    Vercel
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/email-automation-platform/">
+<span class="md-ellipsis">
+    Email Automation Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/google-docs/">
+<span class="md-ellipsis">
+    Google Docs
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/online-code-editor/">
+<span class="md-ellipsis">
+    Online Code Editor
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/stock-broker-system/">
+<span class="md-ellipsis">
+    Stock Broker System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/distributed-transaction-banking-system/">
+<span class="md-ellipsis">
+    Distributed Transaction Banking System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/real-time-bidding-auction-system/">
+<span class="md-ellipsis">
+    Real-Time Bidding/Auction System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../designing/advanced/multiplayer-game/">
+<span class="md-ellipsis">
+    Multiplayer Game
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_3" id="__nav_6_4_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Links
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Links
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../links/udemy/">
+<span class="md-ellipsis">
+    Udemy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../links/websites/">
+<span class="md-ellipsis">
+    Websites
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../links/youtube/">
+<span class="md-ellipsis">
+    YouTube
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="">
+<span class="md-ellipsis">
+    Low Level Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_5">
+<span class="md-nav__icon md-icon"></span>
+            Low Level Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_2" id="__nav_6_5_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_2">
+<span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/concepts/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/concepts/hashmap/">
+<span class="md-ellipsis">
+    HashMap
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/concepts/mvc/">
+<span class="md-ellipsis">
+    MVC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/concepts/null-object-pattern/">
+<span class="md-ellipsis">
+    Null Object Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/concepts/solid-principles/">
+<span class="md-ellipsis">
+    SOLID Principles
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/concepts/technical-debt/">
+<span class="md-ellipsis">
+    Technical Debt
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3" id="__nav_6_5_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Design Patterns
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_3">
+<span class="md-nav__icon md-icon"></span>
+            Design Patterns
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/design-pattern/">
+<span class="md-ellipsis">
+    Design Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_2" id="__nav_6_5_3_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Creational
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_2">
+<span class="md-nav__icon md-icon"></span>
+            Creational
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/creational/creational/">
+<span class="md-ellipsis">
+    All Creational Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/creational/singleton/">
+<span class="md-ellipsis">
+    Singleton
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/creational/prototype/">
+<span class="md-ellipsis">
+    Prototype
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/creational/builder/">
+<span class="md-ellipsis">
+    Builder
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/creational/factory/">
+<span class="md-ellipsis">
+    Factory
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/creational/abstract-factory/">
+<span class="md-ellipsis">
+    Abstract Factory
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/creational/object-pool/">
+<span class="md-ellipsis">
+    Object Pool
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_3" id="__nav_6_5_3_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Structural
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_3">
+<span class="md-nav__icon md-icon"></span>
+            Structural
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/structural/">
+<span class="md-ellipsis">
+    All Structural Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/adapter/">
+<span class="md-ellipsis">
+    Adapter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/bridge/">
+<span class="md-ellipsis">
+    Bridge
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/composite/">
+<span class="md-ellipsis">
+    Composite
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/decorator/">
+<span class="md-ellipsis">
+    Decorator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/facade/">
+<span class="md-ellipsis">
+    Facade
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/flyweight/">
+<span class="md-ellipsis">
+    Flyweight
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/proxy/">
+<span class="md-ellipsis">
+    Proxy
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_4" id="__nav_6_5_3_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Behavioral
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_4_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_4">
+<span class="md-nav__icon md-icon"></span>
+            Behavioral
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/behavioral/">
+<span class="md-ellipsis">
+    All Behavioral Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/chain-of-responsibility/">
+<span class="md-ellipsis">
+    Chain of Responsibility
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/command/">
+<span class="md-ellipsis">
+    Command
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/interpreter/">
+<span class="md-ellipsis">
+    Interpreter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/iterator/">
+<span class="md-ellipsis">
+    Iterator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/mediator/">
+<span class="md-ellipsis">
+    Mediator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/memento/">
+<span class="md-ellipsis">
+    Memento
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/observer/">
+<span class="md-ellipsis">
+    Observer
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/state/">
+<span class="md-ellipsis">
+    State
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/strategy/">
+<span class="md-ellipsis">
+    Strategy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/template/">
+<span class="md-ellipsis">
+    Template
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/visitor/">
+<span class="md-ellipsis">
+    Visitor
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_4" id="__nav_6_5_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Designing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_4_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_4">
+<span class="md-nav__icon md-icon"></span>
+            Designing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/access-management-system/">
+<span class="md-ellipsis">
+    Access Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/account-balance-tracker/">
+<span class="md-ellipsis">
+    Account Balance Tracker
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/air-traffic-controller/">
+<span class="md-ellipsis">
+    Air Traffic Controller
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/apply-coupons-on-shopping-cart/">
+<span class="md-ellipsis">
+    Apply Coupons on Shopping Cart
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/atm/">
+<span class="md-ellipsis">
+    ATM
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/bookmyshow/">
+<span class="md-ellipsis">
+    BookMyShow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/cache-system/">
+<span class="md-ellipsis">
+    Cache System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/car-rental-service/">
+<span class="md-ellipsis">
+    Car Rental Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/chess-game/">
+<span class="md-ellipsis">
+    Chess Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/cricbuzz/">
+<span class="md-ellipsis">
+    Cricbuzz
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/elevator-system/">
+<span class="md-ellipsis">
+    Elevator System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/inventory-management-system/">
+<span class="md-ellipsis">
+    Inventory Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/locker-allocation-system/">
+<span class="md-ellipsis">
+    Locker Allocation System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/logging-system/">
+<span class="md-ellipsis">
+    Logging System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/meeting-scheduler/">
+<span class="md-ellipsis">
+    Meeting Scheduler
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/parking-lot/">
+<span class="md-ellipsis">
+    Parking Lot
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/payment-gateway/">
+<span class="md-ellipsis">
+    Payment Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/snake-and-ladder/">
+<span class="md-ellipsis">
+    Snake and Ladder
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/splitwise/">
+<span class="md-ellipsis">
+    Splitwise
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/stock-exchange-book/">
+<span class="md-ellipsis">
+    Stock Exchange Book
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/tic-tac-toe/">
+<span class="md-ellipsis">
+    Tic Tac Toe
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/vending-machine/">
+<span class="md-ellipsis">
+    Vending Machine
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="microservices-patterns">Microservices patterns</h1>
+<h2 id="blogs-and-websites">Blogs and websites</h2>
+<h2 id="medium">Medium</h2>
+<ul>
+<li><a href="https://medium.com/capital-one-tech/10-microservices-design-patterns-for-better-architecture-befa810ca44e">10 microservices design patterns for better architecture</a></li>
+<li><a href="https://blog.bitsrc.io/10-microservice-anti-patterns-278bcb7f385d">Top 10 Microservice Anti-Patterns</a></li>
+<li><a href="https://ishansoninitj.medium.com/saga-cdc-with-transactional-inbox-outbox-d15507868c7f">Saga, CDC with Transactional Inbox/Outbox</a></li>
+</ul>
+<h2 id="youtube">Youtube</h2>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=T5pu0lH2Dwc">Transactional Outbox Pattern in System Design</a></li>
+<li><a href="https://www.youtube.com/watch?v=l1OCmsBnQ3g">3. Microservices Design Patterns | Part1: Introduction and Decomposition Pattern | HLD</a></li>
+<li><a href="https://www.youtube.com/watch?v=qGlUKtjqaEQ">4. SAGA Pattern | Strangler Pattern | CQRS | Microservices Design Patterns | System Design</a></li>
+<li>
+<p><a href="https://www.youtube.com/watch?v=NE_LPGHYrMc">In How many Microservices we should divide Monolithic System | How Many Microservices are too many?</a></p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/watch?v=o9uCQHdh4DU">Rate Limiter: Fault Tolerance in Distributed Microservices | Rate Limiter Implementation</a></p>
+</li>
+<li><a href="https://www.youtube.com/watch?v=Ax0ycLJvvfc">Bulkhead Pattern: Fault Tolerance in Distributed Microservices</a></li>
+<li><a href="https://www.youtube.com/watch?v=oOFnyUpUDtg">Retry Pattern: Fault Tolerance in Distributed Microservices</a></li>
+<li><a href="https://www.youtube.com/watch?v=_kCWAf8kEYI">Circuit Breaker : Fault Tolerance in Distributed Microservices</a></li>
+</ul>
+<h2 id="theory">Theory</h2>
+<h3 id="introduction">Introduction</h3>
+<ul>
+<li>This topic covers the evolution from <strong>monolithic</strong> to <strong>microservices</strong> architecture, the catalog of patterns used to design, decompose, and operate microservices, and the trade-offs interviewers expect you to reason about.</li>
+<li>Broadly this page is organized into:<ul>
+<li>Monolithic vs. microservices architectures</li>
+<li>Decomposition patterns (how to split a system into services)</li>
+<li>Data management patterns (database per service vs. shared database)</li>
+<li>The <strong>Strangler Fig</strong> pattern (how to migrate a monolith incrementally)</li>
+<li>The <strong>Saga</strong> pattern (distributed transactions)</li>
+<li><strong>CQRS</strong> (separating reads from writes)</li>
+</ul>
+</li>
+<li>This is a high-yield topic — expect <strong>10-15 interview questions</strong> built around these patterns in any "design a system with microservices" round.</li>
+</ul>
+<h3 id="monolithic-architecture">Monolithic Architecture</h3>
+<p>A <strong>monolith</strong> is a single deployable unit — one codebase, one build, one process — that contains all the modules of an application (UI, business logic, data access) bundled together.</p>
+<pre class="mermaid"><code>flowchart TB
+    subgraph Monolith["Monolithic Application (single deployable)"]
+        UI[Presentation Layer]
+        BL[Business Logic: Orders, Inventory, Payments, Users]
+        DAL[Data Access Layer]
+    end
+    Monolith --&gt; DB[(Single Shared Database)]
+    Client([Client]) --&gt; UI
+</code></pre>
+<h4 id="disadvantages-of-monolithic-architecture">Disadvantages of Monolithic Architecture</h4>
+<ul>
+<li><strong>Tight Coupling</strong><ul>
+<li>Modules share memory space and call each other directly (in-process method calls), so changing one line can ripple into unrelated components.</li>
+<li>Requires testing and deploying the <strong>entire</strong> application for even a one-line change.</li>
+</ul>
+</li>
+<li><strong>Difficult to Scale</strong><ul>
+<li>You cannot scale just the "checkout" module during a flash sale — you must scale (i.e. run more copies of) the whole application, wasting resources on parts that don't need it.</li>
+</ul>
+</li>
+<li><strong>Expensive Deployments and Rollbacks</strong><ul>
+<li>A bug in one module forces a rollback of the whole binary, reverting unrelated features along with it.</li>
+<li>Deployment windows grow riskier as the blast radius of every release is the entire system.</li>
+</ul>
+</li>
+<li><strong>Large Codebase</strong><ul>
+<li>All code lives in one repository/module; onboarding new engineers and reasoning about impact analysis becomes harder as the codebase grows.</li>
+<li>Build times increase, and IDEs/CI pipelines slow down.</li>
+</ul>
+</li>
+<li><strong>Single Technology Stack</strong><ul>
+<li>The whole application is usually locked into one language/runtime, so you can't pick the best tool (e.g. Python for ML, Go for high-throughput services) per module.</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><strong>Real-life example:</strong> Amazon, Netflix, and Uber all started as monoliths ("Obidos" for Amazon, a Rails monolith for Netflix). As traffic and team size grew into the hundreds/thousands of engineers, a single codebase became the bottleneck — every deploy required coordinating across dozens of teams, so each company incrementally migrated to microservices using patterns like the ones below.</p>
+</blockquote>
+<h3 id="why-microservices">Why Microservices?</h3>
+<p>Microservices decompose a monolith into a set of small, independently deployable services, each owning a narrow piece of business capability and (usually) its own datastore.</p>
+<pre class="mermaid"><code>flowchart TB
+    Client([Client]) --&gt; GW[API Gateway]
+    GW --&gt; S1[Order Service]
+    GW --&gt; S2[Inventory Service]
+    GW --&gt; S3[Payment Service]
+    GW --&gt; S4[User Service]
+    S1 --&gt; D1[(Order DB)]
+    S2 --&gt; D2[(Inventory DB)]
+    S3 --&gt; D3[(Payment DB)]
+    S4 --&gt; D4[(User DB)]
+    S1 -.-&gt;|"events / async calls"| S2
+    S1 -.-&gt; S3
+</code></pre>
+<h4 id="advantages-of-microservices">Advantages of Microservices</h4>
+<ul>
+<li><strong>Separation of concerns</strong> — each service owns one bounded business capability.</li>
+<li><strong>Loose coupling</strong> — services communicate over the network (REST/gRPC/events), not in-process, so internal changes in one service don't force redeploys of others.</li>
+<li><strong>Independent deployability</strong> — a team can ship the payment service ten times a day without touching order or inventory.</li>
+<li><strong>Independent, targeted scaling</strong> — scale only the hot services (e.g. run 50 pods of the recommendation service, 2 pods of the admin service).</li>
+<li><strong>Faster release cycles</strong> — smaller codebases mean smaller blast radius, faster CI, and more autonomous teams.</li>
+<li><strong>Technology flexibility (polyglot)</strong> — each service can use the language/database best suited for its workload.</li>
+</ul>
+<h4 id="disadvantages-of-microservices">Disadvantages of Microservices</h4>
+<ul>
+<li><strong>Decomposition is hard</strong> — drawing the right service boundaries requires deep domain knowledge (get it wrong and you end up with a "distributed monolith").</li>
+<li><strong>Complex inter-service communication</strong> — every internal call becomes a network call, needing retries, timeouts, circuit breakers (see <a href="../resilience-patterns/">resilience-patterns.md</a>), and distributed tracing to debug.</li>
+<li><strong>Distributed transactions</strong> — a single business operation (e.g. "place order") now spans multiple databases with no native ACID guarantee across them (solved with the Saga pattern, below).</li>
+<li><strong>Operational overhead</strong> — you now manage N deployments, N sets of logs/metrics, service discovery, and versioning across services.</li>
+<li><strong>Data consistency &amp; duplication</strong> — denormalized/duplicated data across services needs synchronization (via events/CDC — see <a href="../cdc/">cdc.md</a>).</li>
+</ul>
+<h3 id="microservices-design-phases">Microservices Design Phases</h3>
+<p>When designing a microservices system, work through these phases in order:</p>
+<ol>
+<li><strong>Decomposition patterns</strong> — how do you split the domain into services?</li>
+<li><strong>Database patterns</strong> — does each service own its data, or is it shared?</li>
+<li><strong>Communication patterns</strong> — synchronous (REST/gRPC) vs. asynchronous (message queue/event bus)?</li>
+<li><strong>Integration patterns</strong> — API Gateway, service mesh, BFF (Backend-for-Frontend)?</li>
+<li><strong>Deployment patterns</strong> — one service per container/VM, sidecar, serverless?</li>
+<li><strong>Cross-cutting concerns</strong> — centralized logging, distributed tracing, monitoring, config management, secrets.</li>
+</ol>
+<h3 id="decomposition-patterns">Decomposition Patterns</h3>
+<p>Decomposition is the process of deciding <strong>where to draw service boundaries</strong>. Get this wrong and services end up tightly coupled anyway (a "distributed monolith" — all the network overhead of microservices with none of the independence).</p>
+<h4 id="1-decompose-by-business-capability">1. Decompose by Business Capability</h4>
+<ul>
+<li>Split services around <strong>what the business does</strong>, not around technical layers (e.g. <code>OrderService</code>, <code>InventoryService</code>, <code>PaymentService</code>, <code>NotificationService</code>) instead of <code>ControllerLayer</code>, <code>ServiceLayer</code>, <code>DAOLayer</code>.</li>
+<li>Each capability maps to a team that owns it end-to-end (aligns with <strong>Conway's Law</strong>: system structure mirrors org structure).</li>
+</ul>
+<pre class="mermaid"><code>flowchart LR
+    subgraph Monolith["E-commerce Monolith"]
+        direction TB
+        M1[Order Module]
+        M2[Inventory Module]
+        M3[Payment Module]
+        M4[Shipping Module]
+    end
+    Monolith --&gt;|decompose by capability| Split
+    subgraph Split["Microservices"]
+        direction LR
+        O[Order Service]
+        I[Inventory Service]
+        P[Payment Service]
+        S[Shipping Service]
+    end
+</code></pre>
+<p><strong>Java: a business-capability-oriented service boundary</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1">// OrderService owns the "Order" business capability end-to-end —</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="c1">// it does NOT reach into Inventory's or Payment's database directly.</span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="nd">@RestController</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="nd">@RequestMapping</span><span class="p">(</span><span class="s">"/orders"</span><span class="p">)</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">OrderController</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">OrderService</span><span class="w"> </span><span class="n">orderService</span><span class="p">;</span>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">InventoryClient</span><span class="w"> </span><span class="n">inventoryClient</span><span class="p">;</span><span class="w"> </span><span class="c1">// HTTP/gRPC client to another service</span>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">PaymentClient</span><span class="w"> </span><span class="n">paymentClient</span><span class="p">;</span>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">OrderController</span><span class="p">(</span><span class="n">OrderService</span><span class="w"> </span><span class="n">orderService</span><span class="p">,</span>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">                            </span><span class="n">InventoryClient</span><span class="w"> </span><span class="n">inventoryClient</span><span class="p">,</span>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="w">                            </span><span class="n">PaymentClient</span><span class="w"> </span><span class="n">paymentClient</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">orderService</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">orderService</span><span class="p">;</span>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">inventoryClient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inventoryClient</span><span class="p">;</span>
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">paymentClient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paymentClient</span><span class="p">;</span>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="w">    </span><span class="nd">@PostMapping</span>
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">ResponseEntity</span><span class="o">&lt;</span><span class="n">OrderResponse</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">placeOrder</span><span class="p">(</span><span class="nd">@RequestBody</span><span class="w"> </span><span class="n">OrderRequest</span><span class="w"> </span><span class="n">request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="w">        </span><span class="c1">// 1. Reserve stock via the Inventory service's public API — no shared DB access.</span>
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="w">        </span><span class="kt">boolean</span><span class="w"> </span><span class="n">reserved</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inventoryClient</span><span class="p">.</span><span class="na">reserve</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="na">getSku</span><span class="p">(),</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="na">getQuantity</span><span class="p">());</span>
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">reserved</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">ResponseEntity</span><span class="p">.</span><span class="na">status</span><span class="p">(</span><span class="n">HttpStatus</span><span class="p">.</span><span class="na">CONFLICT</span><span class="p">).</span><span class="na">build</span><span class="p">();</span>
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="w">        </span><span class="p">}</span>
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="w">        </span><span class="c1">// 2. Charge the customer via the Payment service.</span>
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="w">        </span><span class="n">PaymentResult</span><span class="w"> </span><span class="n">payment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paymentClient</span><span class="p">.</span><span class="na">charge</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="na">getCustomerId</span><span class="p">(),</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="na">getAmount</span><span class="p">());</span>
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="w">        </span><span class="c1">// 3. Persist the order in this service's own database.</span>
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="w">        </span><span class="n">Order</span><span class="w"> </span><span class="n">order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">orderService</span><span class="p">.</span><span class="na">createOrder</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="w"> </span><span class="n">payment</span><span class="p">.</span><span class="na">getTransactionId</span><span class="p">());</span>
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ResponseEntity</span><span class="p">.</span><span class="na">ok</span><span class="p">(</span><span class="n">OrderResponse</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">order</span><span class="p">));</span>
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="p">}</span>
+</code></pre></div>
+<h4 id="2-decompose-by-subdomain-domain-driven-design">2. Decompose by Subdomain (Domain-Driven Design)</h4>
+<ul>
+<li>Uses DDD's concept of <strong>bounded contexts</strong>: a large domain (e.g. "Payments") is broken down further into subdomains — <strong>Core</strong> (the differentiator, e.g. fraud detection), <strong>Supporting</strong> (e.g. refunds), and <strong>Generic</strong> (e.g. currency conversion, often bought off-the-shelf).</li>
+<li>Each bounded context gets its own service, its own ubiquitous language, and its own data model — even if two contexts both have a concept called "Customer", they can model it differently.</li>
+</ul>
+<pre class="mermaid"><code>flowchart TB
+    subgraph Payments["Payments Domain"]
+        Core["Core Subdomain:\nFraud Detection Service"]
+        Sup["Supporting Subdomain:\nRefund Service"]
+        Gen["Generic Subdomain:\nCurrency Conversion Service"]
+    end
+</code></pre>
+<p><strong>Real-life use case:</strong> At Uber, the "Trips" domain is decomposed by subdomain into separate services for <strong>matching</strong> (driver-rider pairing), <strong>pricing</strong> (surge calculation), and <strong>ETA</strong> (routing) — each owned by a different team, evolving and scaling independently, even though they all participate in a single "request a ride" flow.</p>
+<p><strong>Interview Q&amp;A</strong></p>
+<ul>
+<li><strong>Q: How do you decide service boundaries — by business capability or by subdomain?</strong>
+    A: Start with business capabilities for a coarse-grained split (aligns with team ownership); use DDD subdomain analysis to further refine within a capability when it grows too large or has multiple distinct concerns (core vs. supporting vs. generic).</li>
+<li><strong>Q: What's the risk of decomposing services incorrectly?</strong>
+    A: You get a "distributed monolith" — services still need to change together and deploy in lockstep, but now you also pay the network latency/complexity tax of microservices, with none of the independence benefit.</li>
+<li><strong>Q: How small should a microservice be?</strong>
+    A: There is no fixed size rule ("2-pizza team" is a rough heuristic). The right size is one where a single team can own, understand, and deploy the service independently, and where the service maps to one cohesive business capability — not "one microservice per database table" or "one per class".</li>
+</ul>
+<h3 id="strangler-fig-pattern">Strangler Fig Pattern</h3>
+<p>Named after the strangler fig vine that grows around a host tree and gradually replaces it — the pattern lets you <strong>incrementally replace a monolith with microservices</strong> without a risky "big bang" rewrite.</p>
+<ul>
+<li><strong>Purpose:</strong> Gradually refactor/replace a monolithic application with microservices while it stays fully operational.</li>
+<li><strong>How it Works:</strong><ol>
+<li>Introduce a <strong>facade/router</strong> (often the API Gateway or a reverse proxy) in front of the monolith.</li>
+<li>Initially, the router forwards <strong>100%</strong> of traffic to the monolith — nothing changes for users.</li>
+<li>Pick one capability (e.g. "search"), extract it into a new microservice, and update the router to send only <code>search</code>-related requests to the new service; everything else still goes to the monolith.</li>
+<li>Repeat capability-by-capability. Each extraction is small, low-risk, and independently reversible (just flip the route back).</li>
+<li>Once all capabilities are extracted, the monolith is "strangled" to nothing and can be decommissioned.</li>
+</ol>
+</li>
+</ul>
+<pre class="mermaid"><code>flowchart LR
+    subgraph Stage1["Stage 1: Before"]
+        C1([Client]) --&gt; R1[Router] --&gt; M1[Monolith]
+    end
+</code></pre>
+<pre class="mermaid"><code>flowchart LR
+    subgraph Stage2["Stage 2: Mid-migration"]
+        C2([Client]) --&gt; R2[Router]
+        R2 --&gt;|"/search/*"| S2[Search Service]
+        R2 --&gt;|"everything else"| M2[Monolith]
+    end
+</code></pre>
+<pre class="mermaid"><code>flowchart LR
+    subgraph Stage3["Stage 3: Fully migrated"]
+        C3([Client]) --&gt; R3[API Gateway]
+        R3 --&gt; S3a[Search Service]
+        R3 --&gt; S3b[Order Service]
+        R3 --&gt; S3c[Payment Service]
+        M3[Monolith] -.-&gt;|decommissioned| X((" "))
+    end
+</code></pre>
+<p><strong>Java: a simple strangler router (Spring Cloud Gateway style routing rules)</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="nd">@Configuration</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">StranglerRouterConfig</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">    </span><span class="nd">@Bean</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">RouteLocator</span><span class="w"> </span><span class="nf">routes</span><span class="p">(</span><span class="n">RouteLocatorBuilder</span><span class="w"> </span><span class="n">builder</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="na">routes</span><span class="p">()</span>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="w">            </span><span class="c1">// Newly extracted microservice handles /search/** — carve-out from the monolith.</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="w">            </span><span class="p">.</span><span class="na">route</span><span class="p">(</span><span class="s">"search-service"</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="na">path</span><span class="p">(</span><span class="s">"/search/**"</span><span class="p">)</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="w">                </span><span class="p">.</span><span class="na">uri</span><span class="p">(</span><span class="s">"lb://search-service"</span><span class="p">))</span>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w">            </span><span class="c1">// Newly extracted microservice handles /payments/** as of this migration wave.</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="w">            </span><span class="p">.</span><span class="na">route</span><span class="p">(</span><span class="s">"payment-service"</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="na">path</span><span class="p">(</span><span class="s">"/payments/**"</span><span class="p">)</span>
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="w">                </span><span class="p">.</span><span class="na">uri</span><span class="p">(</span><span class="s">"lb://payment-service"</span><span class="p">))</span>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w">            </span><span class="c1">// Everything not yet migrated still falls through to the monolith.</span>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="w">            </span><span class="p">.</span><span class="na">route</span><span class="p">(</span><span class="s">"legacy-monolith"</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="na">path</span><span class="p">(</span><span class="s">"/**"</span><span class="p">)</span>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="w">                </span><span class="p">.</span><span class="na">uri</span><span class="p">(</span><span class="s">"lb://legacy-monolith"</span><span class="p">))</span>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="w">            </span><span class="p">.</span><span class="na">build</span><span class="p">();</span>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="p">}</span>
+</code></pre></div>
+<ul>
+<li><strong>Advantages:</strong><ul>
+<li>Minimizes disruption — users never see downtime, and each extraction is a small, testable, reversible change.</li>
+<li>Enables incremental investment — you can stop/pause the migration at any point with a fully working system.</li>
+<li>De-risks large rewrites — avoids the classic "big bang rewrite that never ships" failure mode.</li>
+</ul>
+</li>
+<li><strong>Disadvantages:</strong><ul>
+<li>The router/facade itself becomes a critical piece of infrastructure that must be highly available.</li>
+<li>Running the monolith and microservices side-by-side (often with data sync between them) adds temporary operational complexity.</li>
+<li>Migration can take months to years for large systems.</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><strong>Real-life use case:</strong> GOV.UK and Shopify both used the strangler pattern to migrate large legacy monoliths — routing traffic feature-by-feature into new services while the old system kept serving unmigrated traffic, avoiding a risky full rewrite.</p>
+</blockquote>
+<p><strong>Interview Q&amp;A</strong></p>
+<ul>
+<li><strong>Q: Why not just rewrite the monolith from scratch?</strong>
+    A: Big-bang rewrites are high risk — they take a long time, freeze feature development, and often fail to replicate every subtle behaviour of the legacy system. The strangler pattern ships value continuously and de-risks each step.</li>
+<li><strong>Q: What happens to data during a strangler migration if the old and new systems need the same data?</strong>
+    A: Typically handled with dual-writes, CDC (change data capture) replicating from the monolith's DB to the new service's DB, or the new service temporarily calling back into the monolith's DB/API until it fully owns that data.</li>
+<li><strong>Q: How do you decide the order in which to extract capabilities?</strong>
+    A: Start with capabilities that are high-value, low-risk, and loosely coupled to the rest of the monolith (e.g. a read-heavy "search" or "catalog" feature) before tackling core, highly coupled transactional flows like checkout/payments.</li>
+</ul>
+<h3 id="data-management-in-microservices">Data Management in Microservices</h3>
+<h4 id="database-per-service-recommended-default">Database per Service (recommended default)</h4>
+<p>Each microservice owns its own database schema/instance, and <strong>no other service is allowed to touch it directly</strong> — all access goes through that service's API.</p>
+<pre class="mermaid"><code>flowchart TB
+    O[Order Service] --&gt; ODB[(Order DB - Postgres)]
+    I[Inventory Service] --&gt; IDB[(Inventory DB - Postgres)]
+    P[Payment Service] --&gt; PDB[(Payment DB - MySQL)]
+    R[Recommendation Service] --&gt; RDB[(Recommendation DB - MongoDB)]
+    O -.-&gt;|"REST/gRPC call, never direct SQL"| I
+    O -.-&gt;|"REST/gRPC call"| P
+</code></pre>
+<ul>
+<li><strong>Advantages:</strong><ul>
+<li><strong>Scalability:</strong> scale each database independently (e.g. read replicas only for the read-heavy catalog DB).</li>
+<li><strong>Isolation/Autonomy:</strong> a schema migration in <code>Payment DB</code> can't break <code>Order Service</code>.</li>
+<li><strong>Technology flexibility (polyglot persistence):</strong> use Postgres for transactional order data, Elasticsearch for search, Redis for session/cache data, all in the same system.</li>
+</ul>
+</li>
+<li><strong>Challenges:</strong><ul>
+<li>No cross-service joins — aggregating data across services requires API composition or a separate read-optimized store (see CQRS, below).</li>
+<li>No cross-service ACID transactions — requires the Saga pattern (below) for consistency.</li>
+<li>Data duplication is common (e.g. <code>Order Service</code> may keep a cached copy of <code>product name/price</code> to avoid calling <code>Inventory Service</code> on every read) — kept in sync via events or <a href="../cdc/">CDC</a>.</li>
+</ul>
+</li>
+</ul>
+<h4 id="shared-database-anti-pattern-for-true-microservices-sometimes-pragmatic">Shared Database (anti-pattern for true microservices, sometimes pragmatic)</h4>
+<p>All services read/write the same database/schema.</p>
+<pre class="mermaid"><code>flowchart TB
+    O2[Order Service] --&gt; SDB[(Shared Database)]
+    I2[Inventory Service] --&gt; SDB
+    P2[Payment Service] --&gt; SDB
+</code></pre>
+<ul>
+<li><strong>Advantages:</strong><ul>
+<li>Simple cross-entity <strong>joins</strong> and reporting queries.</li>
+<li>Native <strong>ACID</strong> transactions across "services" (because it's really still one logical database).</li>
+<li>Easier to get started — useful as a <strong>stepping stone</strong> early in a strangler migration.</li>
+</ul>
+</li>
+<li><strong>Drawbacks:</strong><ul>
+<li><strong>Tight coupling via the schema</strong> — changing a column used by two services requires coordinating both teams' deploys, defeating the purpose of microservices.</li>
+<li><strong>Contention/performance bottlenecks</strong> — a single database instance becomes a shared point of contention as traffic grows.</li>
+<li><strong>Limited independent scalability</strong> — you must scale the whole database even if only one "service" needs more capacity.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Java: enforcing database-per-service ownership (no shared entities across services)</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1">// Inventory Service — the ONLY code allowed to touch the inventory schema directly.</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="nd">@Entity</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="nd">@Table</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"inventory"</span><span class="p">)</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">InventoryItem</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">    </span><span class="nd">@Id</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">sku</span><span class="p">;</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">availableQuantity</span><span class="p">;</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">    </span><span class="c1">// getters/setters omitted</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="p">}</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="kd">public</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">InventoryRepository</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">JpaRepository</span><span class="o">&lt;</span><span class="n">InventoryItem</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="c1">// Order Service never imports InventoryRepository or InventoryItem.</span>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="c1">// It only knows about a thin DTO returned by Inventory's public API.</span>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">InventoryAvailability</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">sku</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">availableQuantity</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="nd">@FeignClient</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"inventory-service"</span><span class="p">)</span>
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="kd">public</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">InventoryClient</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a><span class="w">    </span><span class="nd">@GetMapping</span><span class="p">(</span><span class="s">"/inventory/{sku}"</span><span class="p">)</span>
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a><span class="w">    </span><span class="n">InventoryAvailability</span><span class="w"> </span><span class="nf">getAvailability</span><span class="p">(</span><span class="nd">@PathVariable</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">sku</span><span class="p">);</span>
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a><span class="p">}</span>
+</code></pre></div>
+<blockquote>
+<p><strong>Real-life use case:</strong> Netflix runs hundreds of microservices, each with its own datastore (Cassandra, MySQL, EVCache, etc.) chosen per workload — the recommendation service uses different storage than the billing service, and no service reaches into another's database.</p>
+</blockquote>
+<p><strong>Interview Q&amp;A</strong></p>
+<ul>
+<li><strong>Q: How do you run a report that needs data from 3 different microservices' databases if each owns its own DB?</strong>
+    A: Use <strong>API composition</strong> (a service/BFF calls all 3 services and joins in memory, fine for low-volume/low-latency needs) or build a dedicated <strong>read-optimized store</strong> (CQRS-style materialized view) populated via events/CDC for high-volume reporting.</li>
+<li><strong>Q: Isn't a shared database simpler — why avoid it?</strong>
+    A: It reintroduces tight coupling at the schema level — any team changing a shared table can break other "independent" services, and the whole database becomes a single scaling and availability bottleneck, defeating microservices' core benefits.</li>
+<li><strong>Q: How do two services stay in sync when they each cache a copy of the same data?</strong>
+    A: The owning service publishes domain events (e.g. <code>ProductPriceChanged</code>) on change; interested services subscribe and update their local copy asynchronously (eventual consistency), often implemented via CDC on the owning service's DB.</li>
+</ul>
+<h3 id="saga-pattern">Saga Pattern</h3>
+<blockquote>
+<p>See also the dedicated <a href="../saga-pattern/">saga-pattern.md</a> page for a deeper dive.</p>
+</blockquote>
+<ul>
+<li><strong>Purpose:</strong> Manage a business transaction that spans multiple services/databases, ensuring eventual data consistency even though there's no single ACID transaction across all of them.</li>
+<li><strong>How it Works:</strong><ul>
+<li>The overall business operation is broken into a sequence of <strong>local transactions</strong>, one per participating service.</li>
+<li>Each local transaction commits to its own database and then publishes an event (or is invoked directly by an orchestrator).</li>
+<li>The next step is triggered by that event/call.</li>
+<li>If any step fails, previously completed steps are undone via <strong>compensating transactions</strong> (e.g. "cancel reservation" undoes "reserve stock") — there's no automatic rollback like in a local ACID transaction, so every step needs an explicit compensating action.</li>
+</ul>
+</li>
+</ul>
+<h4 id="choreography-based-saga">Choreography-based Saga</h4>
+<p>Each service listens for events and decides what to do next — there is no central coordinator.</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant O as Order Service
+    participant I as Inventory Service
+    participant P as Payment Service
+    O-&gt;&gt;O: Create Order (PENDING)
+    O--&gt;&gt;I: OrderCreated event
+    I-&gt;&gt;I: Reserve Stock
+    I--&gt;&gt;P: StockReserved event
+    P-&gt;&gt;P: Charge Payment
+    alt payment fails
+        P--&gt;&gt;I: PaymentFailed event
+        I-&gt;&gt;I: Release Stock (compensation)
+        I--&gt;&gt;O: StockReleased event
+        O-&gt;&gt;O: Cancel Order (compensation)
+    else payment succeeds
+        P--&gt;&gt;O: PaymentCompleted event
+        O-&gt;&gt;O: Confirm Order
+    end
+</code></pre>
+<p><strong>Java: choreography via Spring events / message broker listeners</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1">// Order Service publishes an event after its local transaction commits.</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="nd">@Service</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">OrderService</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">OrderRepository</span><span class="w"> </span><span class="n">orderRepository</span><span class="p">;</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">ApplicationEventPublisher</span><span class="w"> </span><span class="n">events</span><span class="p">;</span><span class="w"> </span><span class="c1">// or a Kafka/RabbitMQ template in production</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="w">    </span><span class="nd">@Transactional</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Order</span><span class="w"> </span><span class="nf">createOrder</span><span class="p">(</span><span class="n">OrderRequest</span><span class="w"> </span><span class="n">request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="w">        </span><span class="n">Order</span><span class="w"> </span><span class="n">order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">orderRepository</span><span class="p">.</span><span class="na">save</span><span class="p">(</span><span class="n">Order</span><span class="p">.</span><span class="na">pending</span><span class="p">(</span><span class="n">request</span><span class="p">));</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w">        </span><span class="n">events</span><span class="p">.</span><span class="na">publishEvent</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">OrderCreatedEvent</span><span class="p">(</span><span class="n">order</span><span class="p">.</span><span class="na">getId</span><span class="p">(),</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="na">getSku</span><span class="p">(),</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="na">getQuantity</span><span class="p">()));</span>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">order</span><span class="p">;</span>
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="w">    </span><span class="nd">@EventListener</span>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">onPaymentFailed</span><span class="p">(</span><span class="n">PaymentFailedEvent</span><span class="w"> </span><span class="n">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="w">        </span><span class="c1">// Compensating transaction: undo the order this service owns.</span>
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="w">        </span><span class="n">orderRepository</span><span class="p">.</span><span class="na">markCancelled</span><span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="na">orderId</span><span class="p">());</span>
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="p">}</span>
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="c1">// Inventory Service reacts to OrderCreated, and compensates on PaymentFailed.</span>
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="nd">@Service</span>
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">InventoryService</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">InventoryRepository</span><span class="w"> </span><span class="n">inventoryRepository</span><span class="p">;</span>
+<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">ApplicationEventPublisher</span><span class="w"> </span><span class="n">events</span><span class="p">;</span>
+<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a>
+<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a><span class="w">    </span><span class="nd">@EventListener</span>
+<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a><span class="w">    </span><span class="nd">@Transactional</span>
+<a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">onOrderCreated</span><span class="p">(</span><span class="n">OrderCreatedEvent</span><span class="w"> </span><span class="n">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a><span class="w">        </span><span class="kt">boolean</span><span class="w"> </span><span class="n">reserved</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inventoryRepository</span><span class="p">.</span><span class="na">reserve</span><span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="na">sku</span><span class="p">(),</span><span class="w"> </span><span class="n">event</span><span class="p">.</span><span class="na">quantity</span><span class="p">());</span>
+<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a><span class="w">        </span><span class="n">events</span><span class="p">.</span><span class="na">publishEvent</span><span class="p">(</span><span class="n">reserved</span>
+<a href="#__codelineno-3-32" id="__codelineno-3-32" name="__codelineno-3-32"></a><span class="w">            </span><span class="o">?</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">StockReservedEvent</span><span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="na">orderId</span><span class="p">(),</span><span class="w"> </span><span class="n">event</span><span class="p">.</span><span class="na">sku</span><span class="p">(),</span><span class="w"> </span><span class="n">event</span><span class="p">.</span><span class="na">quantity</span><span class="p">())</span>
+<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a><span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">StockReservationFailedEvent</span><span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="na">orderId</span><span class="p">()));</span>
+<a href="#__codelineno-3-34" id="__codelineno-3-34" name="__codelineno-3-34"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-3-35" id="__codelineno-3-35" name="__codelineno-3-35"></a>
+<a href="#__codelineno-3-36" id="__codelineno-3-36" name="__codelineno-3-36"></a><span class="w">    </span><span class="nd">@EventListener</span>
+<a href="#__codelineno-3-37" id="__codelineno-3-37" name="__codelineno-3-37"></a><span class="w">    </span><span class="nd">@Transactional</span>
+<a href="#__codelineno-3-38" id="__codelineno-3-38" name="__codelineno-3-38"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">onPaymentFailed</span><span class="p">(</span><span class="n">PaymentFailedEvent</span><span class="w"> </span><span class="n">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-3-39" id="__codelineno-3-39" name="__codelineno-3-39"></a><span class="w">        </span><span class="c1">// Compensating transaction: release the stock reserved earlier.</span>
+<a href="#__codelineno-3-40" id="__codelineno-3-40" name="__codelineno-3-40"></a><span class="w">        </span><span class="n">inventoryRepository</span><span class="p">.</span><span class="na">release</span><span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="na">sku</span><span class="p">(),</span><span class="w"> </span><span class="n">event</span><span class="p">.</span><span class="na">quantity</span><span class="p">());</span>
+<a href="#__codelineno-3-41" id="__codelineno-3-41" name="__codelineno-3-41"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-3-42" id="__codelineno-3-42" name="__codelineno-3-42"></a><span class="p">}</span>
+</code></pre></div>
+<h4 id="orchestration-based-saga">Orchestration-based Saga</h4>
+<p>A central <strong>orchestrator</strong> tells each service what local transaction to execute next and issues compensating commands on failure.</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Orc as Saga Orchestrator
+    participant O as Order Service
+    participant I as Inventory Service
+    participant P as Payment Service
+    Orc-&gt;&gt;O: Create Order
+    O--&gt;&gt;Orc: Order Created
+    Orc-&gt;&gt;I: Reserve Stock
+    I--&gt;&gt;Orc: Stock Reserved
+    Orc-&gt;&gt;P: Charge Payment
+    alt payment fails
+        P--&gt;&gt;Orc: Payment Failed
+        Orc-&gt;&gt;I: Release Stock (compensate)
+        Orc-&gt;&gt;O: Cancel Order (compensate)
+    else payment succeeds
+        P--&gt;&gt;Orc: Payment Charged
+        Orc-&gt;&gt;O: Confirm Order
+    end
+</code></pre>
+<p><strong>Java: a simple orchestrator (state-machine style)</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="nd">@Service</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">OrderSagaOrchestrator</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">OrderClient</span><span class="w"> </span><span class="n">orderClient</span><span class="p">;</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">InventoryClient</span><span class="w"> </span><span class="n">inventoryClient</span><span class="p">;</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">PaymentClient</span><span class="w"> </span><span class="n">paymentClient</span><span class="p">;</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="n">OrderRequest</span><span class="w"> </span><span class="n">request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">orderId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">orderClient</span><span class="p">.</span><span class="na">createOrder</span><span class="p">(</span><span class="n">request</span><span class="p">);</span><span class="w"> </span><span class="c1">// step 1</span>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="w">            </span><span class="n">inventoryClient</span><span class="p">.</span><span class="na">reserveStock</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="na">getSku</span><span class="p">(),</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="na">getQuantity</span><span class="p">());</span><span class="w"> </span><span class="c1">// step 2</span>
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="w">            </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="w">                </span><span class="n">paymentClient</span><span class="p">.</span><span class="na">charge</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="na">getCustomerId</span><span class="p">(),</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="na">getAmount</span><span class="p">());</span><span class="w"> </span><span class="c1">// step 3</span>
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a><span class="w">                </span><span class="n">orderClient</span><span class="p">.</span><span class="na">confirmOrder</span><span class="p">(</span><span class="n">orderId</span><span class="p">);</span>
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a><span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">PaymentException</span><span class="w"> </span><span class="n">ex</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a><span class="w">                </span><span class="n">inventoryClient</span><span class="p">.</span><span class="na">releaseStock</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="na">getSku</span><span class="p">(),</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="na">getQuantity</span><span class="p">());</span><span class="w"> </span><span class="c1">// compensate step 2</span>
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a><span class="w">                </span><span class="n">orderClient</span><span class="p">.</span><span class="na">cancelOrder</span><span class="p">(</span><span class="n">orderId</span><span class="p">);</span><span class="w"> </span><span class="c1">// compensate step 1</span>
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a><span class="w">                </span><span class="k">throw</span><span class="w"> </span><span class="n">ex</span><span class="p">;</span>
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a><span class="w">            </span><span class="p">}</span>
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">InventoryException</span><span class="w"> </span><span class="n">ex</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a><span class="w">            </span><span class="n">orderClient</span><span class="p">.</span><span class="na">cancelOrder</span><span class="p">(</span><span class="n">orderId</span><span class="p">);</span><span class="w"> </span><span class="c1">// compensate step 1</span>
+<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a><span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">ex</span><span class="p">;</span>
+<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a><span class="w">        </span><span class="p">}</span>
+<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a><span class="p">}</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Choreography</th>
+<th>Orchestration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Coordination</td>
+<td>Decentralized, via events</td>
+<td>Centralized, via an orchestrator</td>
+</tr>
+<tr>
+<td>Coupling</td>
+<td>Loose (services only know about events)</td>
+<td>Orchestrator knows about all services</td>
+</tr>
+<tr>
+<td>Best for</td>
+<td>Few steps, simple flows</td>
+<td>Many steps, complex conditional flows</td>
+</tr>
+<tr>
+<td>Debugging</td>
+<td>Harder — logic is spread across services</td>
+<td>Easier — flow is defined in one place</td>
+</tr>
+<tr>
+<td>Single point of failure</td>
+<td>None</td>
+<td>Orchestrator (must be made highly available)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Advantages:</strong> ensures eventual data consistency across services; provides explicit failure-handling/rollback semantics; keeps each service owning its own data.</li>
+<li><strong>Disadvantages:</strong> significantly more complex than a local ACID transaction; compensating transactions must be idempotent and carefully designed (e.g. "refund payment" must be safe to run twice); no true isolation — other requests can observe intermediate states (mitigated with patterns like semantic locks or a "pending" status).</li>
+</ul>
+<blockquote>
+<p><strong>Real-life use case:</strong> Food-delivery apps (e.g. Uber Eats-style order flow) use a saga across <strong>Order → Restaurant Accept → Payment → Rider Assignment</strong> services; if the restaurant rejects the order or no rider is found, compensating actions refund the payment and cancel the order.</p>
+</blockquote>
+<p><strong>Interview Q&amp;A</strong></p>
+<ul>
+<li><strong>Q: How would you handle transferring money between two users' accounts (potentially in different services)?</strong>
+    A: Model it as a saga: (1) debit sender's account (local transaction), (2) credit receiver's account (local transaction). If step 2 fails, run a compensating transaction to re-credit the sender. Use idempotency keys so retries of any step don't double-debit/credit.</li>
+<li><strong>Q: How do you make compensating transactions safe under retries/duplicate messages?</strong>
+    A: Make every step and its compensation <strong>idempotent</strong> (e.g. keyed by a unique request/transaction ID so re-applying has no extra effect), and use an outbox/inbox pattern to avoid dual-write issues when publishing events.</li>
+<li><strong>Q: Choreography or orchestration — which would you pick for a checkout flow with 6 steps and several conditional branches?</strong>
+    A: Orchestration — with many steps and branching compensation logic, a central orchestrator keeps the flow understandable and testable; choreography would scatter this logic across 6 services' event handlers, making it hard to reason about the overall flow.</li>
+</ul>
+<h3 id="cqrs-pattern">CQRS Pattern</h3>
+<blockquote>
+<p>See also the dedicated <a href="../cqrs/">cqrs.md</a> page for more depth.</p>
+</blockquote>
+<ul>
+<li><strong>Purpose:</strong> Separate the <strong>write model</strong> (Commands: create/update/delete) from the <strong>read model</strong> (Queries: fetch data), so each can be modeled, optimized, and scaled independently.</li>
+<li><strong>How it Works:</strong><ul>
+<li>Writes go through a <strong>Command</strong> model backed by a normalized, transactional store (e.g. Postgres) that enforces business invariants.</li>
+<li>The write side publishes events on every change.</li>
+<li>A separate <strong>Query</strong> model (often a denormalized, read-optimized store — e.g. Elasticsearch, a materialized view, or Redis) is updated asynchronously from those events.</li>
+<li>Reads never go through the write model; they hit the pre-computed, fast read model directly.</li>
+</ul>
+</li>
+</ul>
+<pre class="mermaid"><code>flowchart LR
+    Client([Client])
+    Client --&gt;|Command: PlaceOrder| CH[Command Handler]
+    CH --&gt; WDB[(Write DB - normalized, Postgres)]
+    WDB --&gt;|"OrderPlaced event"| Sync[Projector / Event Handler]
+    Sync --&gt; RDB[(Read DB - denormalized, Elasticsearch)]
+    Client --&gt;|Query: GetOrderHistory| QH[Query Handler]
+    QH --&gt; RDB
+</code></pre>
+<p><strong>Java: separate command and query paths (Spring)</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1">// --- Write side: Command ---</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">PlaceOrderCommand</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">customerId</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">sku</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">quantity</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="nd">@Service</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">OrderCommandService</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">OrderRepository</span><span class="w"> </span><span class="n">writeRepository</span><span class="p">;</span><span class="w"> </span><span class="c1">// normalized, transactional store</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">ApplicationEventPublisher</span><span class="w"> </span><span class="n">events</span><span class="p">;</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">    </span><span class="nd">@Transactional</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">handle</span><span class="p">(</span><span class="n">PlaceOrderCommand</span><span class="w"> </span><span class="n">cmd</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w">        </span><span class="n">Order</span><span class="w"> </span><span class="n">order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">writeRepository</span><span class="p">.</span><span class="na">save</span><span class="p">(</span><span class="n">Order</span><span class="p">.</span><span class="na">create</span><span class="p">(</span><span class="n">cmd</span><span class="p">));</span>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w">        </span><span class="c1">// Publish an event so the read model can be projected asynchronously.</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w">        </span><span class="n">events</span><span class="p">.</span><span class="na">publishEvent</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">OrderPlacedEvent</span><span class="p">(</span><span class="n">order</span><span class="p">.</span><span class="na">getId</span><span class="p">(),</span><span class="w"> </span><span class="n">cmd</span><span class="p">.</span><span class="na">customerId</span><span class="p">(),</span><span class="w"> </span><span class="n">cmd</span><span class="p">.</span><span class="na">sku</span><span class="p">(),</span><span class="w"> </span><span class="n">cmd</span><span class="p">.</span><span class="na">quantity</span><span class="p">()));</span>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">order</span><span class="p">.</span><span class="na">getId</span><span class="p">();</span>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="p">}</span>
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a><span class="c1">// --- Read side: Query ---</span>
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">OrderSummaryView</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">orderId</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">customerName</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">skuName</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">quantity</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">status</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
+<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a>
+<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a><span class="nd">@Service</span>
+<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">OrderQueryService</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">OrderReadRepository</span><span class="w"> </span><span class="n">readRepository</span><span class="p">;</span><span class="w"> </span><span class="c1">// denormalized view, e.g. Elasticsearch-backed</span>
+<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a>
+<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">OrderSummaryView</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">getOrderHistory</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">customerId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">readRepository</span><span class="p">.</span><span class="na">findByCustomerId</span><span class="p">(</span><span class="n">customerId</span><span class="p">);</span><span class="w"> </span><span class="c1">// fast, pre-joined, no runtime joins</span>
+<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a><span class="p">}</span>
+<a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a>
+<a href="#__codelineno-5-30" id="__codelineno-5-30" name="__codelineno-5-30"></a><span class="c1">// --- Projector: keeps the read model in sync with write-side events ---</span>
+<a href="#__codelineno-5-31" id="__codelineno-5-31" name="__codelineno-5-31"></a><span class="nd">@Component</span>
+<a href="#__codelineno-5-32" id="__codelineno-5-32" name="__codelineno-5-32"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">OrderReadModelProjector</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-33" id="__codelineno-5-33" name="__codelineno-5-33"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">OrderReadRepository</span><span class="w"> </span><span class="n">readRepository</span><span class="p">;</span>
+<a href="#__codelineno-5-34" id="__codelineno-5-34" name="__codelineno-5-34"></a>
+<a href="#__codelineno-5-35" id="__codelineno-5-35" name="__codelineno-5-35"></a><span class="w">    </span><span class="nd">@EventListener</span>
+<a href="#__codelineno-5-36" id="__codelineno-5-36" name="__codelineno-5-36"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">on</span><span class="p">(</span><span class="n">OrderPlacedEvent</span><span class="w"> </span><span class="n">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-37" id="__codelineno-5-37" name="__codelineno-5-37"></a><span class="w">        </span><span class="n">readRepository</span><span class="p">.</span><span class="na">save</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">OrderSummaryView</span><span class="p">(</span>
+<a href="#__codelineno-5-38" id="__codelineno-5-38" name="__codelineno-5-38"></a><span class="w">            </span><span class="n">event</span><span class="p">.</span><span class="na">orderId</span><span class="p">(),</span><span class="w"> </span><span class="n">event</span><span class="p">.</span><span class="na">customerName</span><span class="p">(),</span><span class="w"> </span><span class="n">event</span><span class="p">.</span><span class="na">skuName</span><span class="p">(),</span><span class="w"> </span><span class="n">event</span><span class="p">.</span><span class="na">quantity</span><span class="p">(),</span><span class="w"> </span><span class="s">"PLACED"</span><span class="p">));</span>
+<a href="#__codelineno-5-39" id="__codelineno-5-39" name="__codelineno-5-39"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-5-40" id="__codelineno-5-40" name="__codelineno-5-40"></a><span class="p">}</span>
+</code></pre></div>
+<ul>
+<li><strong>Advantages:</strong><ul>
+<li><strong>Performance:</strong> the read model is pre-joined/denormalized, so queries avoid expensive runtime joins.</li>
+<li><strong>Independent scalability:</strong> add more read replicas/read-model instances without touching the write path (reads usually outnumber writes 10:1 or more).</li>
+<li><strong>Flexibility:</strong> the read model can use a completely different storage technology (search index, cache, graph DB) best suited to how it's queried.</li>
+</ul>
+</li>
+<li><strong>Challenges:</strong><ul>
+<li><strong>Eventual consistency:</strong> the read model lags behind the write model by the propagation delay of the event — clients may briefly see stale data right after a write.</li>
+<li><strong>Increased complexity:</strong> two models, two schemas, and a synchronization/projection pipeline to build and monitor.</li>
+<li><strong>Read-after-write UX:</strong> the client that just wrote data may not immediately see it if they read from the lagging read model (mitigated by routing that user's immediate follow-up read to the write model, or returning the write result directly).</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><strong>Real-life use case:</strong> An e-commerce catalog uses CQRS — product <strong>writes</strong> (admin updating price/stock) go into a normalized Postgres schema, while product <strong>searches/browsing</strong> are served from an Elasticsearch index kept in sync via CDC/events, letting search scale to millions of read QPS independent of the low-volume admin writes.</p>
+</blockquote>
+<p><strong>Interview Q&amp;A</strong></p>
+<ul>
+<li><strong>Q: When would you NOT use CQRS?</strong>
+    A: When the domain is simple CRUD with roughly equal read/write volume and no complex reporting/query needs — the added complexity of two models and a sync pipeline isn't justified.</li>
+<li><strong>Q: How do you keep the read model from becoming stale for too long?</strong>
+    A: Keep the write→event→read-model propagation path short (low-latency message broker, small payloads), monitor projection lag as a first-class metric, and for the "read your own write" case, either read from the write model for that specific request or return the freshly-written data directly in the command's response.</li>
+<li><strong>Q: Is CQRS the same as having a read replica of your database?</strong>
+    A: No — a read replica has the <em>same schema</em> as the primary, just physically separate for scaling reads. CQRS uses a <em>deliberately different, denormalized model/schema</em> (and often a different storage technology) optimized for how data is queried, not just physically replicated.</li>
+</ul>
+<hr/>
+<h2 id="summary-pattern-cheat-sheet">Summary: Pattern Cheat Sheet</h2>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Problem it Solves</th>
+<th>Key Trade-off</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Decompose by Business Capability / Subdomain</td>
+<td>Where to draw service boundaries</td>
+<td>Wrong boundaries → distributed monolith</td>
+</tr>
+<tr>
+<td>Strangler Fig</td>
+<td>Incrementally migrating a monolith</td>
+<td>Slower than a rewrite, but far lower risk</td>
+</tr>
+<tr>
+<td>Database per Service</td>
+<td>Service autonomy &amp; independent scaling</td>
+<td>No cross-service joins/transactions</td>
+</tr>
+<tr>
+<td>Saga (Choreography/Orchestration)</td>
+<td>Distributed transactions across services</td>
+<td>Eventual consistency + compensating logic complexity</td>
+</tr>
+<tr>
+<td>CQRS</td>
+<td>Read/write models with very different access patterns</td>
+<td>Read model can be stale (eventual consistency)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="interview-questions-recap">Interview Questions Recap</h2>
+<p><strong>1. What are the disadvantages of a monolithic architecture that push teams toward microservices?</strong></p>
+<p>A monolith bundles every module (UI, business logic, data access) into one deployable process sharing one codebase and one database. This creates: (a) <strong>tight coupling</strong> — an in-process call between modules means a change in one can silently break another, so every release requires testing/deploying the whole app; (b) <strong>coarse-grained scaling</strong> — you can't scale just the hot module (e.g. checkout during a sale), you must run more copies of the entire app, wasting resources on cold modules; (c) <strong>large blast radius deployments</strong> — a bug anywhere forces a rollback of everything, including unrelated features shipped in the same release; (d) <strong>codebase/team scaling limits</strong> — as headcount grows, more teams commit to the same repo/build, causing merge conflicts, slow CI, and release-train bottlenecks; (e) <strong>single technology lock-in</strong> — the whole app is pinned to one language/runtime/DB even where a different tool would fit a specific workload better. Microservices address all five by splitting the system into independently deployable, independently scalable units, at the cost of distributed-systems complexity.</p>
+<p><strong>2. What's the difference between decomposing by business capability vs. by subdomain (DDD)?</strong></p>
+<p><strong>By business capability</strong> is a coarse, org-aligned split: you look at what the business <em>does</em> (take orders, manage inventory, process payments, ship goods) and create one service per capability, mirroring Conway's Law so a single team can own a service end-to-end. <strong>By subdomain (DDD)</strong> is a finer-grained, domain-modeling technique used <em>within</em> a capability that has grown complex: you split a domain like "Payments" into a <strong>core</strong> subdomain (the actual differentiator, e.g. fraud detection — where you invest the most engineering effort), a <strong>supporting</strong> subdomain (e.g. refunds — necessary but not differentiating), and a <strong>generic</strong> subdomain (e.g. currency conversion — often best bought/outsourced rather than built). In practice: start with business-capability boundaries for the first cut of services; apply DDD subdomain/bounded-context analysis when a capability is too large for one team or mixes concerns with very different rates of change and business value.</p>
+<p><strong>3. What is a "distributed monolith" and how do you avoid creating one?</strong></p>
+<p>A distributed monolith is a system that <em>looks</em> like microservices (multiple deployables, separate repos/databases) but <em>behaves</em> like a monolith: services must be deployed together because they share a database, call each other synchronously in a tightly-coupled chain, or leak internal data models across service boundaries. You get all of microservices' costs — network latency, serialization overhead, operational complexity — with none of the benefits (no independent deploys, no independent scaling, no fault isolation). To avoid it: draw boundaries around genuine business capabilities/bounded contexts (not database tables or technical layers), give each service its own database with access only through its API, version APIs so consumers aren't forced to upgrade in lockstep, and prefer asynchronous/event-based communication over long synchronous call chains where possible.</p>
+<p><strong>4. Why is database-per-service preferred over a shared database in microservices?</strong></p>
+<p>Database-per-service means each service is the sole owner of its schema and no other service touches it directly — all cross-service access goes through the owning service's API. This gives you: <strong>independent scaling</strong> (scale only the databases under load, e.g. read replicas for a hot catalog DB); <strong>isolation</strong> (a schema migration or index change in one service can't break another's queries); and <strong>polyglot persistence</strong> (Postgres for transactional order data, Elasticsearch for search, Redis for sessions — each service picks the best-fit storage). A shared database looks simpler at first (easy joins, real ACID transactions) but it re-couples services at the schema level: any team changing a shared table must coordinate with every other consuming team's release, the database becomes a single point of contention as traffic grows, and you can't scale one "service's" data independently since it's all one instance. The trade-off you accept with database-per-service is losing native cross-service joins and multi-service ACID transactions — solved with API composition/CQRS for reads and the Saga pattern for writes.</p>
+<p><strong>5. How do you run a cross-service report/join when each service owns its own database?</strong></p>
+<p>Two main approaches depending on scale and latency needs: <strong>(a) API composition</strong> — a caller (an API Gateway, a BFF, or a dedicated aggregator service) calls each relevant service's API in parallel and joins the results in memory before returning the combined response. This is simple and always consistent with each service's live data, but doesn't scale well for high-volume, complex, or deeply nested joins, and its latency is bounded by the slowest downstream call. <strong>(b) CQRS-style materialized read model</strong> — a dedicated read service subscribes to domain events (or uses CDC) published by each owning service and continuously builds/updates a denormalized, pre-joined view (often in Elasticsearch, a data warehouse, or a reporting DB). Queries then hit this pre-computed view directly with no runtime joins or fan-out calls, at the cost of eventual consistency (the view lags behind the source services by the event-propagation delay). Use API composition for low-volume, simple, near-real-time joins; use a materialized read model for high-volume reporting/search/analytics.</p>
+<p><strong>6. Explain the Strangler Fig pattern and why it's preferred over a full rewrite.</strong></p>
+<p>Named after the vine that grows around a host tree and gradually replaces it, the Strangler Fig pattern migrates a monolith to microservices incrementally instead of all at once. You put a router/facade (API Gateway or reverse proxy) in front of the monolith that initially forwards 100% of traffic to it. You then extract one capability at a time into a new microservice and update the router to send just that capability's traffic to the new service, leaving everything else on the monolith. You repeat this capability-by-capability until the monolith has nothing left to serve and can be decommissioned. It's preferred over a full rewrite because: a big-bang rewrite is high-risk (it can take years, freezes new feature work, and often fails to reproduce every subtle behavior/edge case of the legacy system, sometimes reintroducing bugs long since fixed), whereas the strangler approach ships value continuously, keeps the system fully operational and testable at every step, and lets you stop, pause, or roll back any single extraction independently without risking the whole migration.</p>
+<p><strong>7. How do you decide which capability to extract first during a strangler migration?</strong></p>
+<p>Prioritize by <strong>value vs. risk</strong>: start with capabilities that are high business value, low coupling to the rest of the monolith, and ideally read-heavy/stateless (e.g. search, product catalog browsing, a reporting dashboard) — these are easier to extract cleanly, quickly prove out your new infrastructure (deployment pipeline, service mesh, observability), and de-risk the pattern before you touch anything critical. Save highly coupled, stateful, transactional flows (checkout, payments, core order processing) for later, once the team has validated the migration tooling and has more confidence handling distributed transactions (Saga) and data synchronization. Also factor in which capabilities are actively bottlenecking a specific team's velocity or scaling needs — extracting those early delivers the most immediate organizational benefit.</p>
+<p><strong>8. What is the Saga pattern, and what problem does it solve?</strong></p>
+<p>The Saga pattern solves the problem of maintaining data consistency for a business transaction that spans multiple services/databases, where there is no single ACID transaction across all of them (each service's database is only transactional locally). A saga breaks the overall operation into a sequence of local transactions, one per participating service; each local transaction commits to its own database and then triggers the next step (via an event or an orchestrator's command). If any step fails partway through, previously completed steps are undone using explicit <strong>compensating transactions</strong> (e.g. "release reserved stock" compensates "reserve stock") rather than an automatic database rollback. The result is <strong>eventual consistency</strong> across services instead of strict ACID atomicity — the trade-off you accept in exchange for each service retaining full ownership of its own data.</p>
+<p><strong>9. Compare choreography-based vs. orchestration-based sagas — when would you use each?</strong></p>
+<p>In <strong>choreography</strong>, there's no central coordinator: each service publishes an event when its local transaction completes, and other services subscribe to the events relevant to them and react (including running their own compensating transactions on failure events). This keeps services fully decoupled and is simple for sagas with few steps and little branching, but the overall business flow isn't defined anywhere as a single artifact — it's implicit in the sum of every service's event handlers, which makes it hard to see the "big picture," debug failures, or reason about ordering as the number of steps grows. In <strong>orchestration</strong>, a central orchestrator explicitly calls each service in sequence and issues compensating commands on failure. This makes the flow (including all conditional branches) explicit, testable, and easy to trace/debug in one place, at the cost of the orchestrator needing to know about every participating service (tighter coupling to the orchestrator, plus the orchestrator itself becomes a critical component that must be made highly available). Rule of thumb: choose choreography for a small number of steps with simple, linear reactions; choose orchestration once you have many steps, complex conditional logic, or a need for clear auditability/debuggability of the overall flow.</p>
+<p><strong>10. How do you design compensating transactions so they're safe under retries?</strong></p>
+<p>Make every forward step and every compensating step <strong>idempotent</strong> — applying the same operation twice (due to a retry, a duplicate message, or an at-least-once delivery guarantee from a message broker) must have the same effect as applying it once. Concretely: attach a unique idempotency/transaction key to every command/event and have each service check-and-record that key before applying an operation (e.g. "has this order ID already been cancelled? if so, no-op"). Use the <strong>transactional outbox pattern</strong> so a service's local DB write and its published event are atomic (avoiding the dual-write problem where the DB commits but the event publish fails, or vice versa), and use an <strong>inbox pattern</strong> on the consuming side to deduplicate messages that arrive more than once. Also design compensations to be safe even if the original action never actually completed (e.g. "release stock" should be a no-op if stock was never actually reserved), since failures can happen before confirmation is received.</p>
+<p><strong>11. How would you implement a "transfer money between two users" flow across services?</strong></p>
+<p>Model it as a saga with two local transactions: (1) debit the sender's account in the Account/Ledger service that owns the sender, recording the transaction as pending with a unique transaction ID; (2) credit the receiver's account in the (possibly different) service/shard that owns the receiver. If step 2 succeeds, mark the transaction complete. If step 2 fails (receiver account not found, service unavailable after retries, etc.), run a compensating transaction that re-credits the sender for the debited amount, referencing the same transaction ID so the compensation is idempotent and safe to retry. Every step should be keyed by the transaction ID so that network retries or duplicate messages cannot double-debit or double-credit. For strict consistency requirements, many real systems (e.g. banking ledgers) additionally use a two-phase "hold funds, then confirm/release" flow, and always expose the transaction as being in an explicit PENDING/COMPLETED/FAILED/REVERSED state rather than assuming instantaneous consistency.</p>
+<p><strong>12. What is CQRS, and how is it different from just having a database read replica?</strong></p>
+<p>CQRS (Command Query Responsibility Segregation) separates the <strong>write model</strong> (handles commands: create/update/delete, backed by a normalized transactional store enforcing business invariants) from the <strong>read model</strong> (handles queries, backed by a store — often denormalized, sometimes a completely different technology like Elasticsearch or a cache — optimized purely for how data is read). The write side publishes events on every change, and those events asynchronously update/project the read model. A <strong>read replica</strong> is different in kind: it has the <em>exact same schema</em> as the primary database, exists purely to physically distribute read load, and is kept in sync via the database engine's own native replication. CQRS's read model, in contrast, is <em>deliberately reshaped</em> — different schema, different indexes, sometimes a different storage engine entirely — to match query access patterns, and it's synchronized at the application/event level rather than at the storage-engine replication level. In short: a read replica scales the <em>same</em> model; CQRS gives you a <em>different</em> model altogether.</p>
+<p><strong>13. What consistency trade-off does CQRS introduce, and how do you mitigate a stale read model?</strong></p>
+<p>CQRS trades strict consistency for performance/scalability: because the read model is updated asynchronously (via events or CDC) after the write model commits, there's a window — the "projection lag" — during which the read model is stale relative to the latest write. A client that writes data and then immediately queries it might not see their own change if that query goes to the lagging read model. Mitigations: keep the write→event→projection path as short and low-latency as possible (fast message broker, small payloads, dedicated projector capacity) and monitor projection lag as a first-class SLA metric; for the specific "read-your-own-write" UX problem, either have the command handler return the freshly-written data directly in its response (so the client doesn't need to re-query), or route that one follow-up read to the write-side store instead of the read model; more broadly, communicate to users/design UIs around eventual consistency (e.g. optimistic UI updates) rather than assuming the read model reflects every write instantly.</p>
+<p><strong>14. How do services stay in sync when each caches a copy of another service's data?</strong></p>
+<p>It's common and expected in microservices for one service to keep a local copy of data owned by another (e.g. <code>Order Service</code> caching a product's name/price instead of calling <code>Inventory Service</code> on every read, for latency and availability reasons). The owning service publishes a domain event whenever the source data changes (e.g. <code>ProductPriceChanged</code>), often implemented via the transactional outbox pattern or CDC (Change Data Capture) tailing the owning service's database WAL/binlog so the event is guaranteed to be emitted exactly when the change is committed. Consuming services subscribe to these events and asynchronously update their local cached copy. This is eventual consistency by design — there is a brief window where consumers hold stale data — so consumers should treat cached copies as "good enough for display/business logic that tolerates a short staleness window" and go back to the owning service's API directly for anything requiring the absolute latest value (e.g. final price confirmation at checkout).</p>
+<p><strong>15. What cross-cutting concerns (beyond decomposition) do you need to solve for in a microservices system?</strong></p>
+<p>Splitting services is only step one; a production-grade microservices system also needs: <strong>communication</strong> — choosing sync (REST/gRPC) vs. async (message queue/event bus) per interaction, plus resilience patterns (timeouts, retries, circuit breakers, bulkheads — see <a href="../resilience-patterns/">resilience-patterns.md</a>) since every internal call is now a network call that can fail independently; <strong>service discovery</strong> — so callers can find healthy instances of a service as they scale up/down (see <a href="../service-discovery/">service-discovery.md</a>); <strong>API Gateway / ingress</strong> — a single entry point for auth, rate limiting, routing (see <a href="../api-gateway/">api-gateway.md</a>); <strong>distributed observability</strong> — centralized logging, metrics, and distributed tracing so a single user request that fans out across 10 services can still be debugged end-to-end (see <a href="../observability/">observability.md</a>); <strong>configuration &amp; secrets management</strong> — centralized, versioned config and secret distribution instead of per-service hardcoding (see <a href="environment-configuration-and-secrets.md">environment-configuration-and-secrets.md</a>); <strong>deployment/orchestration</strong> — container orchestration, rolling deploys, health checks; and <strong>security</strong> — service-to-service auth (mTLS, tokens), since the network boundary between services is now a trust boundary that didn't exist inside a monolith's process.</p>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      © 2025 <a href="https://github.com/abhishekghoshh" rel="noopener" target="_blank">Abhishek Ghosh</a>
+</div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+<div class="md-social">
+<a class="md-social__link" href="https://github.com/abhishekghoshh" rel="noopener" target="_blank" title="github.com">
+<svg viewbox="0 0 480 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"></path></svg>
+</a>
+<a class="md-social__link" href="https://x.com/abhishek_ghoshh" rel="noopener" target="_blank" title="x.com">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253"></path></svg>
+</a>
+<a class="md-social__link" href="https://www.linkedin.com/in/abhishek-ghosh-220679132/" rel="noopener" target="_blank" title="www.linkedin.com">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5m282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"></path></svg>
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../../../..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy"], "search": "../../../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+<script src="../../../../../assets/javascripts/bundle.60a45f97.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+window.mermaidConfig = {default: {
+    startOnLoad: false
+}};</script></body>
+</html>
