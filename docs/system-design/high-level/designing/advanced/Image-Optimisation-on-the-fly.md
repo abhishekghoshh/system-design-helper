@@ -15,22 +15,55 @@
 
 ## Theory
 
-### What Is It?
+### Topics Covered
+
+1. [Introduction / Problem Statement](#introduction--problem-statement)
+2. [Characteristics](#characteristics)
+3. [Pros](#pros)
+4. [Cons](#cons)
+5. [Use Cases](#use-cases)
+6. [Components](#components)
+7. [Architectural Patterns](#architectural-patterns)
+8. [Benefits](#benefits)
+9. [Challenges](#challenges)
+10. [Best Practices](#best-practices)
+11. [When to Use / When Not to Use](#when-to-use--when-not-to-use)
+12. [Data Model and API](#data-model-and-api)
+13. [High-Level Design](#high-level-design)
+14. [Deep Dive](#deep-dive)
+15. [API Contract](#api-contract)
+16. [Architecture](#architecture)
+17. [Replication Strategies](#replication-strategies)
+18. [Failure Detection and Membership](#failure-detection-and-membership)
+19. [High Availability and Scalability](#high-availability-and-scalability)
+20. [Performance and Optimization](#performance-and-optimization)
+21. [CAP Theorem and Consistency Trade-offs](#cap-theorem-and-consistency-trade-offs)
+22. [Encryption and Key Management](#encryption-and-key-management)
+23. [Authentication and Authorization](#authentication-and-authorization)
+24. [Security Threats and Mitigations](#security-threats-and-mitigations)
+25. [Observability and Logging](#observability-and-logging)
+26. [Real-World Implementations](#real-world-implementations)
+27. [Java and Spring Boot Implementation Guide](#java-and-spring-boot-implementation-guide)
+28. [Interview Questions and Answers](#interview-questions-and-answers)
+
+---
+
+### Introduction / Problem Statement
 
 A dynamic image optimisation service transforms, compresses, resizes, and delivers images **on demand** — at request time — instead of pre-generating every possible variant offline. Cloudinary, imgix, and AWS's Lambda@Edge image optimisation all work this way: the client asks for `image.jpg?w=300&h=200&fit=crop&q=80&fmt=webp` and receives exactly that variant, generated on first request and cached thereafter.
 
-### Why Does It Exist?
+#### Why Does It Exist?
 
 Modern web pages embed dozens of images, yet the same assets must be served across an explosion of device viewports, pixel densities, and browser codec support. Pre-generating every combination of size, crop, format, and quality is combinatorially impossible — one product photo would need thousands of variants — while serving original uploads to every device wastes 80–95% of the bytes delivered. An on-the-fly optimiser collapses that combinatorial explosion into zero storage until a variant is actually requested, then caches the result.
 
-### What Problem Does It Solve?
+#### What Problem Does It Solve?
 
 * **Oversized payloads** — shipping a 6 MB phone-camera photo to a 320 px thumbnail slot wastes bandwidth, hurts Core Web Vitals (LCP), and burns mobile battery.
 * **Variant explosion** — a catalogue of 1 M assets × 20 widths × 4 formats × 3 crops = 240 M variants. No team pre-builds all of these.
 * **Art-direction drift** — marketing changes a crop ratio; with pre-generation the entire catalogue must be reprocessed. With on-the-fly, a single URL parameter change takes effect instantly.
 * **Format fragmentation** — browsers support different modern codecs (AVIF, WebP, JPEG XL). A static asset can only pick one; on-the-fly negotiation serves the best format per client automatically.
 
-### Important Subtopics
+#### Important Subtopics
 
 1. Why images dominate web performance
 2. On-the-fly transformation vs. pre-generated variants
@@ -45,7 +78,7 @@ Modern web pages embed dozens of images, yet the same assets must be served acro
 11. Cost model (transform CPU vs. storage vs. bandwidth)
 12. Responsive images (`srcset`, DPR variants, art direction)
 
-### Why Images Dominate Web Performance
+#### Why Images Dominate Web Performance
 
 Images typically account for 50–70% of bytes on a web page. A single hero photo from a modern phone camera is 4000×3000 pixels and 5–8 MB as JPEG. Serving that to a phone on a 4G connection wastes:
 
@@ -55,7 +88,7 @@ Images typically account for 50–70% of bytes on a web page. A single hero phot
 
 Optimisation means delivering *the smallest image that still looks correct* for each device, layout slot, and browser capability. Doing this statically is combinatorial: one master × N widths × M formats × K crop ratios = thousands of derivatives per asset. On-the-fly generation collapses this to zero storage until a variant is actually requested.
 
-### On-the-Fly vs. Pre-Generated Variants
+#### On-the-Fly vs. Pre-Generated Variants
 
 | Aspect | Pre-generated | On-the-fly |
 |---|---|---|
@@ -67,7 +100,7 @@ Optimisation means delivering *the smallest image that still looks correct* for 
 
 The hybrid used in practice: generate the few known-critical variants eagerly (e.g., thumbnail sizes shown in lists) and let long-tail variants materialise on demand.
 
-### The URL-as-API Contract
+#### The URL-as-API Contract
 
 The clever core idea: **the transformation spec lives in the URL**, making every variant addressable by a plain GET — cacheable by any CDN without custom logic.
 
@@ -79,7 +112,7 @@ https://res.cloudinary.com/<cloud-name>/image/upload/
 
 Reading it: "crop-to-fill, focus on detected face, 300×400, automatic quality and format, of version 1690000000 of photo.jpg". Because the URL fully determines the output bytes, the pair `(canonical URL, transformation chain)` is a perfect **cache key**.
 
-### Transformation Operations
+#### Transformation Operations
 
 - **Resize modes** — `scale` (distort), `fit` (keep aspect, fit inside box), `fill` (cover box, crop overflow), `limit` (only shrink, never enlarge), `pad` (fit plus padding).
 - **Cropping with gravity** — `g_face` (face detection), `g_faces`, `g_auto` (salient-region detection) so subject stays in frame regardless of aspect ratio. This is what makes one master usable across banner, square, and story crops.
@@ -87,7 +120,7 @@ Reading it: "crop-to-fill, focus on detected face, 300×400, automatic quality a
 - **Quality control** — `q_auto` uses perceptual metrics (e.g., DSSIM) per image to pick the lowest quality indistinguishable from reference; fixed `q_80` as a simpler alternative.
 - **Effects/chains** — blur backgrounds, overlays, watermarks; chained transformations apply in sequence (`c_fill,w_300,h_400/watermark,...`).
 
-### Modern Formats and Content Negotiation
+#### Modern Formats and Content Negotiation
 
 | Format | Typical savings vs JPEG | Key feature |
 |---|---|---|
@@ -97,7 +130,7 @@ Reading it: "crop-to-fill, focus on detected face, 300×400, automatic quality a
 
 `f_auto` inspects the request's `Accept` header and responds with the best mutually-supported format, adding `Vary: Accept` so caches store both WebP and JPEG versions under different variants.
 
-### Caching Layers
+#### Caching Layers
 
 ```mermaid
 flowchart LR
@@ -113,18 +146,18 @@ flowchart LR
 - **Origin derivative cache**: protects the transform workers when CDN nodes cold-start or evict; keyed identically.
 - **Master storage**: originals in object storage (S3/GCS), treated as immutable.
 
-### Cache-Miss Path (Cold) vs Warm Path
+#### Cache-Miss Path (Cold) vs Warm Path
 
 - **Warm**: CDN returns cached bytes — no compute, ~10–50 ms.
 - **Cold**: edge forwards to origin → cache lookup fails → fetch master from object storage → run decode → transform → encode → write derivative to origin cache → stream response with `Cache-Control` so the edge caches it. Latency here can be 200 ms–2 s depending on source image size and operation complexity.
 
-### Security Concerns
+#### Security Concerns
 
 - **Image bombs**: a small compressed file decompressing to enormous pixel dimensions (e.g., a 30 MB PNG expanding to 100k×100k pixels = ~40 GB RAM). Mitigate with max-pixel limits and streaming decoders that abort early.
 - **SSRF via remote fetch**: if the service accepts arbitrary `fetch=<url>` parameters, attackers pivot it into an internal-network scanner. Mitigate with allowlists, egress proxying, and private-CIDR blocking.
 - **Zip-bomb-like chained transformations**: pathological chains designed to burn CPU — enforce chain length limits and per-account quotas.
 
-### Cost Model
+#### Cost Model
 
 Three cost centres trade off against each other:
 
@@ -136,7 +169,7 @@ For catalogues with millions of assets but skewed access (80% of traffic hits 5%
 
 ---
 
-## Characteristics
+### Characteristics
 
 - **Lazy materialisation**
   *What*: Derivatives come into existence only when first requested. *Why important*: keeps storage proportional to actual usage, not to the theoretical cross-product of options. *How*: transform-on-miss plus persistent caching of results. *Example*: a product with 10,000 possible variants stores only the ~40 actually served.
@@ -161,7 +194,7 @@ For catalogues with millions of assets but skewed access (80% of traffic hits 5%
 
 ---
 
-## Components
+### Components
 
 - **Ingestion/upload API**
   *Purpose*: accept master images. *Responsibilities*: validation (magic-byte sniffing, not just extension), virus scanning, metadata extraction (EXIF strip — privacy + bytes), normalise colour profiles, persist to object storage, emit asset-created event. *Relationship*: writes master store; publishes events that warm popular derivatives. *Real-world*: Cloudinary upload endpoint; Instagram's media ingestion.
@@ -184,7 +217,7 @@ For catalogues with millions of assets but skewed access (80% of traffic hits 5%
 - **Metadata & account services**
   *Purpose*: asset catalogue, usage accounting, quotas, signed-URL keys. *Real-world*: Cloudinary dashboard APIs.
 
-### Component diagram
+#### Component diagram
 
 ```mermaid
 flowchart TB
@@ -204,7 +237,7 @@ flowchart TB
 
 ---
 
-## Patterns
+### Architectural Patterns
 
 - **Cache-aside with lazy population** (core pattern)
   *Problem*: pre-computing all variants is wasteful; computing every time is too slow. *How*: check caches in order (edge → origin); on total miss, compute and populate all layers. *When*: demand-skewed read patterns. *Not when*: every variant will definitely be needed immediately (e.g., sitemap-driven crawls — then pre-warm). *Pros*: storage/compute proportional to usage. *Cons*: cold-path latency spikes. *Example*: Cloudinary delivery.
@@ -226,7 +259,7 @@ flowchart TB
 
 ---
 
-## Benefits
+### Benefits
 
 - **Dramatic bandwidth and page-weight reduction** — often 60–90% smaller payloads via resize + modern formats + tuned quality. Matters because mobile users dominate traffic and LCP is a ranking signal.
 - **Zero-variant-storage economics** — long-tail derivatives cost nothing until requested; catalogue growth doesn't multiply storage.
@@ -236,7 +269,7 @@ flowchart TB
 
 ---
 
-## Pros
+### Pros
 
 - Sub-second warm delivery worldwide via CDN.
 - Deterministic, infinitely cacheable URLs (GET semantics).
@@ -245,7 +278,7 @@ flowchart TB
 - Centralised enforcement of security limits and per-customer quotas.
 - Works as pure overlay: existing origins untouched.
 
-## Cons
+### Cons
 
 - **Cold-miss latency**: first request pays full transform cost; visible on viral spikes unless pre-warmed.
 - **Compute cost at scale of uniqueness**: traffic patterns with near-zero repeat views (ephemeral content, bots, scrapers) pay transform cost repeatedly with no amortisation.
@@ -254,7 +287,7 @@ flowchart TB
 - **Debugging opacity**: "why does this image look soft?" requires understanding q_auto decisions; harder than inspecting a static file.
 - **Cache-invalidation subtleties**: `Vary: Accept` misconfiguration silently serves WebP to non-supporting clients or fragments cache unnecessarily.
 
-## Challenges
+### Challenges
 
 - **Technical**: deterministic byte-for-byte output across library upgrades (otherwise caches poison themselves); handling CMYK, 16-bit, animated GIF/WebP, corrupt EXIF; memory-bounded streaming decode of huge images.
 - **Scalability**: hot-key stampedes on celebrity/viral assets; regional skew (launch markets need pre-warming); multi-PoP cold-start amplification.
@@ -266,7 +299,7 @@ flowchart TB
 
 ---
 
-## Best Practices
+### Best Practices
 
 - **Clamp and validate every parameter server-side** (max width/height, whitelist of qualities/formats, chain-length cap) — because URLs are user-reachable attack surface.
 - **Version your canonical URLs and mark responses immutable** — makes cache invalidation a non-issue and purges unnecessary.
@@ -281,7 +314,7 @@ flowchart TB
 
 ---
 
-## When to Use
+### When to Use / When Not to Use
 
 **Appropriate when**
 
@@ -303,7 +336,7 @@ flowchart TB
 
 ---
 
-## Use Cases
+### Use Cases
 
 - **E-commerce product grid (Amazon/Flipkart style)**
   *Problem*: 500M SKUs; listing pages show 100×100, cart 200×200, detail 800×800, zoom 1600×1600; devices span watch→4K. *Solution*: on-demand derivatives with `c_fill,g_auto`. *Why suitable*: access heavily skewed to top sellers; long tail rarely viewed. *Trade-offs*: pre-warm top 10k SKUs per locale; accept cold cost for tail.
@@ -319,9 +352,9 @@ flowchart TB
 
 ---
 
-## Design
+#### Design
 
-### Design Considerations
+#### Design Considerations
 
 - **URL-as-contract**: every transformation is fully expressed in the request URL so that the output is a pure function of the URL. This makes the system CDN-friendly (plain GET caching) and makes cache keys trivially derivable.
 - **Determinism**: identical (input, parameters) must always yield byte-identical output. Non-deterministic encoders poison caches because different workers produce different bytes for the same URL.
@@ -329,39 +362,39 @@ flowchart TB
 - **Graceful degradation**: when transforms fail (timeout, memory limit, codec error) the system must serve a valid image (master or nearest cached variant) rather than a hard error that breaks the page.
 - **Security as a default**: the URL is attacker-controlled input. Every parameter must be validated, clamped, and bounded before it reaches decode/encode paths.
 
-### Key Decisions
+#### Key Decisions
 
 - **Cache tier placement**: placing a derivative cache between the CDN and the worker turns repeated misses (CDN cold, eviction, new POPs) into cache hits without recomputation.
 - **Single-flight on miss**: only one worker processes a given cache key; concurrent misses wait on the result. This prevents 1,000× redundant transforms on viral spikes.
 - **Immutable masters + versioned URLs**: changing an asset changes its URL version, so caches never serve stale data and purges are unnecessary.
 - **Format negotiation behind `f_auto`**: the server inspects `Accept` and picks AVIF → WebP → JPEG, emitting `Vary: Accept` so caches store distinct variants per browser family.
 
-### Trade-offs
+#### Trade-offs
 
 - On-the-fly adds cold-miss latency in exchange for unbounded variant storage. Pre-generation inverts this: zero cold latency but unbounded (and mostly wasted) storage.
 - Native codec libraries (libvips, ImageMagick) are fast and feature-rich but carry a CVE surface; JVM-based decoders (ImageIO/BufferedImage) are safer to sandbox but slower and memory-hungrier for huge inputs.
 - Per-worker statelessness enables horizontal scaling but requires an external shared cache; embedding logic in edge functions avoids the shared cache round-trip but hits serverless time/memory limits.
 
-### Scalability Considerations
+#### Scalability Considerations
 
 - **Edge hit ratio**: target ≥95% edge cache hit; every 1% of misses is 1% of traffic hitting origin compute.
 - **Worker autoscaling**: scale workers on queue depth and CPU utilisation; keep workers CPU-bound (one core per worker) and overlap object-store fetch with decode.
 - **Hot-key protection**: viral assets must trigger single-flight locks and popularity-based admission into the derivative cache to prevent stampede.
 - **Multi-region**: masters replicated cross-region asynchronously; derivative caches regional (recomputation on regional cold-start is acceptable).
 
-### Reliability Considerations
+#### Reliability Considerations
 
 - **Failure ladder**: transform timeout or worker crash → serve the master bytes un-resized → if master unavailable → serve the nearest cached variant → if nothing cached → 5xx with `Retry-After`.
 - **Origin shield**: absorbs CDN node stampedes and provides a second caching layer before reaching workers.
 - **Circuit breakers**: object-store or encoder-pool failures trip circuits to prevent cascading latency.
 
-### Performance Considerations
+#### Performance Considerations
 
 - P99 warm delivery is dominated by CDN round-trip (~10–50 ms). P99 cold delivery is dominated by the largest allowed input image plus encoder choice (AVIF can be 10–50× slower to encode than JPEG).
 - Pixel-budget checks (parse dimensions from header before allocation) prevent memory-bounded DoS and let the system fail fast.
 - Tiered derivative cache: hot NVMe/RAM tier (LRU, hours–days) + warm object-store tier (weeks) for expensive-to-make variants.
 
-### Security Considerations
+#### Security Considerations
 
 - Decompression bombs: enforce `width × height ≤ MAX_PIXELS` parsed from image headers before allocating decode buffers; stream-decode with abort-on-exceed.
 - SSRF via fetch URLs: route remote fetches through an egress proxy with scheme/allowlist/DNS-pinning/private-CIDR blocking.
@@ -369,13 +402,13 @@ flowchart TB
 - EXIF leakage: strip all metadata except explicit copyright fields.
 - Sandbox workers: seccomp/containers, no network egress, CPU/memory caps.
 
-### Maintainability Considerations
+#### Maintainability Considerations
 
 - DSL evolution: transformation parameters are public and forever once issued — every URL ever returned continues to work. New ops must be backward-compatible.
 - Codec version pinning: workers are versioned; internal cache keys include a codec-version salt so rolling upgrades don't serve mixed bytes under one public URL.
 - Observability: trace IDs flowing from browser → edge → worker make hit-ratio regressions and coalesce-queue growth diagnosable.
 
-## High-Level Design
+### High-Level Design
 
 ```mermaid
 sequenceDiagram
@@ -417,7 +450,7 @@ sequenceDiagram
 
 ---
 
-## Deep Dive
+### Deep Dive
 
 - **Deterministic encoding**: identical (input bytes, params, library version) must yield identical output. Pin codec versions per worker generation; include a build/codec-version token in internal cache key (not public URL) so rolling upgrades don't serve mixed bytes from mixed workers while URLs stay stable.
 - **Memory-bounded streaming**: decode with libvips (demand-driven, sequential) rather than whole-image-in-RAM loaders; enforce `width×height ≤ MAX_PIXELS` from header *before* allocating; abort mid-decode if actual exceeds declared.
@@ -427,7 +460,7 @@ sequenceDiagram
 
 ---
 
-## API Contract
+### API Contract
 
 Two surfaces: **delivery** (public GET, CDN-friendly) and **management** (authenticated CRUD).
 
@@ -475,7 +508,7 @@ Idempotency: upload accepts `Idempotency-Key` header — retry-safe creation. Pa
 
 ---
 
-## Data Modeling
+### Data Model and API
 
 Entities (metadata catalogue):
 
@@ -521,7 +554,7 @@ Key choices:
 
 ---
 
-## Architecture
+### Architecture
 
 The system is naturally **layered at the edge** (CDN → stateless services → storage) with **event-driven pre-warming** bolted alongside:
 
@@ -557,7 +590,436 @@ flowchart LR
 
 ---
 
-## Java and Spring Boot Implementation
+### Replication Strategies
+
+Image optimisation follows a cache-aside replication model rather than traditional database-style
+replication. The key data — rendered derivative images — is replicated across edge caches.
+
+- **Edge cache propagation**: When a derivative is generated (cache miss path), it is written to the
+  origin derivative cache and the response is streamed to the requesting edge PoP, which caches it
+  locally. Over time, each derivative propagates to the edge PoPs that receive requests for it.
+- **Origin shield**: A regional origin shield absorbs CDN node stampedes and provides a second
+  caching layer before reaching transform workers. The shield cache key is identical to the edge
+  cache key (URL + Accept header), ensuring consistency.
+- **Master store replication**: Master images (originals) are stored in object storage (S3/GCS)
+  with cross-region replication enabled. Each region has its own copy for local delivery;
+  replication is asynchronous (RPO: minutes).
+- **Derivative cache eviction**: Stale derivatives are evicted via LRU/TTL (default: 7 days for
+  popular variants, 24 hours for long-tail). Cache invalidation for updated masters happens
+  automatically: changing the version segment in the URL creates a new cache key, so old variants
+  age out naturally without purge operations.
+
+```mermaid
+flowchart LR
+    EDGE1[Edge PoP 1] -->|forward miss| SHIELD[Origin Shield\nRegional Cache]
+    EDGE2[Edge PoP 2] -->|forward miss| SHIELD
+    EDGE3[Edge PoP 3] -->|forward miss| SHIELD
+    SHIELD -->|cache hit| EDGE1
+    SHIELD -->|miss| WORKER[Transform Worker]
+    WORKER -->|cache result| SHIELD
+    MASTER[(Master Store\nS3 Cross-Region)]
+    WORKER -->|fetch master| MASTER
+```
+
+*Image optimisation replication topology: edge PoPs forward cache misses to a regional origin
+shield (second cache layer). If the shield has the derivative, it returns it. On a shield miss, the
+transform worker fetches the master from cross-region replicated S3, generates the variant, and
+writes it to both the shield and the edge. Master images are asynchronously replicated across
+regions; derivatives are generated on-demand and propagate organically to the PoPs that need them.*
+
+---
+
+### Failure Detection and Membership
+
+#### Health Checks
+
+- **Transform worker health**: Each transform worker reports health (CPU, memory, queue depth) to
+  the work coordinator every 5 seconds. Workers that fail 3 consecutive health checks are
+  removed from the worker pool.
+- **Cache health**: Origin derivative caches report hit ratio, latency, and eviction rate. A
+  dropping hit ratio (< 85%) triggers a warning; < 70% triggers failover to serve masters
+  un-resized.
+- **CDN health**: Edge PoPs report per-PoP hit ratio and latency. Unhealthy PoPs are removed
+  from GeoDNS routing.
+
+#### Failure Detection
+
+- **Circuit breakers**: Object store failures trip a circuit breaker that routes requests to a
+  "serve master" fallback mode. Encoder pool failures trigger a circuit that rejects new
+  transform jobs with `503 Service Unavailable` and `Retry-After`.
+- **Stale-while-revalidate**: If the origin cache is slow, the edge serves stale content (up to
+  30 seconds past TTL) while fetching fresh content in the background. This prevents cascading
+  latency spikes during brief outages.
+- **Degraded mode**: If all caches are cold and workers are overloaded, the system degrades to
+  serving the original (unresized) master image with `200 OK` and a warning header, rather than
+  returning `500`. This ensures the page still loads, albeit with a larger image.
+
+---
+
+### High Availability and Scalability
+
+#### Auto-Scaling
+
+- **Transform workers**: Scale on queue depth and CPU utilisation. Target: 95% of cache misses
+  processed within 200 ms. Workers are CPU-bound (one core per worker); horizontal scaling
+  handles viral spikes.
+- **Edge PoPs**: Static assets scale to infinity (served on demand from CDN). No scaling needed.
+- **Worker autoscaling**: Autoscaler uses a combination of queue-length metric and average CPU
+  utilisation. When queue depth exceeds 100 per worker, new workers are provisioned. Workers
+  scale to zero after 15 minutes of idle (for cost optimization).
+
+#### Load Balancing
+
+- **Edge load balancing**: GeoDNS + anycast routes requests to the nearest healthy edge PoP.
+  If a PoP is unhealthy, traffic is routed to the next nearest.
+- **Worker load balancing**: The work coordinator distributes transform jobs across available
+  workers using a work-stealing algorithm. Hot keys (viral images) are automatically sharded
+  across multiple workers via consistent hashing on the cache key.
+
+#### Failover
+
+- **Edge PoP failure**: GeoDNS removes the unhealthy PoP from rotation within 30 seconds.
+  Existing connections complete via anycast failover.
+- **Worker failure**: If a worker crashes mid-transform, the work coordinator requeues the job
+  for another worker. The client experiences a brief delay but receives the correct response.
+- **Master store failure**: If S3 is unavailable, the system serves stale cache content for up
+  to 24 hours (configured `stale-if-error` directive). New transforms fail gracefully with
+  `503` and `Retry-After`.
+
+---
+
+### Performance and Optimization
+
+#### Caching Strategies
+
+- **Multi-tier caching**: Browser cache (immutable, 365-day TTL) → CDN edge cache (95%+ hit ratio) →
+  origin derivative cache (Redis/disk, shields origin) → master store (S3, immutable).
+- **Cache key design**: `(publicId, version, transformChain, acceptVariant)` — everything that
+  affects output bytes is in the key. An internal codec-version salt prevents mixed-version
+  bytes under one key during rolling upgrades.
+- **Stale-while-revalidate**: Edge serves stale content for up to 30 seconds past TTL while
+  fetching fresh content in the background, ensuring zero-latency responses during revalidation.
+- **Pre-warming**: For predictable hot sets (e.g., homepage hero images, top 100 catalogue items),
+  derivatives are pre-generated on ingest or via scheduled jobs to convert foreseeable cold
+  misses into warm hits.
+
+#### Latency Optimization
+
+- **Warm path**: CDN edge hit → ~10–50 ms (no compute).
+- **Cold path**: Edge miss → origin shield miss → transform worker → fetch master → decode →
+  transform → encode → cache → respond. Optimized to < 2 seconds for typical images, with
+  pixel-budget checks that fail fast on oversized inputs.
+- **Request coalescing (single-flight)**: Concurrent requests for the same cache key result in one
+  transform; others wait on the result. Prevents thundering herd on viral spikes.
+
+#### Throughput Optimization
+
+- **Worker pooling**: Workers are pre-warmed (container reuse) to avoid cold-start overhead.
+  Pool size scales with queue depth.
+- **Pipeline parallelism**: Within a transform, decode, transform, and encode can overlap for
+  batch operations. Object-store fetch is overlapped with CPU-bound encoding.
+- **Format-specific optimizations**: AVIF encoding is slower but produces smaller output; for
+  time-critical paths, WebPy is used as a middle ground. Encoder choice is configurable per
+  account tier.
+
+---
+
+### CAP Theorem and Consistency Trade-offs
+
+For an image optimisation service, the CAP trade-offs are:
+
+- **Master image store (S3)**: AP — availability is prioritized. Masters are immutable (content-
+  addressed), so eventual consistency is safe. If a region's master store is temporarily unavailable,
+  the edge serves stale cache content. New uploads may take minutes to propagate cross-region.
+- **Derivative cache (Redis/edge)**: AP — availability and partition tolerance. Derivative caches
+  are ephemeral and regenerable; if a cache node fails, derivatives are recomputed on next request.
+  Cache inconsistency (one PoP has a derivative, another doesn't) is resolved naturally via
+  cache-miss recomputation.
+- **Metadata database (PostgreSQL/MySQL)**: CP — strong consistency required for tenant quotas,
+  derivative metadata, and access control. If a quorum cannot be reached, writes fail rather than
+  diverging. This ensures billing accuracy and quota enforcement.
+- **Upload API**: CP for metadata mutations (a successful upload must be immediately visible for
+  the asset to be referenceable); async for derivative pre-warming (acceptable delay).
+
+```mermaid
+pie
+    title CAP Trade-offs by Component
+    "AP - Derivative Cache" : 40
+    "AP - Master Store" : 25
+    "CP - Metadata DB" : 25
+    "CP/AP - Upload API" : 10
+```
+
+*CAP trade-offs: the derivative cache and master store are AP (immutable, regenerable, high
+availability); the metadata database is CP (strong consistency for quotas and billing); the upload
+API is CP for metadata mutations but can accept eventual consistency for derivative pre-warming.*
+
+---
+
+### Encryption and Key Management
+
+#### Encryption at Rest
+
+- **Master images**: Stored in S3 with SSE-S3 or SSE-KMS encryption (AES-256). Each tenant gets
+  a dedicated KMS key, rotated every 90 days.
+- **Derivative cache**: Redis derivatives are encrypted at rest using AES-256 with per-shard
+  keys managed by HashiCorp Vault.
+- **Metadata database**: Database-level encryption (TDE) plus application-level encryption for
+  PII (tenant names, email addresses) using envelope encryption (DEK wrapped by KEK in Vault).
+
+#### Encryption in Transit
+
+- **Client-to-edge**: HTTPS/TLS 1.3 for all delivery requests.
+- **Edge-to-origin**: TLS 1.3 between edge PoPs and the origin shield.
+- **Service-to-service**: mTLS between transform workers, cache tiers, and the metadata database.
+
+#### Key Management
+
+- **Key hierarchy**: Root keys in HashiCorp Vault (HSM-backed), with DEKs generated per tenant
+  and per dataset. Vault's transit engine handles encryption/decryption; application code never
+  sees raw keys.
+- **Key rotation**: Master encryption keys rotate every 90 days. DEKs rotate per deployment
+  (new key per version segment in URL).
+
+#### Authorization Example — Secure Derivative Access
+
+```java
+@Service
+public class SecureImageService {
+
+    private final VaultTemplate vaultTemplate;
+    private final DerivativeCache derivativeCache;
+    private final ObjectStore objectStore;
+
+    @Value("${app.image.max-dimension:4096}")
+    private int maxDimension;
+
+    @Value("${app.image.max-transforms:10}")
+    private int maxTransforms;
+
+    public SecureImageService(VaultTemplate vaultTemplate,
+                              DerivativeCache derivativeCache,
+                              ObjectStore objectStore) {
+        this.vaultTemplate = vaultTemplate;
+        this.derivativeCache = derivativeCache;
+        this.objectStore = objectStore;
+    }
+
+    public byte[] deliverSecure(String publicId, TransformSpec spec,
+                                 String acceptHeader, String tenantId) {
+        // Validate parameters — prevent decompression bombs and SSRF
+        if (spec.width() > maxDimension || spec.height() > maxDimension
+                || spec.chain().size() > maxTransforms) {
+            throw new InvalidTransformException("Requested transform exceeds limits");
+        }
+
+        // Construct cache key with tenant isolation
+        String cacheKey = CacheKey.builder()
+                .tenantId(tenantId)
+                .publicId(publicId)
+                .spec(spec)
+                .acceptVariant(negotiateFormat(acceptHeader))
+                .build();
+
+        return derivativeCache.get(cacheKey)
+                .orElseGet(() -> singleFlight(cacheKey, () -> {
+                    // Decrypt master key for this tenant using Vault
+                    String masterKey = vaultTemplate.opsForTransit()
+                            .decrypt("tenant-" + tenantId + "-master-key");
+
+                    byte[] encryptedMaster = objectStore.fetchEncrypted(publicId);
+                    byte[] master = decrypt(encryptedMaster, masterKey);
+
+                    validatePixelBudget(master, spec);
+                    byte[] derivative = encode(master, spec, acceptHeader);
+                    derivativeCache.put(cacheKey, derivative);
+                    return derivative;
+                }));
+    }
+}
+```
+
+*The `SecureImageService` bean implements secure image delivery with parameter validation
+(compression bomb prevention), tenant-isolated cache keys, Vault-based key management (raw
+keys never leave Vault), and single-flight deduplication for cache misses. The `@Value`
+annotations inject security limits from external configuration. Each tenant's master encryption
+key is stored encrypted in the object store and decrypted on-demand using Vault's transit engine.*
+
+---
+
+### Authentication and Authorization
+
+#### Authentication Methods
+
+- **Delivery API**: Public GET endpoints. No authentication required for image delivery, but
+  signed URLs are supported for private assets (HMAC-SHA256 signature with expiry timestamp).
+- **Management API**: OAuth 2.0 with scoped API tokens. Tokens grant read/write access to
+  specific tenants. Token scopes include `assets:read`, `assets:write`, `assets:delete`,
+  `usage:read`.
+- **Upload API**: Requires a signed upload token (short-lived JWT) with tenant scope and size limits.
+
+#### Authorization Models
+
+- **Tenant isolation**: All operations are scoped to a tenant. A request for `tenant-A/photo.jpg`
+  is validated against the authenticated tenant's credentials. Cross-tenant access returns `403`.
+- **Signed URLs**: Private assets use HMAC-signed URLs that expire (e.g., 1 hour). The signature
+  is verified at the edge before serving the image.
+- **Role-based access**: `admin` (full access), `editor` (read/write assets), `viewer`
+  (read-only). Permissions are checked per resource (asset, derivative, metadata).
+
+```java
+@RestController
+@RequestMapping("/v1/assets")
+@Validated
+public class AssetController {
+
+    private final AssetService assetService;
+    private final AssetAuthService authService;
+
+    public AssetController(AssetService assetService, AssetAuthService authService) {
+        this.assetService = assetService;
+        this.authService = authService;
+    }
+
+    @GetMapping("/{publicId}/derivatives/{derivativeId}")
+    public ResponseEntity<byte[]> getDerivative(
+            @PathVariable String publicId,
+            @PathVariable String derivativeId,
+            @RequestParam(required = false) String signature,
+            @RequestParam(required = false) String expires,
+            @RequestHeader(value = "X-Tenant-ID", required = false) String tenantId) {
+
+        // Verify signed URL for private assets
+        if (signature != null) {
+            if (!authService.verifySignedUrl(publicId, signature, expires)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        }
+
+        // Verify tenant access
+        String requestingTenant = tenantId != null
+                ? tenantId
+                : authService.extractTenantFromToken();
+
+        if (!authService.canAccessAsset(requestingTenant, publicId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        byte[] data = assetService.getDerivative(publicId, derivativeId);
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .cacheControl(CacheControl.maxAge(Duration.ofDays(365))
+                        .cachePublic().immutable())
+                .body(data);
+    }
+}
+```
+
+*The `AssetController` bean handles secure image delivery. It verifies signed URLs (HMAC signature
++ expiry) for private assets and enforces tenant isolation. The cache headers
+(`immutable`, 365-day TTL) are set correctly for CDN-friendliness. Unauthorized requests receive
+403 without revealing whether the asset exists.*
+
+---
+
+### Security Threats and Mitigations
+
+#### Threat: Decompression Bombs
+
+- **Mitigation**: Parse image dimensions from headers (before allocating buffers), enforce
+  `width × height ≤ MAX_PIXELS` (e.g., 178 million pixels ≈ 400MB raw RGBA), and use streaming
+  decoders that abort when the actual pixel count exceeds the declared limit. Workers are
+  sandboxed with CPU and memory cgroups (e.g., 512MB limit per worker).
+
+#### Threat: SSRF via Fetch URLs
+
+- **Mitigation**: If the service supports `fetch=<url>` to transcode remote images, all fetches
+  go through an egress proxy with: (a) scheme allowlist (HTTP/HTTPS only), (b) DNS resolution
+  restricted to prevent rebinding, (c) private CIDR blocking (10.x, 172.16-31.x, 192.168.x,
+  127.x, 169.254.x), (d) response size limits, (e) timeout enforcement.
+
+#### Threat: Polyglot Files (Image + Script)
+
+- **Mitigation**: Magic-byte sniffing determines the processing pipeline — the file extension
+  is never trusted. Files that match multiple magic byte signatures (e.g., JPEG that contains
+  embedded script) are rejected or sanitized before processing. Workers run without network
+  egress, so even if a polyglot payload is executed, it cannot exfiltrate data.
+
+#### Threat: Cache Poisoning
+
+- **Mitigation**: Cache keys include all transform parameters, format, dimensions, and
+  `Accept` variant. A separate internal codec-version salt prevents mixed-version bytes during
+  rolling upgrades. Input validation rejects invalid parameters before they reach the cache
+  layer. `Vary: Accept` is set correctly to prevent cross-format cache contamination.
+
+#### Threat: EXIF Data Leakage
+
+- **Mitigation**: All EXIF metadata is stripped except explicit copyright fields. Geotags,
+  camera model, timestamp, and author info are removed during the encode step.
+
+---
+
+### Observability and Logging
+
+#### Key Metrics
+
+- **Delivery**: Request rate (RPS), p50/p95/p99 latency (< 50 ms for cache hits, < 2 s for
+  transforms), error rate (< 0.1%), cache hit ratio (> 95% edge, > 85% origin shield).
+- **Transforms**: CPU time per transform, encode duration by format (AVIF/JPEG/WebP),
+  queue depth, single-flight coalesce ratio.
+- **Workers**: Worker CPU and memory utilisation, restart rate, single-flight queue wait time.
+- **Business**: Bytes saved vs. master (bandwidth reduction), AVIF adoption rate, cache hit
+  ratio per POP, transform cost per tenant.
+
+#### Logging
+
+Structured JSON logs are emitted to Kafka and stored in Elasticsearch. Each log entry includes
+trace ID (for cross-service correlation), tenant ID, public ID, transform spec, cache key,
+outcome (hit/miss/transform), latency, and error details. Logs are retained for 7 days (hot)
+and 90 days (cold). PII is redacted at the logger level.
+
+```java
+@Service
+public class ObservabilityService {
+
+    private final MeterRegistry meterRegistry;
+    private final Logger log;
+
+    public ObservabilityService(MeterRegistry meterRegistry,
+                                @Qualifier("imageAudit") Logger log) {
+        this.meterRegistry = meterRegistry;
+        this.log = log;
+    }
+
+    @Timed(name = "image.transform.duration", percentiles = {0.5, 0.95, 0.99})
+    public void recordTransform(String publicId, String format, long durationMs,
+                                 boolean cacheHit, String tenantId) {
+        Timer.builder("image.transform.duration")
+                .tag("format", format)
+                .tag("cache_hit", String.valueOf(cacheHit))
+                .tag("tenant", tenantId)
+                .register(meterRegistry)
+                .record(Duration.ofMillis(durationMs));
+
+        log.info("image_transform public_id_hash={} format={} duration_ms={} cache_hit={} tenant={}",
+                hashPublicId(publicId), format, durationMs, cacheHit, tenantId);
+    }
+
+    private String hashPublicId(String publicId) {
+        return DigestUtils.sha256Hex(publicId);
+    }
+}
+```
+
+*The `ObservabilityService` bean instruments image transforms with Micrometer metrics. The
+`@Timed` annotation records p50/p95/p99 percentiles of transform duration, tagged by format
+(AVIF/JPEG/WebP) and cache hit/miss. Audit logging captures each transform with a SHA-256 hash of
+the public ID (PII is never logged in plaintext). This enables monitoring of cache hit ratio,
+transform latency, and cost attribution per tenant.*
+
+
+
+### Java and Spring Boot Implementation Guide
 
 Basic service-layer transform orchestration (conceptual — delegates pixels to native lib):
 
@@ -638,7 +1100,7 @@ Notes on the choices: `@Service` beans keep the transform orchestration injectab
 
 ---
 
-## Real-World Examples
+### Real-World Implementations
 
 - **Cloudinary** — the archetype: URL-DSL delivery, `q_auto`/`f_auto` perceptual pipeline, face-detection cropping; serves customers from indie sites to major retailers.
 - **Instagram/Facebook** — multiple rendition tiers per photo (thumbnail/feed/fullscreen/DPR) with self-built Haystack-derived storage and heavy CDN caching; demonstrates the skew economics: tiny fraction of assets = most traffic.
@@ -648,9 +1110,9 @@ Notes on the choices: `@Service` beans keep the transform orchestration injectab
 
 ---
 
-## Interview Preparation
+### Interview Questions and Answers
 
-### Interview Questions
+#### Interview Questions
 
 **Beginner**
 
@@ -682,7 +1144,7 @@ Notes on the choices: `@Service` beans keep the transform orchestration injectab
 9. **When would you NOT build this, and what would you do instead?**
    Small static sets (build-time sharp), fully unique views with no reuse (resize inline at upload to a couple of fixed sizes), or extreme compliance isolation (self-host minimal resizer inside VPC). Interviewer checks judgement about not distributing a problem that a script solves.
 
-### Common Mistakes
+#### Common Mistakes
 
 - Putting only part of the transform spec in the cache key (e.g., forgetting DPR or quality) → wrong bytes served from cache.
 - Trusting `Content-Type`/extension over magic-byte sniffing → polyglot uploads bypass filters.
@@ -690,6 +1152,6 @@ Notes on the choices: `@Service` beans keep the transform orchestration injectab
 - Forgetting `Vary: Accept` → WebP served to Safari-era clients or cache fragmentation storms.
 - Regenerating codecs in-place on workers mid-rollout without cache-key salting → mixed-version bytes under one key.
 
-### Expected discussion points
+#### Expected discussion points
 
 Determinism of output, skew-driven economics (why lazy beats eager), single-flight mechanics, degradation ladders, and where the trust boundaries are (URLs are untrusted input; workers are exposed to hostile binaries).

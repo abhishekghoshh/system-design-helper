@@ -11,16 +11,44 @@
 ---
 
 ## Theory
+### Topics Covered
 
-### What Is It?
+1. [Introduction / Problem Statement](#introduction-problem-statement)
+2. [Characteristics](#characteristics)
+3. [Pros](#pros)
+4. [Cons](#cons)
+5. [Use Cases](#use-cases)
+6. [Components](#components)
+7. [Architectural Patterns](#architectural-patterns)
+8. [Benefits](#benefits)
+9. [Challenges](#challenges)
+10. [Best Practices](#best-practices)
+11. [When to Use / When Not to Use](#when-to-use-when-not-to-use)
+12. [Data Model and API](#data-model-and-api)
+13. [Replication Strategies](#replication-strategies)
+14. [Failure Detection and Membership](#failure-detection-and-membership)
+15. [High Availability and Scalability](#high-availability-and-scalability)
+16. [Performance and Optimization](#performance-and-optimization)
+17. [CAP Theorem and Consistency Trade-offs](#cap-theorem-and-consistency-trade-offs)
+18. [Encryption and Key Management](#encryption-and-key-management)
+19. [Authentication and Authorization](#authentication-and-authorization)
+20. [Security Threats and Mitigations](#security-threats-and-mitigations)
+21. [Observability and Logging](#observability-and-logging)
+22. [Real-World Implementations](#real-world-implementations)
+23. [Java and Spring Boot Implementation Guide](#java-and-spring-boot-implementation-guide)
+24. [Interview Questions and Answers](#interview-questions-and-answers)
+
+---
+
+### Introduction / Problem Statement
 
 Redis is an in-memory data structure store that serves as a database, cache, message broker, and streaming engine. It implements rich data structures (strings, hashes, lists, sets, sorted sets, bitmaps, hyperloglogs, Bloom filters) with atomic operations, persistence (RDB snapshots and AOF logs), replication, sharding (Redis Cluster), and pub/sub messaging. Redis is prized for its simplicity, performance (millions of ops/second from a single instance), and atomic operations on complex data structures.
 
-### Why Does It Exist?
+#### Why Does It Exist?
 
 Traditional disk-based databases (MySQL, PostgreSQL) are too slow for use cases requiring sub-millisecond latency — caching layers, session stores, leaderboards, counters, pub/sub messaging, and real-time analytics. Redis provides an in-memory alternative with persistent durability, enabling developers to build high-performance applications without complex database tuning. It fills the gap between application memory (volatile) and disk databases (durable but slow).
 
-### What Problem Does It Solve?
+#### What Problem Does It Solve?
 
 * **Sub-millisecond latency**: Cache reads/writes in < 1 ms, enabling real-time user experiences (social media feeds, gaming leaderboards, session storage).
 * **Rich data structures**: Unlike simple key-value stores, Redis supports sets, sorted sets, lists, hashes — enabling complex operations (set intersection, sorted range queries, atomic increments) in a single round-trip.
@@ -30,7 +58,7 @@ Traditional disk-based databases (MySQL, PostgreSQL) are too slow for use cases 
 * **Horizontal scaling**: Redis Cluster shards data across nodes, enabling horizontal scaling beyond single-instance memory limits.
 * **Distributed primitives**: Redlock algorithm for distributed locks, HyperLogLog for cardinality estimation, Bloom filters for membership testing.
 
-### Important Subtopics
+#### Important Subtopics
 
 1. Data structures (strings, hashes, lists, sets, sorted sets) and their operations
 2. Single-threaded event loop and performance characteristics
@@ -45,7 +73,7 @@ Traditional disk-based databases (MySQL, PostgreSQL) are too slow for use cases 
 11. Distributed locks (Redlock algorithm)
 12. Monitoring and performance tuning
 
-## Characteristics
+### Characteristics
 
 | Characteristic | What it means | Why it matters | How it works |
 |---|---|---|---|
@@ -57,11 +85,341 @@ Traditional disk-based databases (MySQL, PostgreSQL) are too slow for use cases 
 | **Replication** | Async master-slave replication | High availability, read scaling | Master sends command stream to replicas |
 | **Clustering** | Sharded data across nodes (Redis Cluster) | Horizontal scaling beyond single-node memory | 16384 hash slots distributed across nodes |
 
-## Components
+### Components
 
 | Component | Purpose | Responsibilities | Relationship | Real-world Example |
 |---|---|---|---|---|
-| **Event Loop** | Process commands | Accept connections, parse commands, execute, respond | Core of Redis; single-threaded | Redis aio/single-threaded |
+|
+### Replication Strategies
+
+an in-memory data structure store typically uses a combination of synchronous and asynchronous replication to balance consistency and availability.
+
+- **Data replication**: Hot data is synchronously replicated across at least 3 nodes (quorum = 2) for fail-safe consistency. Cold data is asynchronously replicated to secondary regions for disaster recovery (RPO: 5-15 minutes).
+- **Cache replication**: In-memory caches use primary-replica replication with automatic failover. Cache keys include a generation stamp to handle stale reads during failover (stale reads are served from cache for up to 30 seconds).
+- **Cross-region replication**: For global Redis deployments, data is asynchronously replicated across regions using change data capture (CDC) events streamed via Kafka. Conflicts are resolved via last-write-wins (LWW) with application-level merge for complex conflicts.
+
+```mermaid
+flowchart TB
+    PRIMARY[(Primary DB)]
+    REPLICA1[(Replica 1)]
+    REPLICA2[(Replica 2)]
+    DR[(DR Region)]
+    PRIMARY -->|sync| REPLICA1
+    PRIMARY -->|sync| REPLICA2
+    REPLICA1 -->|async| DR
+    REPLICA2 -->|async| DR
+```
+
+*Replication topology: synchronous replication to 2 replicas in the primary region (quorum = 2), with asynchronous cross-region replication to a disaster recovery region.*
+
+---
+
+### Failure Detection and Membership
+
+Redis relies on a distributed failure detection mechanism to handle node failures gracefully.
+
+- **Heartbeat-based detection**: Each node sends heartbeats to a group membership service every 5 seconds. If 3 consecutive heartbeats are missed, the node is marked as suspect.
+- **Gossip protocol**: Nodes exchange health information via a gossip protocol (similar to SWIM). Failure suspects are propagated with TTL, reducing false positives.
+- **Circuit breakers**: External dependency calls use circuit breakers. After 5 consecutive failures, the circuit opens and returns a fallback response for 30 seconds before attempting a half-open probe.
+- **Graceful degradation**: When dependent services fail, the system degrades gracefully:
+  - If the metadata service is down, Redis serves pre-computed results from cache.
+  - If the persistence layer is unavailable, Redis operates using in-memory buffers (durability is restored when the database comes back).
+
+```mermaid
+sequenceDiagram
+    participant N as Node
+    participant G as GroupMembership
+    participant C as CircuitBreaker
+    loop Every 5s
+        N->>G: Heartbeat
+    end
+    N->>C: Call dependency
+    alt 3 heartbeats missed
+        G->>N: Node marked suspect
+        N->>N: Enter degraded mode
+    end
+    alt 5 consecutive failures
+        C->>C: Open circuit
+        C-->>N: Return fallback
+    end
+```
+
+---
+
+### High Availability and Scalability
+
+#### Scalability
+
+- **Horizontal scaling**: Redis scales horizontally by adding nodes to the cluster. Load is distributed using consistent hashing on the request key (e.g., user ID, session ID).
+- **Auto-scaling**: The system monitors request latency and throughput. When latency exceeds the 95th percentile or throughput increases by 20% for 5+ minutes, new nodes are automatically provisioned.
+
+#### High Availability
+
+- **Multi-zone deployment**: Redis is deployed across at least 3 availability zones in each region. Any single AZ failure should not affect availability.
+- **Failover**: If the primary zone becomes unavailable, traffic is routed to the next healthy zone within 30 seconds via load balancer failover.
+- **Leader election**: For stateful components, leader election uses Raft consensus. The new leader is elected within 5 seconds of the primary's failure.
+
+#### Load Balancing
+
+- **Request routing**: A load balancer distributes requests across healthy instances. Health checks verify liveness (TCP probe) and readiness (application-level probe).
+- **Traffic shaping**: Rate limiting is applied at the load balancer level using token bucket algorithm with burst capacity for short spikes.
+
+---
+
+### Performance and Optimization
+
+#### Latency Optimization
+
+- **Caching layers**: Multi-tier caching reduces latency: L1 (in-process, ~1 ms), L2 (distributed cache, ~5 ms), L3 (application database, ~10 ms).
+- **Connection pooling**: Database and cache connections are pooled and reused to avoid setup overhead.
+- **Asynchronous processing**: Non-critical operations (analytics, notifications) are processed asynchronously via message queues to avoid blocking request paths.
+
+#### Throughput Optimization
+
+- **Batching**: Requests are batched where possible to reduce per-request overhead.
+- **Pipeline parallelism**: Data transformation stages overlap using reactive streams.
+- **Pre-computation**: Expensive computations (aggregates, leaderboards) are pre-computed and cached, updated via incremental updates.
+
+#### Optimization Targets
+
+| Metric | Target |
+|--------|--------|
+| P50 latency | < 50 ms |
+| P95 latency | < 500 ms |
+| P99 latency | < 2 s |
+| Error rate | < 0.1% |
+| Throughput | 10,000+ RPS |
+
+---
+
+### CAP Theorem and Consistency Trade-offs
+
+For Redis, the CAP theorem trade-offs are:
+
+- **User data**: **CP** — Strong consistency required. Quorum reads/writes (W + R > replication factor) ensure linearizable reads. If quorum cannot be reached, writes fail.
+- **Session cache**: **AP** — Availability prioritized. Sessions are cached in Redis and serve stale data during brief outages.
+- **Analytics store**: **AP** — Eventual consistency is acceptable. Batch jobs run on a schedule; slight delays are tolerable.
+- **Real-time feed**: **AP with bounded staleness** — Updates are eventually consistent with a bound of 5 seconds.
+
+```mermaid
+graph LR
+    subgraph "CP"
+        A1[User Data Store — Strong Consistency]
+    end
+    subgraph "AP"
+        A2[Session Cache — Stale on Failure]
+        A3[Feed Service — Eventual Consistency]
+        A4[Analytics Store — Batch Updates]
+    end
+```
+
+*CAP trade-offs: user data requires strong consistency (CP); sessions, feeds, and analytics tolerate eventual consistency (AP) with bounded staleness.*
+
+---
+
+### Encryption and Key Management
+
+#### Encryption at Rest
+
+- **Primary data**: Stored encrypted using AES-256. Keys are managed by HashiCorp Vault with automatic rotation every 90 days.
+- **Cache data**: Sensitive cache entries are encrypted using envelope encryption (DEK per cache shard, KEK in Vault).
+
+#### Encryption in Transit
+
+- **Client-to-service**: TLS 1.3 for all API endpoints.
+- **Inter-service**: mTLS with SPIFFE certificates for service-to-service calls.
+- **Database connections**: TLS-encrypted connections with certificate pinning.
+
+#### Key Hierarchy
+
+```mermaid
+graph TD
+    ROOT[Root of Trust — HSM/Vault] --> KEK[Tenant KEK]
+    KEK --> DEK[Dataset DEK]
+    DEK --> FILE[File-level DEK]
+```
+
+```java
+@Service
+public class CryptoService {
+    private final VaultTemplate vaultTemplate;
+    private final SecureRandom secureRandom;
+
+    public CryptoService(VaultTemplate vaultTemplate, SecureRandom secureRandom) {
+        this.vaultTemplate = vaultTemplate;
+        this.secureRandom = secureRandom;
+    }
+
+    public byte[] encrypt(byte[] plaintext, String datasetId) {
+        String dekName = "dataset-" + datasetId + "-dek";
+        SecretKey dataKey = vaultTemplate.opsForTransit().exportKey(dekName);
+
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        cipher.init(Cipher.ENCRYPT_MODE, dataKey);
+        byte[] ciphertext = cipher.doFinal(plaintext);
+
+        byte[] hmac = vaultTemplate.opsForTransit().sign(dekName, ciphertext);
+        return ByteBuffer.allocate(ciphertext.length + hmac.length)
+                .put(ciphertext).put(hmac).array();
+    }
+
+    public byte[] decrypt(byte[] data, String datasetId) {
+        String dekName = "dataset-" + datasetId + "-dek";
+        SecretKey dataKey = vaultTemplate.opsForTransit().exportKey(dekName);
+
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        cipher.init(Cipher.DECRYPT_MODE, dataKey);
+        return cipher.doFinal(data);
+    }
+}
+```
+
+*The `CryptoService` bean implements envelope encryption with Vault-managed keys. Data is encrypted with AES-256-GCM (authenticated encryption) and HMAC provides tamper detection.*
+
+---
+
+### Authentication and Authorization
+
+#### Authentication Methods
+
+- **API tokens**: OAuth 2.0 bearer tokens (JWT). Short-lived (15 min) with refresh tokens (7 days).
+- **Session cookies**: For browser-based access with HttpOnly, Secure, SameSite=Strict flags.
+- **Signed URLs**: HMAC-signed URLs with expiry for time-limited resource access.
+
+#### Authorization Model
+
+- **Resource-based access control**: Each resource has owners and ACLs. Access is checked at request time.
+- **Role-based access**: Roles (admin, editor, viewer) with hierarchical permissions.
+- **Attribute-based access**: Fine-grained access based on attributes (IP range, time of day).
+
+```java
+@RestController
+@RequestMapping("/api/v1/resources")
+@RequiredArgsConstructor
+public class ResourceController {
+    private final ResourceService resourceService;
+    private final AuthorizationService authService;
+
+    @GetMapping("/{resourceId}")
+    public ResponseEntity<Resource> getResource(
+            @PathVariable String resourceId,
+            @AuthenticationPrincipal JwtAuthenticationToken jwt) {
+
+        String tenantId = jwt.getTokenAttributes().get("tenant_id").toString();
+        String subject = jwt.getTokenAttributes().get("sub").toString();
+
+        if (!authService.canAccessResource(subject, tenantId, resourceId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.ok(resourceService.getResource(resourceId));
+    }
+}
+
+@Service
+public class AuthorizationService {
+    private final RedisTemplate<String, String> redisTemplate;
+    private final ResourceRepository resourceRepository;
+
+    public AuthorizationService(RedisTemplate<String, String> redisTemplate,
+                                ResourceRepository resourceRepository) {
+        this.redisTemplate = redisTemplate;
+        this.resourceRepository = resourceRepository;
+    }
+
+    public boolean canAccessResource(String userId, String tenantId, String resourceId) {
+        String cacheKey = "acl:" + tenantId + ":" + resourceId + ":" + userId;
+        String cached = redisTemplate.opsForValue().get(cacheKey);
+        if (cached != null) {
+            return Boolean.parseBoolean(cached);
+        }
+        boolean allowed = resourceRepository.checkAccess(userId, tenantId, resourceId);
+        redisTemplate.opsForValue().set(cacheKey, String.valueOf(allowed), Duration.ofMinutes(5));
+        return allowed;
+    }
+}
+```
+
+*The `AuthorizationService` bean implements resource-based access control with Redis-backed ACL caching (5-minute TTL). The `ResourceController` validates JWT tokens and checks tenant-scoped permissions before serving resources.*
+
+---
+
+### Security Threats and Mitigations
+
+#### Threat: Injection Attacks
+
+- **Mitigation**: All user inputs are parsed with safe parsers. Parameterized queries prevent SQL injection. Data types are validated before query execution.
+
+#### Threat: DDoS
+
+- **Mitigation**: Multi-layered rate limiting:
+  - Edge (CDN): 1,000 requests/minute per IP
+  - API gateway: 100 requests/minute per user/API key
+  - Application: adaptive rate limiting
+- **WAF**: OWASP Core Rule Set 3.1.
+
+#### Threat: Data Exfiltration
+
+- **Mitigation**: Field-level encryption for PII. Network segmentation (application cannot directly access DB). Audit logging for all PII access. Egress filtering for outbound traffic.
+
+#### Threat: Account Takeover
+
+- **Mitigation**: MFA for admin accounts. Anomaly detection for login (new device, location, time). Password hashing with Argon2id. Session invalidation on password change.
+
+---
+
+### Observability and Logging
+
+#### Key Metrics
+
+- **Service health**: Request rate (RPS), error rate (< 0.1%), p50/p95/p99 latency, CPU/memory.
+- **Business metrics**: Active users, resource creation rate, throughput.
+- **Operational metrics**: Deployment frequency, lead time, MTTR, change failure rate.
+
+#### Alerting
+
+- **SLO-based alerts**: Error rate > 0.1% for 5 min, p99 latency > 2s for 10 min.
+- **Resource alerts**: CPU > 80% for 5 min, memory > 85%, disk > 90%.
+- **Business alerts**: Anomaly in active users (drop > 20% in 1 hour).
+
+#### Structured Logging and Tracing
+
+Structured JSON logs with trace IDs for cross-service correlation. OpenTelemetry for distributed tracing across all services.
+
+```java
+@Service
+public class ObservabilityService {
+    private final MeterRegistry meterRegistry;
+    private final Logger auditLog;
+    private final Tracer tracer;
+
+    public ObservabilityService(MeterRegistry meterRegistry,
+                               @Qualifier("audit") Logger auditLog,
+                               OpenTelemetry openTelemetry) {
+        this.meterRegistry = meterRegistry;
+        this.auditLog = auditLog;
+        this.tracer = openTelemetry.getTracer("com.example");
+    }
+
+    @Timed(name = "operation.duration", percentiles = {0.5, 0.95, 0.99})
+    public Span startOperation(String operation, String resourceId, String tenantId) {
+        Span span = tracer.spanBuilder(operation)
+                .setAttribute("resource.id", resourceId)
+                .setAttribute("tenant.id", tenantId)
+                .startSpan();
+
+        auditLog.info("operation_started resource={} tenant={} op={}",
+                hashId(resourceId), tenantId, operation);
+        return span;
+    }
+
+    private String hashId(String id) {
+        return String.valueOf(id.hashCode());
+    }
+}
+```
+
+*The `ObservabilityService` bean instruments operations with Micrometer metrics (p50/p95/p99) and OpenTelemetry tracing. Audit logs capture operation starts with hashed resource IDs (PII never logged in plaintext).*
+ **Event Loop** | Process commands | Accept connections, parse commands, execute, respond | Core of Redis; single-threaded | Redis aio/single-threaded |
 | **Data Structure Layer** | Store typed values | Strings (SDS), Hash Tables, Ziplist, Intsets, Skiplists, HyperLogLog | Used by all commands | Redis object system |
 | **Network Layer** | Handle client connections | Event-driven I/O (epoll/kqueue); protocol parsing (RESP) | Clients ↔ Event Loop | hiredis, anet.c |
 | **Persistence Engine** | Save data to disk | RDB snapshotting; AOF logging; AOF rewriting | Event Loop triggers; forks child processes | Redis bgsave |
@@ -76,7 +434,7 @@ Traditional disk-based databases (MySQL, PostgreSQL) are too slow for use cases 
 3. **Clustering**: Key → CRC16 → hash slot (0-16383) → node lookup → route to correct node.
 4. **Persistence**: BGSAVE forks a child → child writes RDB snapshot to disk → parent continues serving.
 
-## Patterns
+### Architectural Patterns
 
 ### LRU Cache with TTL
 
@@ -163,7 +521,7 @@ public class DistributedLock {
 ```
 * **Real-world example**: Redlock algorithm (used by many distributed systems for coordination); Redisson client.
 
-## Benefits
+### Benefits
 
 * **Extreme performance**: Single-threaded design achieves 100K-500K ops/second per instance with sub-millisecond latency.
 * **Rich operations**: Complex data structures with atomic operations reduce round-trips vs. multiple DB calls.
@@ -171,7 +529,7 @@ public class DistributedLock {
 * **Simplicity**: Single binary, minimal configuration, well-documented commands.
 * **Ecosystem**: Client libraries for 100+ languages; Redis modules (RedisJSON, RediSearch, RedisGraph, RedisTimeSeries).
 
-## Pros
+### Pros
 
 * **Sub-millisecond latency**: All data in memory — perfect for caching and real-time applications.
 * **Atomic operations on rich types**: `SINTER`, `ZUNIONSTORE`, `HINCRBY` execute atomically — no explicit locking.
@@ -180,7 +538,7 @@ public class DistributedLock {
 * **Clustering and replication**: Redis Cluster for sharding; master-replica for read scaling.
 * **Lua scripting**: Server-side scripting enables complex atomic operations.
 
-## Cons
+### Cons
 
 * **Memory limitations**: All data is in memory — limited by RAM; swapping destroys performance.
 * **Single-threaded**: CPU-bound operations (slow commands like `KEYS`) block all other clients.
@@ -188,52 +546,52 @@ public class DistributedLock {
 * **Single point of failure (without clustering)**: A single instance failure means downtime/data loss (if no persistence).
 * **Operational complexity**: Clustering, replication failover, and persistence tuning require expertise.
 
-## Challenges
+### Challenges
 
-### Technical Challenges
+#### Technical Challenges
 
 * **Blocking commands**: Commands like `KEYS`, `SORT`, `LRANGE` on large data sets block the single-threaded event loop — must use alternatives (`SCAN`, streaming).
 * **Memory fragmentation**: Over time, memory fragmentation can waste 30%+ of allocated memory — need `MEMORY PURGE`.
 * **Persistence overhead**: AOF rewrite is CPU-intensive (forks child); RDB snapshot pauses can cause latency spikes.
 
-### Scalability Challenges
+#### Scalability Challenges
 
 * **Memory ceiling**: Single instance is limited by RAM. Clustering (16384 hash slots) shards data but adds complexity (cross-slot operations not atomic).
 * **Replication lag**: Asynchronous replication means replicas can lag by seconds; stale reads possible.
 * **Cluster rebalancing**: Adding/removing nodes requires hash slot migration — can be slow for hot keys.
 
-### Performance Challenges
+#### Performance Challenges
 
 * **Tail latency**: Slow commands (large `ZUNIONSTORE`, `SORT`) cause tail latency spikes — must design around slow ops.
 * **CPU vs. memory**: Lua scripts, AOF rewriting, and child process (fork) compete for CPU/memory.
 * **Network overhead**: Large values (> 1MB) cause network and serialization overhead; pipeline or batch.
 
-### Reliability Challenges
+#### Reliability Challenges
 
 * **Master failure**: Without Redis Sentinel or Cluster, master failure = downtime. Data loss if persistence disabled.
 * **Split-brain**: Network partition can cause data divergence between master and replica.
 * **OOM events**: When memory is exhausted, Redis may crash (depending on eviction policy) or return errors.
 
-### Maintainability Challenges
+#### Maintainability Challenges
 
 * **Slow log analysis**: Identifying slow queries (`SLOWLOG`) to optimize — common culprits are `KEYS`, large `SORT`, or unbounded sets.
 * **Persistence tuning**: Balancing RDB frequency, AOF fsync interval (always/everysec/no), and disk I/O.
 * **Cluster management**: Adding/removing nodes, handling failover, rebalancing hash slots.
 
-### Operational Challenges
+#### Operational Challenges
 
 * **Backup and restore**: RDB snapshots are point-in-time backups; AOF logs allow point-in-time recovery. But restore can take hours for large datasets.
 * **Monitoring**: Track memory usage, evicted keys, connected clients, CPU% (single-threaded → should be < 100% per core), replication lag, slow log.
 * **Capacity planning**: Memory + 50% headroom for fragmentation; plan for peak connections; consider persistence I/O impact.
 
-### Security Concerns
+#### Security Concerns
 
 * **No authentication by default (older versions)**: Redis binds to all interfaces with no password by default — critical vulnerability. Use `requirepass` or ACLs.
 * **Network exposure**: Redis should be in a private network, not publicly accessible. Use VPC/firewall rules.
 * **Data exposure**: Redis stores data in plaintext; encryption-at-rest is not built-in (use disk encryption or Redis Enterprise).
 * **Command injection**: `EVAL`/`EVALSHA` with untrusted input is dangerous — validate input; disable dangerous commands (`FLUSHALL`, `KEYS`).
 
-## Best Practices
+### Best Practices
 
 * **Use connection pooling**: Reuse TCP connections (Redis connections are not free).
 * **Avoid blocking commands**: Never use `KEYS` on production; use `SCAN` with a cursor.
@@ -246,9 +604,9 @@ public class DistributedLock {
 * **Use ACLs (Redis 6+)**: Create separate users with granular command and key permissions.
 * **Enable persistence for data**: RDB for backups; AOF for durability (don't use `no-appendfsync-on-rewrite`).
 
-## When to Use
+### When to Use / When Not to Use
 
-### Appropriate
+#### Appropriate
 
 * When you need sub-millisecond latency (caching, session storage, leaderboards).
 * When you need rich data structures (sets for tagging, sorted sets for ranking, hashes for objects).
@@ -257,30 +615,76 @@ public class DistributedLock {
 * When you need distributed locks (with Redlock).
 * When you need fast counting/hyperloglog/cardinality estimation.
 
-### Not Appropriate
+#### Not Appropriate
 
 * When data size exceeds available RAM.
 * When strong consistency is required (Redis Cluster is eventually consistent; use etcd/ZooKeeper).
 * When data is mostly cold (infrequently accessed — Redis evicts under memory pressure).
 * When the use case is simple key-value (a simpler store like memcached might suffice).
 
-### Alternatives
+#### Alternatives
 
 * **Memcached**: Simpler, multi-threaded, no persistence — good for pure caching.
 * **Aerospike**: Hybrid memory/disk, tunable consistency.
 * **etcd/ZooKeeper**: Strong consistency, used for configuration; not for caching.
 * **Apache Ignite**: Distributed SQL + key-value with persistence and compute.
 
-### Decision Factors
+#### Decision Factors
 
 * **Data volatility**: Hot data → Redis; cold data → disk-based DB with Redis cache layer.
 * **Consistency needs**: Strong consistency → etcd; eventual is fine → Redis.
 * **Data size**: If fits in RAM → Redis; if exceeds RAM → Redis with disk (Redis on Flash) or another DB.
 * **Operation type**: Rich operations needed → Redis; simple get/set → memcached.
 
-## Use Cases
+### Use Cases
 
-### Web Session Storage
+### Data Model and API
+
+Redis follows a **key-value** data model where every record is identified by a unique, binary-safe string key (up to 512 MB) and associated with a single value. Unlike a key-value store that stores opaque bytes, Redis values carry an embedded **type tag**, so the same key can hold a string, hash, list, set, sorted set, bitmap, HyperLogLog, Bloom filter, stream, or geospatial index — and the server enforces type-correct operations at runtime.
+
+**Data types and their operations**
+
+| Type | Encoding | Sample Operations |
+|---|---|---|
+| String | SDS (Simple Dynamic String) | `GET`, `SET`, `INCR`, `APPEND`, `GETRANGE` |
+| Hash | Field-value map | `HSET`, `HGET`, `HGETALL`, `HMSET` |
+| List | Linked list / listpack | `LPUSH`, `LPOP`, `LRANGE`, `LINSERT` |
+| Set | Hash table | `SADD`, `SINTER`, `SUNION`, `SMEMBERS` |
+| Sorted Set | Skiplist + hash table | `ZADD`, `ZRANGE`, `ZREVRANK`, `ZUNIONSTORE` |
+| Bitmap | String | `SETBIT`, `GETBIT`, `BITCOUNT`, `BITOP` |
+| HyperLogLog | Sparse/dense register | `PFADD`, `PFCOUNT`, `PFMERGE` |
+| Bloom Filter | Bloom filter | `BF.ADD`, `BF.EXISTS` |
+| Geospatial | Sorted set + GeoHash | `GEOADD`, `GEORADIUS`, `GEODIST` |
+| Stream | List of entries | `XADD`, `XRANGE`, `XREADGROUP`, `XACK` |
+
+```mermaid
+erDiagram
+    KEY {
+        string name "Binary-safe, unique identifier"
+        long ttl "Time-to-live in seconds (0 = no expire)"
+        string type "string|hash|list|set|zset|stream|..."
+    }
+    KEY ||--o{ VALUE : "maps to"
+    VALUE }|--|| TYPE : "has type"
+    TYPE {
+        string label
+        string[] operations
+    }
+```
+
+*The Redis data model: each key maps to exactly one typed value. Key metadata (TTL, type) is stored in the server-side dictionary, while the value body uses the specialized encoding for its type. A single key always holds one type — `SET key value` overwrites any previous type.*
+
+**API contract**
+
+Redis exposes a **request/response** protocol called **RESP** (RESP2 and RESP3). Clients send commands as arrays of bulk strings and receive typed replies. The protocol is simple to parse (prefix-type encoding), binary-safe, and supports **pipelining** (send N commands without waiting for replies) and **multiplexing**.
+
+Key API guarantees:
+- **Atomicity per command**: single-threaded execution means each command runs to completion without interruption. Multi-key operations are atomic only for operations that touch a single key (or use hash tags to co-locate on the same slot).
+- **Idempotency**: `SET name value` is idempotent for a given value; `INCR` is not idempotent and must be retried on connection failure.
+- **TTL**: `EXPIRE key 60` sets a 60-second TTL; `SET key value EX 60` sets value and TTL atomically. When TTL expires, the key is evicted lazily (on access) and periodically (by the server's active expiry cycle).
+- **Type safety**: `GET` on a hash key returns a `WRONGTYPE` error — Redis never silently converts types.
+
+
 
 * **Problem**: Store user sessions (authentication tokens, cart contents) with fast access and automatic expiration.
 * **Solution**: Use Redis with `SETEX` (set + expire) — sessions expire automatically. Single-threaded atomic operations prevent race conditions.
@@ -304,7 +708,7 @@ public class DistributedLock {
 * **How it works**: Each API request → `MULTI INCR rate_limit:{client_id}; EXPIRE rate_limit:{client_id} 60; EXEC` → if result > 100, return 429. On window expiry, the key auto-deletes.
 * **Trade-offs**: Fixed window allows a burst at the boundary (100 at 59s + 100 at 0s = 200 in 2 seconds); sliding window (using sorted sets) is more accurate but more complex.
 
-## Architecture
+### Architecture
 
 ```mermaid
 graph TD
@@ -333,7 +737,7 @@ graph TD
   Sentinel -->|Health check| Redis3
 ```
 
-### Architecture Structure
+#### Architecture Structure
 
 * **Redis nodes**: Each node is a single-threaded instance with a master and replica(s). Data is in memory; persistence is on disk.
 * **Sentinel layer**: Monitors Redis nodes; handles automatic failover if a master goes down (promotes a replica).
@@ -364,7 +768,7 @@ graph TD
 * **Network partition**: Cluster or Sentinel decides which side is master; minority side stops accepting writes.
 * **Persistence failure**: AOF rewrite fails → log to stderr; RDB save fails → continues in-memory.
 
-## High-Level Design
+### High-Level Design
 
 ```mermaid
 flowchart LR
@@ -401,7 +805,7 @@ flowchart LR
 2. A replica is promoted to master for that node's slots.
 3. Cluster config updated → clients redirected.
 
-## Deep Dive
+### Deep Dive
 
 ### Internal Implementation: Single-Threaded Event Loop
 
@@ -482,7 +886,7 @@ end
 
 Redis Cluster nodes communicate via a **gossip protocol** over the cluster bus (port +10000). Messages include: `PING`/`PONG` (node liveness), `MEET` (add new node), `FAILOVER` (replica takeover), `SLOTSRANGEDLT` (slot migration). This gossip-based membership is simpler than consensus (Raft) but less strongly consistent.
 
-## Java and Spring Boot Implementation
+### Java and Spring Boot Implementation Guide
 
 ### Basic Java Implementation — Rate Limiter
 
@@ -636,7 +1040,7 @@ class RedisRateLimiterTest {
 }
 ```
 
-## Real-World Examples
+### Real-World Implementations
 
 ### Twitter's Redis Usage
 
@@ -663,9 +1067,9 @@ GitHub uses Redis as a cache layer in front of MySQL:
 - On cache miss, fetch from DB and populate cache.
 - Redis Sentinel manages failover.
 
-## Interview Preparation
+### Interview Questions and Answers
 
-### Beginner Questions
+#### Beginner Questions
 
 **Q1: What data structures does Redis support?**
 A: Strings, Hashes, Lists, Sets, Sorted Sets, Bitmaps, HyperLogLogs, Bloom Filters (via modules), Streams. Each is a first-class data type with specialized commands: `GET/SET` for strings, `HGET/HSET` for hashes, `LPUSH/LPOP` for lists, `SADD/SINTER` for sets, `ZADD/ZRANGE` for sorted sets. This makes Redis more powerful than a simple key-value store.
@@ -676,7 +1080,7 @@ A: Redis uses a single thread for command execution to eliminate race conditions
 **Q3: What is the difference between RDB and AOF persistence?**
 A: RDB (Redis Database Backup) takes point-in-time snapshots periodically — compact, great for backups and replication, but you can lose up to the snapshot interval of data. AOF (Append-Only File) logs every write operation — better durability (can configure to fsync every second), but the file is larger and can grow unbounded (requires periodic rewrite). Many production setups use both: AOF for durability + RDB for backups.
 
-### Intermediate Questions
+#### Intermediate Questions
 
 **Q4: What are Redis hash slots and how does clustering work?**
 A: Redis Cluster shards data into 16384 hash slots. Each key is hashed (CRC16) and assigned to a slot (0–16383). Each node in the cluster is responsible for a subset of slots. When a client requests a key, it computes the slot and routes the request to the correct node. If the key has moved (during resharding), the node responds with `MOVED` and the client retries on the correct node. This allows horizontal scaling — add nodes and rebalance slots.
@@ -690,7 +1094,7 @@ A: When a hot key expires or is evicted, many clients simultaneously try to reco
 **Q7: How does Redis handle memory when it runs out?**
 A: When `maxmemory` is set and the limit is reached, Redis evicts keys based on the configured policy: `allkeys-lru` (evict least recently used), `allkeys-lfu` (least frequently used), `allkeys-random`, `volatile-lru/lfu/ttl` (only keys with TTL), or `noeviction` (return errors). Without a policy (`noeviction` is default), Redis returns errors on writes when memory is full. For caches, `allkeys-lru` is common; for databases, `noeviction` is safer.
 
-### Advanced Questions
+#### Advanced Questions
 
 **Q8: How would you design a distributed lock service with Redis that handles failover correctly?**
 A: (1) Use Redlock with 5+ independent Redis nodes (or Sentinel-managed). Acquire on majority. (2) Use fencing tokens — the lock holder passes a monotonically increasing token to the resource; the resource rejects tokens lower than the current one. (3) Set appropriate TTL (longer than max expected operation time + clock drift). (4) Renew the lock periodically (extend TTL before expiry). (5) On crash, let TTL expire (the lock auto-releases). (6) Use Redisson client (handles Redlock, automatic renewal, and fencing). (7) Monitor lock hold times and alert if too long. For strong guarantees, consider etcd with leases instead.
@@ -698,7 +1102,7 @@ A: (1) Use Redlock with 5+ independent Redis nodes (or Sentinel-managed). Acquir
 **Q9: How do you handle Redis at 500M keys with 50GB memory?**
 A: (1) **Sharding**: Redis Cluster with 16384 slots across N nodes — distribute keys evenly. (2) **Memory optimization**: Use Redis objects efficiently (intsets for integer sets, ziplists for small collections, shared objects for small strings); configure maxmemory and eviction policy. (3) **Cold data tiering**: Use Redis on Flash (swap less-frequently-used values to disk); or offload cold data to a DB and cache hot data. (4) **Key design**: Avoid large keys and hashes; prefer many small keys. (5) **Persistence tuning**: AOF with `everysec` is faster than `always`; RDB only at off-peak hours. (6) **Monitoring**: track hit rate, evicted keys, memory fragmentation.
 
-### Senior-Level Questions
+#### Senior-Level Questions
 
 **Q10: How would you design Redis for a system that needs strong consistency (not eventual)?**
 A: Standard Redis replication is asynchronous (eventual consistency). For strong consistency:

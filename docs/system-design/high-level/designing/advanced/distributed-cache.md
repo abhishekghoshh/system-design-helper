@@ -28,37 +28,49 @@ The economics: RAM costs ~10–100× more per GB than SSD/disk but is ~100–100
 * **Cost efficiency**: serving reads from RAM is far cheaper per-request than scaling database read replicas, which still carry disk I/O and connection overhead.
 * **Availability during partial failure**: a cache with replication can serve stale or degraded data when the primary database is slow or unavailable, improving user experience during brownouts.
 
-### Important Subtopics
+### Topics Covered
 
-1. [Introduction and Problem Statement](#introduction-and-problem-statement)
-2. [Functional Requirements](#functional-requirements)
-3. [Non-Functional Requirements](#non-functional-requirements)
-4. [Capacity Estimation](#capacity-estimation)
-5. [Why Caching Exists](#why-caching-exists)
-6. [Data Partitioning](#data-partitioning)
-7. [Cache Eviction Policies](#cache-eviction-policies)
-8. [Replication Strategies](#replication-strategies)
-9. [Write Strategies](#write-strategies)
-10. [Consistency With the Source of Truth](#consistency-with-the-source-of-truth)
-11. [Expiration Mechanics](#expiration-mechanics)
-12. [Handling Failures](#handling-failures)
-13. [Key Design Decisions](#key-design-decisions)
-14. [Characteristics](#characteristics)
-15. [Components](#components)
-16. [Patterns](#patterns)
-17. [Benefits](#benefits)
-18. [Pros](#pros)
-19. [Cons](#cons)
-20. [Challenges](#challenges)
-21. [Best Practices](#best-practices)
-22. [When to Use](#when-to-use)
-23. [Use Cases](#use-cases)
-24. [API Design and Contract](#api-design-and-contract)
-25. [Data Modeling](#data-modeling)
-26. [High-Level Design](#high-level-design)
-27. [Deep Dive](#deep-dive)
-28. [Java and Spring Boot Implementation Guide](#java-and-spring-boot-implementation-guide)
-29. [Interview Questions and Answers](#interview-questions-and-answers)
+1. [What Is It?](#what-is-it)
+2. [Why Does It Exist?](#why-does-it-exist)
+3. [What Problem Does It Solve?](#what-problem-does-it-solve)
+4. [Introduction and Problem Statement](#introduction-and-problem-statement)
+5. [Functional Requirements](#functional-requirements)
+6. [Non-Functional Requirements](#non-functional-requirements)
+7. [Capacity Estimation](#capacity-estimation)
+8. [Why Caching Exists](#why-caching-exists)
+9. [Data Partitioning](#data-partitioning)
+10. [Cache Eviction Policies](#cache-eviction-policies)
+11. [Replication Strategies](#replication-strategies)
+12. [Write Strategies](#write-strategies)
+13. [Consistency With the Source of Truth](#consistency-with-the-source-of-truth)
+14. [Expiration Mechanations](#expiration-mechanations)
+15. [Handling Failures](#handling-failures)
+16. [Key Design Decisions](#key-design-decisions)
+17. [Characteristics](#characteristics)
+18. [Components](#components)
+19. [Architectural Patterns](#architectural-patterns)
+20. [Benefits](#benefits)
+21. [Pros](#pros)
+22. [Cons](#cons)
+23. [Challenges](#challenges)
+24. [Best Practices](#best-practices)
+25. [When to Use](#when-to-use)
+26. [Use Cases](#use-cases)
+27. [API Design and Contract](#api-design-and-contract)
+28. [Data Model and API](#data-model-and-api)
+29. [High-Level Design](#high-level-design)
+30. [Deep Dive](#deep-dive)
+31. [Encryption and Key Management](#encryption-and-key-management)
+32. [Authentication and Authorization](#authentication-and-authorization)
+33. [Failure Detection and Membership](#failure-detection-and-membership)
+34. [High Availability and Scalability](#high-availability-and-scalability)
+35. [Performance and Optimization](#performance-and-optimization)
+36. [CAP Theorem and Consistency Trade-offs](#cap-theorem-and-consistency-trade-offs)
+37. [Security Threats and Mitigations](#security-threats-and-mitigations)
+38. [Observability and Logging](#observability-and-logging)
+39. [Real-World Implementations](#real-world-implementations)
+40. [Java and Spring Boot Implementation Guide](#java-and-spring-boot-implementation-guide)
+41. [Interview Questions and Answers](#interview-questions-and-answers)
 
 ---
 
@@ -490,7 +502,7 @@ flowchart TB
 
 ---
 
-### Patterns
+### Architectural Patterns
 
 - **Cache-aside (lazy loading)**
   *What*: app queries cache first; on miss reads DB then populates cache with TTL. *Solves*: keeping cache populated only with actually-demanded data. *When*: default choice — read-heavy workloads with tolerant staleness. *Not when*: strict read-after-write consistency required. *Advantages*: only-used data cached; DB outage degrades to cache-only serving. *Disadvantages*: miss penalty (3 round-trips); the invalidation race above.
@@ -722,7 +734,7 @@ This is a RESP array of 3 bulk strings: `SET`, `foo`, `hello`. The protocol is b
 
 ---
 
-### Data Modeling
+### Data Model and API
 
 Caches model access patterns, not entities:
 
@@ -918,6 +930,513 @@ sequenceDiagram
 - **Observability**: track hit ratio, evicted_keys/sec, mem_fragmentation_ratio, replication lag, slowlog outliers, connected-clients vs maxclients; synthetic probes exercising real key classes continuously. Key metrics: `used_memory`, `used_memory_rss`, `keyspace_hits`, `keyspace_misses`, `evicted_keys`, `expired_keys`, `connected_clients`, `blocked_clients`, `rejected_connections`.
 
 - **Persistence internals**: RDB creates point-in-time snapshots via `fork()` — child process writes memory to disk while parent continues serving. `SAVE` is synchronous (blocks all clients), `BGSAVE` is asynchronous. AOF logs every write operation; `fsync` policy controls durability: `always` (every write, safest but slowest), `everysec` (once per second, good balance), `no` (kernel decides, fastest but may lose data). AOF rewriting compresses the log by removing expired/deleted keys.
+
+---
+
+### Encryption and Key Management
+
+A distributed cache may store sensitive data — user sessions, financial information, or
+personally identifiable data retrieved from the primary store. Without encryption, a compromised
+cache node or a network eavesdropper can access this data.
+
+#### Encryption at Rest
+
+- **OS-level disk encryption**: encrypt the cache node's data directory using LUKS/dm-crypt
+  (Linux) or FileVault (macOS). Transparent but encrypts everything with a single key.
+- **Application-level encryption**: the cache client encrypts sensitive values before writing
+  them to the cache. Each record uses a separate data encryption key (DEK), allowing per-record
+  access control and fine-grained key rotation.
+- **Managed service encryption**: cloud-managed caches (ElastiCache, Memorystore) provide
+  automatic at-rest encryption with KMS-managed keys.
+
+```mermaid
+flowchart LR
+    App[Application] -->|encrypt| Cache[Cache Cluster]
+    Cache -->|write| Disk[Encrypted Data Files]
+    KEG[Key Encryption Key] -->|encrypts DEKs| DEK[Data Encryption Key]
+    DEK --> Cache
+```
+*Cache encryption at rest: the application encrypts sensitive values before caching them.
+Each value is encrypted with a DEK, which is itself encrypted by a KEK managed in a KMS/HSM.*
+
+#### Encryption in Transit
+
+- **TLS**: all client-to-cache and cache-to-cache communication uses TLS 1.2+.
+- **Mutual TLS (mTLS)**: both client and server present certificates, providing strong
+  authentication for inter-cache replication traffic.
+- **Certificate management**: certificates are rotated automatically with OCSP/CRL checks.
+
+#### Key Management
+
+- **Key hierarchy**: a key encryption key (KEK) encrypts data encryption keys (DEKs).
+  This allows key rotation without re-encrypting all data.
+- **Hardware Security Module (HSM)**: stores the KEK in tamper-resistant hardware.
+- **Key rotation policy**: KEKs rotated every 6–12 months; DEKs can be more frequent.
+
+**Java example:**
+```java
+@Service
+public class CacheEncryptionService {
+
+    private final AWSEncryptionClient kmsClient;
+
+    public String encryptForCache(String plaintext) {
+        byte[] dek = kmsClient.generateDataKey().getPlaintext();
+        byte[] encrypted = aesGcmEncrypt(plaintext, dek);
+        return Base64.getEncoder().encodeToString(encrypted);
+    }
+}
+```
+
+- **Q: Should you encrypt all cache values?**
+  **A:** No — encryption adds CPU overhead and increases cache entry size. Encrypt only
+  sensitive data (PII, financial data, session tokens). Non-sensitive computed results
+  (e.g., HTML fragments for a product listing page) can be stored unencrypted.
+
+---
+
+### Authentication and Authorization
+
+An open cache cluster is a security liability — anyone who can reach it can read or modify cached
+data, potentially poisoning the cache or stealing sensitive information.
+
+#### Authentication
+
+- **Password authentication**: Redis AUTH or Memcached SASL; simple but requires TLS to protect
+  the password in transit.
+- **Certificate-based auth**: mTLS between cache clients and the cluster; no shared secrets.
+- **Token-based auth**: short-lived JWT tokens for ephemeral clients (serverless functions).
+
+#### Authorization
+
+- **ACL (Access Control Lists)**: Redis 6+ supports per-user permissions (read, write, admin).
+  Each cache client gets a restricted user.
+- **Namespace isolation**: multi-tenant caches use key prefixes to isolate tenant data.
+- **Command-level permissions**: block dangerous operations (`FLUSHDB`, `CONFIG`) for
+  non-admin users.
+
+```mermaid
+graph LR
+    ClientA[App A] -->|ACL: read| Cache[(Cache)]
+    ClientB[App B] -->|ACL: read/write| Cache
+    Admin[Admin Tool] -->|ACL: all| Cache
+```
+*Cache ACL model: each client has scoped permissions. App A is read-only
+(health-check probes), App B has read/write for caching, and admin tools have full access.*
+
+#### Java Example
+
+```java
+@Configuration
+public class SecureCacheConfig {
+
+    @Bean
+    public LettuceConnectionFactory redisConnectionFactory() {
+        RedisClusterConfiguration config = new RedisClusterConfiguration(
+            Arrays.asList("cache-1:6379", "cache-2:6379")
+        );
+        config.setPassword("{redis-password}");
+        config.setSsl(true);
+        config.setVerifyPeer(true);
+
+        return new LettuceConnectionFactory(config,
+            LettuceClientConfiguration.builder()
+                .commandTimeout(Duration.ofSeconds(5))
+                .build());
+    }
+}
+```
+
+- **Q: Why use ACL instead of just network isolation?**
+  **A:** Defense in depth. Network isolation (VPC, security groups) can fail due to
+  misconfiguration. ACLs protect at the application layer — critical in shared cache clusters.
+
+---
+
+### Failure Detection and Membership
+
+A distributed cache cluster must detect failed nodes, redistribute their data, and continue
+serving with minimal disruption.
+
+#### Gossip-Based Membership
+
+- **Redis Cluster**: each node periodically sends PING to a random subset of peers. If a node
+  doesn't respond within `cluster_node_timeout` (default 30s), it's marked PFAIL (possible
+  failure). Other nodes confirm via gossip to mark it as FAIL.
+- **Hazelcast**: uses heartbeat-based failure detection with phi accrual detectors.
+- **Memcached**: uses client-side consistent hashing; node failure is detected on connection error.
+
+#### Failure Detection Timing
+
+- **Heartbeat interval**: 1–2 seconds for fast detection
+- **Failure timeout**: 10–30 seconds to avoid false positives during network blips
+- **Quorum confirmation**: multiple nodes must agree before marking a node as failed
+
+```mermaid
+flowchart LR
+    C1[Cache Node 1] -->|ping| C2[Cache Node 2]
+    C2 -->|ping| C3[Cache Node 3]
+    C3 -->|ping| C4[Cache Node 4]
+    C4 -->|ping| C1
+    C1 -->|gossip: C3 is PFAIL| C2
+    C2 -->|gossip: confirm FAIL| C3
+```
+*Cache cluster failure detection via gossip: pings verify liveness, gossip propagates
+suspicions, and quorum confirmation marks a node as definitively failed.*
+
+#### Rebalancing After Failure
+
+- **Hash slot migration**: Redis Cluster redistributes the 16,384 hash slots among remaining
+  nodes. `CLUSTER FAILOVER TAKEOVER` initiates the migration.
+- **Replica promotion**: if a master fails, its replica is promoted. Requires replica sync to
+  have completed before the failure.
+- **Client redirection**: clients receive `MOVED` or `ASK` redirects and retry on the correct node.
+
+**Java example:**
+```java
+@Component
+public class CacheHealthMonitor {
+
+    @Scheduled(fixedRate = 5000)
+    public void checkNodeHealth() {
+        connectionFactory.getClusterInfo().getNodes().forEach(node -> {
+            boolean alive = checkNode(node);
+            if (!alive) {
+                handleNodeFailure(node);
+            }
+        });
+    }
+}
+```
+
+- **Q: What is the "thundering herd" problem in cache failover?**
+  **A:** When a cache node fails, all clients simultaneously fetch data from the database
+  (cache is gone), overwhelming it. Mitigations: backup cache tier, staggered re-fetch with
+  jitter, or serving slightly stale data from replicas during failover.
+
+---
+
+### High Availability and Scalability
+
+Cache clusters must be highly available and scalable to serve millions of requests per second.
+
+#### High Availability
+
+- **Multi-node cluster**: cache nodes deployed across multiple availability zones (AZs). If one
+  AZ goes down, the remaining AZs continue serving with reduced capacity.
+- **Replica nodes**: each master has replica(s) for failover. Redis Sentinel monitors masters
+  and initiates automatic failover when a master becomes unavailable.
+- **Active-active**: technologies like Hazelcast support writing to any node in any region.
+- **Graceful degradation**: when capacity is reduced, the cache evicts less-frequently-used
+  entries first, maintaining service for hot data.
+
+```mermaid
+flowchart TB
+    Client --> LB[Load Balancer]
+    LB --> N1[Cache Node 1 - Master AZ-1]
+    LB --> N2[Cache Node 2 - Master AZ-1]
+    LB --> N3[Cache Node 3 - Master AZ-1]
+    N1 --> R1[Replica - AZ-2]
+    N2 --> R2[Replica - AZ-2]
+    N3 --> R3[Replica - AZ-2]
+```
+*A highly available cache cluster: master nodes in AZ-1 with replicas in AZ-2 for failover.*
+
+- **Q: What is "cache stampede" and how do you prevent it?**
+  **A:** When a cache entry expires, all concurrent requests find a miss and all fetch from the
+  database simultaneously, overwhelming it. Prevent with **probabilistic early expiration**
+  (start refreshing at 0.8x TTL with jitter), **single-flight / request coalescing** (only one
+  request fetches; others wait and share the result), or **lock-based refresh** (stale-while-revalidate).
+
+- **Q: How does cache scaling differ from database scaling?**
+  **A:** Cache scaling adds nodes and rebalances keys — caches are stateless and eventual
+  consistency is acceptable. Database scaling involves transaction coordination, complex
+  sharding, and data migration. Cache scaling is simpler because the cache can temporarily
+  serve stale data or miss to the database during rebalancing.
+
+---
+
+### Performance and Optimization
+
+A distributed cache's primary goal is to reduce latency — from milliseconds (database) to
+microseconds (in-memory). Poor configuration can negate this benefit.
+
+#### Latency Optimization
+
+- **Cache hit ratio**: the single most important metric. Target ≥95% for read-heavy workloads.
+  Each 1% of miss rate adds ~10ms latency to those requests.
+- **Hot key mitigation**: when a key receives disproportionate traffic, use "fan-out caching" —
+  split into N sub-keys distributed across cache nodes.
+- **Cache warming**: pre-populate the cache with hot data before traffic spikes.
+
+#### Throughput Optimization
+
+- **Pipelining**: batch multiple cache commands into a single network round-trip.
+- **Batching**: use `MGET`/`MSET` to reduce network round-trips.
+- **Connection pooling**: reuse TCP connections instead of creating new ones per request.
+
+```mermaid
+flowchart LR
+    App[Application] -->|pipeline| Pool[Connection Pool]
+    Pool --> Cache[Cache Cluster]
+    Cache -->|hit 1ms| Data[(Data)]
+    Cache -->|miss| DB[(Database)
+    DB -->|10ms| Cache
+    Cache -->|populate| Data
+```
+*Cache performance pipeline: pipelined commands go through a connection pool.
+Hit = ~1ms; miss = ~10ms (DB fetch) which populates the cache.*
+
+#### Java Example
+
+```java
+@Service
+public class OptimizedCacheService {
+
+    private static final int FANOUT_SHARDS = 10;
+
+    // Pipelined batch get — reduces N round-trips to 1
+    public CompletableFuture<List<String>> batchGet(List<String> keys) {
+        List<RedisFuture<String>> futures = keys.stream()
+            .map(asyncRedis.get(.asyncRedis::get))
+            .collect(Collectors.toList());
+        return CompletableFuture.allOf(futures.toArray(new RedisFuture[0]))
+            .thenApply(v -> futures.stream()
+                .map(f -> safeGet(f))
+                .collect(Collectors.toList()));
+    }
+
+    // Hot key fan-out
+    public String getHotKey(String baseKey) {
+        int shard = ThreadLocalRandom.current().nextInt(FANOUT_SHARDS);
+        return safeGet(asyncRedis.get(baseKey + ":" + shard));
+    }
+}
+```
+
+- **Q: Should you increase cache size or optimize hit ratio?**
+  **A:** Hit ratio first. Doubling cache size doesn't double hit ratio (logarithmic curve). A
+  10GB cache with 95% hit ratio beats a 100GB cache with 85% — most requests are served in
+  microseconds either way, but the smaller cache costs less and warms faster.
+
+---
+
+### CAP Theorem and Consistency Trade-offs
+
+The CAP theorem states that during a network partition, a distributed system can guarantee at
+most two of: Consistency, Availability, and Partition tolerance. Caches always operate over a
+network, so partition tolerance is mandatory.
+
+#### Cache-Aside — AP
+
+The application checks the cache first, falls back to the database on miss. If the cache is
+down, the application reads directly from the database. **Prioritizes availability** — users
+experience higher latency but no errors.
+
+- **Trade-off**: the cache may serve stale data until the entry expires or is invalidated.
+- **Real-life**: Redis with async replication.
+
+#### Read-Through / Write-Through — CP
+
+The cache is a layer of the storage system. Writes go through the cache to the database
+atomically. The cache always reflects the database state.
+
+- **Trade-off**: if the database is unreachable, both reads and writes fail.
+- **Real-life**: Hazelcast with CP mode, Redis with `WAIT` command.
+
+#### Write-Behind — AP
+
+Writes are acknowledged before reaching the database. The cache flushes asynchronously.
+
+- **Trade-off**: data loss if the cache node fails before flushing.
+- **Real-life**: Redis with AOF.
+
+#### Consistency Models
+
+| Model | Description | Use Case |
+|---|---|---|
+| **Strong (linearizable)** | Every read sees the latest write | User sessions |
+| **Monotonic reads** | Once a client sees version N, never sees < N | Profile data |
+| **Read-your-writes** | A client always sees its own writes | Shopping cart |
+| **Eventual consistency** | Reads may return stale data | Product listings |
+
+```mermaid
+flowchart LR
+    subgraph Tradeoff[CAP Trade-offs for Cache]
+        AP[Cache-Aside: AP]
+        CP[Write-Through: CP]
+        WB[Write-Behind: AP]
+    end
+    AP --> DB[(Database)]
+    CP --> DB
+    WB --> DB
+```
+*Cache-aside and write-behind are AP (availability); write-through is CP (consistency).*
+
+- **Q: How does TTL affect the CAP trade-off?**
+  **A:** TTL bounds the staleness window. In AP caches, data is at most TTL-stale. A short
+  TTL reduces stale data risk but increases miss rate; a long TTL improves hit rate but
+  increases stale data window. Choose based on acceptable staleness for your use case.
+
+---
+
+### Security Threats and Mitigations
+
+Cache clusters are attractive targets: they sit between the application and the database,
+often contain sensitive data, and may have weaker authentication than the database.
+
+#### Threat Model
+
+- **Threat agents**: external attackers, malicious insiders, compromised services, automated bots
+- **Assets**: cached user data, session tokens, PII, application secrets
+- **Attack surface**: cache port (6379, 11211), cache API, replication protocol, management API
+
+#### Common Threats and Mitigations
+
+| Threat | Description | Mitigation |
+|---|---|---|
+| **Unauthorized access** | Open cache port accessible from the internet | Bind to private VPC; use AUTH/SASL; mTLS for all connections |
+| **Cache poisoning** | Attacker overwrites cache entries with malicious data | Use key namespaces; validate data before caching; short TTL |
+| **Data exfiltration** | Attacker reads sensitive data from cache | Encrypt sensitive values at rest; restrict network access; audit logs |
+| **Memory exhaustion** | Attacker floods cache with large entries, evicting valid data | Set `maxmemory-policy`; limit entry size; per-client quotas |
+| **Side-channel attacks** | Attacker infers data from cache timing or memory layout | Constant-time operations; random eviction jitter |
+| **RCE via unauthenticated Redis** | Redis with no AUTH → arbitrary command execution → server compromise | Always set `requirepass`; disable dangerous commands (`FLUSHALL`, `CONFIG`); use Redis 6+ ACLs |
+| **Replication hijacking** | Attacker joins as a fake replica node | Enable mTLS for replication; use `requirepass` for replicators |
+
+#### Real-Life Use
+
+- **Redis**: use ACLs (per-user permissions), `rename-command` to disable dangerous commands,
+  and `protected-mode yes` to prevent exposure to the internet.
+- **Memcached**: use SASL authentication, TLS (v1.2+), and binary protocol (not text).
+- **ElastiCloud / Memorystore**: these managed services provide in-transit encryption and
+  authentication by default.
+
+- **Q: Is `protected-mode yes` enough to secure Redis?**
+  **A:** No. Protected mode blocks external access but does not encrypt traffic or authenticate
+  clients. A compromised container in the same VPC can still access Redis. Layer security:
+  private VPC, TLS, AUTH/ACL, disabled dangerous commands, and regular audits.
+
+---
+
+### Observability and Logging
+
+Cache performance and health must be observable — a misconfigured cache can silently degrade
+application performance or cause outages.
+
+#### Key Metrics
+
+- **Hit ratio**: `(keyspace_hits) / (keyspace_hits + keyspace_misses)`. Target ≥95%.
+- **Eviction rate**: `evicted_keys/sec`. Rising eviction rate indicates the cache is too small.
+- **Memory usage**: `used_memory` vs `maxmemory`. Track fragmentation ratio (`mem_fragmentation_ratio`).
+- **Network I/O**: `total_net_input_bytes`, `total_net_output_bytes`. Spikes indicate query issues.
+- **Client connections**: `connected_clients`. Too many = resource exhaustion.
+- **Replication lag**: for replicated caches, the delay between primary and replica.
+- **Command latency**: slowlog entries for commands taking > N ms.
+
+#### Logging
+
+- **Access logs**: log cache operations (GET, SET, DEL) with key patterns (not values) for
+  debugging hot keys and access patterns.
+- **Security audit logs**: log authentication attempts, ACL denials, and configuration changes.
+- **Replication events**: log failover, slot migration, and replica sync events.
+
+#### Alerting Thresholds
+
+- Hit ratio < 90% for 5 minutes → cache is too small or keys are wrong
+- Eviction rate > 1000/sec → cache pressure, add nodes or increase memory
+- `mem_fragmentation_ratio` > 1.5 → memory fragmentation issue
+- Replication lag > 30s → network or performance issue in replica
+
+```mermaid
+flowchart LR
+    Cache[Cache Cluster] -->|metrics| Prometheus[Prometheus]
+    Cache -->|logs| Fluentd[Fluentd/Elasticsearch]
+    Cache -->|traces| Tempo[Tempo/Jaeger]
+    Prometheus -->|alert on low hit ratio| Alertmanager[Alertmanager]
+    Prometheus -->|dashboard| Grafana[Grafana]
+```
+*Cache observability stack: metrics to Prometheus, logs to Elasticsearch, traces to Tempo.
+Grafana dashboards visualize hit ratio, eviction rate, and latency.*
+
+#### Java Example
+
+```java
+@Component
+public class CacheMetrics {
+
+    private final MeterRegistry meterRegistry;
+
+    @EventListener
+    public void onCacheMiss(CacheMissEvent event) {
+        Counter.builder("cache.miss")
+            .tag("cache", event.getCacheName())
+            .register(meterRegistry)
+            .increment();
+    }
+
+    @EventListener
+    public void onCacheHit(CacheHitEvent event) {
+        Counter.builder("cache.hit")
+            .tag("cache", event.getCacheName())
+            .register(meterRegistry)
+            .increment();
+    }
+}
+```
+
+- **Q: How do you detect a hot key in production?**
+  **A:** Track per-key access rate using a probabilistic counter (Count-Min Sketch or Redis
+  with per-key TTL counters). Set an alert threshold (e.g., > 1000 ops/sec for a single key).
+  When detected, shard the key into N sub-keys (fan-out caching) to distribute load.
+
+---
+
+### Real-World Implementations
+
+Distributed cache implementations vary in deployment model, consistency guarantees, and features.
+
+#### Redis
+
+- In-memory key-value store with persistence (RDB snapshots, AOF).
+- Supports data structures: strings, hashes, lists, sets, sorted sets, bitmaps, HyperLogLog.
+- Redis Cluster: automatic sharding across 16,384 hash slots, with master/replica replication.
+- Redis Sentinel: high-availability monitoring and failover.
+- Redis Streams: message queue support.
+- **Companies**: GitHub, Stack Overflow, Twitter (for timelines).
+
+#### Memcached
+
+- Simple, multi-threaded, in-memory key-value store.
+- Multi-threaded: unlike Redis, uses multiple cores (via thread-per-connection).
+- No persistence: cache is ephemeral; all data lost on restart.
+- No data structures beyond key-value.
+- **Companies**: Facebook, Twitter, Reddit, YouTube.
+
+#### Hazelcast
+
+- In-memory computing platform with distributed maps, queues, and locks.
+- Native client support for Java, .NET, Python, Node.js, Go, C++.
+- CP Subsystem: strong consistency for maps using Raft consensus.
+- Hot Restart Store: persistence to disk for restart.
+- **Companies**: LinkedIn, Alibaba, Capital One.
+
+#### Apache Ignite
+
+- In-memory computing platform with SQL and key-value APIs.
+- Shared-nothing architecture with ACID transactions.
+- Native persistence: data is stored both in RAM and on disk (no external database needed).
+- **Companies**: ING Bank, TomTom.
+
+#### Cloud-Managed
+
+- **Amazon ElastiCache** (Redis/Memcached): fully managed, supports clustering, automatic failover.
+- **Google Cloud Memorystore** (Redis/Memcached): managed, integrated with Cloud Monitoring.
+- **Azure Cache** (Redis): managed, supports Geo-replication and clustering.
+
+- **Q: When should you use Redis vs. Memcached?**
+  **A:** Use Redis when you need data structures beyond key-value, persistence, or Redis Streams.
+  Use Memcached when you need absolute simplicity, multi-threaded performance, and can tolerate
+  data loss on restart. For most applications, Redis is the safer default choice.
 
 ---
 

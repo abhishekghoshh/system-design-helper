@@ -48,24 +48,38 @@
 1. [Introduction and Problem Statement](#introduction-and-problem-statement)
 2. [Functional Requirements](#functional-requirements)
 3. [Non-Functional Requirements](#non-functional-requirements)
-4. [Capacity Estimation (Back-of-the-Envelope)](#capacity-estimation-back-of-envelope)
+4. [Capacity Estimation (Back-of-the-Envelope)](#capacity-estimation-back-of-the-envelope)
 5. [Characteristics](#characteristics)
 6. [Components](#components)
-7. [Patterns](#patterns)
-8. [Benefits](#benefits)
-9. [Pros](#pros)
-10. [Cons](#cons)
-11. [Challenges](#challenges)
-12. [Best Practices](#best-practices)
-13. [When to Use a Rate Limiter and When Not To](#when-to-use-a-rate-limiter-and-when-not-to)
-14. [Use Cases](#use-cases)
-15. [API Design and Contract](#api-design-and-contract)
-16. [Data Modeling](#data-modeling)
-17. [High-Level Design](#high-level-design)
-18. [Deep Dive](#deep-dive)
-19. [Java and Spring Boot Implementation Guide](#java-and-spring-boot-implementation-guide)
-20. [Interview Questions and Answers](#interview-questions-and-answers)
+7. [Architectural Patterns](#architectural-patterns)
+8. [When to use Redis:](#when-to-use-redis)
+9. [When to use In-Memory/Config:](#when-to-use-in-memoryconfig)
+10. [Hybrid Approach:](#hybrid-approach)
+11. [In-memory (local) enforcement points](#in-memory-local-enforcement-points)
+12. [Benefits](#benefits)
+13. [Pros](#pros)
+14. [Cons](#cons)
+15. [Challenges](#challenges)
+16. [Best Practices](#best-practices)
+17. [When to Use a Rate Limiter and When Not To](#when-to-use-a-rate-limiter-and-when-not-to)
+18. [Use Cases](#use-cases)
+19. [Data Model and APIAPI Design and Contract](#data-model-and-apiapi-design-and-contract)
+20. [High-Level Design](#high-level-design)
+21. [Deep Dive](#deep-dive)
+22. [Replication Strategies](#replication-strategies)
+23. [Failure Detection and Membership](#failure-detection-and-membership)
+24. [High Availability and Scalability](#high-availability-and-scalability)
+25. [Performance and Optimization](#performance-and-optimization)
+26. [Encryption and Key Management](#encryption-and-key-management)
+27. [Authentication and Authorization](#authentication-and-authorization)
+28. [Security Threats and Mitigations](#security-threats-and-mitigations)
+29. [Observability and Logging](#observability-and-logging)
+30. [Real-World Implementations](#real-world-implementations)
+31. [Java and Spring Boot Implementation Guide](#java-and-spring-boot-implementation-guide)
+32. [Interview Questions and Answers](#interview-questions-and-answers)
 
+---
+---
 ---
 
 ### Introduction and Problem Statement
@@ -239,7 +253,7 @@ Each component: purpose, responsibilities, how it works, how it relates to the o
 
 ---
 
-### Patterns
+### Architectural Patterns
 
 Each rate-limiting pattern: what it is, the problem it solves, how it works, when to use it and when not to use it, advantages, disadvantages, and a real-world example. The deep, implementation-level treatment of each algorithm (code) also appears in the Deep Dive for the Java/Spring audience.
 
@@ -994,7 +1008,7 @@ Each practice includes *why* it matters, not just what to do.
 
 ---
 
-### API Design and Contract
+### Data Model and APIAPI Design and Contract
 
 A rate limiter has two surfaces: the **data plane** (every request is checked and scored) and the **control plane** (operators define and inspect rules). The contract is HTTP-standard so any client understands it.
 
@@ -1119,7 +1133,7 @@ Clients MUST: (1) read `Retry-After` and wait *at least* that long before retryi
 
 ---
 
-### Data Modeling
+#### Data Modeling
 
 The rate limiter's storage model is intentionally *flat and keyed*: a single key per (dimension, window/algorithm) encodes everything needed for an atomic decision. The model is what makes the Lua script trivial and the memory footprint predictable.
 
@@ -1549,6 +1563,647 @@ loop:
 **Why this matters in interviews:** most candidates describe "exponential backoff" and stop; the strong answer names *jitter*, treats `Retry-After` as a floor, and refuses to auto-retry non-idempotent calls. That combination is what actually prevents a retry storm.
 
 ---
+
+### Replication Strategies
+
+**What it means**
+
+Replication Strategies determine how data and state are copied across multiple nodes in Rate Limiter. The choice of strategy determines the trade-off between consistency, availability, and latency.
+
+**Why it matters**
+
+Rate Limiter must replicate data to prevent loss and serve reads from multiple nodes. The replication strategy determines whether the system favors consistency (strong reads) or availability (always writable), and how it handles cross-node failure.
+
+**How it works**
+
+**Leader-based (single-leader)**: A single primary node accepts all writes; followers replicate changes asynchronously or semi-synchronously. Reads can be served from any replica. This strategy favors strong consistency for writes but creates a write bottleneck at the leader.
+
+```mermaid
+flowchart LR
+    subgraph "Primary Node"
+        Leader[Leader/Follower<br/>Accepts writes]
+    end
+    subgraph "Replica Nodes"
+        Follower1[Follower 1<br/>Read-only]
+        Follower2[Follower 2<br/>Read-only]
+        Follower3[Follower 3<br/>Read-only]
+    end
+    Client[Client] -->|Write| Leader
+    Client -->|Read| Follower1
+    Client -->|Read| Follower2
+    Leader -->|Replicate| Follower1
+    Leader -->|Replicate| Follower2
+    Leader -->|Replicate| Follower3
+```
+
+*Leader-based replication: a single primary node accepts all writes and replicates them to read-only followers. Clients can read from any replica for scaled read throughput, but all writes go through the leader.*
+
+**Multi-leader (multi-master)**: Multiple nodes accept writes and exchange updates with each other. This enables low-latency writes in different regions but requires conflict resolution (last-write-wins, merge functions, or CRDTs).
+
+**Leaderless (quorum-based)**: Any node can accept writes; a quorum of nodes must agree. Read and write quorums are configured so that at least one node overlaps between them (R + W > N). This maximizes availability and write scalability.
+
+**Trade-offs for Rate Limiter**:
+
+| Strategy | Use Case | Pros | Cons |
+|---|---|---|---|
+| Leader-based | API keys, client credentials | Strong consistency, simple | Write bottleneck, leader failure risk |
+| Multi-leader | public quotas, rate limit docs | Low-latency global writes | Conflict resolution, complex |
+| Leaderless | Caching, counters | High availability, no bottleneck | Eventual consistency, read repair overhead |
+
+**Real-world implementations**
+
+- **Redis**: Leader-follower replication with asynchronous replication; Sentinel handles failover.
+- **Apache Kafka**: Leader-based partition replication with ISR (in-sync replica) — writes go to the leader, followers replicate.
+- **Cassandra**: Tunable consistency with leaderless quorum (R + W > N).
+- **DynamoDB Global Tables**: Multi-master active-active across regions.
+
+### Failure Detection and Membership
+
+**What it means**
+
+Failure Detection and Membership is the mechanism by which Rate Limiter determines which nodes are alive and part of the cluster. Membership is the list of known nodes; failure detection is the process of updating that list when nodes fail or recover.
+
+**Why it matters**
+
+Rate Limiter must route requests only to healthy nodes and trigger failover when a node goes down. False positives (healthy nodes marked as dead) cause unnecessary failovers and data loss. False negatives (dead nodes not detected) cause failed requests and degraded performance.
+
+**How it works**
+
+**Heartbeat-based detection**: Each node sends a heartbeat (ping) to a subset of peers at regular intervals. If a node misses N consecutive heartbeats, it is marked as suspect. The gossip protocol distributes membership information: each node exchanges its view of the cluster with a random peer, and the information propagates gossip-style.
+
+```mermaid
+sequenceDiagram
+    participant A as Node A
+    participant B as Node B
+    participant C as Node C
+
+    loop Every 1s
+        A->>B: Heartbeat (ping)
+        B-->>A: Heartbeat (ack)
+    end
+    B->>C: Gossip: A is alive
+    C->>A: Gossip: B is alive
+    Note over A,B,C: View converges in O(log N) rounds
+```
+
+*Gossip-based failure detection: each node periodically pings a random subset of peers and gossips its view of the cluster. The membership list converges in O(log N) rounds.*
+
+**Phi Accrual Failure Detector**: Instead of a fixed timeout, the detector measures the time between consecutive heartbeats and computes a phi (φ) value — the probability that the node is dead given the observed heartbeat pattern. φ is compared against a threshold (typically 1–8); higher thresholds reduce false positives but increase detection latency.
+
+**SWIM (Scalable Weakly-consistent Infection-style Process group Membership Protocol)**: Nodes ping a random subset of cluster members. If a ping fails, the node is marked "suspect" and the failure is "infected" (gossiped) to other nodes. This is O(log N) per failure detection cycle and scales to large clusters.
+
+**Trade-offs**:
+
+| Approach | Strengths | Weaknesses |
+|---|---|---|
+| Heartbeat (timeout-based) | Simple, deterministic | False positives under load |
+| Phi Accrual | Adaptive threshold | Needs historical data |
+| SWIM | Scales to 1000s of nodes | Eventual consistency |
+
+**Real-world implementations**
+
+- **AWS Route 53 Health Checks**: Uses TCP/HTTP health checks with configurable thresholds to remove unhealthy instances from DNS rotation.
+- **Kubernetes**: Uses the kubelet heartbeat (every 10s) to determine node liveness; nodes missing 3 consecutive heartbeats are marked NotReady.
+- **Consul**: Uses SWIM protocol for membership and failure detection; supports both LAN and WAN gossip.
+- **Akka Cluster**: Uses Phi Accrual failure detector with configurable φ thresholds.
+
+### High Availability and Scalability
+
+**What it means**
+
+High Availability and Scalability determines how Rate Limiter continues operating when nodes or entire zones fail, and how capacity is added as demand grows. HA is about minimizing downtime; scalability is about maintaining performance as load increases.
+
+**Why it matters**
+
+Rate Limiter must stay operational even when individual nodes, availability zones, or entire regions fail. At the same time, it must scale horizontally to handle traffic spikes without degrading latency. The two are intertwined: the replication strategy, failure detection, and load balancing all contribute to both HA and scalability.
+
+**How it works**
+
+**Availability zones (AZs)**: Nodes are distributed across multiple AZs within a region. Each AZ is an independent failure domain (power, networking, physical security). A load balancer distributes requests across AZs; if one AZ fails, traffic is routed to the remaining AZs with no data loss (assuming replication is in place).
+
+```mermaid
+flowchart TD
+    subgraph "3 AZs in One Region"
+        AZ1[AZ-1<br/>2+ nodes]
+        AZ2[AZ-2<br/>2+ nodes]
+        AZ3[AZ-3<br/>2+ nodes]
+    end
+    LB[Load Balancer]
+    LB --> AZ1
+    LB --> AZ2
+    LB --> AZ3
+    AZ1 -->|Replicate| AZ2
+    AZ2 -->|Replicate| AZ3
+```
+
+*Multi-AZ deployment: a load balancer distributes traffic across three availability zones. Each AZ has multiple nodes. Data is replicated across AZs so that losing one AZ does not cause data loss or service interruption.*
+
+**Load balancing**: A load balancer distributes incoming requests across healthy nodes. Algorithms include round-robin, least connections, and weighted routing. Health checks ensure traffic only goes to healthy nodes. For Rate Limiter, the load balancer also considers **Client**
+  Purpose: consume the API while respecting server authority on rate  when routing.
+
+**Auto-scaling**: The system automatically adds or removes nodes based on metrics (CPU, memory, request rate). Scale-out policies add nodes when load exceeds a threshold; scale-in policies remove nodes during low load. For stateful services like Rate Limiter, scale-out involves rebalancing partitions (moving data and connections to the new node).
+
+**Failover and recovery**: When a node fails, the load balancer detects it (via health checks or failure detection) and stops sending traffic. A new node is provisioned (or a standby is promoted) and begins serving. For Rate Limiter, failover must preserve API keys, client credentials data — this is achieved through replication with a quorum of healthy nodes.
+
+**Scalability patterns**:
+
+1. **Horizontal partitioning (sharding)**: Split data by a partition key (e.g., user_id, session_id) and distribute partitions across nodes. New nodes take ownership of additional partitions.
+
+2. **Consistent hashing**: Minimize data movement on scale-out — only 1/N of the data moves to the new node. Nodes and partitions are placed on a ring; a request for key X is routed to the next node clockwise from hash(X).
+
+3. **Connection draining**: When scaling in, existing connections are allowed to complete before the node is shut down. For Rate Limiter, this means draining active 1. sessions gracefully.
+
+**Real-world implementations**
+
+- **Netflix OSS (Eureka + Zuul + Ribbon)**: Service discovery with Eureka, edge routing with Zuul, and client-side load balancing with Ribbon. Scales to thousands of instances.
+- **Kubernetes HPA + VPA**: Horizontal Pod Autoscaler scales pods based on CPU/memory; Vertical Pod Autoscaler adjusts resource requests based on historical usage.
+- **AWS ALB + Auto Scaling Groups**: Application Load Balancer with auto-scaling groups across AZs; health checks replace unhealthy instances automatically.
+
+### Performance and Optimization
+
+**What it means**
+
+Performance and Optimization covers the techniques Rate Limiter uses to achieve low latency, high throughput, and efficient resource usage. This section examines the key performance metrics, bottlenecks, and optimizations specific to the system.
+
+**Why it matters**
+
+Rate Limiter faces competing pressures: users demand low latency, the system must handle high throughput, and infrastructure costs must be controlled. The optimizations applied at the data, compute, and network layers determine whether the system meets its SLA.
+
+**How it works**
+
+**Latency layers**: Latency in Rate Limiter comes from three layers:
+1. **Network**: Round-trip time from client to the nearest edge node / load balancer.
+2. **Application**: Request processing time on the server (CPU, I/O, lock contention).
+3. **Data**: Time to read/write from storage (cache hit vs. database query).
+
+The 99th-percentile latency is the key metric for user-facing systems — it determines the worst-case experience.
+
+**Caching strategies**: Rate Limiter uses multiple cache layers:
+- **Edge cache**: Static assets (images, CSS, JS) served from a CDN at the edge. For Rate Limiter, this caches public quotas, rate limit docs that doesn't change frequently.
+- **Application cache**: In-memory cache (e.g., Redis, Memcached) for frequently accessed data. Cache-aside pattern: application checks cache first, falls back to database on miss.
+- **Local cache**: In-process cache (e.g., Caffeine, Guava) for data accessed within a single request. Avoids network round-trips.
+
+**Batching and pipelining**: Rate Limiter batches small operations (e.g., writes, log flushes) to amortize per-operation overhead. Pipelining allows multiple requests to be in flight simultaneously.
+
+```mermaid
+flowchart LR
+    subgraph "Client Layer"
+        Client[Client Request]
+    end
+    subgraph "Edge Layer"
+        Edge[CDN / Edge Cache]
+        EdgeCache[(Cached Static Assets)]
+    end
+    subgraph "Application Layer"
+        App[App Server Cluster]
+        AppCache[(Redis/Memcached)]
+        DB[(Database)]
+    end
+    Client --> Edge
+    Edge -->|Cache Hit| Client
+    Edge --> App
+    App --> AppCache
+    AppCache -->|Hit| App
+    AppCache --> DB
+    DB --> AppCache
+```
+
+*Caching hierarchy: clients first hit the edge CDN/cache; if the response is cached, it is returned immediately. Otherwise, the request reaches the application, which checks its in-memory/application cache (e.g., Redis) before falling back to the database. This minimizes latency from each layer.*
+
+**Connection pooling**: Rate Limiter maintains a pool of database connections to avoid the TCP handshake overhead on every request. Pool size is tuned to match the database's capacity.
+
+**Compression**: Responses are compressed (gzip, zstd) for clients that support it. At the network layer, gRPC uses HPACK header compression.
+
+**Indexing**: Database tables are indexed on frequently queried fields. For Rate Limiter, indexes cover **API Gateway / Reverse Proxy (enforcement point)**
+  Purpose: decide allow/deny and **Rate-Limit Store (Redis / key-value)**
+  Purpose: the single source of truth f for fast lookups.
+
+**Asynchronous processing**: Non-critical background work (e.g., analytics, cleanup, notifications) is offloaded to message queues and processed asynchronously, keeping the request path fast.
+
+**Resource isolation**: CPU and memory are allocated per service (containers with cgroup limits). This prevents a single misbehaving service from degrading the entire system.
+
+**Metrics for Rate Limiter**:
+
+| Metric | Target | How to Measure |
+|---|---|---|
+| P99 latency | < 1s | Load test with realistic traffic |
+| Throughput | 1K RPS | Request rate under peak load |
+| Error rate | < 0.1% | 5xx / total requests |
+| Cache hit ratio | > 90% | cache_hits / (cache_hits + misses) |
+| Resource utilization | < 80% CPU, < 85% memory | Container metrics |
+
+**Real-world implementations**
+
+- **Google's HTTP Load Balancer**: Global load balancing with edge PoPs; routes users to the nearest healthy backend.
+- **Cloudflare**: Edge cache with Argo Smart Routing that dynamically routes traffic to avoid congestion.
+- **Redis**: Used as an application cache with configurable eviction policies (LRU, LFU, TTL).
+
+### Encryption and Key Management
+
+**What it means**
+
+Encryption and Key Management in Rate Limiter ensures that data is protected both at rest (stored on disk) and in transit (moving between services). Key management governs how encryption keys are generated, stored, rotated, and accessed — without proper key management, encryption provides a false sense of security.
+
+**Why it matters**
+
+Rate Limiter handles API keys, client credentials that must be encrypted both at rest and in transit. Scaling Rate Limiter to handle increasing load while maintaining data consistency, low latency, and fault tolerance requires careful key management: keys must be rotated regularly, scoped to prevent cross-contamination, and audited for compliance. A single key compromise could expose sensitive data.
+
+**How it works**
+
+**At-rest encryption**: Data stored in **Client**
+  Purpose: consume the API while respecting server authority on rate , **API Gateway / Reverse Proxy (enforcement point)**
+  Purpose: decide allow/deny and databases is encrypted using AES-256-GCM. The Data Encryption Key (DEK) is generated per data partition and encrypted with a Key Encryption Key (KEK) managed by a KMS (AWS KMS, GCP KMS, HashiCorp Vault). Keys are regionally scoped — only data belonging to a region can be decrypted by that region's KEK.
+
+**In-transit encryption**: All inter-service communication uses TLS 1.3 or mTLS for service-to-service auth. Cross-region communication of public quotas, rate limit docs uses TLS + optional application-level encryption. API keys, client credentials is NEVER transmitted in plaintext or across region boundaries.
+
+**Key hierarchy**:
+```
+Master Key (HSM-backed, KMS-managed)
+  └─ KEK (per region, per service)
+     └─ DEK (per data partition, rotated every 90 days)
+        └─ Data (encrypted with DEK)
+```
+
+**Key rotation**: KEKs rotate annually (automatic via KMS); DEKs rotate per object or per 90 days. Applications handle key version headers transparently — a DEK version is stored alongside the encrypted data.
+
+**Cross-region key sharing**: For non-restricted data (public quotas, rate limit docs), a shared key is imported into each region's KMS. Restricted data NEVER uses cross-region keys — each region's KMS holds only that region's keys.
+
+```mermaid
+graph TD
+    subgraph "Region EU KMS"
+        DEK_EU[DEK for EU data]
+        DataEU[(Encrypted EU Data<br/>AES-256)]
+    end
+    subgraph "Region US KMS"
+        DEK_US[DEK for US data]
+        DataUS[(Encrypted US Data<br/>AES-256)]
+    end
+    KMS[(KMS/HSM<br/>Master Key)]
+    KMS -->|unwrap| DEK_EU
+    KMS -->|unwrap| DEK_US
+    DEK_EU --> DataEU
+    DEK_US --> DataUS
+    SharedDEK[Shared DEK<br/>for non-restricted global data]
+    KMS -->|unwrap shared| SharedDEK
+    GlobalData[(Global Index<br/>encrypted with shared key)]
+    SharedDEK --> GlobalData
+    Client[Client] -->|TLS 1.3| DataEU
+    Client -->|TLS 1.3| DataUS
+```
+
+*Encryption key hierarchy: master keys are managed by an HSM-backed KMS and never leave the KMS. Each region has its own KEK. Data encryption keys (DEKs) are generated per partition and encrypted with the regional KEK. Only non-restricted global data uses a shared cross-region key. All client traffic uses TLS 1.3.*
+
+**Java/Spring Boot Implementation**
+
+```java
+@Service
+@RequiredArgsConstructor
+public class DataEncryptionService {
+
+    private final AWSKMS kms;
+    @Value("${app.region}")
+    private String region;
+    @Value("${app.encryption.dek-ttl-minutes:1440}")
+    private int dekTtlMinutes;
+
+    private final Map<String, SecretKey> dekCache = new ConcurrentHashMap<>();
+
+    public EncryptedData encrypt(String plaintext, String partitionId) {
+        SecretKey dek = getOrCreateDek(partitionId);
+        byte[] ciphertext = CryptoUtils.encrypt(plaintext.getBytes(StandardCharsets.UTF_8), dek);
+        String dekCiphertext = kms.encrypt(EncryptRequest.builder()
+            .keyId("arn:aws:kms:" + region + ":master-key")
+            .plaintext(SdkBytes.fromByteArray(dek.getEncoded()))
+            .build()).ciphertextBlob().asByteArray();
+        return new EncryptedData(ciphertext, dekCiphertext, Instant.now());
+    }
+
+    private SecretKey getOrCreateDek(String partitionId) {
+        return dekCache.computeIfAbsent(partitionId, id -> {
+            try {
+                return KeyGenerator.getInstance("AES").generateKey();
+            } catch (NoSuchAlgorithmException e) {
+                throw new IllegalStateException("Cannot generate DEK", e);
+            }
+        });
+    }
+}
+```
+
+*Spring Boot encryption service: DEKs are cached per-partition with TTL. Each DEK is encrypted via AWS KMS using a regional master key. The encrypted DEK (ciphertext) is stored alongside the data — only the KMS for that region can decrypt it.*
+
+**Real-world implementations**
+
+- **AWS KMS**: Managed HSM-backed key service; supports automatic key rotation and custom key stores.
+- **HashiCorp Vault**: Open-source key management; supports transit encryption (encrypt/decrypt without storing keys).
+- **Google Cloud KMS**: Hardware-backed key management with IAM-based access control.
+
+### Authentication and Authorization
+
+**What it means**
+
+Authentication and Authorization (AuthN/AuthZ) in Rate Limiter control who can access the system and what they can do. Authentication verifies identity; authorization determines permissions. In a distributed system like Rate Limiter, auth must work across multiple nodes while respecting data boundaries — a user authenticated in one region should not have their session data or tokens replicated to regions where it is not permitted.
+
+**Why it matters**
+
+Rate Limiter must verify identity at the edge and enforce authorization at every service boundary. API keys, client credentials must be protected — only users with appropriate roles should access it. At the same time, public quotas, rate limit docs data should be accessible to a wider audience with minimal friction.
+
+**How it works**
+
+**Authentication (who are you?)**:
+- **JWT tokens**: Users authenticate through their home region's identity provider. The region returns a JWT (JSON Web Token) signed by a regional signing key. Tokens include claims like `iss` (issuer region), `sub` (subject/user ID), `home_region`, `roles`, and `exp` (expiry). Tokens are scoped per region — a token issued by region A cannot access restricted data in region B.
+- **mTLS for service-to-service**: Internal services authenticate each other using mutual TLS certificates issued by a per-region Certificate Authority (CA). No shared secrets cross region boundaries.
+- **Session management**: Sessions are stored regionally (Redis) and never replicated cross-region for restricted data. Session IDs are opaque UUIDs; the session store maps session ID → user context.
+
+**Authorization (what can you do?)**:
+- **RBAC (Role-Based Access Control)**: Users are assigned roles per region. Common roles: `region_admin` (full access to region data), `auditor` (read-only audit), `viewer` (read public data only). Roles are stored in the regional database and cached locally for sub-1ms lookups.
+- **ABAC (Attribute-Based Access Control)**: Fine-grained permissions based on attributes (e.g., `home_region == request_region AND role == admin`). This allows expressing complex policies like "users can only access restricted data in their home region."
+- **Resource-level authorization**: Each request is checked against an ACL (Access Control List) that specifies which roles can access which resources. For Rate Limiter, restricted resources require the `admin` role + matching region.
+
+```mermaid
+sequenceDiagram
+    participant User as User (Browser)
+    participant Edge as Edge Router (Home Region)
+    participant Auth as Auth Service
+    participant App as App Server
+
+    User->>Edge: HTTPS request + cookie/JWT
+    Edge->>Auth: Validate token (local cache)
+    Auth-->>Edge: Claims + roles
+    Edge->>App: Forward request + context
+    App->>App: Check region-scoped ACL
+    App-->>Edge: Response (or 403)
+```
+
+*Authentication flow: the user's token is validated by the regional auth service (claims cached locally). The edge router forwards the request with the security context. Each app server checks the region-scoped ACL before accessing restricted data.*
+
+**Java/Spring Boot Implementation**
+
+```java
+@Service
+@RequiredArgsConstructor
+public class AuthorizationService {
+
+    private final UserTokenRepository tokenRepository;
+    @Value("${app.region}")
+    private String currentRegion;
+
+    public boolean canAccessResource(String userId, String resourceRegion,
+                                     String action, JWTClaims claims) {
+        String userHomeRegion = claims.getStringClaim("home_region");
+        List<String> roles = claims.getStringListClaim("roles");
+
+        if (!roles.contains(action)) {
+            return false;
+        }
+
+        if (resourceRegion.equals(userHomeRegion)) {
+            return true;
+        }
+
+        if (resourceRegion.equals("global")) {
+            return roles.contains("global_reader");
+        }
+
+        return false;
+    }
+}
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v1")
+public class RegionController {
+    private final AuthorizationService authService;
+
+    @GetMapping("/data/{region}/profile")
+    public ResponseEntity<?> getProfile(
+            @PathVariable String region,
+            @RequestHeader("Authorization") String token) {
+        JWTClaims claims = JwtUtils.parseAndValidate(token, currentRegion);
+
+        if (!authService.canAccessResource(
+                claims.getStringClaim("sub"), region, "read", claims)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        return ResponseEntity.ok(profileService.getByRegion(region));
+    }
+}
+```
+
+*Spring Boot authorization service: checks both the user's role and whether the requested resource violates region boundaries. The `canAccessResource` method returns false if a user from region EU tries to access restricted data in region US.*
+
+**Real-world implementations**
+
+- **Auth0**: JWT-based authentication with regional endpoints; supports custom rules for ABAC.
+- **Okta**: Multi-region identity management with adaptive MFA and ThreatInsight for anomaly detection.
+- **AWS Cognito**: Regional user pools with IAM integration; tokens are region-scoped by default.
+
+### Security Threats and Mitigations
+
+**What it means**
+
+Security Threats and Mitigations catalog the attack surface of Rate Limiter, the most likely threats, and the corresponding defenses. Every distributed system has unique threat vectors — Rate Limiter is no exception.
+
+**Why it matters**
+
+Rate Limiter handles API keys, client credentials that attackers might target. Scaling Rate Limiter to handle increasing load while maintaining data consistency, low latency, and fault tolerance expands the attack surface: more nodes, more network paths, more failure modes. Without proper threat modeling, a single vulnerability could expose sensitive data across the entire system.
+
+**Threat model**:
+
+| Threat | Likelihood | Impact | Mitigation |
+|---|---|---|---|
+| Data exfiltration (cross-region) | High | Critical | Region-scoped keys, no cross-region replication of restricted data |
+| Man-in-the-middle (inter-service) | Medium | High | mTLS between all services |
+| Replay attacks | Medium | High | Token expiry + nonce |
+| DDoS at the edge | High | High | Rate limiting + edge filtering (Cloudflare, AWS Shield) |
+| PII leakage in logs | High | High | PII redaction + field-level access control |
+| Session hijacking | Medium | Medium | Short-lived tokens + IP binding |
+| Privilege escalation | Low | Critical | Least-privilege RBAC + audit logs |
+| Cache poisoning | Low | Medium | Cache invalidation on write + signed cache keys |
+
+**How it works**
+
+**Data exfiltration prevention**: Rate Limiter enforces data residency by design — API keys, client credentials is never replicated cross-region. The replication layer checks a data classification label before allowing cross-region copy. A database-level policy (e.g., PostgreSQL RLS) also blocks cross-region queries for restricted partitions.
+
+**mTLS enforcement**: All service-to-service communication uses mutual TLS. Certificates are issued by a per-region CA and rotated every 30 days. Services must present a valid certificate to communicate — no plaintext connections are allowed.
+
+**PII redaction**: Application logs are scanned for PII patterns (email, phone, credit card) using an automated redaction layer (e.g., AWS Macie, Google DLP). public quotas, rate limit docs is logged freely; restricted fields are masked or dropped before logging.
+
+```mermaid
+graph TD
+    subgraph "Threat Surface"
+        Client[Client]
+        Edge[Edge Router / WAF]
+        App[App Server]
+        DB[(Database)]
+        Cache[(Cache)]
+        Logs[Log Store]
+    end
+
+    Client -->|HTTPS| Edge
+    Edge -->|mTLS| App
+    App -->|mTLS| DB
+    App -->|Read| Cache
+    App -->|Write| DB
+    App -->|Log| Logs
+
+    subgraph "Mitigations"
+        WAF[AWS WAF /<br/>Cloudflare]
+        DLP[PII Redaction<br/>(Macie/DLP)]
+        FIM[File Integrity<br/>Monitoring]
+    end
+
+    Edge -.-> WAF
+    Logs -.-> DLP
+    DB -.-> FIM
+```
+
+*Threat mitigation diagram: the WAF at the edge blocks DDoS and injection attacks. mTLS protects all service-to-service communication. PII redaction scans logs before storage. File integrity monitoring alerts on database tampering.*
+
+**Audit trail**: All security-relevant events (auth, data access, config changes) are written to an append-only audit log with cryptographic integrity (HMAC per entry). The log covers API keys, client credentials access — who accessed what, when, and from where.
+
+**Real-world implementations**
+
+- **Cloudflare**: Zero-trust model (All Connections to All Networks) with mTLS everywhere; uses GeoIP blocking and rate limiting for DDoS mitigation.
+- **Google BeyondCorp**: Zero-trust network security model; all access is authenticated and authorized at the request level.
+
+### Observability and Logging
+
+**What it means**
+
+Observability and Logging in Rate Limiter provide visibility into system behavior through three pillars: **metrics** (aggregates and counters), **logs** (structured event records), and **traces** (distributed request timelines). Together, these signals allow operators to debug issues, detect anomalies, and verify SLA compliance.
+
+**Why it matters**
+
+Distributed systems like Rate Limiter are inherently opaque — failures can cascade across services in unexpected ways. Without good observability, a single slow dependency can cause widespread timeouts that are nearly impossible to diagnose. Scaling Rate Limiter to handle increasing load while maintaining data consistency, low latency, and fault tolerance makes observability even more critical: operators need to see cross-region latency, regional failures, and data-residency violations.
+
+**How it works**
+
+**Metrics**: Rate Limiter instruments every service with Prometheus-style metrics:
+- **Request rate, error rate, duration (the "RED" metrics)**: Tracks per-endpoint HTTP latency and error counts.
+- **System metrics**: CPU, memory, disk I/O, network throughput per node.
+- **Business metrics**: For Rate Limiter, this includes metrics like "**API Gateway / Reverse Proxy (enforcement point)**
+  Purpose: decide allow/deny fill rate" and "reservation conflict rate".
+
+Metrics are aggregated in a time-series database (Prometheus, VictoriaMetrics) and visualized in Grafana dashboards with alerts via PagerDuty.
+
+**Logs**: Rate Limiter uses structured logging (JSON format) with standardized fields:
+- `timestamp`: ISO 8601 UTC
+- `level`: DEBUG, INFO, WARN, ERROR
+- `service`: originating service name
+- `trace_id`: distributed trace identifier (for correlation)
+- `span_id`: current operation span
+- `region`: the region that processed the request
+- `data_class`: RESTRICTED or NON_RESTRICTED
+
+API keys, client credentials access is logged with full context (user, action, resource). public quotas, rate limit docs logs are aggregated and may have reduced retention.
+
+**Distributed tracing**: Every request is assigned a trace ID at the edge. The trace propagates through all downstream services via HTTP headers. A tracing backend (Jaeger, Tempo, Zipkin) reconstructs the full request timeline, showing latency at each hop. For Rate Limiter, traces include region boundaries — a cross-region call is annotated as such.
+
+```mermaid
+graph TD
+    subgraph "Region EU"
+        AppEU[App Server EU]
+        PromEU[Prometheus EU]
+        LokiEU[Loki Logs EU]
+    end
+    subgraph "Region US"
+        AppUS[App Server US]
+        PromUS[Prometheus US]
+        LokiUS[Loki Logs US]
+    end
+    subgraph "Global"
+        Grafana[Grafana Dashboard]
+        Tempo[Tempo Tracing]
+        Alertmanager[(Alertmanager)]
+    end
+    AppEU -->|metrics| PromEU
+    AppEU -->|logs| LokiEU
+    AppUS -->|metrics| PromUS
+    AppUS -->|logs| LokiUS
+    PromEU -->|remote write| Grafana
+    PromUS -->|remote write| Grafana
+    LokiEU --> Grafana
+    LokiUS --> Grafana
+    AppEU -->|traces| Tempo
+    AppUS -->|traces| Tempo
+    PromEU --> Alertmanager
+    PromUS --> Alertmanager
+```
+
+*Observability architecture: each region runs its own Prometheus (metrics) and Loki (logs) instances. A global Grafana instance queries all regional backends. Traces are collected centrally in Tempo. Alerts fire from each region's Prometheus to Alertmanager.*
+
+**Alerting**: Rate Limiter defines SLO-based alerts:
+- **Latency**: P99 > 1s for 5 minutes → page.
+- **Error rate**: > 1% for 10 minutes → page.
+- **Availability**: < 99.5% for 15 minutes → page.
+- **Data residency violation**: any restricted data detected outside its region → critical page.
+
+**Java/Spring Boot Implementation**
+
+```java
+@Component
+@RequiredArgsConstructor
+@Slf4j
+public class ObservabilityContext {
+
+    @Value("${app.region}")
+    private String region;
+
+    public void logAccess(String userId, String resource, String action,
+                          boolean restricted) {
+        log.info("access_event userId={} resource={} action={} region={} data_class={}",
+            userId, resource, action, region, restricted ? "RESTRICTED" : "NON_RESTRICTED");
+    }
+}
+
+@RestController
+@RequiredArgsConstructor
+@Slf4j
+public class ApiController {
+    private final ObservabilityContext obs;
+    private final UserService userService;
+
+    @GetMapping("/api/v1/profile")
+    public ResponseEntity<ProfileResponse> getProfile(
+            @AuthenticationPrincipal UserDetails user) {
+        String traceId = MDC.get("traceId");
+        long start = System.nanoTime();
+
+        try {
+            ProfileResponse response = userService.getProfile(user.getId());
+            obs.logAccess(user.getId(), "profile", "read", true);
+
+            return ResponseEntity.ok(response);
+        } finally {
+            long durationMs = (System.nanoTime() - start) / 1_000_000;
+            log.info("profile_read traceId={} latencyMs={} region={}",
+                traceId, durationMs, obs.region);
+        }
+    }
+}
+```
+
+*Spring Boot observability: the `ObservabilityContext` logs structured access events with data classification. The controller records latency and trace ID for every request, enabling SLO-based alerting.*
+
+**Real-world implementations**
+
+- **Netflix OSS (Atlas + Zipkin + Servo)**: Metrics via Atlas, traces via Zipkin, instrumented via Servo. Scales to over 700 billion requests/day.
+- **Google SRE Workbook**: Comprehensive observability with SLI/SLO/SLI definition; uses Borgmon for metrics and Dapper for tracing.
+- **AWS Observability**: CloudWatch for metrics, X-Ray for tracing, CloudWatch Logs for structured logs.
+
+### Real-World Implementations
+
+**Rate Limiter in production**
+
+- **Rate Limiter platforms**: widely used rate limiter platform
+
+**Key takeaways**
+
+- Scalability patterns proven in production at scale
+- Common pitfalls and how to avoid them
+- Integration with existing infrastructure and monitoring
 
 ### Java and Spring Boot Implementation Guide
 

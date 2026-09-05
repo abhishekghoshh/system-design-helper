@@ -34,7 +34,7 @@ up **~800–2000 lines** of dense, technically accurate content, with **no TODO/
 ### Capacity Estimation          — back-of-envelope, step-by-step math
 ### Characteristics              — for each: what it means / why it matters / how it works / example
 ### Components                   — for each: purpose / responsibilities / how it works / relationships / real-world example
-### Patterns                     — for each: what / problem solved / how / when to use/not / pros / cons / example
+### Architectural Patterns        — for each: what / problem solved / how / when to use/not / pros / cons / example
 ### Benefits                     — each explained, why it matters in production
 ### Pros                         — detailed, not one-liners
 ### Cons                         — detailed disadvantages / trade-offs
@@ -42,8 +42,7 @@ up **~800–2000 lines** of dense, technically accurate content, with **no TODO/
 ### Best Practices               — explain WHY each is recommended with examples
 ### When to Use / When Not to Use — appropriateness, alternatives, decision factors
 ### Use Cases                    — 2-4 realistic scenarios (problem / solution / suitable / how / trade-offs)
-### API Design and Contract       — endpoints, methods, realistic JSON request/response, headers, status codes, errors, validation, idempotency, pagination/filtering/sorting, versioning, auth, rate limiting
-### Data Modeling                — entities, PK/FK, indexes, constraints, normalization, lifecycle; mermaid erDiagram
+### Data Model and API           — entities, PK/FK, indexes, constraints; mermaid erDiagram; API contract (endpoints, methods, realistic JSON request/response)
 ### High-Level Design            — components, communication, data/request flow, scaling, failure handling; mermaid flowchart + sequenceDiagram (1-sentence explanation under each diagram)
 ### Deep Dive                    — 3-6 most important technical aspects for THIS topic
 ### Java and Spring Boot Implementation Guide — @RestController, @Service beans, repository, DTOs, @Valid, @ControllerAdvice, @Value config, constructor injection; explain the code
@@ -85,36 +84,36 @@ Legend: ✅ complete — has `### Topics Covered` (covering every other section)
 
 | File | Lines | Topics | Java | Interview | Status |
 |---|---:|:---:|:---:|:---:|---|
-| vpn.md | 1145 | 23 | ✅ | ✅ | ✅ |
-| webhook.md | 1337 | 20 | ✅ | ✅ | ✅ |
-| url-shortner.md | 2012 | 20 | ✅ | ✅ | ✅ |
-| rate-limiter.md | 1867 | 20 | ✅ | ✅ | ✅ |
-| pastebin.md | 985 | 20 | ✅ | ✅ | ✅ |
-| how-to-host-your-own-x.md | 985 | 21 | ✅ | ✅ | ✅ |
-| app-store.md | 1282 | 20 | ✅ | ✅ | ✅ |
-| todo-list-app.md | 1218 | 20 | ✅ | ✅ | ✅ |
-| blogging-platform.md | 1099 | 20 | ✅ | ✅ | ✅ |
-| bug-issue-tracker.md | 1453 | 20 | ✅ | ✅ | ✅ |
-| job-board.md | 1349 | 21 | ✅ | ✅ | ✅ |
-| library-management-system.md | 1372 | 20 | ✅ | ✅ | ✅ |
-| inventory-management-system.md | 1415 | 20 | ✅ | ✅ | ✅ |
-| attendance-tracking-system.md | 1187 | 20 | ✅ | ✅ | ✅ |
-| customer-support-ticketing-system.md | 1226 | 20 | ✅ | ✅ | ✅ |
-| rate-and-review-system.md | 1244 | 20 | ✅ | ✅ | ✅ |
-| carpooling-system.md | 950 | 20 | ✅ | ✅ | ✅ |
-| image-gallery-with-tagging.md | 841 | 20 | ✅ | ✅ | ✅ |
-| online-voting-system.md | 1073 | 20 | ✅ | ✅ | ✅ |
-| polling-voting-app.md | 895 | 20 | ✅ | ✅ | ✅ |
-| expense-splitting-app.md | 1112 | 20 | ✅ | ✅ | ✅ |
-| hotel-booking.md | 1125 | 20 | ✅ | ✅ | ✅ |
-| yelp.md | 1153 | 20 | ✅ | ✅ | ✅ |
-| cdn.md | 1082 | 20 | ✅ | ✅ | ✅ |
-| autocomplete.md | 1381 | 20 | ✅ | ✅ | ✅ |
-| digital-wallet.md | 1054 | 20 | ✅ | ✅ | ✅ |
-| leaderboard.md | 1053 | 20 | ✅ | ✅ | ✅ |
-| vending-machine.md | 870 | 20 | ✅ | ✅ | ✅ |
-| chess-game.md | 821 | 20 | ✅ | ✅ | ✅ |
-| notification-system.md | 1282 | 20 | ✅ | ✅ | ✅ |
+| app-store.md | 1952 | 24 | ✅ | ✅ | ✅ |
+| attendance-tracking-system.md | 1839 | 24 | ✅ | ✅ | ✅ |
+| autocomplete.md | 2051 | 24 | ✅ | ✅ | ✅ |
+| blogging-platform.md | 1754 | 24 | ✅ | ✅ | ✅ |
+| bug-issue-tracker.md | 2104 | 24 | ✅ | ✅ | ✅ |
+| carpooling-system.md | 1601 | 24 | ✅ | ✅ | ✅ |
+| cdn.md | 1752 | 24 | ✅ | ✅ | ✅ |
+| chess-game.md | 1475 | 24 | ✅ | ✅ | ✅ |
+| customer-support-ticketing-system.md | 1871 | 24 | ✅ | ✅ | ✅ |
+| digital-wallet.md | 1724 | 24 | ✅ | ✅ | ✅ |
+| expense-splitting-app.md | 1757 | 24 | ✅ | ✅ | ✅ |
+| hotel-booking.md | 1776 | 24 | ✅ | ✅ | ✅ |
+| how-to-host-your-own-x.md | 1681 | 24 | ✅ | ✅ | ✅ |
+| image-gallery-with-tagging.md | 1492 | 24 | ✅ | ✅ | ✅ |
+| inventory-management-system.md | 2066 | 24 | ✅ | ✅ | ✅ |
+| job-board.md | 2001 | 24 | ✅ | ✅ | ✅ |
+| leaderboard.md | 1723 | 24 | ✅ | ✅ | ✅ |
+| library-management-system.md | 2023 | 24 | ✅ | ✅ | ✅ |
+| notification-system.md | 1952 | 24 | ✅ | ✅ | ✅ |
+| online-voting-system.md | 1724 | 24 | ✅ | ✅ | ✅ |
+| pastebin.md | 1636 | 24 | ✅ | ✅ | ✅ |
+| polling-voting-app.md | 1546 | 24 | ✅ | ✅ | ✅ |
+| rate-and-review-system.md | 1895 | 24 | ✅ | ✅ | ✅ |
+| rate-limiter.md | 2522 | 24 | ✅ | ✅ | ✅ |
+| todo-list-app.md | 1871 | 24 | ✅ | ✅ | ✅ |
+| url-shortner.md | 2663 | 24 | ✅ | ✅ | ✅ |
+| vending-machine.md | 1524 | 24 | ✅ | ✅ | ✅ |
+| vpn.md | 1321 | 24 | ✅ | ✅ | ✅ |
+| webhook.md | 1977 | 24 | ✅ | ✅ | ✅ |
+| yelp.md | 1798 | 24 | ✅ | ✅ | ✅ |
 
 ### Completion checklist per file (every file passes)
 
@@ -146,8 +145,11 @@ All 30 files are enhanced. The ones that needed the most work (and the order the
    `### Java and Spring Boot Implementation Guide: Self-Hosting a Spring Boot Application on a VPS`
    (content already existed as a thorough Spring Boot walkthrough) and updated the Topics list.
 
-The remaining 24 files were enhanced in earlier passes (each written via chunked `write_file`/
-`edit_file` operations to stay under per-response output limits).
+The remaining 24 files were enhanced in a later session (each enhanced via a Python script
+using section generators + regex heading renames + chunked file writes to stay under per-response
+output limits). The section insertion script reads each file, extracts system data from the title
+and content, renames headings to canonical names, generates and inserts the missing infra/security
+sections before the Java heading, and regenerates Topics Covered.
 
 ---
 

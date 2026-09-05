@@ -25,7 +25,7 @@
 11. [When to Use a VPN](#when-to-use-a-vpn)
 12. [VPN Types and Protocols](#vpn-types-and-protocols)
 13. [Tunneling and Encapsulation](#tunneling-and-encapsulation)
-14. [Encryption and Key Exchange](#encryption-and-key-exchange)
+14. [Encryption and Key Management](#encryption-and-key-management)
 15. [Authentication and Authorization](#authentication-and-authorization)
 16. [Routing and Split Tunneling](#routing-and-split-tunneling)
 17. [NAT Traversal and Firewall Handling](#nat-traversal-and-firewall-handling)
@@ -33,10 +33,14 @@
 19. [Performance and Optimization](#performance-and-optimization)
 20. [Security Threats and Mitigations](#security-threats-and-mitigations)
 21. [Observability and Logging](#observability-and-logging)
-22. [Real-World VPN Implementations](#real-world-vpn-implementations)
-23. [Java and Spring Boot Implementation Guide](#java-and-spring-boot-implementation-guide)
-24. [Interview Questions and Answers](#interview-questions-and-answers)
+22. [Real-World Implementations](#real-world-implementations)
+23. [Data Model and API](#data-model-and-api)
+24. [Replication Strategies](#replication-strategies)
+25. [Failure Detection and Membership](#failure-detection-and-membership)
+26. [Java and Spring Boot Implementation Guide](#java-and-spring-boot-implementation-guide)
+27. [Interview Questions and Answers](#interview-questions-and-answers)
 
+---
 ---
 
 ### Introduction to VPNs
@@ -514,7 +518,7 @@ flowchart LR
 
 ---
 
-### Encryption and Key Exchange
+### Encryption and Key Management
 
 VPN security depends on two phases: authentication/key exchange and session encryption.
 
@@ -895,7 +899,7 @@ A VPN system should log security events and expose operational metrics.
 
 ---
 
-### Real-World VPN Implementations
+### Real-World Implementations
 
 - **WireGuard**
   Modern kernel and userspace VPN protocol. Simple, fast, and used by many VPN providers.
@@ -930,6 +934,178 @@ A VPN system should log security events and expose operational metrics.
   **A:** A VPN service operated by a cloud provider that securely connects customer networks to cloud resources using IPsec or another protocol.
 
 ---
+
+### Data Model and API
+
+**VPN data model**
+
+```mermaid
+erDiagram
+    USER ||--o{ VPN_SESSION : has
+    USER {
+        string userId PK
+        string username
+        string email
+    }
+    VPN_SESSION {
+        string sessionId PK
+        string userId FK
+        string tunnelProtocol
+        string serverEndpoint
+        datetime createdAt
+        datetime expiresAt
+    }
+    SERVER {
+        string serverId PK
+        string endpoint
+        string region
+        string publicKey
+    }
+    VPN_SESSION }o--|| SERVER : connects_to
+    CERTIFICATE {
+        string certId PK
+        string userId FK
+        string certData
+        datetime issuedAt
+        datetime expiresAt
+    }
+    USER ||--o{ CERTIFICATE : holds
+```
+
+**Entities**
+
+- **User**: Stores credentials, authentication state, and assigned VPN profile.
+- **VPN Session**: Tracks active tunnel connections, including protocol, server endpoint, and expiration time.
+- **Server**: Represents a VPN gateway with endpoint address, region, and public key.
+- **Certificate**: Manages client certificates issued for mutual TLS authentication.
+
+**API contract**
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/v1/auth/login` | Authenticate user and issue session token |
+| `POST` | `/api/v1/vpn/connect` | Request a VPN tunnel to a specific server |
+| `DELETE` | `/api/v1/vpn/disconnect` | Terminate an active VPN session |
+| `GET` | `/api/v1/vpn/servers` | List available VPN servers (region-filtered) |
+| `POST` | `/api/v1/cert/request` | Request a client certificate for mTLS |
+
+**Typical response**
+
+```json
+{
+  "sessionId": "sess_abc123",
+  "server": {
+    "endpoint": "10.0.1.5:51820",
+    "region": "us-east-1",
+    "protocol": "wireguard"
+  },
+  "config": "base64-encoded-wireguard-config",
+  "expiresAt": "2026-09-05T00:00:00Z"
+}
+```
+
+### Replication Strategies
+
+**What it means**
+
+Replication Strategies determine how data and state are copied across multiple nodes in VPN. The choice of strategy determines the trade-off between consistency, availability, and latency.
+
+**Why it matters**
+
+VPN must replicate data to prevent loss and serve reads from multiple nodes. The replication strategy determines whether the system favors consistency (strong reads) or availability (always writable), and how it handles cross-node failure.
+
+**How it works**
+
+**Leader-based (single-leader)**: A single primary node accepts all writes; followers replicate changes asynchronously or semi-synchronously. Reads can be served from any replica. This strategy favors strong consistency for writes but creates a write bottleneck at the leader.
+
+```mermaid
+flowchart LR
+    subgraph "Primary Node"
+        Leader[Leader/Follower<br/>Accepts writes]
+    end
+    subgraph "Replica Nodes"
+        Follower1[Follower 1<br/>Read-only]
+        Follower2[Follower 2<br/>Read-only]
+        Follower3[Follower 3<br/>Read-only]
+    end
+    Client[Client] -->|Write| Leader
+    Client -->|Read| Follower1
+    Client -->|Read| Follower2
+    Leader -->|Replicate| Follower1
+    Leader -->|Replicate| Follower2
+    Leader -->|Replicate| Follower3
+```
+
+*Leader-based replication: a single primary node accepts all writes and replicates them to read-only followers. Clients can read from any replica for scaled read throughput, but all writes go through the leader.*
+
+**Multi-leader (multi-master)**: Multiple nodes accept writes and exchange updates with each other. This enables low-latency writes in different regions but requires conflict resolution (last-write-wins, merge functions, or CRDTs).
+
+**Leaderless (quorum-based)**: Any node can accept writes; a quorum of nodes must agree. Read and write quorums are configured so that at least one node overlaps between them (R + W > N). This maximizes availability and write scalability.
+
+**Trade-offs for VPN**:
+
+| Strategy | Use Case | Pros | Cons |
+|---|---|---|---|
+| Leader-based | user credentials, private network topology, session tokens | Strong consistency, simple | Write bottleneck, leader failure risk |
+| Multi-leader | public endpoint addresses, anonymized traffic statistics, system health status | Low-latency global writes | Conflict resolution, complex |
+| Leaderless | Caching, counters | High availability, no bottleneck | Eventual consistency, read repair overhead |
+
+**Real-world implementations**
+
+- **Redis**: Leader-follower replication with asynchronous replication; Sentinel handles failover.
+- **Apache Kafka**: Leader-based partition replication with ISR (in-sync replica) — writes go to the leader, followers replicate.
+- **Cassandra**: Tunable consistency with leaderless quorum (R + W > N).
+- **DynamoDB Global Tables**: Multi-master active-active across regions.
+
+### Failure Detection and Membership
+
+**What it means**
+
+Failure Detection and Membership is the mechanism by which VPN determines which nodes are alive and part of the cluster. Membership is the list of known nodes; failure detection is the process of updating that list when nodes fail or recover.
+
+**Why it matters**
+
+VPN must route requests only to healthy nodes and trigger failover when a node goes down. False positives (healthy nodes marked as dead) cause unnecessary failovers and data loss. False negatives (dead nodes not detected) cause failed requests and degraded performance.
+
+**How it works**
+
+**Heartbeat-based detection**: Each node sends a heartbeat (ping) to a subset of peers at regular intervals. If a node misses N consecutive heartbeats, it is marked as suspect. The gossip protocol distributes membership information: each node exchanges its view of the cluster with a random peer, and the information propagates gossip-style.
+
+```mermaid
+sequenceDiagram
+    participant A as Node A
+    participant B as Node B
+    participant C as Node C
+
+    loop Every 1s
+        A->>B: Heartbeat (ping)
+        B-->>A: Heartbeat (ack)
+    end
+    B->>C: Gossip: A is alive
+    C->>A: Gossip: B is alive
+    Note over A,B,C: View converges in O(log N) rounds
+```
+
+*Gossip-based failure detection: each node periodically pings a random subset of peers and gossips its view of the cluster. The membership list converges in O(log N) rounds.*
+
+**Phi Accrual Failure Detector**: Instead of a fixed timeout, the detector measures the time between consecutive heartbeats and computes a phi (φ) value — the probability that the node is dead given the observed heartbeat pattern. φ is compared against a threshold (typically 1–8); higher thresholds reduce false positives but increase detection latency.
+
+**SWIM (Scalable Weakly-consistent Infection-style Process group Membership Protocol)**: Nodes ping a random subset of cluster members. If a ping fails, the node is marked "suspect" and the failure is "infected" (gossiped) to other nodes. This is O(log N) per failure detection cycle and scales to large clusters.
+
+**Trade-offs**:
+
+| Approach | Strengths | Weaknesses |
+|---|---|---|
+| Heartbeat (timeout-based) | Simple, deterministic | False positives under load |
+| Phi Accrual | Adaptive threshold | Needs historical data |
+| SWIM | Scales to 1000s of nodes | Eventual consistency |
+
+**Real-world implementations**
+
+- **AWS Route 53 Health Checks**: Uses TCP/HTTP health checks with configurable thresholds to remove unhealthy instances from DNS rotation.
+- **Kubernetes**: Uses the kubelet heartbeat (every 10s) to determine node liveness; nodes missing 3 consecutive heartbeats are marked NotReady.
+- **Consul**: Uses SWIM protocol for membership and failure detection; supports both LAN and WAN gossip.
+- **Akka Cluster**: Uses Phi Accrual failure detector with configurable φ thresholds.
 
 ### Java and Spring Boot Implementation Guide
 
