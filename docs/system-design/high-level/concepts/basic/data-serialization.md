@@ -27,6 +27,11 @@
 11. [When to Use Serialization Formats](#when-to-use-serialization-formats)
 12. [Java and Spring Boot Examples](#java-and-spring-boot-examples)
 
+14. [Common Serialization Formats](#common-serialization-formats)
+15. [Format Comparison](#format-comparison)
+16. [When to Choose What](#when-to-choose-what)
+17. [Serialization Trade-offs](#serialization-trade-offs)
+18. [Security Considerations](#security-considerations)
 ---
 
 ### What is Data Serialization?
@@ -34,7 +39,7 @@
 **Data serialization** is the process of converting structured data (objects, data structures) into a format that can be stored, transmitted, and reconstructed later. **Deserialization** is the reverse — converting the stored/transmitted format back into usable data structures.
 
 **Why It Matters:**
-```
+```text
 Application A (Python)                    Application B (Java)
   user = {name: "Alice", age: 30}
            ↓ serialize
@@ -71,7 +76,9 @@ message User {
   repeated string tags = 4;
 }
 ```
-```
+
+*The protobuf snippet above illustrates Common Serialization Formats: it shows the concrete form of the idea described in this section.*
+```text
 Binary output: [0A 05 41 6C 69 63 65 10 1E 18 01 ...]
 → ~60-80% smaller than JSON
 ```
@@ -84,7 +91,7 @@ Binary output: [0A 05 41 6C 69 63 65 10 1E 18 01 ...]
 - **Created by**: Google
 
 **3. MessagePack**
-```
+```text
 Same JSON structure → binary encoding
 → ~30-50% smaller than JSON, faster to parse
 ```
@@ -158,7 +165,7 @@ Bob,25,false
 
 ### When to Choose What
 
-```
+```text
 Building a public REST API?          → JSON (universal, self-documenting)
 Microservices talking to each other? → Protobuf/gRPC (fast, typed, small)
 Kafka event streaming?               → Avro (schema evolution, compact)
@@ -167,6 +174,8 @@ Need maximum performance?            → Protobuf or FlatBuffers
 Working with legacy enterprise?      → XML/SOAP
 Exporting tabular data?              → CSV or Parquet
 ```
+
+*The text snippet above illustrates When to Choose What: it shows the concrete form of the idea described in this section.*
 
 ### Serialization Trade-offs
 
@@ -350,6 +359,8 @@ flowchart LR
     Schema --> Des
 ```
 
+*The diagram above illustrates Components: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Serialization Patterns
@@ -507,6 +518,8 @@ public class JsonSerializationExample {
 }
 ```
 
+*The java snippet above illustrates 1. JSON serialization with Jackson: it shows the concrete form of the idea described in this section.*
+
 #### 2. Protobuf usage in a Spring Boot service
 
 ```protobuf
@@ -518,6 +531,8 @@ message User {
   bool active = 3;
 }
 ```
+
+*The protobuf snippet above illustrates 2. Protobuf usage in a Spring Boot service: it shows the concrete form of the idea described in this section.*
 
 ```java
 import org.springframework.stereotype.Service;
@@ -538,6 +553,8 @@ public class ProtobufUserService {
     }
 }
 ```
+
+*The java snippet above illustrates 2. Protobuf usage in a Spring Boot service: it shows the concrete form of the idea described in this section.*
 
 #### 3. Spring MVC content negotiation
 
@@ -560,6 +577,8 @@ public class SerializationController {
 }
 ```
 
+*The java snippet above illustrates 3. Spring MVC content negotiation: it shows the concrete form of the idea described in this section.*
+
 #### 4. XML serialization with Jackson
 
 ```java
@@ -576,6 +595,8 @@ public class XmlSerializationExample {
     private record User(String name, int age, boolean active) {}
 }
 ```
+
+*The java snippet above illustrates 4. XML serialization with Jackson: it shows the concrete form of the idea described in this section.*
 
 #### 5. Custom serializer with Jackson
 

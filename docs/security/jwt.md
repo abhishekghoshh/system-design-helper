@@ -94,6 +94,8 @@ The header typically consists of two parts:
 
 ### Common Header Properties
 
+Illustrative header fields (comments explain each field — strip comments before using as real JSON):
+
 ```json
 {
   "alg": "HS256",        // Algorithm (REQUIRED)
@@ -163,6 +165,8 @@ The payload contains **claims** - statements about an entity (typically the user
 
 ### Registered Claims (Detailed)
 
+Annotated example (comments explain each claim — strip comments before using as real JSON):
+
 ```json
 {
   // Issuer: Who created and signed the token
@@ -189,6 +193,8 @@ The payload contains **claims** - statements about an entity (typically the user
 ```
 
 ### Complete Payload Example
+
+Annotated example (comments group the claims — strip comments before using as real JSON):
 
 ```json
 {
@@ -545,6 +551,8 @@ eyJhbGci...J9.eyJzdWI...iJ9.SflKxw...ssw5c
 **JWKS** is a set of public keys used to verify JWTs issued by an authorization server. It's typically exposed as a JSON document at a well-known URL.
 
 ### JWKS Structure
+
+Annotated example (comments explain each field — strip comments before using as real JSON):
 
 ```json
 {
@@ -1992,6 +2000,8 @@ Transport:
 ```
 
 ### JWT Structure in SSO
+
+Header and payload shown separately for illustration (comments explain each claim — strip comments before using as real JSON):
 
 ```json
 {

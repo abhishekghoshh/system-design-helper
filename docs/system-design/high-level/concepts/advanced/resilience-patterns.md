@@ -81,7 +81,7 @@ Rate limiting is a technique used to control the number of requests a client can
 
 **How It Works (Conceptually):**
 
-```
+```text
 Client sends request
   → Rate limiter checks: "Has this client exceeded N requests in T seconds?"
     → NO  → Forward request to server → Return response
@@ -517,6 +517,8 @@ flowchart LR
     Idempotency[Idempotency store] --> Retry
 ```
 
+*The diagram above illustrates Components: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Patterns
@@ -709,6 +711,8 @@ public class TokenBucketRateLimiter {
 }
 ```
 
+*The java snippet above illustrates 1. Token bucket rate limiter: it shows the concrete form of the idea described in this section.*
+
 #### 2. Circuit breaker with Resilience4j
 
 ```java
@@ -727,6 +731,8 @@ public class ResilientPaymentService {
     }
 }
 ```
+
+*The java snippet above illustrates 2. Circuit breaker with Resilience4j: it shows the concrete form of the idea described in this section.*
 
 #### 3. Idempotent service
 
@@ -750,6 +756,8 @@ public class IdempotentOrderService {
     }
 }
 ```
+
+*The java snippet above illustrates 3. Idempotent service: it shows the concrete form of the idea described in this section.*
 
 #### 4. Retry with exponential backoff
 

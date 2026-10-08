@@ -359,7 +359,7 @@ sequenceDiagram
     Note over Agg: balance = 1000
     Handler->>Agg: handle(WithdrawMoney 300)
     Agg->>Agg: check invariant: balance >= 300
-    Agg-->>Handler: new events: [MoneyWithdrawn(300)]
+    Agg-->>Handler: new events: ["MoneyWithdrawn(300)"]
     Handler->>Store: append("account-42", [MoneyWithdrawn], expectedVersion = 2)
     Store-->>Handler: OK (now version 3)
     Handler-->>Client: 202 Accepted

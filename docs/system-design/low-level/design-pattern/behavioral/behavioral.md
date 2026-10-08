@@ -158,7 +158,7 @@ Behavioral patterns embody several key design principles:
     → Use **Interpreter**
 
 **Decision Tree:**
-```
+```text
 What's your primary need?
 
 Communication between objects?
@@ -184,6 +184,7 @@ State management?
 ├─ Save/restore state → MEMENTO
 └─ Behavior based on state → STATE
 ```
+*Use this tree to pick the behavioral pattern that matches the communication problem at hand.*
 
 ---
 

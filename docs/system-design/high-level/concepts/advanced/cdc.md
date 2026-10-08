@@ -66,7 +66,7 @@ Instead of periodically querying an entire table to see "what changed since last
 
 **The Core Idea:**
 
-```
+```text
 Traditional Batch ETL:
    Source DB --(nightly query, full/partial scan)--> Warehouse
    Change visible: next day, load spikes the source DB
@@ -109,6 +109,8 @@ graph LR
     style CDC fill:#f2c94c,color:#000
     style Bus fill:#4ad971,color:#000
 ```
+
+*The diagram above illustrates Introduction: Diagram: it maps the key components and their interactions described in this section.*
 
 #### Introduction: Java Code Example
 
@@ -160,6 +162,8 @@ public class ChangeDataCaptureDemo {
 }
 ```
 
+*The java snippet above illustrates Introduction: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Introduction: Interview Questions and Answers
 
 **Q1. What problem does Change Data Capture solve that periodic polling does not?**
@@ -180,7 +184,7 @@ There are three broad techniques for actually capturing changes from a source sy
 
 **1. Query-Based (Polling) CDC**
 
-```
+```sql
 Every N seconds:
     SELECT * FROM orders WHERE updated_at > :last_poll_time
 ```
@@ -197,7 +201,7 @@ A database trigger fires on every row-level change and writes a corresponding re
 
 **3. Log-Based CDC**
 
-```
+```text
 Source DB's internal transaction log (WAL / binlog / redo log)
    --(read continuously, no impact on live tables)-->
    CDC connector decodes committed changes --> event stream
@@ -274,6 +278,8 @@ graph TD
     style Connector fill:#4ad971,color:#000
 ```
 
+*The diagram above illustrates CDC Capture Techniques: Diagram: it maps the key components and their interactions described in this section.*
+
 #### CDC Capture Techniques: Java Code Example
 
 ```java
@@ -329,6 +335,8 @@ public class QueryBasedPollingDemo {
 }
 ```
 
+*The java snippet above illustrates CDC Capture Techniques: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### CDC Capture Techniques: Interview Questions and Answers
 
 **Q1. Why can't timestamp-based polling reliably detect deleted rows?**
@@ -349,7 +357,7 @@ Log-based CDC is the technique used by nearly all serious production CDC deploym
 
 **How It Works, Step by Step:**
 
-```
+```text
 1. Application commits a transaction (INSERT/UPDATE/DELETE)
 2. Database engine writes the change to its internal log
    (PostgreSQL: WAL: MySQL: binlog: Oracle: redo log)
@@ -368,13 +376,15 @@ Log-based CDC is the technique used by nearly all serious production CDC deploym
 
 A newly started log-based connector faces a bootstrap problem: the log only contains changes going forward, not the table's current full state. Production CDC tools solve this with a two-phase process:
 
-```
+```text
 Phase 1 (Snapshot): Take a consistent full-table read of existing rows,
                      emitting each as a synthetic "insert" event.
 Phase 2 (Streaming): Switch to tailing the log from the exact position
                      captured at the start of the snapshot, so no
                      changes made during the snapshot are lost or duplicated.
 ```
+
+*The text snippet above illustrates Log-Based CDC: The Production-Grade Approach: it shows the concrete form of the idea described in this section.*
 
 #### Log-Based CDC: Characteristics
 
@@ -443,6 +453,8 @@ sequenceDiagram
     Connector->>Connector: Persist new log position (offset)
 ```
 
+*The diagram above illustrates Log-Based CDC: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Log-Based CDC: Java Code Example
 
 ```java
@@ -506,6 +518,8 @@ public class LogBasedCdcSimulation {
 }
 ```
 
+*The java snippet above illustrates Log-Based CDC: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Log-Based CDC: Interview Questions and Answers
 
 **Q1. Why does log-based CDC need both a snapshot phase and a streaming phase?**
@@ -526,7 +540,7 @@ A production CDC pipeline is made up of several distinct pieces working together
 
 **The End-to-End Pipeline:**
 
-```
+```text
 Source DB --> CDC Connector --> Message Broker --> Sink Connector / Consumer --> Target System
   (WAL)      (Debezium, DMS)    (Kafka, Kinesis)   (JDBC sink, custom app)      (Warehouse, Search, Cache)
 ```
@@ -600,6 +614,8 @@ graph LR
     style Topic fill:#4a90d9,color:#fff
     style DLQ fill:#d94a4a,color:#fff
 ```
+
+*The diagram above illustrates CDC Architecture: Diagram: it maps the key components and their interactions described in this section.*
 
 #### CDC Architecture: Java Code Example
 
@@ -676,6 +692,8 @@ public class CdcPipelineSimulation {
 }
 ```
 
+*The java snippet above illustrates CDC Architecture: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### CDC Architecture: Interview Questions and Answers
 
 **Q1. Why is a message broker like Kafka typically placed between the CDC connector and downstream consumers, rather than having the connector call consumers directly?**
@@ -696,7 +714,7 @@ CDC pipelines must be explicit about two related but distinct promises: how many
 
 **The Three Delivery Semantics:**
 
-```
+```text
 At-most-once:  Event is sent 0 or 1 times. Risk: silent data loss on failure.
 At-least-once: Event is sent 1 or more times. Risk: duplicate processing.
 Exactly-once:  Event is applied exactly 1 time, end to end. Hardest to achieve.
@@ -768,6 +786,8 @@ sequenceDiagram
     Note over Consumer: Idempotent upsert makes both deliveries safe
 ```
 
+*The diagram above illustrates Delivery Guarantees: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Delivery Guarantees: Java Code Example
 
 ```java
@@ -822,6 +842,8 @@ public class IdempotentConsumerDemo {
 }
 ```
 
+*The java snippet above illustrates Delivery Guarantees: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Delivery Guarantees: Interview Questions and Answers
 
 **Q1. Why do most CDC systems default to at-least-once delivery instead of exactly-once?**
@@ -840,7 +862,7 @@ A: No. Ordering guarantees only apply within a single partition/topic keyed by r
 
 A very common mistake in event-driven architectures is the "dual write": an application updates its own database and separately publishes a message to a broker, as two independent operations.
 
-```
+```text
 BEGIN TRANSACTION
     UPDATE orders SET status = 'PAID' WHERE id = 'order-123'
 COMMIT
@@ -855,7 +877,7 @@ These two operations are not atomic. If the process crashes after the database c
 
 **The Outbox Pattern Solution:**
 
-```
+```sql
 BEGIN TRANSACTION
     UPDATE orders SET status = 'PAID' WHERE id = 'order-123'
     INSERT INTO outbox_events (id, aggregate_id, type, payload) VALUES (...)
@@ -934,6 +956,8 @@ sequenceDiagram
     CDC->>Kafka: Publish OrderPaidEvent
 ```
 
+*The diagram above illustrates Outbox Pattern: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Outbox Pattern: Java Code Example
 
 ```java
@@ -979,6 +1003,8 @@ public class OutboxPatternDemo {
 }
 ```
 
+*The java snippet above illustrates Outbox Pattern: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Outbox Pattern: Interview Questions and Answers
 
 **Q1. What is the "dual-write problem" and why is it dangerous?**
@@ -999,7 +1025,7 @@ Source database schemas change over time: columns are added, renamed, removed, o
 
 **The Compatibility Problem:**
 
-```
+```text
 Producer schema v1: { orderId, status, total }
 Producer schema v2: { orderId, status, total, currency }  <- new field added
 
@@ -1011,13 +1037,15 @@ A schema registry enforces a compatibility rule (backward, forward, or full) whe
 
 **Compatibility Types:**
 
-```
+```text
 Backward compatible: New schema can be read using the OLD schema's reader.
                       (Safe to upgrade consumers before producers.)
 Forward compatible:  Old schema can be read using the NEW schema's reader.
                       (Safe to upgrade producers before consumers.)
 Full compatible:     Both backward and forward compatible.
 ```
+
+*The text snippet above illustrates Schema Evolution and the Schema Registry: it shows the concrete form of the idea described in this section.*
 
 #### Schema Evolution: Characteristics
 
@@ -1090,6 +1118,8 @@ sequenceDiagram
     end
 ```
 
+*The diagram above illustrates Schema Evolution: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Schema Evolution: Java Code Example
 
 ```java
@@ -1143,6 +1173,8 @@ public class SchemaCompatibilityDemo {
 }
 ```
 
+*The java snippet above illustrates Schema Evolution: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Schema Evolution: Interview Questions and Answers
 
 **Q1. What does "backward compatible" mean in the context of a schema registry, and who does it protect?**
@@ -1161,11 +1193,13 @@ A: Some changes (removing a required field, changing a field's type incompatibly
 
 CDC is one of three broad strategies for getting data (or notifications of changes) from a source system to other systems. Comparing them directly clarifies when CDC is the right tool and when it is not.
 
-```
+```text
 Batch ETL:    Source DB --(scheduled bulk extract, e.g. nightly)--> Target
 Dual Write:   Application --(writes to DB AND publishes event, separately)--> DB + Broker
 CDC:          Source DB --(continuous log tailing)--> Broker --> Target(s)
 ```
+
+*The text snippet above illustrates CDC vs Batch ETL vs Dual Writes: it shows the concrete form of the idea described in this section.*
 
 #### CDC vs Batch ETL vs Dual Writes: Characteristics
 
@@ -1224,6 +1258,8 @@ graph TD
     style C4 fill:#4ad971,color:#000
 ```
 
+*The diagram above illustrates CDC vs Batch ETL vs Dual Writes: Diagram: it maps the key components and their interactions described in this section.*
+
 #### CDC vs Batch ETL vs Dual Writes: Java Code Example
 
 ```java
@@ -1254,6 +1290,8 @@ public class DualWriteVsCdcDemo {
     }
 }
 ```
+
+*The java snippet above illustrates CDC vs Batch ETL vs Dual Writes: Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### CDC vs Batch ETL vs Dual Writes: Interview Questions and Answers
 
@@ -1335,6 +1373,8 @@ graph TD
     style DMS fill:#4a90d9,color:#fff
 ```
 
+*The diagram above illustrates Popular CDC Tools: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Popular CDC Tools: Java Code Example
 
 ```java
@@ -1365,6 +1405,8 @@ public class DebeziumConnectorConfigExample {
     }
 }
 ```
+
+*The java snippet above illustrates Popular CDC Tools: Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Popular CDC Tools: Interview Questions and Answers
 
@@ -1415,6 +1457,8 @@ graph TD
     style Lag fill:#d94a4a,color:#fff
     style Burst fill:#f2c94c,color:#000
 ```
+
+*The diagram above illustrates Challenges: Diagram: it maps the key components and their interactions described in this section.*
 
 #### Challenges: Interview Questions and Answers
 

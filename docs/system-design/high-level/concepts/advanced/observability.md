@@ -394,6 +394,8 @@ flowchart LR
     Query --> Alerter[Alerter]
 ```
 
+*The diagram above illustrates Components: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Patterns
@@ -552,6 +554,8 @@ public class OrderService {
 }
 ```
 
+*The java snippet above illustrates 1. Structured logging with SLF4J: it shows the concrete form of the idea described in this section.*
+
 #### 2. Micrometer metrics
 
 ```java
@@ -581,6 +585,8 @@ public class CheckoutService {
     }
 }
 ```
+
+*The java snippet above illustrates 2. Micrometer metrics: it shows the concrete form of the idea described in this section.*
 
 #### 3. Correlation ID filter
 
@@ -613,6 +619,8 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
     }
 }
 ```
+
+*The java snippet above illustrates 3. Correlation ID filter: it shows the concrete form of the idea described in this section.*
 
 #### 4. Actuator health indicator
 

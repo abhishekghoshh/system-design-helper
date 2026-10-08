@@ -153,7 +153,7 @@ Creational patterns embody several key design principles:
 ### Modern Language Features
 
 **Java:**
-```
+```java
 // Factory Method with static factory
 Optional.of(), List.of(), Map.of()
 
@@ -165,7 +165,7 @@ enum Singleton { INSTANCE }
 ```
 
 **JavaScript/TypeScript:**
-```
+```javascript
 // Prototype with Object.create()
 Object.create(prototype)
 
@@ -177,21 +177,21 @@ function createUser(name) { ... }
 ```
 
 **Python:**
-```
-// Factory Method with __new__
+```python
+# Factory Method with __new__
 class Factory:
     def __new__(cls, type):
         ...
 
-// Singleton with decorator
+# Singleton with decorator
 @singleton
 
-// Builder with dataclasses
+# Builder with dataclasses
 @dataclass
 ```
 
 **C#:**
-```
+```csharp
 // Builder with fluent API
 new StringBuilder()
     .Append("Hello")
@@ -215,7 +215,7 @@ private static readonly Lazy<Singleton> instance
 - **Prototype:** Prototype bean scope
 
 **Java Standard Library:**
-```
+```java
 // Factory Method
 Calendar.getInstance()
 NumberFormat.getInstance()

@@ -25,6 +25,35 @@
 
 ## Theory
 
+### Table of Contents
+
+1. [Reverse Proxy](#reverse-proxy)
+2. [Load Balancer](#load-balancer)
+3. [The Traffic Conductor of Modern Infrastructure](#the-traffic-conductor-of-modern-infrastructure)
+4. [The Deep Theory: Why Load Balancing Exists](#the-deep-theory-why-load-balancing-exists)
+5. [The Algorithms: Different Strategies for Different Needs](#the-algorithms-different-strategies-for-different-needs)
+6. [Layer 4 vs Layer 7: The Fundamental Choice](#layer-4-vs-layer-7-the-fundamental-choice)
+7. [Health Checks: Detecting Failure](#health-checks-detecting-failure)
+8. [Load Balancer Deployment Patterns](#load-balancer-deployment-patterns)
+9. [Advanced Scenarios](#advanced-scenarios)
+10. [The Critical Trade-offs](#the-critical-trade-offs)
+11. [The Wisdom](#the-wisdom)
+12. [Load Balancers](#load-balancers)
+13. [Proxy Server](#proxy-server)
+14. [Load Balancer](#load-balancer)
+15. [Comparison: NLB vs ALB](#comparison-nlb-vs-alb)
+16. [Static Load Balancing Algorithms](#static-load-balancing-algorithms)
+17. [Dynamic Load Balancing Algorithms](#dynamic-load-balancing-algorithms)
+18. [Algorithm Selection Guide](#algorithm-selection-guide)
+19. [CDN (Content Delivery Network)](#cdn-content-delivery-network)
+20. [VPN (Virtual Private Network)](#vpn-virtual-private-network)
+21. [Firewall](#firewall)
+22. [Comparison Summary](#comparison-summary)
+23. [OSI Layer Analysis](#osi-layer-analysis)
+24. [Packet-Level Operations](#packet-level-operations)
+25. [Caching Capabilities](#caching-capabilities)
+
+
 Server that sits between clients and the internet.
 
 **Functions:**
@@ -71,7 +100,7 @@ A single server has finite capacity:
 - **Reliability**: Single point of failure
 
 **The Solution: Distribute the Load**
-```
+```text
                      ┌─────────────┐
                      │             │
 Clients ──────────► │Load Balancer│ ◄──── Single entry point
@@ -99,7 +128,7 @@ Each algorithm embodies a different **philosophy** about fairness and optimizati
 
 #### 1. Round Robin (The Democrat)
 
-```
+```text
 Request 1 → Server A
 Request 2 → Server B  
 Request 3 → Server C
@@ -130,7 +159,7 @@ Default choice for most web applications. Simple, works surprisingly well.
 
 #### 2. Weighted Round Robin (The Meritocrat)
 
-```
+```text
 Server A: Weight 3 (powerful)
 Server B: Weight 2 (medium)
 Server C: Weight 1 (weak)
@@ -153,9 +182,11 @@ servers:
   - server3: weight=2  # 20% of traffic
 ```
 
+*The yaml snippet above illustrates 2. Weighted Round Robin (The Meritocrat): it shows the concrete form of the idea described in this section.*
+
 #### 3. Least Connections (The Optimizer)
 
-```
+```text
 Server A: 5 active connections
 Server B: 3 active connections  ← Route here
 Server C: 7 active connections
@@ -188,7 +219,7 @@ Some users chat more (long connections), some less. Least connections ensures ev
 
 #### 4. Least Response Time (The Perfectionist)
 
-```
+```text
 Server A: 50ms avg response time  ← Route here (fastest)
 Server B: 150ms avg response time
 Server C: 200ms avg response time
@@ -218,7 +249,7 @@ Server C: 200ms avg response time
 
 #### 5. IP Hash (The Consistent Router)
 
-```
+```text
 Client IP: 192.168.1.100
 Hash: hash(192.168.1.100) % 3 = 1
 Result: Always route to Server B
@@ -253,7 +284,7 @@ server_index = hash(client_ip) % num_servers
 
 #### 6. Random (The Gambler)
 
-```
+```text
 Request 1 → Random: Server C
 Request 2 → Random: Server A
 Request 3 → Random: Server A
@@ -307,7 +338,7 @@ This choice defines **what the load balancer can see** and **how it makes decisi
 - Application data
 
 **How It Works:**
-```
+```text
 1. Client connects to LB
 2. LB chooses server based on IP/Port
 3. LB forwards TCP packets to server
@@ -353,7 +384,7 @@ This choice defines **what the load balancer can see** and **how it makes decisi
 - SSL/TLS content (after termination)
 
 **How It Works:**
-```
+```text
 1. Client connects to LB
 2. LB terminates TCP connection
 3. LB reads HTTP request completely
@@ -433,7 +464,7 @@ Session: free     → Standard servers
 | **Microservices** | | ✓ |
 
 **Hybrid Approach (Common):**
-```
+```text
 Internet
   ↓
 Layer 4 LB (high performance, DDoS protection)
@@ -443,6 +474,8 @@ Layer 7 LB (intelligent routing, SSL termination)
 Application Servers
 ```
 
+*The text snippet above illustrates The Decision Matrix: it shows the concrete form of the idea described in this section.*
+
 ### Health Checks: Detecting Failure
 
 A load balancer must know which servers are healthy. Dead servers get no traffic.
@@ -450,7 +483,7 @@ A load balancer must know which servers are healthy. Dead servers get no traffic
 #### Active Health Checks (Proactive)
 
 **How It Works:**
-```
+```text
 Every 5 seconds:
   For each server:
     Send HTTP GET /health
@@ -499,7 +532,7 @@ Response:
 #### Passive Health Checks (Reactive)
 
 **How It Works:**
-```
+```text
 Monitor real traffic:
   If 5xx error → Increment failure count
   If success → Decrement failure count
@@ -522,14 +555,14 @@ Monitor real traffic:
 ### Load Balancer Deployment Patterns
 
 #### Pattern 1: Single Load Balancer
-```
+```text
 Clients → Load Balancer → Servers
 ```
 - **Problem**: Load balancer is SPOF
 - **Use**: Development, small deployments
 
 #### Pattern 2: Active-Passive (HA Pair)
-```
+```text
 Clients → VIP (Virtual IP)
          ↙        ↘
 LB 1 (Active)    LB 2 (Standby)
@@ -541,7 +574,7 @@ LB 1 (Active)    LB 2 (Standby)
 - **Eliminates SPOF**, wastes standby resources
 
 #### Pattern 3: Active-Active (Equal Cost Multi-Path)
-```
+```text
        DNS Round Robin
       ↙              ↘
 LB 1 (50%)          LB 2 (50%)
@@ -553,7 +586,7 @@ LB 1 (50%)          LB 2 (50%)
 - **Problem**: DNS caching delays failover
 
 #### Pattern 4: Cloud Native (Managed Service)
-```
+```text
 Clients → AWS ALB/NLB (managed, auto-scaled)
               ↓
           Servers
@@ -568,7 +601,7 @@ Clients → AWS ALB/NLB (managed, auto-scaled)
 #### Global Load Balancing (GSLB)
 
 Route users to nearest datacenter:
-```
+```text
 User in US → US Load Balancer → US Servers
 User in EU → EU Load Balancer → EU Servers
 User in Asia → Asia Load Balancer → Asia Servers
@@ -586,7 +619,7 @@ User in Asia → Asia Load Balancer → Asia Servers
 #### Session Persistence (Sticky Sessions)
 
 Ensure user hits same server:
-```
+```text
 Request 1 → Server A (set cookie: server=A)
 Request 2 (cookie: server=A) → Server A (same)
 Request 3 (cookie: server=A) → Server A (same)
@@ -610,7 +643,7 @@ Request 3 (cookie: server=A) → Server A (same)
 #### Zero-Downtime Deployments
 
 **Blue-Green Deployment:**
-```
+```text
 1. Blue (old version) serving 100%
 2. Deploy Green (new version)
 3. Test Green
@@ -619,20 +652,22 @@ Request 3 (cookie: server=A) → Server A (same)
 ```
 
 **Rolling Deployment:**
-```
+```text
 1. Server 1: v1 → v2 (remove from LB, update, add back)
 2. Server 2: v1 → v2 (repeat)
 3. Server 3: v1 → v2 (repeat)
 ```
 
 **Canary Deployment:**
-```
+```text
 1. 95% → old version
 2. 5% → new version (canary)
 3. Monitor metrics
 4. If good: 50% → new
 5. If good: 100% → new
 ```
+
+*The text snippet above illustrates Zero-Downtime Deployments: it shows the concrete form of the idea described in this section.*
 
 ### The Critical Trade-offs
 
@@ -1006,7 +1041,7 @@ Static algorithms use predetermined logic without considering current server sta
 - Maintains a pointer to track the next server
 
 **Example:**
-```
+```text
 Request 1 → Server A
 Request 2 → Server B
 Request 3 → Server C
@@ -1047,7 +1082,7 @@ Request 5 → Server B
 - Server with weight 3 receives 3x more traffic than server with weight 1
 
 **Example:**
-```
+```text
 Server A: weight = 3
 Server B: weight = 2
 Server C: weight = 1
@@ -1094,7 +1129,7 @@ Request 6 → Server C
 - Hash function: `hash(client_IP) % number_of_servers`
 
 **Example:**
-```
+```text
 Client IP: 192.168.1.100 → hash() → Server A
 Client IP: 192.168.1.101 → hash() → Server C
 Client IP: 192.168.1.102 → hash() → Server B
@@ -1135,7 +1170,7 @@ All future requests from 192.168.1.100 go to Server A
 - Enables effective caching per server
 
 **Example:**
-```
+```text
 URL: /images/logo.png → hash() → Server A
 URL: /api/users → hash() → Server B
 URL: /static/style.css → hash() → Server C
@@ -1177,7 +1212,7 @@ Dynamic algorithms make real-time decisions based on current server state and pe
 - Updates connection count as connections are established/closed
 
 **Example:**
-```
+```text
 Server A: 5 active connections
 Server B: 3 active connections  ← New request goes here
 Server C: 7 active connections
@@ -1218,7 +1253,7 @@ Next request goes to server with least connections at that moment
 - Accounts for both capacity and current load
 
 **Example:**
-```
+```text
 Server A: 10 connections, weight = 3 → ratio = 10/3 = 3.33
 Server B: 5 connections, weight = 2  → ratio = 5/2 = 2.50  ← New request
 Server C: 8 connections, weight = 1  → ratio = 8/1 = 8.00
@@ -1246,7 +1281,7 @@ Server C: 8 connections, weight = 1  → ratio = 8/1 = 8.00
 - May combine response time with active connections
 
 **Example:**
-```
+```text
 Server A: avg response = 50ms, 5 connections
 Server B: avg response = 30ms, 8 connections  ← New request (fastest)
 Server C: avg response = 80ms, 3 connections
@@ -1284,7 +1319,7 @@ Server C: avg response = 80ms, 3 connections
 - Requires agent or monitoring system on each server
 
 **Example:**
-```
+```text
 Server A: CPU 80%, Memory 60%, Score = Low
 Server B: CPU 40%, Memory 30%, Score = High  ← New request
 Server C: CPU 70%, Memory 85%, Score = Low
@@ -1753,7 +1788,7 @@ Components that operate at network or transport layer work with IP addresses, po
 - Reduced load on external servers
 
 **Example:**
-```
+```text
 Squid caching configuration:
 - Cache all images for 7 days
 - Cache CSS/JS for 24 hours
@@ -1829,7 +1864,7 @@ proxy_cache_valid 404 5m;  # Cache 404s for 5 minutes
 - Handles traffic spikes (viral content)
 
 **Example:**
-```
+```text
 CloudFlare Page Rules:
 - Cache Everything for *.jpg, *.png, *.css (1 month TTL)
 - Cache API responses for /api/public/* (5 minutes TTL)

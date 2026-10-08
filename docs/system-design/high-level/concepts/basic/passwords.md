@@ -354,6 +354,8 @@ flowchart LR
     Sign -->|Public key verification| RP[Relying party]
 ```
 
+*The diagram above illustrates Components: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Patterns
@@ -508,6 +510,8 @@ public class PasswordService {
 }
 ```
 
+*The java snippet above illustrates 1. Password hashing with BCrypt: it shows the concrete form of the idea described in this section.*
+
 #### 2. Argon2 password hashing with externalized parameters
 
 ```java
@@ -538,6 +542,8 @@ public class Argon2PasswordService {
     }
 }
 ```
+
+*The java snippet above illustrates 2. Argon2 password hashing with externalized parameters: it shows the concrete form of the idea described in this section.*
 
 #### 3. Login attempt rate limiting
 
@@ -606,6 +612,8 @@ public class LoginRateLimiter {
     }
 }
 ```
+
+*The java snippet above illustrates 3. Login attempt rate limiting: it shows the concrete form of the idea described in this section.*
 
 #### 4. Passkey verification with a public key
 

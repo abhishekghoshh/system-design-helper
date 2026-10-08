@@ -41,7 +41,7 @@ In distributed systems, **consistency** refers to whether all nodes in the syste
 **The Core Problem:**
 When data is replicated across multiple servers (for availability and performance), writes happen on one node first and must propagate to others. The question is: *how quickly must all nodes agree?*
 
-```
+```text
 Write: "user.name = Alice" → Node A (primary)
                               ↓ replication
                         Node B (replica) → still sees "Bob" for a brief moment
@@ -62,7 +62,7 @@ You can't have perfect consistency AND perfect availability in a distributed sys
 
 **Consistency Models Spectrum:**
 
-```
+```text
 Strongest ←————————————————————————————————→ Weakest
 
 Linearizable → Sequential → Causal → Eventual
@@ -387,6 +387,8 @@ flowchart LR
     Coordinator --> Quorum[Quorum logic]
 ```
 
+*The diagram above illustrates Components: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Patterns
@@ -552,6 +554,8 @@ public class QuorumService {
 }
 ```
 
+*The java snippet above illustrates 1. Simulating a quorum decision: it shows the concrete form of the idea described in this section.*
+
 #### 2. Versioned value for eventual consistency
 
 ```java
@@ -562,6 +566,8 @@ public record VersionedValue(long version, String value) {
     }
 }
 ```
+
+*The java snippet above illustrates 2. Versioned value for eventual consistency: it shows the concrete form of the idea described in this section.*
 
 #### 3. Replica with last-write-wins
 
@@ -584,6 +590,8 @@ public class LastWriteWinsStore {
     }
 }
 ```
+
+*The java snippet above illustrates 3. Replica with last-write-wins: it shows the concrete form of the idea described in this section.*
 
 #### 4. Read-your-writes store
 

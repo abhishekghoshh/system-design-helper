@@ -883,6 +883,8 @@ public class InvoiceQueryService {
 }
 ```
 
+*The java snippet above illustrates Java/Spring Boot Code Example: Level 1 (Same Database, Separate Models) vs Level: it shows the concrete form of the idea described in this section.*
+
 ```java
 // Level 4: Separate databases, asynchronous synchronization via a message listener
 @Service

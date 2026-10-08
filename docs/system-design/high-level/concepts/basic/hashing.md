@@ -211,6 +211,8 @@ flowchart LR
     Digest --> Store[(Storage / Hash Table)]
 ```
 
+*The diagram above illustrates Components: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Hashing Patterns
@@ -362,6 +364,8 @@ public class HashingService {
 }
 ```
 
+*The java snippet above illustrates 1. SHA-256 hashing: it shows the concrete form of the idea described in this section.*
+
 #### 2. Password hashing with bcrypt
 
 ```java
@@ -382,6 +386,8 @@ public class PasswordService {
     }
 }
 ```
+
+*The java snippet above illustrates 2. Password hashing with bcrypt: it shows the concrete form of the idea described in this section.*
 
 #### 3. HMAC for message authentication
 
@@ -408,6 +414,8 @@ public class HmacService {
     }
 }
 ```
+
+*The java snippet above illustrates 3. HMAC for message authentication: it shows the concrete form of the idea described in this section.*
 
 #### 4. Consistent hashing
 
@@ -455,6 +463,8 @@ public class ConsistentHashingService {
     }
 }
 ```
+
+*The java snippet above illustrates 4. Consistent hashing: it shows the concrete form of the idea described in this section.*
 
 #### 5. HMAC-based API key hashing
 

@@ -139,7 +139,7 @@ flowchart TD
 
 **Lexing** converts characters into tokens.
 
-```
+```text
 "x = 1 + 2" → IDENT(x) EQUALS NUMBER(1) PLUS NUMBER(2)
 ```
 
@@ -329,6 +329,8 @@ flowchart LR
     CodeGen --> Runtime[Runtime]
 ```
 
+*The diagram above illustrates Components: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Patterns
@@ -513,6 +515,8 @@ public final class SimpleLexer {
 }
 ```
 
+*The java snippet above illustrates 1. Token model and lexer: it shows the concrete form of the idea described in this section.*
+
 #### 2. Expression AST and evaluator
 
 ```java
@@ -553,6 +557,8 @@ public sealed interface Expr permits NumberExpr, BinaryExpr {
 }
 ```
 
+*The java snippet above illustrates 2. Expression AST and evaluator: it shows the concrete form of the idea described in this section.*
+
 #### 3. Expression language service
 
 ```java
@@ -574,6 +580,8 @@ public class ExpressionService {
     }
 }
 ```
+
+*The java snippet above illustrates 3. Expression language service: it shows the concrete form of the idea described in this section.*
 
 #### 4. Visitor-style evaluator
 

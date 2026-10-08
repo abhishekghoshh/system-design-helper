@@ -135,6 +135,8 @@ flowchart LR
     TURN -.-> PCB
 ```
 
+*The diagram above illustrates What is WebRTC?: Diagram: it maps the key components and their interactions described in this section.*
+
 #### What is WebRTC?: Real-Life Use Case
 
 A telemedicine startup builds a 1:1 doctor-patient video consultation feature. Using WebRTC, the patient clicks a link (no app install), the browser requests camera/microphone permission via `getUserMedia()`, a lightweight signaling server (a small WebSocket service) exchanges SDP/ICE between the doctor's and patient's browsers, and in most cases (roughly 80-90%) a direct encrypted P2P connection is established through STUN alone. For the remaining calls where both parties are behind restrictive corporate/hotel Wi-Fi NATs, the connection automatically falls back to a TURN relay, at the cost of a little extra latency and bandwidth, but the call still connects. Because DTLS-SRTP encryption is mandatory, the platform can tell patients their consultation is end-to-end encrypted without writing any custom crypto code.
@@ -193,6 +195,8 @@ public class SignalingServer {
 }
 ```
 
+*The java snippet above illustrates What is WebRTC?: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### What is WebRTC?: Interview Questions and Answers
 
 **Q1. Is WebRTC a protocol or an API?**
@@ -234,7 +238,7 @@ Before any media flows in WebRTC (whether P2P, SFU, or MCU), two things must hap
 2. **Server-reflexive candidate**: The device's public IP:port as seen from outside its NAT, discovered by asking a **STUN** server "what does my traffic look like to you?"
 3. **Relayed candidate**: A public IP:port on a **TURN** server that will relay all media if no direct path is possible (e.g., symmetric NAT on both sides, or a firewall that blocks all direct UDP).
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────┐
 │                 SDP Offer/Answer + ICE Flow                   │
 └──────────────────────────────────────────────────────────────┘
@@ -281,6 +285,8 @@ ICE CONNECTIVITY CHECKS:
   3. srflx ↔ srflx    → works for most home/office NATs (~70-90% of calls)
   4. relay ↔ relay    → last resort, all media routed through TURN (~10-20% of calls)
 ```
+
+*The text snippet above illustrates Signaling, SDP, and NAT Traversal (ICE, STUN, TURN): it shows the concrete form of the idea described in this section.*
 
 #### Signaling & NAT Traversal: Characteristics
 
@@ -373,6 +379,8 @@ sequenceDiagram
     A-->>B: Encrypted media flows (SRTP/DTLS)
 ```
 
+*The diagram above illustrates Signaling & NAT Traversal: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Signaling & NAT Traversal: Real-Life Use Case
 
 A remote-work collaboration tool serves both home users and large enterprise customers. Home users, typically behind simple consumer NATs, connect directly after a STUN-discovered server-reflexive candidate succeeds, so media never touches company infrastructure. Enterprise customers behind strict corporate firewalls that block all unsolicited inbound UDP fail every direct/STUN candidate pair; the ICE agent falls back to a TURN relay running on port 443 (disguised as HTTPS), letting the call connect anyway. The product team tracks "percent of sessions using TURN relay" as a KPI: a sudden jump indicates a new customer's firewall policy or a TURN outage, prompting immediate investigation.
@@ -425,6 +433,8 @@ public class TurnCredentialGenerator {
 }
 ```
 
+*The java snippet above illustrates Signaling & NAT Traversal: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Signaling & NAT Traversal: Interview Questions and Answers
 
 **Q1. What is the difference between STUN and TURN?**
@@ -450,7 +460,7 @@ A: STUN performs one lightweight request/response and is done; it does not touch
 
 In a **peer-to-peer (P2P) mesh** architecture, each participant establishes direct connections with every other participant in the call. Every user sends their media streams to all other users and receives streams from all other users.
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │           WebRTC Peer-to-Peer Mesh Architecture             │
 └─────────────────────────────────────────────────────────────┘
@@ -541,9 +551,11 @@ Most home internet:
 Result: Call fails due to insufficient upload bandwidth
 ```
 
+*The text snippet above illustrates Description: it shows the concrete form of the idea described in this section.*
+
 #### How It Works
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │              WebRTC P2P Connection Flow                      │
 └─────────────────────────────────────────────────────────────┘
@@ -592,9 +604,11 @@ Media Encoding/Decoding:
 │                                         (VP8/H.264)
 ```
 
+*The text snippet above illustrates How It Works: it shows the concrete form of the idea described in this section.*
+
 #### Advantages
 
-```
+```text
 ✅ BENEFITS:
 ───────────
 
@@ -625,9 +639,11 @@ Media Encoding/Decoding:
    • No quality degradation from server processing
 ```
 
+*The text snippet above illustrates Advantages: it shows the concrete form of the idea described in this section.*
+
 #### Disadvantages
 
-```
+```text
 ❌ LIMITATIONS:
 ──────────────
 
@@ -668,9 +684,11 @@ Mobile: 2-3 participants
 Recommended: 1-on-1 calls only
 ```
 
+*The text snippet above illustrates Disadvantages: it shows the concrete form of the idea described in this section.*
+
 #### Use Cases
 
-```
+```text
 ✅ IDEAL FOR:
 ────────────
 • 1-on-1 video calls
@@ -686,6 +704,8 @@ Recommended: 1-on-1 calls only
 • Live streaming to many viewers
 • Enterprise video meetings
 ```
+
+*The text snippet above illustrates Use Cases: it shows the concrete form of the idea described in this section.*
 
 #### Peer-to-Peer Mesh: Detailed Explanation of Advantages, Disadvantages and Use Cases
 
@@ -760,6 +780,8 @@ public class MeshCapacityCalculator {
 }
 ```
 
+*The java snippet above illustrates Peer-to-Peer Mesh: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Peer-to-Peer Mesh: Interview Questions and Answers
 
 **Q1. Why does a P2P mesh call quality degrade so quickly as participants are added?**
@@ -787,7 +809,7 @@ An **SFU** is a media server that receives video/audio streams from each partici
 
 **Key Concept:** The SFU forwards media streams without decoding or re-encoding them.
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │           SFU (Selective Forwarding Unit) Architecture       │
 └─────────────────────────────────────────────────────────────┘
@@ -878,9 +900,11 @@ Per User Bandwidth (optimized):
 ✅ Scales to 100+ participants!
 ```
 
+*The text snippet above illustrates Description: it shows the concrete form of the idea described in this section.*
+
 #### How It Works
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                SFU Processing Flow                           │
 └─────────────────────────────────────────────────────────────┘
@@ -979,9 +1003,11 @@ SFU monitors each recipient's connection:
 └────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates How It Works: it shows the concrete form of the idea described in this section.*
+
 #### Advantages
 
-```
+```text
 ✅ BENEFITS:
 ───────────
 
@@ -1026,9 +1052,11 @@ SFU monitors each recipient's connection:
    • Can use cheaper servers
 ```
 
+*The text snippet above illustrates Advantages: it shows the concrete form of the idea described in this section.*
+
 #### Disadvantages
 
-```
+```text
 ❌ LIMITATIONS:
 ──────────────
 
@@ -1074,9 +1102,11 @@ SFU monitors each recipient's connection:
    • Triples encoding bandwidth (3 qualities)
 ```
 
+*The text snippet above illustrates Disadvantages: it shows the concrete form of the idea described in this section.*
+
 #### Use Cases
 
-```
+```text
 ✅ IDEAL FOR:
 ────────────
 • Group video calls (4-100 people)
@@ -1094,6 +1124,8 @@ SFU monitors each recipient's connection:
 • When participants need to see each other
 • When quality can vary per user
 ```
+
+*The text snippet above illustrates Use Cases: it shows the concrete form of the idea described in this section.*
 
 #### SFU: Detailed Explanation of Advantages, Disadvantages and Use Cases
 
@@ -1172,6 +1204,8 @@ public class SfuCapacityCalculator {
 }
 ```
 
+*The java snippet above illustrates SFU: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### SFU: Interview Questions and Answers
 
 **Q1. How does an SFU achieve better scalability than a P2P mesh without doing any transcoding?**
@@ -1199,7 +1233,7 @@ An **MCU** is a media server that receives all participant streams, **decodes th
 
 **Key Concept:** The MCU does heavy processing - decode, mix, encode.
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │         MCU (Multipoint Control Unit) Architecture           │
 └─────────────────────────────────────────────────────────────┘
@@ -1311,9 +1345,11 @@ Per User Bandwidth:
 ❌ Extremely expensive for server!
 ```
 
+*The text snippet above illustrates Description: it shows the concrete form of the idea described in this section.*
+
 #### How It Works
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │              MCU Processing Pipeline                         │
 └─────────────────────────────────────────────────────────────┘
@@ -1445,9 +1481,11 @@ MCU (4 users):
     But MCU handles heavy lifting on server!
 ```
 
+*The text snippet above illustrates How It Works: it shows the concrete form of the idea described in this section.*
+
 #### Advantages
 
-```
+```text
 ✅ BENEFITS:
 ───────────
 
@@ -1498,9 +1536,11 @@ MCU (4 users):
    • Recording/compliance
 ```
 
+*The text snippet above illustrates Advantages: it shows the concrete form of the idea described in this section.*
+
 #### Disadvantages
 
-```
+```text
 ❌ LIMITATIONS:
 ──────────────
 
@@ -1557,9 +1597,11 @@ vs SFU:             0 CPU cores (forwarding only)
 vs P2P:             0 server cost
 ```
 
+*The text snippet above illustrates Disadvantages: it shows the concrete form of the idea described in this section.*
+
 #### Use Cases
 
-```
+```text
 ✅ IDEAL FOR:
 ────────────
 • Webinars (presenter + many viewers)
@@ -1580,6 +1622,8 @@ vs P2P:             0 server cost
 • Budget for server infrastructure
 • Latency <500ms is acceptable
 ```
+
+*The text snippet above illustrates Use Cases: it shows the concrete form of the idea described in this section.*
 
 #### MCU: Detailed Explanation of Advantages, Disadvantages and Use Cases
 
@@ -1660,6 +1704,8 @@ public class McuCapacityCalculator {
 }
 ```
 
+*The java snippet above illustrates MCU: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### MCU: Interview Questions and Answers
 
 **Q1. Why is an MCU's latency inherently higher than an SFU's?**
@@ -1683,7 +1729,7 @@ A: Not without significant added complexity or cost. A pure MCU produces one sha
 
 #### Architecture Comparison
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │               Architecture Comparison                        │
 └─────────────────────────────────────────────────────────────┘
@@ -1729,6 +1775,8 @@ Characteristics:
 • Single output
 ```
 
+*The text snippet above illustrates Architecture Comparison: it shows the concrete form of the idea described in this section.*
+
 #### Feature Comparison Table
 
 | Feature | P2P (Mesh) | SFU | MCU |
@@ -1750,7 +1798,7 @@ Characteristics:
 
 #### Bandwidth Comparison (10 Participants, 2 Mbps per stream)
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │          Bandwidth Usage Comparison (10 Users)               │
 └─────────────────────────────────────────────────────────────┘
@@ -1799,9 +1847,11 @@ SFU: 200 Mbps server + (10 × 2 uploads) = 220 Mbps
 MCU: 40 Mbps server + (10 × 2 uploads) = 60 Mbps ✅ Lowest
 ```
 
+*The text snippet above illustrates Bandwidth Comparison (10 Participants, 2 Mbps per stream): it shows the concrete form of the idea described in this section.*
+
 #### Cost Comparison (100 Participants)
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │              Monthly Cost Estimation (100 users)             │
 └─────────────────────────────────────────────────────────────┘
@@ -1833,9 +1883,11 @@ Total: ~$5,100/month
 ⚠️ Expensive but best quality
 ```
 
+*The text snippet above illustrates Cost Comparison (100 Participants): it shows the concrete form of the idea described in this section.*
+
 #### When to Use Each Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                  Decision Matrix                             │
 └─────────────────────────────────────────────────────────────┘
@@ -1898,9 +1950,11 @@ Many modern platforms use combinations:
    └─ Better scalability
 ```
 
+*The text snippet above illustrates When to Use Each Architecture: it shows the concrete form of the idea described in this section.*
+
 #### Real-World Examples
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │            Real-World Platform Architectures                 │
 └─────────────────────────────────────────────────────────────┘
@@ -1978,9 +2032,11 @@ Features:
 Architecture: Hybrid P2P/SFU
 ```
 
+*The text snippet above illustrates Real-World Examples: it shows the concrete form of the idea described in this section.*
+
 #### Summary & Best Practices
 
-```
+```text
 KEY TAKEAWAYS:
 ─────────────
 
@@ -2025,6 +2081,8 @@ Huge (100+):     SFU + MCU hybrid
 Broadcast:       MCU or CDN streaming
 ```
 
+*The text snippet above illustrates Summary & Best Practices: it shows the concrete form of the idea described in this section.*
+
 #### Comparison: Java Code Example
 
 The snippet below ties together the three capacity calculators used in the P2P, SFU, and MCU topics above into a single decision helper that recommends an architecture given an expected participant count, matching the "Scaling Strategy" table above.
@@ -2065,6 +2123,8 @@ public class ArchitectureSelector {
     }
 }
 ```
+
+*The java snippet above illustrates Comparison: Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Comparison: Interview Questions and Answers
 

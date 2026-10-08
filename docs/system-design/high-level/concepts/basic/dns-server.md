@@ -193,7 +193,7 @@ A: Running authoritative DNS well requires redundant, globally distributed, DDoS
 
 **The 8-Step Resolution Process:**
 
-```
+```text
 User types: www.example.com in browser
 
 1. Browser Cache Check
@@ -256,7 +256,7 @@ User types: www.example.com in browser
 ```
 
 **Timing Example:**
-```
+```text
 First Visit (no cache):
   Browser cache:     0ms (miss)
   OS cache:          0ms (miss)
@@ -338,6 +338,8 @@ sequenceDiagram
     Resolver-->>Client: Answer: 93.184.216.34 (and caches it)
 ```
 
+*The diagram above illustrates Diagram: Recursive vs. Iterative Queries: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: Why Your First Page Load Feels Slower
 
 Ever notice the very first request after opening a browser feels slightly slower than subsequent ones, even on a fast connection? Part of that is a cold DNS cache: the OS, browser, and local network have no cached answer for the domain, so the full recursive/iterative walk has to happen before the browser can even open a TCP connection. This is why performance-sensitive sites use `<link rel="dns-prefetch">` hints in HTML to kick off DNS resolution for third-party domains (analytics, fonts, ad networks) before the browser actually needs to connect to them, hiding this latency behind other page-load work.
@@ -371,6 +373,8 @@ public class DnsLatencyController {
     }
 }
 ```
+
+*The java snippet above illustrates Java/Spring Boot Code: Measuring Resolution Latency: it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 
@@ -456,6 +460,8 @@ graph LR
     D -->|CAA| CA["letsencrypt.org (allowed CA)"]
 ```
 
+*The diagram above illustrates Diagram: Record Types for One Domain: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: One Domain, Many Responsibilities
 
 A single company domain, `acme.com`, typically has an A/AAAA record pointing to its marketing website, a CNAME (`www`) aliasing to the same, MX records routing mail to Google Workspace, TXT records proving domain ownership to Google, GitHub, and their SSL certificate authority, an NS delegation for `app.acme.com` to a separate product team's DNS zone, and a CAA record restricting certificate issuance to Let's Encrypt only. All of this lives under one domain name, managed by different teams, without any of them interfering with each other - a direct benefit of DNS's typed record system.
@@ -502,6 +508,8 @@ public class DnsRecordTypesController {
 }
 ```
 
+*The java snippet above illustrates Java/Spring Boot Code: Fetching Multiple Record Types: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. Why can't a CNAME record coexist with other records for the same name?**
@@ -522,7 +530,7 @@ A: CAA restricts which certificate authorities may legally issue TLS certificate
 ### A Record (Address Record)
 **Purpose**: Map domain to IPv4 address
 
-```
+```text
 DNS Query:
   example.com. IN A
 
@@ -534,7 +542,7 @@ Meaning: "example.com is at 93.184.216.34 for 3600 seconds"
 ```
 
 **Use Cases:**
-```
+```text
 # Main website
 www.example.com → 93.184.216.34
 
@@ -546,6 +554,8 @@ www.example.com → 93.184.216.34
 www.example.com → 93.184.216.35
 www.example.com → 93.184.216.36
 ```
+
+*The text snippet above illustrates A Record (Address Record): it shows the concrete form of the idea described in this section.*
 
 #### A Record: Characteristics
 
@@ -598,6 +608,8 @@ sequenceDiagram
     Resolver-->>Client: 93.184.216.34
 ```
 
+*The diagram above illustrates Diagram: A Record Resolution: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: Simple Round-Robin Load Balancing
 
 A small SaaS startup runs three identical web servers behind no load balancer to save cost. They add three A records for `www.startup.com`, one per server IP. Roughly a third of visitors land on each server due to DNS round-robin. When traffic outgrows this simple setup, they replace it with a single A record pointing at a proper load balancer, which then fans out to the same three servers with health checking - a common evolution path many small companies follow.
@@ -628,6 +640,8 @@ public class ARecordController {
 }
 ```
 
+*The java snippet above illustrates Java/Spring Boot Code: Resolving and Displaying A Records: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. What does an A record store, and how is it different from a CNAME?**
@@ -642,12 +656,12 @@ A: A load balancer's IP is stable and health-aware; backend servers can be added
 ### AAAA Record (IPv6 Address)
 **Purpose**: Map domain to IPv6 address
 
-```
+```text
 example.com.  3600  IN  AAAA  2001:db8:85a3::8a2e:370:7334
 ```
 
 **Modern Setup:**
-```
+```text
 # Dual-stack (both IPv4 and IPv6)
 example.com.  IN  A     93.184.216.34
 example.com.  IN  AAAA  2001:db8:85a3::8a2e:370:7334
@@ -656,6 +670,8 @@ Browser behavior:
 1. Checks for AAAA (IPv6) first
 2. Falls back to A (IPv4) if unavailable
 ```
+
+*The text snippet above illustrates AAAA Record (IPv6 Address): it shows the concrete form of the idea described in this section.*
 
 #### AAAA Record: Characteristics
 
@@ -707,6 +723,8 @@ graph TD
     HE --> Conn["Connect over whichever succeeds first"]
 ```
 
+*The diagram above illustrates Diagram: Dual-Stack Resolution: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: Mobile Carrier IPv6-First Networks
 
 Many mobile carriers (T-Mobile US, Reliance Jio in India) run IPv6-only or IPv6-mostly networks internally, using NAT64/DNS64 to translate for IPv4-only destinations. A website that only publishes an A record still works for these users, but through an extra translation hop; a site that also publishes an AAAA record lets these (often majority-share) mobile users connect natively over IPv6, typically with lower latency and no translation overhead.
@@ -739,6 +757,8 @@ public class AaaaRecordController {
 }
 ```
 
+*The java snippet above illustrates Java/Spring Boot Code: Detecting IPv6 Support for a Host: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. What is the practical difference between an A and an AAAA record?**
@@ -753,7 +773,7 @@ A: It's an algorithm (RFC 8305) clients use to race IPv4 and IPv6 connection att
 ### CNAME Record (Canonical Name)
 **Purpose**: Alias one domain to another
 
-```
+```text
 www.example.com.  IN  CNAME  example.com.
 
 Resolution:
@@ -761,7 +781,7 @@ www.example.com → (CNAME) → example.com → (A) → 93.184.216.34
 ```
 
 **Real-World Examples:**
-```
+```text
 # CDN Setup
 static.example.com.  IN  CNAME  d111111abcdef8.cloudfront.net.
 
@@ -776,7 +796,7 @@ www.example.com.     IN  CNAME  lb-12345.us-east-1.elb.amazonaws.com.
 ```
 
 **CNAME Limitations:**
-```
+```text
 ✗ Can't use at root domain (example.com)
   (RFC violation, but some providers allow it)
 
@@ -787,6 +807,8 @@ www.example.com.     IN  CNAME  lb-12345.us-east-1.elb.amazonaws.com.
 ✓ Perfect for subdomains
   www.example.com. CNAME other.com.  ← Valid
 ```
+
+*The text snippet above illustrates CNAME Record (Canonical Name): it shows the concrete form of the idea described in this section.*
 
 #### CNAME Record: Characteristics
 
@@ -845,6 +867,8 @@ sequenceDiagram
     Resolver-->>Client: 203.0.113.5 (transparently, as if it were direct)
 ```
 
+*The diagram above illustrates Diagram: CNAME Resolution Chain: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: Migrating CDN Providers Without Downtime
 
 A media company serving images via `static.example.com` currently CNAMEs to `d123.cloudfront.net` (AWS CloudFront). They decide to switch to Cloudflare for cost reasons. The migration is a single DNS change: update the CNAME target from `d123.cloudfront.net` to `example.static.cloudflare.net`. No application code changes, no client-side updates - once the change propagates (after the old TTL expires), all traffic silently starts flowing through the new CDN.
@@ -884,6 +908,8 @@ public class CnameChainController {
 }
 ```
 
+*The java snippet above illustrates Java/Spring Boot Code: Following a CNAME Chain Manually: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. Why can't you put a CNAME record at the root/apex of a domain (e.g., `example.com` itself)?**
@@ -901,7 +927,7 @@ A: Every hop is an additional DNS lookup and round trip before the client gets a
 ### MX Record (Mail Exchange)
 **Purpose**: Specify mail servers for domain
 
-```
+```text
 example.com.  IN  MX  10  mail1.example.com.
 example.com.  IN  MX  20  mail2.example.com.
                    ↑ Priority (lower = preferred)
@@ -915,13 +941,15 @@ If fails, try mail2 (priority 20)
 ```
 
 **Google Workspace Example:**
-```
+```text
 example.com.  IN  MX  1   aspmx.l.google.com.
 example.com.  IN  MX  5   alt1.aspmx.l.google.com.
 example.com.  IN  MX  5   alt2.aspmx.l.google.com.
 example.com.  IN  MX  10  alt3.aspmx.l.google.com.
 example.com.  IN  MX  10  alt4.aspmx.l.google.com.
 ```
+
+*The text snippet above illustrates MX Record (Mail Exchange): it shows the concrete form of the idea described in this section.*
 
 #### MX Record: Characteristics
 
@@ -972,6 +1000,8 @@ graph TD
     MX2 --> Delivered
 ```
 
+*The diagram above illustrates Diagram: MX Priority Fallback: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: Migrating to Google Workspace
 
 A company running its own on-premises mail server decides to migrate to Google Workspace. The entire migration for inbound mail routing is: update the domain's MX records to point at Google's `aspmx.l.google.com` servers (with the documented priorities), then wait for mail senders' caches to pick up the change. No change is needed to email addresses, client configuration (beyond IMAP/SMTP server settings), or the rest of the domain's DNS - MX records isolate 'who handles email' from everything else the domain does.
@@ -1010,6 +1040,8 @@ public class MxRecordController {
 }
 ```
 
+*The java snippet above illustrates Java/Spring Boot Code: Checking a Domain's Mail Configuration: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. What does the priority number in an MX record actually control?**
@@ -1028,7 +1060,7 @@ A: MX only controls where *inbound* mail for your domain goes. SPF/DKIM/DMARC (T
 **Purpose**: Store arbitrary text, verification, security policies
 
 **SPF (Sender Policy Framework) - Prevent Email Spoofing:**
-```
+```text
 example.com.  IN  TXT  "v=spf1 include:_spf.google.com ~all"
 
 Meaning:
@@ -1038,13 +1070,13 @@ Meaning:
 ```
 
 **DKIM (DomainKeys Identified Mail) - Email Signature:**
-```
+```text
 default._domainkey.example.com.  IN  TXT  "v=DKIM1; k=rsa; p=MIGfMA0GCS..."
                                              ↑ Public key for verification
 ```
 
 **DMARC (Domain-based Message Authentication):**
-```
+```text
 _dmarc.example.com.  IN  TXT  "v=DMARC1; p=reject; rua=mailto:dmarc@example.com"
 
 Meaning:
@@ -1053,13 +1085,15 @@ Meaning:
 ```
 
 **Domain Verification:**
-```
+```text
 # Google Search Console
 example.com.  IN  TXT  "google-site-verification=abc123..."
 
 # SSL Certificate Validation
 _acme-challenge.example.com.  IN  TXT  "validation-token-here"
 ```
+
+*The text snippet above illustrates TXT Record (Text Information): it shows the concrete form of the idea described in this section.*
 
 #### TXT Record: Characteristics
 
@@ -1115,6 +1149,8 @@ graph TD
     DMARC -->|"At least one passes"| Deliver["Email delivered to inbox"]
 ```
 
+*The diagram above illustrates Diagram: SPF/DKIM/DMARC Working Together: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: Stopping a Phishing Campaign Impersonating Your Company
 
 A company notices customers receiving phishing emails that appear to come from `billing@company.com`, asking for payment details. Investigation shows the company had never configured DMARC, so receiving mail servers had no policy to enforce even though SPF was misconfigured to allow too many senders. The fix: tighten the SPF record to list only actual authorized senders, add DKIM signing, and publish a DMARC TXT record with `p=reject`. After propagation, mail servers worldwide start rejecting spoofed messages claiming to be from the domain before they ever reach a victim's inbox.
@@ -1160,6 +1196,8 @@ public class TxtRecordController {
 }
 ```
 
+*The java snippet above illustrates Java/Spring Boot Code: Checking SPF and DMARC Configuration: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. Why is TXT used for so many unrelated purposes (email policy, domain verification) instead of dedicated record types?**
@@ -1177,7 +1215,7 @@ A: The provider generates a unique token and asks you to publish it as a TXT rec
 ### NS Record (Name Server)
 **Purpose**: Delegate domain to specific DNS servers
 
-```
+```text
 example.com.  IN  NS  ns1.nameserver.com.
 example.com.  IN  NS  ns2.nameserver.com.
 
@@ -1185,7 +1223,7 @@ Meaning: "Ask these servers for example.com records"
 ```
 
 **Subdomain Delegation:**
-```
+```text
 # Main domain managed by Cloudflare
 example.com.      IN  NS  ns1.cloudflare.com.
 
@@ -1193,6 +1231,8 @@ example.com.      IN  NS  ns1.cloudflare.com.
 blog.example.com. IN  NS  ns1.wordpress.com.
                            ns2.wordpress.com.
 ```
+
+*The text snippet above illustrates NS Record (Name Server): it shows the concrete form of the idea described in this section.*
 
 #### NS Record: Characteristics
 
@@ -1245,6 +1285,8 @@ graph TD
     AppNS --> ApiRec["api.app.example.com -> A record"]
 ```
 
+*The diagram above illustrates Diagram: Delegation via NS Records: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: Letting a Product Team Self-Serve DNS
 
 A large company's central IT team manages `company.com`, but a fast-moving product team needs to add and change DNS records for `product.company.com` several times a week for feature flags and A/B test infrastructure, which would otherwise bottleneck on IT ticket queues. Central IT delegates `product.company.com` to the product team's own DNS provider account via an NS record. The product team can now add/change records instantly through their own tooling, while central IT retains full control of the rest of the domain.
@@ -1281,6 +1323,8 @@ public class NsRecordController {
 }
 ```
 
+*The java snippet above illustrates Java/Spring Boot Code: Checking a Domain's Name Servers: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. What is the difference between an NS record and an A record?**
@@ -1298,7 +1342,7 @@ A: Check whether the domain's NS records at the registrar actually point to the 
 ### Other Important Records: SRV and CAA
 
 **SRV Record (Service Location):**
-```
+```text
 _service._proto.name.  TTL  IN  SRV  priority weight port target
 
 Example (Minecraft server):
@@ -1308,11 +1352,13 @@ _minecraft._tcp.example.com.  IN  SRV  0 5 25565  mc.example.com.
 ```
 
 **CAA Record (Certificate Authority Authorization):**
-```
+```text
 example.com.  IN  CAA  0 issue "letsencrypt.org"
 
 Meaning: "Only Let's Encrypt can issue SSL certs for this domain"
 ```
+
+*The text snippet above illustrates Other Important Records: SRV and CAA: it shows the concrete form of the idea described in this section.*
 
 #### SRV and CAA: Characteristics
 
@@ -1361,6 +1407,8 @@ graph TD
     Answer --> Connect["Connect to sip.example.com:5060"]
 ```
 
+*The diagram above illustrates Diagram: SRV Service Discovery: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: Locking Down Certificate Issuance After a Near-Miss
 
 A security audit at a mid-size company reveals that, in theory, any of dozens of publicly trusted certificate authorities could issue a valid HTTPS certificate for their domain, since no CAA record existed. Although no actual mis-issuance occurred, the team adds a CAA record restricting issuance to only the CA they actually use (`digicert.com`) plus an `iodef` reporting address. From that point on, if any other CA is ever asked (accidentally or maliciously) to issue a certificate for the domain, it's obligated to refuse and the company gets notified of the attempt.
@@ -1402,6 +1450,8 @@ public class CaaRecordController {
 }
 ```
 
+*The java snippet above illustrates Java/Spring Boot Code: Checking a Domain's CAA Policy: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. Why does HTTP/HTTPS not use SRV records the way SIP or XMPP does?**
@@ -1416,7 +1466,7 @@ A: Priority determines the order clients should try targets (lower first, like M
 ### DNS Caching: The Speed Secret
 
 **TTL (Time To Live):**
-```
+```text
 example.com.  3600  IN  A  93.184.216.34
               ↑ Cache for 3600 seconds (1 hour)
 
@@ -1428,7 +1478,7 @@ After migration:   3600   (1 hour)   ← Stable
 ```
 
 **Cache Hierarchy:**
-```
+```text
 ┌─────────────────┐  TTL: Varies
 │ Browser Cache   │  (respects TTL)
 └────────┬────────┘
@@ -1445,6 +1495,8 @@ After migration:   3600   (1 hour)   ← Stable
 │ DNS Server      │  (source of truth)
 └─────────────────┘
 ```
+
+*The text snippet above illustrates DNS Caching: The Speed Secret: it shows the concrete form of the idea described in this section.*
 
 #### DNS Caching: Characteristics
 
@@ -1506,6 +1558,8 @@ sequenceDiagram
     Note over Browser,Auth: Any client with a still-warm cache<br/>keeps seeing the OLD IP until its own TTL expires
 ```
 
+*The diagram above illustrates Diagram: TTL Expiry Across Cache Layers: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: A Botched Migration Without TTL Planning
 
 A team migrates their API server to a new IP without first lowering the record's TTL (left at the default 86400s / 24 hours). After the cutover, roughly half of users experience errors for up to a full day, because their ISP resolvers had cached the old IP and won't re-query until their TTL expires - even though the DNS record itself was updated correctly the moment the migration happened. The postmortem action item: always lower TTL to 300s at least a day in advance of any planned IP change, confirm the low TTL has propagated, make the change, verify, then raise TTL back to normal.
@@ -1547,6 +1601,8 @@ public class DnsTtlController {
 }
 ```
 
+*The java snippet above illustrates Java/Spring Boot Code: Checking a Record's TTL: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. What does a record's TTL actually control, precisely?**
@@ -1563,7 +1619,7 @@ A: It's the caching of "this name doesn't exist" (NXDOMAIN) responses, governed 
 
 ### GeoDNS: Multi-Region Routing
 
-```
+```text
 GeoDNS Routing:
 
 User in US → DNS returns: 52.1.1.1  (US East server)
@@ -1631,6 +1687,8 @@ graph TD
     DNS -->|"Detected: Asia"| AsiaIP["13.1.1.1 (AP-SOUTHEAST-1)"]
 ```
 
+*The diagram above illustrates Diagram: GeoDNS Routing Decision: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: Global Video Streaming Service
 
 A video streaming platform serves users on every continent from three regional data centers. Using GeoDNS (AWS Route 53 latency-based routing), a viewer in Tokyo resolving `stream.example.com` is automatically routed to the AP-SOUTHEAST-1 data center rather than the US-EAST-1 one, cutting startup latency from roughly 200ms to under 30ms - a meaningful difference for video start times and rebuffering rates, achieved with zero client-side logic.
@@ -1671,6 +1729,8 @@ public class GeoDnsController {
 }
 ```
 
+*The java snippet above illustrates Java/Spring Boot Code: Simulating Region Selection by Client IP: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. How does GeoDNS decide which IP to return for a given query?**
@@ -1684,7 +1744,7 @@ A: Providers like Route 53 let you attach a health check to each regional record
 
 ### Blue-Green Deployment via DNS
 
-```
+```text
 Before deployment:
 www.example.com → 10.0.1.50 (blue environment - v1.0)
 
@@ -1752,6 +1812,8 @@ graph LR
     Green -.->|"Rollback: flip DNS back"| Blue
 ```
 
+*The diagram above illustrates Diagram: Blue-Green Cutover: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: Safely Rolling Out a Major Platform Rewrite
 
 An e-commerce company rewrites its checkout service from a monolith to microservices - too risky for a gradual canary rollout given how different the new architecture is. They deploy the new version as a fully separate 'green' environment, run their entire automated test suite plus a day of internal dogfooding against its IP directly, then flip the `checkout.example.com` DNS record (pre-lowered to a 60s TTL) to point at green. Within minutes, all customer traffic is on the new architecture. When a subtle payment-processing bug is discovered two hours later, they instantly revert the DNS record back to blue while the bug is fixed, with zero customer-facing downtime either direction.
@@ -1786,6 +1848,8 @@ public class BlueGreenCutoverController {
 }
 ```
 
+*The java snippet above illustrates Java/Spring Boot Code: Blue-Green Cutover Controller: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. Why is DNS TTL the critical constraint when planning a blue-green deployment via DNS?**
@@ -1799,7 +1863,7 @@ A: That the green environment is fully healthy and correct when accessed directl
 
 ### CDN Configuration via DNS
 
-```
+```text
 Setup:
 ┌──────────────────────────────────────┐
 │ Origin Server: origin.example.com    │
@@ -1885,6 +1949,8 @@ sequenceDiagram
     end
 ```
 
+*The diagram above illustrates Diagram: CDN Request Flow: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: Handling a Traffic Spike from a Viral Post
 
 A news site's article goes viral, generating 50x normal traffic in minutes. Because their images and static assets are served through a CDN (via a `static.example.com` CNAME), the CDN's edge caches absorb the vast majority of the load, serving cached copies from locations near each reader. The origin server, which would have fallen over under 50x direct load, only sees a small fraction of requests (cache misses), keeping the site up throughout the spike.
@@ -1917,6 +1983,8 @@ public class CdnCacheControlController {
 }
 ```
 
+*The java snippet above illustrates Java/Spring Boot Code: Setting Cache-Control Headers for CDN Caching: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. What DNS record type is typically used to integrate a CDN, and why?**
@@ -1930,7 +1998,7 @@ A: The CDN's edge network has vastly more aggregate capacity and is often purpos
 
 ### DNS Failover Configuration
 
-```
+```text
 Health Check Based Failover:
 
 Primary:
@@ -2012,6 +2080,8 @@ sequenceDiagram
     DNS-->>DNS: Now serving Secondary IP
 ```
 
+*The diagram above illustrates Diagram: DNS Failover Sequence: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: Surviving a Data Center Outage
 
 An online banking platform runs its primary data center on the East Coast and a fully synced standby on the West Coast. When a regional power outage takes down the East Coast data center entirely, Route 53's health checks (probing an `/health` endpoint every 30 seconds) detect three consecutive failures and automatically switch the `www.bank.com` record to the West Coast standby's IP. Combined with a pre-configured 60-second TTL, most users are redirected to the working data center within about two to three minutes of the outage starting, with no engineer needing to be paged to make the DNS change themselves (though they are paged to investigate the underlying outage).
@@ -2060,6 +2130,8 @@ public class DnsFailoverSimulator {
     }
 }
 ```
+
+*The java snippet above illustrates Java/Spring Boot Code: A Simple Health-Check-Driven Failover Simulator: it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 
@@ -2137,6 +2209,8 @@ dig @208.67.222.222 example.com  # OpenDNS (US)
 # https://dnschecker.org
 ```
 
+*The bash snippet above illustrates DNS Commands & Tools: it shows the concrete form of the idea described in this section.*
+
 #### DNS Tools: Characteristics
 
 - **`dig` is the detailed, scriptable tool of choice**: It exposes the full response (answer section, authority section, additional section, flags, timing) and supports advanced modes like `+trace` and `+short`.
@@ -2187,6 +2261,8 @@ graph TD
     Public -->|"Correct"| ClientCache["Issue is local to the reporting user's device/browser cache"]
 ```
 
+*The diagram above illustrates Diagram: Debugging Workflow with dig: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: Diagnosing 'DNS Change Isn't Working' During an Incident
 
 During a migration, a customer reports the new site isn't loading and the old error page still appears. The on-call engineer runs `dig @ns1.example.com example.com` and confirms the authoritative server already has the correct new IP - ruling out a zone misconfiguration. They then run `dig @8.8.8.8 example.com` and see the old IP still cached, with a TTL counting down. This immediately tells them it's a propagation/caching issue, not a broken deployment, so they can confidently tell the customer the fix is already live and will reach them within the remaining TTL window, avoiding an unnecessary rollback.
@@ -2224,6 +2300,8 @@ public class DnsDiagnosticsController {
 }
 ```
 
+*The java snippet above illustrates Java/Spring Boot Code: A DNS Diagnostics Endpoint: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. What's the fastest way to determine whether a DNS problem is a zone misconfiguration versus a caching/propagation delay?**
@@ -2241,7 +2319,7 @@ A: Use a global propagation checker website (whatsmydns.net, dnschecker.org), wh
 ### DNS Security
 
 **DNSSEC (DNS Security Extensions):**
-```
+```text
 Problem: DNS responses can be spoofed
 
 Solution: Cryptographic signatures
@@ -2259,7 +2337,7 @@ example.com.  IN  RRSIG   A 8 2 3600 20260201000000 ...
 ```
 
 **DNS over HTTPS (DoH) / DNS over TLS (DoT):**
-```
+```text
 Traditional DNS: Plain text (can be intercepted)
   User → ISP DNS (port 53, unencrypted)
 
@@ -2271,6 +2349,8 @@ Benefits:
   ✓ Integrity (can't be modified)
   ✓ Bypasses censorship
 ```
+
+*The text snippet above illustrates DNS Security: it shows the concrete form of the idea described in this section.*
 
 #### DNS Security: Characteristics
 
@@ -2329,6 +2409,8 @@ graph TD
     ARecord --> Resolver["Validating resolver: signature checks out, answer trusted"]
 ```
 
+*The diagram above illustrates Diagram: DNSSEC Chain of Trust: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: Preventing a Cache-Poisoning Attack
 
 Before DNSSEC was widely deployed, security researcher Dan Kaminsky demonstrated in 2008 that an attacker on the same network path could race a legitimate DNS response with a forged one, and if the forged one arrived first (guessing a 16-bit transaction ID), the resolver would cache the attacker's answer - silently redirecting all future traffic for that domain to a server the attacker controls. A DNSSEC-validating resolver defeats this attack outright: even if the forged response wins the race, it fails signature validation (since the attacker doesn't have the zone's private key) and is discarded, protecting users even on a compromised or adversarial network path.
@@ -2372,6 +2454,8 @@ public class DnsSecurityController {
 }
 ```
 
+*The java snippet above illustrates Java/Spring Boot Code: Checking Whether a Domain Has DNSSEC Enabled: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. What problem does DNSSEC solve, and what does it explicitly NOT solve?**
@@ -2389,7 +2473,7 @@ A: An open resolver that answers recursive queries from any internet host can be
 ### Common DNS Issues
 
 **Issue 1: Propagation Delay**
-```
+```text
 Problem:
   Changed DNS record, but old IP still appears
 
@@ -2404,7 +2488,7 @@ Solution:
 ```
 
 **Issue 2: CNAME at Root**
-```
+```text
 Problem:
   example.com. CNAME other.com.  ← Not allowed!
 
@@ -2417,7 +2501,7 @@ Solution:
 ```
 
 **Issue 3: Multiple CNAMEs**
-```
+```text
 Problem:
   www → cdn → lb → server (too many hops)
 
@@ -2428,6 +2512,8 @@ Solution:
   Minimize CNAME chain depth
   Use A records when possible
 ```
+
+*The text snippet above illustrates Common DNS Issues: it shows the concrete form of the idea described in this section.*
 
 #### Common DNS Issues: Characteristics
 
@@ -2482,6 +2568,8 @@ graph TD
     Q3 -->|No| DeepDive["Escalate: check provider status, network path, app-level bug"]
 ```
 
+*The diagram above illustrates Diagram: Root Cause Triage for DNS Complaints: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: A Failed Domain Migration Post-Mortem
 
 A startup migrating domain registrars accidentally left TTL at the default 24 hours and switched name servers immediately, expecting an instant cutover. For the next day, roughly half of visitors (whoever had a warm cache) kept hitting the old, soon-to-be-decommissioned hosting provider, which they'd already shut down - resulting in a broken site for a significant chunk of users during a product launch. The post-mortem's top action item became a mandatory pre-migration checklist requiring TTL to be lowered to 300s at least 24 hours before any future NS/record changes.
@@ -2526,6 +2614,8 @@ public class DnsMigrationChecklistController {
 }
 ```
 
+*The java snippet above illustrates Java/Spring Boot Code: A Pre-Migration DNS Checklist Validator: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. A team reports 'our DNS change isn't working' three minutes after making it. What's the first question you'd ask?**
@@ -2539,7 +2629,7 @@ A: Each hop is both extra latency (an additional round trip) and an additional p
 
 ### DNS Best Practices
 
-```
+```text
 ✓ Use low TTL (300s) before making changes
 ✓ Use high TTL (3600s+) for stable records
 ✓ Implement DNSSEC for security
@@ -2607,6 +2697,8 @@ graph TD
     BP --> Routing["Smart routing:<br/>GeoDNS + failover for global/critical services"]
 ```
 
+*The diagram above illustrates Diagram: DNS Best Practices at a Glance: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: A DNS Health Checklist Catching a Problem Before Customers Do
 
 An engineering team runs a quarterly DNS audit as part of their best-practices checklist. During one review, they discover a CAA record was never configured on a newly launched product domain, an expired DKIM key that had been silently failing for weeks (with no one noticing because DMARC was still set to `p=none`), and a CNAME pointing at a decommissioned staging environment. None of these had caused a customer-visible outage yet, but each was a latent risk (certificate mis-issuance exposure, silently degrading email deliverability, and a subdomain-takeover opportunity respectively). Fixing all three during the scheduled audit avoided what could have become three separate future incidents.
@@ -2669,6 +2761,8 @@ public class DnsBestPracticesAuditController {
 }
 ```
 
+*The java snippet above illustrates Java/Spring Boot Code: An Automated DNS Best-Practices Auditor: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. Why is 'use a single DNS provider' called out as an anti-pattern even though it's the simplest setup?**
@@ -2702,7 +2796,7 @@ This is a classic system design interview question: "Design a DNS service" (eith
 
 **Back-of-envelope capacity estimate (authoritative server for a large domain):**
 
-```
+```text
 Assume: 10,000 unique record names, average 3 records per name (A, AAAA, TXT, etc.)
 Assume: 50,000 queries/sec at peak (a large, popular domain)
 
@@ -2797,6 +2891,8 @@ graph TD
     Replicator --> Edge3
 ```
 
+*The diagram above illustrates Diagram: High-Level DNS Server Architecture: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: Building an Internal Service-Discovery DNS Layer
 
 A large microservices platform (hundreds of services, thousands of instances) needs internal service discovery: `payments-service.internal` should resolve to a currently-healthy instance IP. Rather than using a heavyweight service mesh for this alone, the platform team runs an internal-only DNS layer (conceptually similar to CoreDNS in Kubernetes): each service registers/deregisters its instances through an admin API as it scales up/down or fails health checks, a durable store holds the canonical registry, and lightweight in-memory serving nodes (one per availability zone) answer queries from application containers with very short TTLs (5-10 seconds) so scaling events and instance failures are reflected almost immediately. This reuses the well-understood DNS query/response model and existing client-side DNS libraries in every language, instead of requiring every service to integrate a bespoke service-discovery client.
@@ -2887,6 +2983,8 @@ class DnsAdminController {
     }
 }
 ```
+
+*The java snippet above illustrates Java/Spring Boot Code: A Minimal In-Memory Authoritative DNS Record Store: it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 

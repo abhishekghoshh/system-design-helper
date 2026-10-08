@@ -195,6 +195,8 @@ class ConsensusDemoController {
 record ReplicateRequest(List<String> peers, String entry) {}
 ```
 
+*The java snippet above illustrates Understanding Distributed Consensus: Java/Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Understanding Distributed Consensus: Interview Questions and Answers
 
 **Q1. What problem does distributed consensus actually solve?**
@@ -361,6 +363,8 @@ class RaftNodeStateMachine {
 }
 ```
 
+*The java snippet above illustrates Raft Node States: Java/Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Raft Node States: Interview Questions and Answers
 
 **Q1. What are the three states a Raft node can be in, and can a node be in more than one at a time?**
@@ -515,6 +519,8 @@ class RaftTermManager {
     }
 }
 ```
+
+*The java snippet above illustrates Terms: Java/Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Terms: Interview Questions and Answers
 
@@ -697,6 +703,8 @@ class RaftElectionController {
     }
 }
 ```
+
+*The java snippet above illustrates Leader Election: Java/Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Leader Election: Interview Questions and Answers
 
@@ -886,6 +894,8 @@ class RaftReplicationController {
 }
 ```
 
+*The java snippet above illustrates Log Replication: Java/Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Log Replication: Interview Questions and Answers
 
 **Q1. What has to be true before a Leader considers a log entry "committed"?**
@@ -1030,6 +1040,8 @@ class RaftSafetyChecks {
     }
 }
 ```
+
+*The java snippet above illustrates Safety: Java/Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Safety: Interview Questions and Answers
 
@@ -1183,6 +1195,8 @@ class RaftCommitIndexCalculator {
     }
 }
 ```
+
+*The java snippet above illustrates Commit Rules: Java/Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Commit Rules: Interview Questions and Answers
 
@@ -1360,6 +1374,8 @@ class ClusterMembershipController {
 }
 ```
 
+*The java snippet above illustrates Cluster Membership Changes: Java/Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Cluster Membership Changes: Interview Questions and Answers
 
 **Q1. Why can't a Raft cluster just switch every node from the old configuration to the new one directly, all at once?**
@@ -1512,6 +1528,8 @@ class RaftSnapshotService {
     }
 }
 ```
+
+*The java snippet above illustrates Log Compaction: Java/Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Log Compaction: Interview Questions and Answers
 
@@ -1698,6 +1716,8 @@ class RaftClientController {
 }
 ```
 
+*The java snippet above illustrates Client Interaction: Java/Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Client Interaction: Interview Questions and Answers
 
 **Q1. What happens when a client mistakenly sends a write request to a Follower instead of the Leader?**
@@ -1846,6 +1866,8 @@ class ConsensusComparisonController {
     }
 }
 ```
+
+*The java snippet above illustrates Raft vs Paxos vs ZAB: Java/Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Raft vs Paxos vs ZAB: Interview Questions and Answers
 
@@ -2006,6 +2028,8 @@ class PartitionSimulationController {
     }
 }
 ```
+
+*The java snippet above illustrates Network Partitions: Java/Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Network Partitions: Interview Questions and Answers
 
@@ -2188,6 +2212,8 @@ class MultiRaftController {
     }
 }
 ```
+
+*The java snippet above illustrates Real-World Implementations: Java/Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Real-World Implementations: Interview Questions and Answers
 
@@ -2402,6 +2428,8 @@ class KeyValueController {
     }
 }
 ```
+
+*The java snippet above illustrates Designing a Raft-Based KV Store: Java/Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Designing a Raft-Based KV Store: Interview Questions and Answers
 

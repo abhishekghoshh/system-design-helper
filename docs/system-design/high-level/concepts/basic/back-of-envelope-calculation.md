@@ -24,12 +24,14 @@ Quick estimations for system design.
 4. [Worked Numerical Examples](#worked-examples)
 5. [Rules of Thumb](#rules-of-thumb)
 6. [Hardware Impact on Throughput](#hardware-impact-on-throughput)
-7. [Technology Scale Benchmarks](#technology-scale-benchmarks-per-single-node--partition)
+7. [Technology Scale Benchmarks (Per Single Node / Partition)](#technology-scale-benchmarks-per-single-node-partition)
 8. [Replication vs. Partitioning vs. Sharding](#when-to-use-replication-partitioning-and-sharding)
-9. [Handling Peak Load (Black Friday / Flash Sale Scenarios)](#handling-peak-load-black-friday--flash-sale-scenarios)
+9. [Handling Peak Load (Black Friday / Flash Sale Scenarios)](#handling-peak-load-black-friday-flash-sale-scenarios)
 
 Each topic below walks through the underlying concept, a real-world use case, common interview questions with answers, at least one diagram, and a small Java example that turns the math into runnable code.
 
+2b. [Back of Envelope Calculation](#back-of-envelope-calculation)
+2c. [A Simple Process](#a-simple-process)
 ### Key Numbers: Traffic and Size Conversions
 
 - 1 million requests/day ≈ 12 requests/second
@@ -166,6 +168,8 @@ flowchart LR
     style G fill:#ffebee,stroke:#f44336
 ```
 
+*The diagram above illustrates Latency Hierarchy Visualization: it maps the key components and their interactions described in this section.*
+
 ```mermaid
 flowchart TD
         A[Business Requirement] --> B[Estimate Daily Traffic]
@@ -178,6 +182,8 @@ flowchart TD
         E --> I[Plan Network and Cache]
         F --> J[Plan Database and Retention]
 ```
+
+*The diagram above illustrates Latency Hierarchy Visualization: it maps the key components and their interactions described in this section.*
 
 #### Real-World Use Case
 
@@ -358,6 +364,8 @@ public final class EstimationPipeline {
 }
 ```
 
+*The java snippet above illustrates Java: Implementing the Six-Step Estimation Pipeline: it shows the concrete form of the idea described in this section.*
+
 ### Worked Examples
 
 #### Example 1: Estimating API Throughput
@@ -466,6 +474,8 @@ public final class StorageGrowthCalculator {
 }
 ```
 
+*The java snippet above illustrates Java: Reusable Storage Growth Calculator: it shows the concrete form of the idea described in this section.*
+
 ### Rules of Thumb
 
 - Use exact numbers only when a small error changes the design decision.
@@ -527,6 +537,8 @@ public final class EstimationSanityChecker {
     }
 }
 ```
+
+*The java snippet above illustrates Java: A Simple Estimation Sanity Checker: it shows the concrete form of the idea described in this section.*
 
 ### Hardware Impact on Throughput
 
@@ -610,6 +622,8 @@ public final class InstanceSizer {
 }
 ```
 
+*The java snippet above illustrates Java: Choosing an Instance Size from a Peak RPS Target: it shows the concrete form of the idea described in this section.*
+
 ---
 
 ### Technology Scale Benchmarks (Per Single Node / Partition)
@@ -682,6 +696,8 @@ public final class ShardCountCalculator {
 }
 ```
 
+*The java snippet above illustrates Java: Estimating Required Shard or Broker Count: it shows the concrete form of the idea described in this section.*
+
 ---
 
 ### When to Use Replication, Partitioning, and Sharding
@@ -713,6 +729,8 @@ flowchart TD
     E --> E2[Decouple state to\nRedis Pub-Sub / Kafka]
     E1 --> E3[Stateless servers\nShared session store]
 ```
+
+*The diagram above illustrates Decision Flowchart: it maps the key components and their interactions described in this section.*
 
 #### Thresholds: When to Pull Each Lever
 
@@ -860,6 +878,8 @@ flowchart LR
     end
 ```
 
+*The diagram above illustrates Architecture: Layers of Defence: it maps the key components and their interactions described in this section.*
+
 #### Strategy: Predictable vs. Unpredictable Spikes
 
 ```mermaid
@@ -879,6 +899,8 @@ flowchart TD
 
     H --> J[Async workers drain\nqueue after spike subsides]
 ```
+
+*The diagram above illustrates Strategy: Predictable vs. Unpredictable Spikes: it maps the key components and their interactions described in this section.*
 
 #### Techniques by Layer
 

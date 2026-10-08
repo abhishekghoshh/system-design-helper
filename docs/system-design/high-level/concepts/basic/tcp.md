@@ -33,6 +33,8 @@ This page is organized into the following topics. Each major topic includes a de
 13. [The Wisdom: Choosing and Living With TCP](#the-wisdom)
 14. [TCP Protocol: Characteristics, Pros, Cons, Use Cases, Components, Patterns, Benefits, Challenges, Best Practices and When to Use](#tcp-protocol-characteristics-pros-cons-use-cases-components-patterns-benefits-challenges-best-practices-and-when-to-use)
 
+16. [The Deep Theory: Solving the Impossible](#the-deep-theory-solving-the-impossible)
+17. [When TCP Struggles](#when-tcp-struggles)
 ### The Reliable Foundation of the Internet
 
 TCP is one of the **crown jewels of computer science** - a protocol so elegant and robust that it has powered the internet for over 40 years. Invented by Vint Cerf and Bob Kahn in 1974 and formally standardized in [RFC 793](https://www.rfc-editor.org/rfc/rfc793) (1981), TCP represents the solution to one of computing's hardest problems: **how to guarantee reliable, ordered, byte-accurate delivery over a network that offers no such guarantee by itself**. It sits at Layer 4 (Transport) of the OSI model and at the Transport layer of the TCP/IP model, riding on top of IP (which only promises 'best-effort' delivery) and underneath application protocols like HTTP, SMTP, and SSH.
@@ -93,7 +95,7 @@ A: Sequence numbers (to detect gaps and duplicates and to reorder data), acknowl
 
 ### The Three-Way Handshake: Establishing Truth
 
-```
+```text
 Client                                Server
   |                                      |
   |-------SYN (seq=100)----------------->|
@@ -186,6 +188,8 @@ sequenceDiagram
     Note over C,S: Data can now flow both directions
 ```
 
+*The diagram above illustrates Three-Way Handshake: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Three-Way Handshake: Real-Life Use Case
 
 A mobile banking app opens a fresh TCP connection to the bank's API gateway every time the user opens the app on a cellular network with 150ms RTT to the nearest data center. That single handshake costs 150ms before a single byte of the login request can be sent, on top of the TLS handshake layered on top of it. To reduce this, the bank's mobile SDK maintains a persistent, pooled connection to the gateway (keep-alive) so that after the very first request, subsequent requests (balance check, transaction history) reuse the already-established TCP connection and skip the handshake entirely, cutting perceived latency dramatically.
@@ -235,6 +239,8 @@ public class HandshakeDemo {
 }
 ```
 
+*The java snippet above illustrates Three-Way Handshake: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Three-Way Handshake: Interview Questions and Answers
 
 **Q1. Why does TCP use three steps instead of two for connection establishment?**
@@ -255,7 +261,7 @@ A: Yes, in the rare 'simultaneous open' case, both sides send a SYN to each othe
 ### Guaranteed Delivery: The Acknowledgment Dance
 
 **How It Works:**
-```
+```text
 Sender                               Receiver
   |                                     |
   |----Packet 1 (seq=100, data="Hello")-|
@@ -355,6 +361,8 @@ sequenceDiagram
     Note over S,R: Fast retransmit alternative: 3 duplicate ACK(105) trigger immediate resend, no timeout wait
 ```
 
+*The diagram above illustrates Guaranteed Delivery: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Guaranteed Delivery: Real-Life Use Case
 
 A payment service posts a transaction confirmation over a TCP connection to a downstream ledger service inside the same data center. During a brief top-of-rack switch hiccup, one segment carrying part of the JSON payload is dropped. Because three duplicate ACKs arrive at the sender almost immediately (the receiver keeps ACKing the last good byte as later segments arrive), fast retransmit kicks in within a few milliseconds, well before the multi-hundred-millisecond RTO timer would have fired. The ledger service receives the complete, correctly ordered payload with no application-level retry logic and no double-processing, exactly the guarantee the transaction depends on.
@@ -407,6 +415,8 @@ public class ReliableStreamDemo {
 }
 ```
 
+*The java snippet above illustrates Guaranteed Delivery: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Guaranteed Delivery: Interview Questions and Answers
 
 **Q1. What is the difference between a timeout-based retransmission and a fast retransmit?**
@@ -430,7 +440,7 @@ A: The data was already handed to the kernel's send buffer, so the OS continues 
 Sender can produce data faster than receiver can consume it.
 
 **The Solution: Sliding Window**
-```
+```text
 Receiver: "I have 10KB buffer available" (window size = 10KB)
 Sender: "Got it, I'll send max 10KB unacknowledged data"
   ↓
@@ -516,6 +526,8 @@ sequenceDiagram
     S->>R: Data resumes
 ```
 
+*The diagram above illustrates Flow Control: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Flow Control: Real-Life Use Case
 
 A log-shipping agent streams application logs over TCP to a centralized log aggregator. The aggregator occasionally falls behind during a disk I/O spike (its indexing step is momentarily slow). Its TCP receive buffer fills up and it advertises a shrinking, then zero, window. The log-shipping agent automatically pauses sending (governed entirely by the kernel's TCP stack, no application code involved) instead of overwhelming the aggregator or silently dropping logs. Once the aggregator's indexer catches up and drains its buffer, the window reopens and log shipping resumes exactly where it left off, no logs lost, no manual backpressure logic needed in either application.
@@ -574,6 +586,8 @@ public class FlowControlDemo {
 }
 ```
 
+*The java snippet above illustrates Flow Control: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Flow Control: Interview Questions and Answers
 
 **Q1. What is the difference between flow control and congestion control?**
@@ -606,7 +620,7 @@ TCP dynamically adjusts sending rate based on network conditions.
 **Algorithms:**
 
 1. **Slow Start** (Exponential Growth):
-   ```
+```text
    Start: Send 1 packet
    Got ACK: Send 2 packets
    Got ACKs: Send 4 packets
@@ -616,7 +630,7 @@ TCP dynamically adjusts sending rate based on network conditions.
    - **Goal**: Quickly find network capacity
 
 2. **Congestion Avoidance** (Linear Growth):
-   ```
+```text
    After threshold: Increase by 1 packet per RTT
    Got ACKs: Window += 1/window
    ```
@@ -624,7 +638,7 @@ TCP dynamically adjusts sending rate based on network conditions.
    - **Goal**: Avoid triggering congestion
 
 3. **Fast Recovery** (After Packet Loss):
-   ```
+```text
    Packet loss detected
    → Reduce window by half (multiplicative decrease)
    → Continue sending (don't stop)
@@ -702,6 +716,8 @@ graph LR
     B -->|"severe loss / timeout"| A
 ```
 
+*The diagram above illustrates Congestion Control: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Congestion Control: Real-Life Use Case
 
 A video analytics company replicates large batches of processed footage nightly from its US data center to an EU data center over a long-haul, high-bandwidth-delay-product link (150ms RTT, 10Gbps capacity). Using the classic Cubic algorithm, the transfer took a long time to ramp up to full throughput after any brief loss event, because linear congestion-avoidance growth on such a large bandwidth-delay-product path recovers very slowly. After switching the sending servers to BBR, which models the path's actual bandwidth and minimum RTT directly instead of only reacting to loss, the same nightly transfer recovered to full throughput within a few RTTs after a loss blip instead of tens of seconds, materially shortening the nightly replication window.
@@ -759,6 +775,8 @@ public class CongestionControlDemo {
 }
 ```
 
+*The java snippet above illustrates Congestion Control: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Congestion Control: Interview Questions and Answers
 
 **Q1. What is the difference between the congestion window (cwnd) and the receive window (rwnd)?**
@@ -782,7 +800,7 @@ A: A timeout implies a more severe problem (the sender heard nothing back at all
 Packets take different routes, arrive out of order.
 
 **The Solution:**
-```
+```text
 Received: Packet 3, Packet 1, Packet 5, Packet 2, Packet 4
 TCP: Reorders to 1, 2, 3, 4, 5
 Application: Sees data in correct order
@@ -841,6 +859,8 @@ graph TD
     C -->|"Yes, contiguous run available"| D["Deliver in-order bytes to application: 1,2,3,4,5"]
 ```
 
+*The diagram above illustrates Ordered Delivery: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Ordered Delivery: Real-Life Use Case
 
 A video-on-demand platform serves file segments over TCP through a CDN with many parallel network paths between origin and edge. Packets for a single HTTP response routinely take different physical routes and arrive out of order at the edge server. Because TCP's ordered-delivery guarantee reassembles them transparently, the CDN's application code (and the browser downloading the file) only ever sees a clean, sequential byte stream, no custom reordering logic is needed anywhere in the stack, even though the underlying packets never traveled the same route.
@@ -859,7 +879,7 @@ A: PAWS (Protect Against Wrapped Sequence numbers) uses the TCP timestamp option
 ### Connection Termination: Graceful Goodbye
 
 **Four-Way Handshake:**
-```
+```text
 Client                              Server
   |                                    |
   |-------FIN ("I'm done sending")---->|
@@ -944,6 +964,8 @@ sequenceDiagram
     Note over C,S: Connection fully closed only after TIME_WAIT expires on the client
 ```
 
+*The diagram above illustrates Connection Termination: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Connection Termination: Real-Life Use Case
 
 A high-traffic load balancer terminates hundreds of thousands of short-lived client connections per hour, always acting as the active closer once it has forwarded the final byte of the response. Without tuning, this causes a very large number of sockets to sit in TIME_WAIT (each for roughly 60 seconds, 2xMSL on many systems), eventually exhausting the ephemeral port range and causing new connection failures. The operations team addresses this by enabling `tcp_tw_reuse`, increasing the ephemeral port range, and, more importantly, encouraging upstream services to use persistent, pooled connections instead of opening a new one per request, directly reducing the rate of connection churn that causes the TIME_WAIT buildup in the first place.
@@ -1000,6 +1022,8 @@ public class GracefulCloseDemo {
 }
 ```
 
+*The java snippet above illustrates Connection Termination: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Connection Termination: Interview Questions and Answers
 
 **Q1. Why does TCP connection termination take four steps instead of two?**
@@ -1019,7 +1043,7 @@ A: A half-close (via the `shutdown()` system call, distinct from `close()`) send
 
 ### TCP Header: Every Bit Matters
 
-```
+```text
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -1109,6 +1133,8 @@ graph TD
     H --> O["Options: MSS, Window Scale, SACK, Timestamps"]
 ```
 
+*The diagram above illustrates TCP Header: Diagram: it maps the key components and their interactions described in this section.*
+
 #### TCP Header: Real-Life Use Case
 
 A platform team investigating intermittent slow file uploads from a specific corporate office captures traffic with `tcpdump` and inspects the TCP header options in the handshake. They discover the corporate firewall strips the Window Scale option from outgoing SYN packets, silently capping every connection's negotiated window at 64KB. On the office's 200ms-RTT link to the cloud provider, that caps throughput far below the available bandwidth (a direct consequence of the bandwidth-delay product, covered next). Fixing the firewall's TCP option handling immediately restores full throughput, with no application code changes at all, this diagnosis was only possible because the header's options were inspected directly.
@@ -1154,6 +1180,8 @@ public class TcpHeaderParser {
 }
 ```
 
+*The java snippet above illustrates TCP Header: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### TCP Header: Interview Questions and Answers
 
 **Q1. What determines the size of the TCP header, and what is the maximum?**
@@ -1176,7 +1204,7 @@ A: Some middleboxes (older firewalls, certain NAT devices) strip TCP options, in
 - **Connection Close**: 1 RTT for termination
 
 **Throughput:**
-```
+```text
 Max Throughput = Window Size / RTT
 ```
 - **Window Size**: Limited by receiver buffer and congestion window
@@ -1184,7 +1212,7 @@ Max Throughput = Window Size / RTT
 - **Implication**: High RTT = lower throughput (long distance problem)
 
 **Bandwidth-Delay Product:**
-```
+```text
 BDP = Bandwidth × RTT
 ```
 - **Optimal Window Size** = BDP
@@ -1248,6 +1276,8 @@ graph LR
     E -->|"No"| G["Link under-utilized<br/>throughput capped at window/RTT"]
 ```
 
+*The diagram above illustrates Performance Characteristics: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Performance Characteristics: Real-Life Use Case
 
 A company replicates database backups nightly from its primary region (US-East) to a disaster-recovery region (Asia-Pacific), a path with roughly 220ms RTT and a provisioned 1 Gbps link. The BDP for this path is `1,000,000,000 bits/sec x 0.220 sec / 8 = ~27.5 MB`. With default OS socket buffers capped around 4-8MB and window scaling working correctly but buffers too small, the transfer only ever achieves a fraction of the 1 Gbps capacity, taking far longer than expected. After explicitly increasing `SO_SNDBUF`/`SO_RCVBUF` (and the corresponding kernel-wide TCP buffer limits) to comfortably exceed the ~27.5MB BDP, the nightly replication job fully utilizes the provisioned 1 Gbps link and finishes in a fraction of the previous time.
@@ -1285,6 +1315,8 @@ public class BdpTuningDemo {
     }
 }
 ```
+
+*The java snippet above illustrates Performance Characteristics: Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Performance Characteristics: Interview Questions and Answers
 
@@ -1346,6 +1378,8 @@ graph TD
     Q -->|"Yes"| T["Use TCP<br/>web, file transfer, APIs, DB, SSH"]
     Q -->|"No, real-time / loss-tolerant"| U["Consider UDP-based protocol<br/>live video, gaming, VoIP, QUIC/HTTP3"]
 ```
+
+*The diagram above illustrates When TCP Shines / Struggles: Diagram: it maps the key components and their interactions described in this section.*
 
 #### When TCP Shines / Struggles: Real-Life Use Case
 
@@ -1436,6 +1470,8 @@ graph TD
     Cubic --> BBR["2016: TCP BBR (Google)<br/>Model-based: bandwidth + RTT estimation, avoids bufferbloat"]
 ```
 
+*The diagram above illustrates TCP Variants: Diagram: it maps the key components and their interactions described in this section.*
+
 #### TCP Variants: Real-Life Use Case
 
 A large streaming video provider serving content globally switches its edge servers from Cubic to BBR after observing that Cubic-based connections were experiencing significant queuing delay (bufferbloat) on last-mile residential broadband links, hurting startup latency and rebuffering rates for viewers on congested home networks. After the switch, median time-to-first-frame and rebuffering events measurably improve on affected networks because BBR paces sending based on a direct estimate of the path's actual bandwidth and RTT rather than waiting for a router buffer to fill up and drop a packet before backing off.
@@ -1469,6 +1505,8 @@ public class TcpVariantsDemo {
     }
 }
 ```
+
+*The java snippet above illustrates TCP Variants: Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### TCP Variants: Interview Questions and Answers
 
@@ -1504,6 +1542,8 @@ graph TD
     Q -->|"Yes, and low latency matters more"| UDP2["UDP<br/>best-effort, connectionless, minimal overhead"]
     UDP2 -.->|"need some reliability, but on your terms"| Custom["Custom / QUIC-style reliability over UDP"]
 ```
+
+*The diagram above illustrates TCP vs UDP: Diagram: it maps the key components and their interactions described in this section.*
 
 #### TCP vs UDP: Real-Life Use Case
 

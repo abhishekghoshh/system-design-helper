@@ -130,7 +130,7 @@ Structural patterns embody several key design principles:
    → Use **Proxy**
 
 **Decision Tree:**
-```
+```text
 Do you need to change an interface?
 ├─ Yes → ADAPTER
 └─ No → Do you need to simplify complex interfaces?
@@ -143,6 +143,7 @@ Do you need to change an interface?
             ├─ Yes, separate abstraction/implementation → BRIDGE
             └─ No, memory optimization needed → FLYWEIGHT
 ```
+*Use this tree to pick the structural pattern that matches the structural problem at hand.*
 
 ---
 
@@ -187,7 +188,3 @@ Do you need to change an interface?
 - **Adapter:** Anti-Corruption Layer between bounded contexts
 - **Facade:** Application Services simplifying domain complexity
 - **Composite:** Aggregate roots containing entities
-
----
-
-### Structural Patterns in Modern Software Architecture

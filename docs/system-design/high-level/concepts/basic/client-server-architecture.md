@@ -25,6 +25,17 @@
 10. [Best Practices](#best-practices)
 11. [When to Use Client-Server Architecture](#when-to-use-client-server-architecture)
 
+13. [The Foundational Paradigm of Distributed Computing](#the-foundational-paradigm-of-distributed-computing)
+14. [The Deep Theory](#the-deep-theory)
+15. [The State Problem](#the-state-problem)
+16. [Architectural Tiers: Evolution of Separation](#architectural-tiers-evolution-of-separation)
+17. [The Communication Contract: APIs](#the-communication-contract-apis)
+18. [Request-Response Patterns](#request-response-patterns)
+19. [The Scalability Implications](#the-scalability-implications)
+20. [Modern Evolutions](#modern-evolutions)
+21. [The Fundamental Trade-offs](#the-fundamental-trade-offs)
+22. [The Wisdom](#the-wisdom)
+23. [Java and Spring Boot Examples](#java-and-spring-boot-examples)
 ---
 
 ### The Foundational Paradigm of Distributed Computing
@@ -46,6 +57,8 @@ graph LR
         S -- "Response (Here it is)" --> C
     end
 ```
+
+*The diagram above illustrates The Foundational Paradigm of Distributed Computing: it maps the key components and their interactions described in this section.*
 
 ---
 
@@ -289,7 +302,7 @@ The API is the **formal contract** between client and server. It defines precise
 
 The analogy to an OOP interface is precise:
 
-```
+```http
 // Java Interface
 interface UserRepository {
     User findById(Long id);
@@ -751,6 +764,8 @@ flowchart TB
     S2 --> Auth
 ```
 
+*The diagram above illustrates Components: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Architectural Patterns
@@ -935,6 +950,8 @@ public class UserController {
 }
 ```
 
+*The java snippet above illustrates 1. Simple REST controller: it shows the concrete form of the idea described in this section.*
+
 #### 2. Service with validation
 
 ```java
@@ -968,6 +985,8 @@ public class UserService {
 }
 ```
 
+*The java snippet above illustrates 2. Service with validation: it shows the concrete form of the idea described in this section.*
+
 #### 3. Client using RestClient
 
 ```java
@@ -995,6 +1014,8 @@ public class UserApiClient {
     }
 }
 ```
+
+*The java snippet above illustrates 3. Client using RestClient: it shows the concrete form of the idea described in this section.*
 
 #### 4. Stateless session with Redis
 

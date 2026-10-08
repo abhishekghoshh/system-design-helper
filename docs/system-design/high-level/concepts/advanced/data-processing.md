@@ -16,7 +16,7 @@
 1. [Introduction](#introduction)
 2. [Batch Processing](#batch-processing)
 3. [Stream Processing](#stream-processing)
-4. [Text-Based Search and Indexing](#text-based-search-and-indexing)
+4. [Text-Based Search & Indexing](#text-based-search-indexing)
 5. [Characteristics](#characteristics)
 6. [Pros](#pros)
 7. [Cons](#cons)
@@ -354,6 +354,8 @@ flowchart LR
     Index --> Query[Query engine]
 ```
 
+*The diagram above illustrates Components: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Patterns
@@ -533,6 +535,8 @@ public class BatchJobConfig {
 }
 ```
 
+*The java snippet above illustrates 1. Batch job with Spring Batch: it shows the concrete form of the idea described in this section.*
+
 #### 2. Kafka stream processing
 
 ```java
@@ -562,6 +566,8 @@ public class StreamProcessingConfig {
 }
 ```
 
+*The java snippet above illustrates 2. Kafka stream processing: it shows the concrete form of the idea described in this section.*
+
 #### 3. Search service with a repository abstraction
 
 ```java
@@ -590,6 +596,8 @@ public class SearchService {
     public record Document(String id, String title, Map<String, Object> fields) {}
 }
 ```
+
+*The java snippet above illustrates 3. Search service with a repository abstraction: it shows the concrete form of the idea described in this section.*
 
 #### 4. Scheduled data processing task
 

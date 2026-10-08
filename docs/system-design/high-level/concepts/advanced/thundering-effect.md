@@ -94,7 +94,7 @@ The **Thundering Herd Effect** is a problem that occurs when a large number of p
 
 #### Diagram
 
-```
+```text
 Without Mitigation:
 ==================
 
@@ -133,6 +133,8 @@ Time: 12:00:00 - 12:00:05 PM
 Result: ✅ Controlled Load Distribution
 ```
 
+*The text snippet above illustrates Diagram: it shows the concrete form of the idea described in this section.*
+
 ```mermaid
 sequenceDiagram
     participant U as 10,000 Users
@@ -145,6 +147,8 @@ sequenceDiagram
     S-->>U: Timeouts / 5xx errors
     Note over U,D: Without mitigation: herd overwhelms every layer at once
 ```
+
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
 
 #### Real-Life Use Case: Design BookMyShow Ticket Booking
 
@@ -225,6 +229,8 @@ public class ThunderingHerdDemo {
     }
 }
 ```
+
+*The java snippet above illustrates Java Code: Simulating Thundering Herd With and Without Mitigation: it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 
@@ -320,6 +326,8 @@ sequenceDiagram
     Cache-->>C2: HIT (fresh value written by C1)
 ```
 
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: A Popular Cache Eviction for TTL
 
 Consider an e-commerce "flash sale" page that caches each product's live price and stock count in Redis with a 30-second TTL, refreshed from a database aggregation query that joins inventory, promotions, and pricing rules. During a flash sale, one specific product page receives 5,000 requests per second.
@@ -392,6 +400,8 @@ public class StampedeProtectedCache<K, V> {
     }
 }
 ```
+
+*The java snippet above illustrates Java Code: Cache Stampede Protection (Lock + Stale-While-Revalidate): it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 
@@ -467,7 +477,7 @@ A **retry storm** happens when many clients that experience a failure (a timeout
 
 #### Diagram
 
-```
+```text
 Without Jitter (synchronized waves):        With Full Jitter (smoothed load):
 =====================================        =================================
 t=0   ████████████████ (initial burst)       t=0   ████████████████ (initial burst)
@@ -476,6 +486,8 @@ t=2s  ████████████████ (retry wave 1)         t=
 t=4s  ████████████████ (retry wave 2)         t=3-7s ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ (spread retries)
 Result: repeated spikes hit backend           Result: smooth, absorbable load
 ```
+
+*The text snippet above illustrates Diagram: it shows the concrete form of the idea described in this section.*
 
 #### Exponential Backoff
 
@@ -529,6 +541,8 @@ wait_time = temp/2 + random(0, temp/2)
 wait_time = random(base_delay, previous_wait_time * 3)
 ```
 
+*The python snippet above illustrates Jitter (Randomization): it shows the concrete form of the idea described in this section.*
+
 #### Reference Implementation (Python)
 
 ```python
@@ -576,6 +590,8 @@ def book_ticket_with_backoff(
     
     return None  # All retries exhausted
 ```
+
+*The python snippet above illustrates Reference Implementation (Python): it shows the concrete form of the idea described in this section.*
 
 #### Real-Life Use Case: BookMyShow Mobile App Retry Behavior
 
@@ -629,6 +645,8 @@ public class RetryWithBackoffAndJitter {
     }
 }
 ```
+
+*The java snippet above illustrates Java Code: Exponential Backoff with Full Jitter: it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 
@@ -716,6 +734,8 @@ flowchart LR
     Workers --> DB["Database / Payment Gateway"]
 ```
 
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: Sudden Surge During a World Cup Final on Hotstar
 
 Consider a Cricket World Cup final broadcast live on Hotstar (Disney+ Hotstar), which set real-world records for concurrent streams during major India matches.
@@ -780,6 +800,8 @@ public class TokenBucketRateLimiter {
     }
 }
 ```
+
+*The java snippet above illustrates Java Code: Token Bucket Rate Limiter: it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 
@@ -871,6 +893,8 @@ sequenceDiagram
     R2->>R2: Wait briefly, then read fresh cached value
 ```
 
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: Seat Locking in BookMyShow and TTL Cache Regeneration
 
 Two concrete situations from earlier in this page both come down to the same distributed-lock mechanism:
@@ -917,6 +941,8 @@ public class SingleFlightCoalescer<K, V> {
     }
 }
 ```
+
+*The java snippet above illustrates Java Code: Request Coalescing (Single-Flight) with CompletableFuture: it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 

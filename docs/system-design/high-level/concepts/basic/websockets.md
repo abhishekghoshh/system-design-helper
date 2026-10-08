@@ -49,7 +49,7 @@ The key idea that separates WebSocket from ordinary HTTP is that after the initi
 
 The handshake below is the mechanism that lets a WebSocket connection "borrow" the trust and infrastructure of HTTP (ports, proxies, TLS) while switching to a completely different wire format afterwards.
 
-```
+```http
 1. Client initiates HTTP request
    GET /chat HTTP/1.1
    Host: example.com
@@ -136,6 +136,8 @@ sequenceDiagram
     Note over Client,Server: Either side can send at any time, no polling needed
 ```
 
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case
 
 A customer support chat widget embedded on an e-commerce site opens a WebSocket connection the moment the widget loads. When the customer types a message, it is sent instantly over the open socket. When a support agent (connected from a completely different internal dashboard, possibly on a different server) replies, the message is pushed to the customer's browser within milliseconds, without the browser ever having to ask "do you have anything new for me?" This is the behavior that HTTP polling could only approximate, at much higher latency and server cost.
@@ -184,6 +186,8 @@ public class WebSocketHandshakeDemo {
 }
 ```
 
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. How does a WebSocket connection start, and why does it begin as an HTTP request?**
@@ -215,7 +219,7 @@ WebSocket's defining traits all follow from one design decision: keep a single T
 
 ### Advantages of WebSockets
 
-```
+```text
 ✓ Real-Time Bidirectional Communication
   - Both client and server can send anytime
   - No need to poll for updates
@@ -257,7 +261,7 @@ WebSocket's defining traits all follow from one design decision: keep a single T
 - **Better Mobile Performance**: Repeatedly opening HTTP connections (as polling does) forces a mobile device's radio to wake up, negotiate a connection, and go back to a low-power state, which drains battery. A single persistent WebSocket connection keeps the radio in a lower-power "connected" state for longer stretches, and avoids the data overhead of repeated headers, which also reduces cellular data usage.
 
 **Performance Comparison:**
-```
+```text
 HTTP Polling (every 1s):
   Request:  200 bytes
   Response: 100 bytes
@@ -290,6 +294,8 @@ graph LR
         C2[Client] <-->|"Single open connection<br/>messages pushed instantly"| S2[Server]
     end
 ```
+
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
 
 #### Real-Life Use Case
 
@@ -341,6 +347,8 @@ public class ScoreUpdateEndpoint {
 }
 ```
 
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. Why is WebSocket lower latency than HTTP polling, even if the poll interval is very short?**
@@ -357,7 +365,7 @@ A: Server push means the server can send data to the client without the client h
 
 ### Disadvantages of WebSockets
 
-```
+```text
 ✗ Complex Implementation
   - Harder than HTTP request/response
   - Need to handle connection state
@@ -429,6 +437,8 @@ graph TD
     style E fill:#d94a4a,color:#fff
 ```
 
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case
 
 A startup launched a live-auction platform using raw WebSocket connections with no reconnection logic and no Origin validation. During a popular auction, mobile users on flaky 4G connections silently lost their sockets when switching cell towers, saw no bids update, and missed the final seconds of bidding, a direct symptom of unmanaged Connection Management. Separately, a security researcher demonstrated that any external website could open a WebSocket to the auction server and place bids on a logged-in user's behalf, because the server never checked the `Origin` header, a textbook Cross-Site WebSocket Hijacking issue. Both problems were foreseeable consequences of the disadvantages listed above and were fixed by adding heartbeat-based reconnection and strict Origin validation.
@@ -487,6 +497,8 @@ public class SecureChatEndpoint {
 }
 ```
 
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. Why is horizontal scaling harder for WebSocket servers than for stateless HTTP APIs?**
@@ -506,7 +518,7 @@ A: Each connection consumes a file descriptor and a TCP socket buffer, so the OS
 WebSocket is powerful but not free, and several alternatives exist that trade away some of its capability (usually bidirectionality or raw performance) in exchange for simplicity, better infrastructure compatibility, or a better fit for one-way data flows. Understanding these trade-offs is central to choosing the right real-time transport for a given system.
 
 **1. HTTP Long Polling**
-```
+```text
 How it works:
   Client: Request to server (waits...)
   Server: Holds request until data available
@@ -533,7 +545,7 @@ When to use:
 Long polling simulates server push using only standard HTTP: the client sends a request, and the server deliberately does not respond immediately, instead holding the connection open until either new data becomes available or a timeout is reached, at which point it responds and the client immediately opens another request. It is strictly a client-initiated technique, the server can never truly push without the client having a request currently open, and every response requires a brand-new HTTP request/response cycle, which is far more overhead than a WebSocket frame.
 
 **2. Server-Sent Events (SSE)**
-```
+```http
 How it works:
   Client: Opens connection
   Server: Pushes events continuously
@@ -561,7 +573,7 @@ Example:
 SSE is built entirely on top of standard HTTP: the client opens a normal GET request with `Accept: text/event-stream`, and the server keeps that single response open indefinitely, writing a new `data: ...` line every time it has something to send. Because it is plain HTTP, it works through virtually any proxy or firewall that already handles HTTP, and the browser's built-in `EventSource` API automatically reconnects and resumes from the last received event ID if the connection drops, something a raw WebSocket client would have to implement by hand. Its major limitation is direction: the client cannot send anything back over the same channel (it would need a separate normal HTTP request for that), and only text/UTF-8 data is supported, not binary frames.
 
 **3. HTTP/2 Server Push**
-```
+```text
 How it works:
   Client: Requests index.html
   Server: Pushes style.css, script.js
@@ -584,7 +596,7 @@ When to use:
 HTTP/2 Server Push lets a server proactively send resources it predicts the client will need (like CSS/JS referenced by an HTML page) before the client explicitly requests them, piggybacking on the same multiplexed HTTP/2 connection. This is fundamentally a page-load optimization, not a real-time messaging mechanism: it has no concept of an ongoing application-level event stream, and most major browsers have since deprecated or removed support for it in favor of other techniques (like `103 Early Hints`), so it should not be considered a serious WebSocket alternative for live data.
 
 **4. WebRTC Data Channels**
-```
+```text
 How it works:
   Peer-to-peer connection
   No server in the middle (after setup)
@@ -609,7 +621,7 @@ When to use:
 WebRTC Data Channels establish a direct connection between two peers (typically two browsers), bypassing the application server entirely once the connection is negotiated, which removes a network hop and can meaningfully cut latency for things like real-time video/voice or fast-paced multiplayer games. The cost is significant setup complexity: peers behind NATs and firewalls generally cannot connect directly without a signalling server to exchange connection metadata (SDP) and STUN/TURN servers to help discover public addresses or relay traffic when direct connection is impossible. It is not a general substitute for client-to-server communication, it solves a different problem (peer-to-peer), whereas WebSocket is fundamentally client-to-server.
 
 **5. Message Queues (for backend)**
-```
+```text
 For server-to-server:
   Kafka, RabbitMQ, Redis Pub/Sub
   
@@ -637,6 +649,8 @@ graph TD
     E -->|Yes| F["Server-Sent Events (SSE)"]
     E -->|No, but firewall-safe fallback needed| G["HTTP Long Polling"]
 ```
+
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
 
 #### Real-Life Use Case
 
@@ -679,6 +693,8 @@ public class PriceStreamServlet extends HttpServlet {
     }
 }
 ```
+
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 
@@ -735,6 +751,8 @@ flowchart TD
     Q3 -->|No, infrequent/simple| LPChoice["Use Long Polling"]
 ```
 
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case
 
 A ride-hailing app uses different transports for different features on the same screen: the passenger's live map view of the driver's location is pushed via WebSocket because both the passenger app and driver app need bidirectional, sub-second updates (driver location up, ETA and route changes down); promotional banners and account notifications use SSE because they only ever flow from server to client and are infrequent; and a background "check if my payment method needs updating" check on app startup uses a single ordinary HTTP request, since it happens once and does not need to be real-time at all.
@@ -771,6 +789,8 @@ public class TransportSelector {
     }
 }
 ```
+
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 
@@ -904,6 +924,8 @@ sequenceDiagram
     end
 ```
 
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case
 
 A team collaboration tool implements exactly this broadcast pattern for its "who's online" presence indicators: when any team member's client connects, the server adds them to the registry and broadcasts an updated presence list to everyone else; when they disconnect (either cleanly or because their laptop went to sleep and missed several ping/pong cycles), the server removes them and broadcasts the updated list again, keeping every open tab's presence indicators accurate within seconds.
@@ -958,6 +980,8 @@ public class ChatServerEndpoint {
 }
 ```
 
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. Why does the server keep a `Set` of open sessions instead of just handling each message independently?**
@@ -975,7 +999,7 @@ A: WebSocket callback methods (`onOpen`, `onMessage`, `onClose`) can be invoked 
 ### WebSocket Best Practices
 
 **Do's:**
-```
+```text
 ✓ Use wss:// (secure WebSocket)
 ✓ Implement reconnection logic
 ✓ Send heartbeat/ping messages
@@ -989,7 +1013,7 @@ A: WebSocket callback methods (`onOpen`, `onMessage`, `onClose`) can be invoked 
 ```
 
 **Don'ts:**
-```
+```text
 ✗ Don't assume connection is always alive
 ✗ Don't send huge messages (use chunking)
 ✗ Don't trust client-side validation
@@ -1040,6 +1064,8 @@ graph TD
     G -->|Yes| I["Process message"]
     F -->|Pong timeout| J["Close and clean up"]
 ```
+
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
 
 #### Real-Life Use Case
 
@@ -1103,6 +1129,8 @@ public class BestPracticeChatEndpoint {
 }
 ```
 
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. Why is client-side message validation not sufficient on its own?**
@@ -1120,7 +1148,7 @@ A: Send periodic ping frames and track the timestamp of the last received pong p
 ### Scaling WebSocket Servers
 
 **The Problem:**
-```
+```text
 10,000 concurrent connections
 × 1 server
 = 10,000 connections on one server (limit!)
@@ -1138,7 +1166,7 @@ The core scaling problem is that a WebSocket connection is stateful and pinned t
 **Solutions:**
 
 **1. Sticky Sessions (Session Affinity)**
-```
+```text
 Load Balancer routes same user to same server
 
 Pros: Simple
@@ -1151,7 +1179,7 @@ Cons:
 With sticky sessions, the load balancer uses something like a cookie or source IP hash to always route the same client to the same backend server for the lifetime of their session. It requires no extra infrastructure, but it means the load balancer's routing decisions directly determine each server's load (which can become uneven if some sessions are much "louder" than others), and if that specific server crashes or is redeployed, every client pinned to it is disconnected simultaneously with no other server able to take over their in-memory session state.
 
 **2. Message Broker (Redis Pub/Sub, Kafka)**
-```
+```text
   Server 1 ──┐
              ├─→ Redis Pub/Sub ←─┐
   Server 2 ──┘                   └── Broadcast to all servers
@@ -1176,7 +1204,7 @@ Cons:
 This pattern decouples "which server received the message" from "which server needs to deliver it." Every WebSocket server subscribes to a shared channel (or topic) on a message broker; when any server receives a message intended for broadcast (or for a specific user who might be connected elsewhere), it publishes to the broker instead of trying to deliver it directly, and every server (including ones with no relevant local connections) receives the publish and forwards it only to its own locally connected matching clients. This removes the sticky-session requirement, any client can be on any server, at the cost of an extra network hop through the broker and the operational responsibility of keeping that broker (and its own failover, e.g., a Redis cluster or Kafka cluster) highly available.
 
 **3. Dedicated WebSocket Servers**
-```
+```text
 Architecture:
   
   API Servers (HTTP)     WebSocket Servers
@@ -1229,6 +1257,8 @@ graph LR
     R -->|deliver| S2
     S2 -->|push| B1
 ```
+
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
 
 #### Real-Life Use Case
 
@@ -1292,6 +1322,8 @@ public class BrokerBackedBroadcaster {
 }
 ```
 
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. Why can't you simply put a normal round-robin load balancer in front of several WebSocket servers without any other changes?**
@@ -1309,7 +1341,7 @@ A: Broadcasting every message to every server works but wastes bandwidth and CPU
 ### WebSocket vs HTTP: The Decision
 
 **Use WebSocket when:**
-```
+```text
 ✓ Real-time updates needed (<100ms)
 ✓ Bidirectional communication
 ✓ Frequent messages (>1/second)
@@ -1319,7 +1351,7 @@ A: Broadcasting every message to every server works but wastes bandwidth and CPU
 ```
 
 **Use HTTP when:**
-```
+```text
 ✓ Request/response pattern
 ✓ Infrequent updates (>10 seconds)
 ✓ One-time data fetch
@@ -1329,7 +1361,7 @@ A: Broadcasting every message to every server works but wastes bandwidth and CPU
 ```
 
 **Use SSE when:**
-```
+```text
 ✓ Only server → client updates
 ✓ Simpler than WebSocket
 ✓ Auto-reconnect important
@@ -1364,6 +1396,8 @@ flowchart LR
     end
 ```
 
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case
 
 An online multiplayer trivia game uses all three transports for different parts of the same session: the initial game-room join and player profile fetch use plain HTTP (a one-time request/response), the countdown timer and question broadcast to all players use SSE (pure server-to-client push, and simplicity matters since it is shown to thousands of spectators too), and the actual answer submissions from active players, along with the live "who's leading" scoreboard which updates the instant any player answers, use WebSocket, because that is genuinely bidirectional and needs to happen with minimal delay to keep the game fair and exciting.
@@ -1396,6 +1430,8 @@ public class RealtimeTransportDecision {
     }
 }
 ```
+
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 

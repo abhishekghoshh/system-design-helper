@@ -66,7 +66,7 @@ These properties mean that a cache holding a tiny fraction of your total data ca
 
 **The Fundamental Principle:**
 Accessing data has a cost—in time, money, and resources. That cost varies wildly:
-```
+```text
 CPU L1 Cache:      0.5 nanoseconds   (baseline)
 CPU L2 Cache:      7 nanoseconds     (14x slower)
 RAM:               100 nanoseconds   (200x slower)
@@ -100,7 +100,7 @@ If you can serve from a faster tier, you eliminate orders of magnitude of latenc
 - **Speedup**: 100x faster
 
 **The Economic Argument:**
-```
+```text
 Database: $1,000/month for 1000 QPS
 Redis: $100/month for 100,000 QPS
 
@@ -109,6 +109,8 @@ Redis: $100/month for 100,000 QPS
 - 100 requests from DB: normal load
 - Result: Handle 10x traffic at same cost
 ```
+
+*The text snippet above illustrates The Deep Theory: Why Caching Works: it shows the concrete form of the idea described in this section.*
 
 #### The Cache Hierarchy: Layers Upon Layers
 
@@ -149,7 +151,7 @@ flowchart TB
 A request answered at any tier **never reaches the tiers below it**. The goal of caching system design is to ensure the highest possible fraction of requests are answered at the leftmost (cheapest) tier.
 
 ##### Browser Cache (Client-Side)
-```
+```text
 User requests logo.png
   ↓
 Browser: "I have this from yesterday"
@@ -181,7 +183,7 @@ ETag: "v1.23"  # Version-based validation
 - **User-specific data (after login)** - private, per-user payloads (like a rendered dashboard fragment) can be cached with a `private` cache-control directive so only that user's browser stores it, avoiding accidental sharing between users on a shared proxy.
 
 ##### CDN Cache (Edge)
-```
+```text
 User in Tokyo requests image
   ↓
 CDN Tokyo node: "I have this"
@@ -217,7 +219,7 @@ Cache-Control: max-age=60, s-maxage=300
 ```
 
 ##### Application Cache (In-Memory)
-```
+```text
 User requests user profile
   ↓
 App server: Check Redis
@@ -333,7 +335,7 @@ flowchart TD
 On every **write**, invalidate the affected key in reverse order (DB → Redis → Local) to prevent downstream tiers serving stale values after an update.
 
 **Hit Rate Multiplication:**
-```
+```text
 Local cache: 50% hit rate
 Redis cache: 40% hit rate (of local misses)
 Database: 10% of requests
@@ -344,6 +346,8 @@ Result:
 - 10% served in 50ms
 Average: 5.05ms (vs 50ms without caching)
 ```
+
+*The text snippet above illustrates The Cache Hierarchy Strategy: it shows the concrete form of the idea described in this section.*
 
 ---
 
@@ -368,7 +372,7 @@ The cache intercepts **repeated identical requests** and absorbs them without to
 
 Each item stored in a cache is not just the raw value — it is a small record with associated metadata:
 
-```
+```text
 ┌──────────────────────────────────────────────────────────┐
 │  Cache Entry                                             │
 ├────────────┬─────────────────────────────────────────────┤
@@ -502,7 +506,7 @@ Spatial locality motivates **prefetching** (load nearby keys proactively) and **
 
 Real-world access patterns follow a heavy-tailed distribution — a tiny fraction of keys receives the vast majority of traffic:
 
-```
+```text
 Key rank by popularity:
 ─────────────────────────────────────────────────────────────
 Rank 1 (most popular key)  → receives ~10% of all requests
@@ -616,6 +620,8 @@ public class CacheWarmer implements ApplicationListener<ApplicationReadyEvent> {
 }
 ```
 
+*The java snippet above illustrates Cache Warming: Solving the Cold Start Problem: it shows the concrete form of the idea described in this section.*
+
 ---
 
 #### What to Monitor in Production
@@ -648,6 +654,8 @@ redis-cli INFO memory | grep -E "used_memory_human|maxmemory_human"
 redis-cli INFO stats | grep evicted_keys
 # evicted_keys: 0            → 0 = healthy; cache not under memory pressure
 ```
+
+*The bash snippet above illustrates What to Monitor in Production: it shows the concrete form of the idea described in this section.*
 
 ---
 
@@ -701,6 +709,8 @@ sequenceDiagram
     end
 ```
 
+*The diagram above illustrates How It Works: it maps the key components and their interactions described in this section.*
+
 #### Read + Write Flow
 
 ```mermaid
@@ -715,6 +725,8 @@ flowchart TD
     WDB --> INV[Invalidate Cache Key]
     INV --> NR[Next read repopulates]
 ```
+
+*The diagram above illustrates Read + Write Flow: it maps the key components and their interactions described in this section.*
 
 #### Code Example (Spring Boot + Redis)
 
@@ -749,6 +761,8 @@ public class UserService {
     }
 }
 ```
+
+*The java snippet above illustrates Code Example (Spring Boot + Redis): it shows the concrete form of the idea described in this section.*
 
 #### Thundering Herd Problem
 
@@ -792,6 +806,8 @@ public UserDto getUser(long userId) throws Exception {
     }
 }
 ```
+
+*The java snippet above illustrates Thundering Herd Problem: it shows the concrete form of the idea described in this section.*
 
 #### Trade-offs
 
@@ -850,6 +866,8 @@ sequenceDiagram
     end
 ```
 
+*The diagram above illustrates How It Works: it maps the key components and their interactions described in this section.*
+
 #### Flow Diagram
 
 ```mermaid
@@ -860,6 +878,8 @@ flowchart LR
     DB --> C
     C -->|"Populate + Return"| APP
 ```
+
+*The diagram above illustrates Flow Diagram: it maps the key components and their interactions described in this section.*
 
 #### Code Example (Spring `@Cacheable` — Read Through)
 
@@ -904,6 +924,8 @@ spring:
       time-to-live: 3600000   # 1 hour in milliseconds
       cache-null-values: false # do not cache null results
 ```
+
+*The yaml snippet above illustrates Code Example (Spring @Cacheable — Read Through): it shows the concrete form of the idea described in this section.*
 
 #### Trade-offs
 
@@ -960,6 +982,8 @@ sequenceDiagram
     Cache-->>App: Fresh data (always consistent)
 ```
 
+*The diagram above illustrates How It Works: it maps the key components and their interactions described in this section.*
+
 #### Flow Diagram
 
 ```mermaid
@@ -971,6 +995,8 @@ flowchart LR
     APP -->|Later read| C
     C -->|Always fresh, no stale risk| APP
 ```
+
+*The diagram above illustrates Flow Diagram: it maps the key components and their interactions described in this section.*
 
 #### Code Example (Spring Boot)
 
@@ -1015,6 +1041,8 @@ public String saveConfig(String key, String value) {
     return value;   // returned value is what gets cached
 }
 ```
+
+*The java snippet above illustrates Code Example (Spring Boot): it shows the concrete form of the idea described in this section.*
 
 #### Trade-offs
 
@@ -1079,6 +1107,8 @@ sequenceDiagram
     end
 ```
 
+*The diagram above illustrates How It Works: it maps the key components and their interactions described in this section.*
+
 #### Batching Effect
 
 ```mermaid
@@ -1103,6 +1133,8 @@ flowchart TD
     DB --> BG
     BG -->|Mark clean| C
 ```
+
+*The diagram above illustrates Flow Diagram: it maps the key components and their interactions described in this section.*
 
 #### Code Example (View Counter with Scheduled Flush)
 
@@ -1140,6 +1172,8 @@ public class ViewCountService {
     }
 }
 ```
+
+*The java snippet above illustrates Code Example (View Counter with Scheduled Flush): it shows the concrete form of the idea described in this section.*
 
 #### Trade-offs
 
@@ -1199,6 +1233,8 @@ sequenceDiagram
     App-->>App: Return data
 ```
 
+*The diagram above illustrates How It Works: it maps the key components and their interactions described in this section.*
+
 #### Flow Diagram
 
 ```mermaid
@@ -1215,6 +1251,8 @@ flowchart LR
     C --> APP
 ```
 
+*The diagram above illustrates Flow Diagram: it maps the key components and their interactions described in this section.*
+
 #### Comparison: Write Around vs Write Through vs Cache Aside on Writes
 
 ```mermaid
@@ -1228,6 +1266,8 @@ flowchart TD
     WA -->|First read always misses| PM1[Read misses cache once]
     CA -->|Cache invalidated| PM2[Read misses cache once]
 ```
+
+*The diagram above illustrates Comparison: Write Around vs Write Through vs Cache Aside on Writes: it maps the key components and their interactions described in this section.*
 
 #### Trade-offs
 
@@ -1277,6 +1317,8 @@ public class AuditLogService {
 }
 ```
 
+*The java snippet above illustrates Code Example (Spring Boot - Bulk Audit Log Ingestion): it shows the concrete form of the idea described in this section.*
+
 #### Real-World Use Cases
 
 - **Audit trails / compliance logs** - security and compliance events are written directly to durable storage; they are read only occasionally during an investigation, so caching them on write would waste memory.
@@ -1312,6 +1354,8 @@ flowchart TD
     DB --> C
     C --> USER[All user reads: permanent cache hit]
 ```
+
+*The diagram above illustrates How It Works: it maps the key components and their interactions described in this section.*
 
 #### Sequence: Proactive Refresh vs Reactive Miss
 
@@ -1375,6 +1419,8 @@ public class LiveScoreService {
 }
 ```
 
+*The java snippet above illustrates Code Example (Spring Boot Scheduled Refresh): it shows the concrete form of the idea described in this section.*
+
 #### Trade-offs
 
 | Aspect | Detail |
@@ -1436,6 +1482,8 @@ sequenceDiagram
     C-->>U1: "Alice" (STALE — DB has "Alicia")
 ```
 
+*The diagram above illustrates The Problem: Stale Data: it maps the key components and their interactions described in this section.*
+
 ---
 
 #### Strategy 1: TTL (Time To Live)
@@ -1449,6 +1497,8 @@ flowchart LR
     C -->|"After 60 s: auto-expire"| GONE[Key deleted]
     GONE -->|Next read: miss| DB
 ```
+
+*The diagram above illustrates Strategy 1: TTL (Time To Live): it maps the key components and their interactions described in this section.*
 
 ```java
 // Set TTL at write time
@@ -1491,6 +1541,8 @@ sequenceDiagram
     C-->>App: 'Alicia' (consistent)
 ```
 
+*The diagram above illustrates Strategy 2: Event-Based Invalidation: it maps the key components and their interactions described in this section.*
+
 ```java
 @Transactional
 public void updateUser(long userId, UpdateRequest req) {
@@ -1513,6 +1565,8 @@ flowchart LR
     W --> C["Cache\nOverwrite key with fresh value"]
     C --> R["Next Read: cache hit\nwith fresh data"]
 ```
+
+*The diagram above illustrates Strategy 3: Write Through (Overwrite, not Delete): it maps the key components and their interactions described in this section.*
 
 ---
 
@@ -1577,11 +1631,13 @@ flowchart TD
     MF --> VTTL["Volatile-TTL\nEvict key closest to expiry"]
 ```
 
+*The diagram above illustrates Eviction Policies: it maps the key components and their interactions described in this section.*
+
 #### LRU — Least Recently Used
 
 Maintains an ordered list of keys by last access time. The key at the tail (longest since last use) is evicted.
 
-```
+```text
 Before (queue: most recent → least recent):
 [D]  [C]  [B]  [A]    ← memory full, key E arrives
 
@@ -1595,7 +1651,7 @@ Evict A (tail — least recently used):
 
 Tracks access count per key. The key with the lowest count is evicted.
 
-```
+```text
 Frequency counts:
 A: 100   B: 50   C: 3   D: 1    ← memory full, key E arrives
 
@@ -1649,6 +1705,8 @@ public class CaffeineCacheConfig {
 }
 ```
 
+*The java snippet above illustrates Code Example (Caffeine In-Process Eviction Policy): it shows the concrete form of the idea described in this section.*
+
 ```java
 @Service
 public class ProductCacheService {
@@ -1665,6 +1723,8 @@ public class ProductCacheService {
     }
 }
 ```
+
+*The java snippet above illustrates Code Example (Caffeine In-Process Eviction Policy): it shows the concrete form of the idea described in this section.*
 
 #### Real-World Use Cases
 
@@ -1807,6 +1867,8 @@ flowchart LR
     L1 --> RET
 ```
 
+*The diagram above illustrates Two-Tier Cache (Local L1 + Distributed L2): it maps the key components and their interactions described in this section.*
+
 ```java
 @Service
 public class TieredUserService {
@@ -1918,6 +1980,8 @@ flowchart TD
     MULTI -- Yes --> RT[Read Through\nshared cache gateway]
     MULTI -- No  --> WA2[Write Around\nprotect cache from cold writes]
 ```
+
+*The diagram above illustrates Quick Selection Flowchart: it maps the key components and their interactions described in this section.*
 
 #### Interview Questions and Answers
 

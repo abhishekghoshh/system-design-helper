@@ -353,6 +353,8 @@ flowchart LR
     Primary --> Shard2[Shard 2]
 ```
 
+*The diagram above illustrates Components: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Patterns
@@ -513,6 +515,8 @@ public class UserProfileService {
 }
 ```
 
+*The java snippet above illustrates 1. Cache-aside service: it shows the concrete form of the idea described in this section.*
+
 #### 2. Queue producer for asynchronous work
 
 ```java
@@ -533,6 +537,8 @@ public class NotificationProducer {
     }
 }
 ```
+
+*The java snippet above illustrates 2. Queue producer for asynchronous work: it shows the concrete form of the idea described in this section.*
 
 #### 3. Shard router
 
@@ -556,6 +562,8 @@ public class ShardRouter {
     }
 }
 ```
+
+*The java snippet above illustrates 3. Shard router: it shows the concrete form of the idea described in this section.*
 
 #### 4. Database connection pool properties
 

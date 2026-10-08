@@ -21,7 +21,7 @@ Defines an interface for creating an object, but lets subclasses decide which cl
 - To provide hooks for subclasses to extend object creation
 
 **Diagram:**
-```
+```text
 Creator (abstract)
 ├─ factoryMethod() [abstract]
 └─ operation() uses factoryMethod()
@@ -29,6 +29,7 @@ Creator (abstract)
 ConcreteCreator
 └─ factoryMethod() returns ConcreteProduct
 ```
+*Subclasses override the factory method to decide which concrete product gets created.*
 
 **Real-Life Examples:**
 - **UI Frameworks:** Dialog/Button creation for different OS (Windows, macOS, Linux)
@@ -102,7 +103,7 @@ Provides an interface for creating families of related or dependent objects with
 - To enforce constraints on which products can be used together
 
 **Diagram:**
-```
+```text
 AbstractFactory
 ├─ createProductA()
 └─ createProductB()
@@ -113,6 +114,7 @@ ConcreteFactory1        ConcreteFactory2
 └─ createProductB()     └─ createProductB()
    → ProductB1             → ProductB2
 ```
+*Each concrete factory produces a matching family of related products.*
 
 **Real-Life Examples:**
 - **UI Toolkits:** Creating consistent UI elements (Button, TextBox, Checkbox) for Windows/Mac/Linux
@@ -188,3 +190,22 @@ ConcreteFactory1        ConcreteFactory2
 - **Simple Factory Misnamed as Factory Method:** Static factory methods ≠ Factory Method pattern. Understand pattern intent; use appropriate pattern
 - **Factory for Everything:** Creating factories when direct instantiation sufficient. Only use when flexibility needed; YAGNI principle
 - **God Factory:** Single factory creating unrelated object types. Separate factories for different concerns; cohesive factories
+
+---
+
+### Java Example
+
+*Clients ask the factory for a product by name and stay decoupled from concrete classes.*
+
+```java
+interface Shape { void draw(); }                     // Product interface
+class Circle implements Shape {
+    public void draw() { /* ... */ }
+}
+class ShapeFactory {                                 // Factory: hides instantiation
+    static Shape create(String type) {
+        if ("circle".equals(type)) return new Circle();
+        throw new IllegalArgumentException(type);
+    }
+}
+```

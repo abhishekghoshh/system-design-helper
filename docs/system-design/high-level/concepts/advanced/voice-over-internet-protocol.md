@@ -213,6 +213,8 @@ public class VoipArchitectureDemo {
 }
 ```
 
+*The java snippet above illustrates VoIP Fundamentals and Architecture: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### VoIP Fundamentals and Architecture: Interview Questions and Answers
 
 **Q1. What is the fundamental difference between circuit-switched and packet-switched voice?**
@@ -327,6 +329,8 @@ sequenceDiagram
     Bob-->>Alice: 200 OK
 ```
 
+*The diagram above illustrates Signaling Protocols: SIP and H.323: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Signaling Protocols: SIP and H.323: Real-Life Use Case
 
 A SaaS company builds a click-to-call feature into its customer support dashboard. When an agent clicks "Call Customer," the browser (via a SIP.js or JsSIP client library) sends a SIP `INVITE` through the company's SIP proxy toward a SIP trunk provider, which bridges the call out to the customer's real phone number on the PSTN. The proxy also handles agent `REGISTER` requests as agents log in each morning, and forks incoming customer support-line calls to whichever agent's softphone registers as available first. Because everything is standard SIP, the company can swap its SIP trunk provider for a cheaper one later without changing any client-side calling code.
@@ -406,6 +410,8 @@ public class SipSignalingDemo {
     }
 }
 ```
+
+*The java snippet above illustrates Signaling Protocols: SIP and H.323: Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Signaling Protocols: SIP and H.323: Interview Questions and Answers
 
@@ -591,6 +597,8 @@ public class RtpJitterBufferDemo {
 }
 ```
 
+*The java snippet above illustrates Media Transport and Codecs: RTP, RTCP, SRTP: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Media Transport and Codecs: RTP, RTCP, SRTP: Interview Questions and Answers
 
 **Q1. Why does RTP run over UDP instead of TCP?**
@@ -700,6 +708,8 @@ sequenceDiagram
     end
 ```
 
+*The diagram above illustrates NAT Traversal: STUN, TURN, and ICE: Diagram: it maps the key components and their interactions described in this section.*
+
 #### NAT Traversal: STUN, TURN, and ICE: Real-Life Use Case
 
 A telehealth startup finds that roughly 12% of patient video calls fail to connect audio/video even though signaling completes successfully. Investigation shows these failures cluster among patients on certain mobile carriers known to use carrier-grade NAT, where STUN alone cannot discover a usable public mapping. The team deploys a fleet of TURN servers across three regions with time-limited credentials issued at call start, and configures ICE to always gather TURN candidates as a fallback. After the change, essentially all calls connect (the small percentage needing TURN now succeed via relay instead of failing outright), at a modest, monitored increase in relay bandwidth cost that the team tracks as a per-call cost metric.
@@ -779,6 +789,8 @@ public class IceCandidateSelectionDemo {
     }
 }
 ```
+
+*The java snippet above illustrates NAT Traversal: STUN, TURN, and ICE: Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### NAT Traversal: STUN, TURN, and ICE: Interview Questions and Answers
 
@@ -882,6 +894,8 @@ graph TD
     style QUEUE fill:#4ad971,color:#000
 ```
 
+*The diagram above illustrates Quality of Service and Reliability: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Quality of Service and Reliability: Real-Life Use Case
 
 A logistics company runs its dispatch call center over a branch office's shared internet connection, alongside routine cloud backups scheduled overnight and occasional large software updates during the day. Before QoS was configured, dispatchers reported calls becoming garbled whenever a backup job or update happened to run. The IT team configures DSCP EF marking on all SIP/RTP traffic from the office router, sets up strict priority queuing so voice always drains first, and adds call admission control capping concurrent calls to a level the link can guarantee bandwidth for. They also deploy an MOS-based dashboard fed by RTCP data from the PBX. After the change, backups still run during business hours, but the priority queue ensures voice packets are never delayed behind them, and the dashboard confirms MOS scores stay consistently above 4.0.
@@ -948,6 +962,8 @@ public class VoipQualityMonitor {
     }
 }
 ```
+
+*The java snippet above illustrates Quality of Service and Reliability: Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Quality of Service and Reliability: Interview Questions and Answers
 
@@ -1054,6 +1070,8 @@ graph TD
     style PBX fill:#4ad971,color:#000
 ```
 
+*The diagram above illustrates VoIP Security: Diagram: it maps the key components and their interactions described in this section.*
+
 #### VoIP Security: Real-Life Use Case
 
 A small business's hosted PBX credentials are guessed via a brute-force attack against a weak, shared extension password over a weekend. The attacker begins placing hundreds of calls to premium-rate international numbers, generating thousands of dollars in charges within a few hours before anyone notices. In response, the hosting provider implements per-extension strong, unique credentials with account lockout after failed attempts, adds real-time anomaly detection that flags sudden spikes in international call volume and automatically suspends outbound trunking pending verification, and migrates all customer signaling to mandatory SIPS. Following the incident, similar future attempts are caught and blocked within minutes rather than running unnoticed over an entire weekend.
@@ -1124,6 +1142,8 @@ public class TollFraudDetector {
     }
 }
 ```
+
+*The java snippet above illustrates VoIP Security: Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### VoIP Security: Interview Questions and Answers
 
@@ -1244,6 +1264,8 @@ graph TB
     style DB fill:#d9a24a,color:#000
 ```
 
+*The diagram above illustrates Scalability and Carrier-Grade Architecture: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Scalability and Carrier-Grade Architecture: Real-Life Use Case
 
 A cloud communications provider serving thousands of business customers starts with a single-region deployment, which works well until a regional data center outage takes down calling for every customer simultaneously for several hours, a highly visible, business-critical incident. In response, the provider re-architects to active-active multi-region deployment: SIP-aware load balancers direct each customer's registrations to their nearest healthy region, the registration database is sharded and replicated across regions, and softswitch/media relay clusters run independently in each region. They also invest in a SIP-aware load balancer that correctly tracks dialog state so that mid-call messages aren't misrouted during a failover. During a subsequent regional network issue, affected users' devices automatically re-register to the backup region within seconds, and only calls actively in progress at the exact moment of failure are dropped, a dramatic improvement over the previous total-outage failure mode.
@@ -1323,6 +1345,8 @@ public class SipAwareLoadBalancerDemo {
     }
 }
 ```
+
+*The java snippet above illustrates Scalability and Carrier-Grade Architecture: Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Scalability and Carrier-Grade Architecture: Interview Questions and Answers
 

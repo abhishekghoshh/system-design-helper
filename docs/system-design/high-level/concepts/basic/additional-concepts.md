@@ -14,13 +14,29 @@
 
 ## Theory
 
+### Table of Contents
+
+1. [What Is Data Partitioning?](#what-is-data-partitioning)
+2. [Why Partition Data?](#why-partition-data)
+3. [Types of Partitioning](#types-of-partitioning)
+4. [Partitioning Strategies (How to Pick a Shard Key)](#partitioning-strategies-how-to-pick-a-shard-key)
+5. [Real-World Use Case](#real-world-use-case)
+6. [Java Code Example: A Simple Hash-Based Shard Router](#java-code-example-a-simple-hash-based-shard-router)
+7. [Challenges of Partitioning](#challenges-of-partitioning)
+8. [Interview Questions & Answers](#interview-questions-answers)
+9. [Cold Start Problem](#cold-start-problem)
+10. [Blue-Green Deployment](#blue-green-deployment)
+11. [Canary Deployment](#canary-deployment)
+12. [Feature Flags](#feature-flags)
+
+
 ### What Is Data Partitioning?
 
 Data partitioning is the practice of **splitting a large dataset into smaller, independent pieces (partitions/shards)** so that no single machine has to store or serve all of the data. It is the foundational technique that lets a database scale **horizontally** — by adding more machines — instead of only **vertically** — by buying a bigger machine.
 
 Without partitioning, a single database node eventually hits a hard ceiling:
 
-```
+```text
 Single node limits (rule of thumb):
   Storage:      a few TB before backups/restores become painful
   Write IOPS:   limited by disk & single writer
@@ -40,6 +56,8 @@ flowchart TB
     Router --> S3[("Shard 3<br/>users 2000-2999")]
     Router --> S4[("Shard 4<br/>users 3000-3999")]
 ```
+
+*The diagram above illustrates What Is Data Partitioning?: it maps the key components and their interactions described in this section.*
 
 ### Why Partition Data?
 
@@ -105,7 +123,7 @@ Use case: large organizations splitting a monolith database along team/service b
 
 **Instagram's ID sharding (~2011):** Instagram needed globally unique, sortable-by-time IDs across thousands of PostgreSQL shards without a central ID-generation service (which would be a single point of failure/bottleneck). Their solution encoded three things into a single 64-bit integer:
 
-```
+```text
 64-bit ID = [41 bits: ms since custom epoch] [13 bits: shard ID] [10 bits: auto-increment sequence]
 ```
 
@@ -165,6 +183,8 @@ public class UserRepository {
 }
 ```
 
+*The java snippet above illustrates Java Code Example: A Simple Hash-Based Shard Router: it shows the concrete form of the idea described in this section.*
+
 ### Challenges of Partitioning
 
 - **Rebalancing** — adding/removing shards can require moving huge amounts of data; consistent hashing mitigates this
@@ -216,6 +236,8 @@ sequenceDiagram
     Lambda-->>GW: Response (fast: 5-50ms)
     GW-->>C: Response
 ```
+
+*The diagram above illustrates What Is a Cold Start?: it maps the key components and their interactions described in this section.*
 
 #### Why It Happens
 
@@ -277,6 +299,8 @@ public class OptimizedOrderHandler implements RequestHandler<OrderRequest, Order
 }
 ```
 
+*The java snippet above illustrates Java Code Example: Minimizing Cold Start Impact: it shows the concrete form of the idea described in this section.*
+
 #### Mitigation Strategies
 
 - **Provisioned concurrency** — pre-warm a pool of instances so they're ready before traffic arrives (AWS Lambda Provisioned Concurrency, Azure Premium Plan)
@@ -321,6 +345,8 @@ flowchart LR
         LB2 -. no traffic .-> Blue2["Blue - v1.0 - kept as rollback"]
     end
 ```
+
+*The diagram above illustrates What Is Blue-Green Deployment?: it maps the key components and their interactions described in this section.*
 
 #### Why Use It
 
@@ -375,6 +401,8 @@ aws elbv2 modify-listener \
 echo "Traffic switched to GREEN. Rollback: aws elbv2 modify-listener --listener-arn $LISTENER_ARN --default-actions Type=forward,TargetGroupArn=$BLUE_TARGET_GROUP_ARN"
 ```
 
+*The bash snippet above illustrates Java / Infra Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Process
 
 1. Deploy the new version to the inactive (Green) environment
@@ -424,6 +452,8 @@ flowchart TB
     Metrics -->|unhealthy| Rollback["Rollback: route 0% to canary"]
 ```
 
+*The diagram above illustrates What Is Canary Deployment?: it maps the key components and their interactions described in this section.*
+
 #### Why Use It
 
 - **Limits blast radius** - a bug in the new version only affects a small fraction of users, not everyone
@@ -469,6 +499,8 @@ public class CanaryRoutingFilter extends OncePerRequestFilter {
     }
 }
 ```
+
+*The java snippet above illustrates Java Code Example: Traffic-Splitting Filter: it shows the concrete form of the idea described in this section.*
 
 #### Process
 
@@ -518,6 +550,8 @@ flowchart LR
     Config -->|"new-checkout-flow: ON for beta-users segment"| App1
     Config -->|"new-checkout-flow: OFF for everyone else"| App2
 ```
+
+*The diagram above illustrates What Are Feature Flags?: it maps the key components and their interactions described in this section.*
 
 #### Why Use Them
 
@@ -581,6 +615,8 @@ public class CheckoutService {
     private CheckoutResult legacyCheckoutFlow(CheckoutRequest request) { /* ... */ return null; }
 }
 ```
+
+*The java snippet above illustrates Java Code Example: A Minimal Feature Flag Service: it shows the concrete form of the idea described in this section.*
 
 #### Types of Feature Flags
 

@@ -343,6 +343,8 @@ flowchart LR
     Repo --> Bus[Event bus]
 ```
 
+*The diagram above illustrates Components: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Patterns
@@ -499,6 +501,8 @@ public class RepositoryService {
 }
 ```
 
+*The java snippet above illustrates 1. Repository metadata service: it shows the concrete form of the idea described in this section.*
+
 #### 2. Access control check
 
 ```java
@@ -523,6 +527,8 @@ public class AccessControlService {
 }
 ```
 
+*The java snippet above illustrates 2. Access control check: it shows the concrete form of the idea described in this section.*
+
 #### 3. Webhook event publisher
 
 ```java
@@ -546,6 +552,8 @@ public class PushEventPublisher {
     }
 }
 ```
+
+*The java snippet above illustrates 3. Webhook event publisher: it shows the concrete form of the idea described in this section.*
 
 #### 4. Git object hash helper
 

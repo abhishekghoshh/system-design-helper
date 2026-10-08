@@ -331,6 +331,8 @@ flowchart LR
     Thread2 --> Heap
 ```
 
+*The diagram above illustrates Components: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Patterns
@@ -494,6 +496,8 @@ public class BatchProcessingService {
 }
 ```
 
+*The java snippet above illustrates 1. Thread pool with ExecutorService: it shows the concrete form of the idea described in this section.*
+
 #### 2. Configurable thread pool
 
 ```java
@@ -515,6 +519,8 @@ public class ConcurrencyConfig {
 }
 ```
 
+*The java snippet above illustrates 2. Configurable thread pool: it shows the concrete form of the idea described in this section.*
+
 #### 3. Asynchronous processing with `@Async`
 
 ```java
@@ -532,6 +538,8 @@ public class NotificationService {
     }
 }
 ```
+
+*The java snippet above illustrates 3. Asynchronous processing with @Async: it shows the concrete form of the idea described in this section.*
 
 #### 4. Fork-join for parallel computation
 

@@ -12,6 +12,23 @@
 
 ## Theory
 
+### Table of Contents
+
+1. [Introduction](#introduction)
+2. [What is an API Gateway?](#what-is-an-api-gateway)
+3. [Request Routing](#request-routing)
+4. [Authentication & Authorization](#authentication-authorization)
+5. [Rate Limiting & Throttling](#rate-limiting-throttling)
+6. [Request/Response Transformation](#requestresponse-transformation)
+7. [Protocol Translation](#protocol-translation)
+8. [Aggregation (API Composition)](#aggregation-api-composition)
+9. [Caching at the Gateway](#caching-at-the-gateway)
+10. [Logging, Monitoring & Observability](#logging-monitoring-observability)
+11. [Resilience Patterns (Circuit Breaking, Retries, Timeouts)](#resilience-patterns-circuit-breaking-retries-timeouts)
+12. [API Gateway vs Load Balancer vs Service Mesh](#api-gateway-vs-load-balancer-vs-service-mesh)
+13. [Popular Solutions](#popular-solutions)
+
+
 ### Introduction
 
 An **API Gateway** is a single entry point that sits between clients (web, mobile, third-party) and a backend of microservices. Instead of a client calling ten different services directly, it calls one gateway, which then routes, secures, shapes, and observes every request on the client's behalf.
@@ -44,13 +61,13 @@ This page is organized into the following topics, each covering the core theory,
     - [Introduction](#introduction)
     - [What is an API Gateway?](#what-is-an-api-gateway)
     - [Request Routing](#request-routing)
-    - [Authentication \& Authorization](#authentication--authorization)
-    - [Rate Limiting \& Throttling](#rate-limiting--throttling)
+    - [Authentication \& Authorization](#authentication-authorization)
+    - [Rate Limiting \& Throttling](#rate-limiting-throttling)
     - [Request/Response Transformation](#requestresponse-transformation)
     - [Protocol Translation](#protocol-translation)
     - [Aggregation (API Composition)](#aggregation-api-composition)
     - [Caching at the Gateway](#caching-at-the-gateway)
-    - [Logging, Monitoring \& Observability](#logging-monitoring--observability)
+    - [Logging, Monitoring \& Observability](#logging-monitoring-observability)
     - [Resilience Patterns (Circuit Breaking, Retries, Timeouts)](#resilience-patterns-circuit-breaking-retries-timeouts)
     - [API Gateway vs Load Balancer vs Service Mesh](#api-gateway-vs-load-balancer-vs-service-mesh)
     - [Popular Solutions](#popular-solutions)

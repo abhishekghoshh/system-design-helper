@@ -70,6 +70,8 @@ flowchart TB
     UI --> BL --> DAL --> DB
 ```
 
+*The diagram above illustrates Architecture Diagram: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Cases
 
 - **Early-stage startups (MVP)**: Companies like Basecamp famously stayed on a monolith (Ruby on Rails) for years because it let a small team ship features quickly without operational overhead.
@@ -125,6 +127,8 @@ public class OrderService {
 public interface OrderRepository extends JpaRepository<Order, Long> {
 }
 ```
+
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 
@@ -213,6 +217,8 @@ flowchart TB
     Orders -.gRPC/REST.-> Payments
 ```
 
+*The diagram above illustrates Architecture Diagram: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Cases
 
 - **Netflix**: One of the earliest and largest adopters, running hundreds of microservices to independently scale streaming, recommendations, billing, and account management.
@@ -287,6 +293,8 @@ public class InventoryClient {
 }
 ```
 
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1: What defines a microservice, and how is it different from a modular monolith?**
@@ -354,6 +362,8 @@ flowchart LR
     Broker -- consumes --> Shipping[Shipping Service]
 ```
 
+*The diagram above illustrates Architecture Diagram: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Cases
 
 - **Ride-sharing apps (Uber, Lyft)**: A "ride requested" event fans out to pricing, driver-matching, and notification services simultaneously without the requester service needing to know about all of them.
@@ -418,6 +428,8 @@ public class NotificationEventListener {
     }
 }
 ```
+
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 
@@ -495,6 +507,8 @@ flowchart TB
     S3 -- upload event --> Fn2 --> DB
 ```
 
+*The diagram above illustrates Architecture Diagram: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Cases
 
 - **iRobot**: Uses AWS Lambda to process telemetry data from millions of Roomba vacuums, scaling automatically with the highly variable volume of device events without managing any servers.
@@ -558,6 +572,8 @@ public class ThumbnailGeneratorHandler implements RequestHandler<S3Event, Void> 
     }
 }
 ```
+
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 

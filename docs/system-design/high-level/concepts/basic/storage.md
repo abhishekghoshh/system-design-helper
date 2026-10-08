@@ -21,20 +21,21 @@
 This page is organized into the following topics. Each topic includes a detailed explanation, its characteristics, components, patterns, pros/benefits, cons/challenges, best practices, when to use it, a real-life use case, a diagram, a Java code example, and interview questions with answers.
 
 1. [Distributed Storage: Block vs File vs Object Storage](#distributed-storage-block-vs-file-vs-object-storage)
-2. [Object Storage Data Model: Object = Key + Data + Metadata](#object-storage-data-model-object--key--data--metadata)
+2. [Object Storage Data Model: Object = Key + Data + Metadata](#object-storage-data-model-object-key-data-metadata)
 3. [Storage Classes and Lifecycle Management](#storage-classes-and-lifecycle-management)
 4. [Consistency Models in Object Storage](#consistency-models-in-object-storage)
 5. [Durability and Replication](#durability-and-replication)
 6. [Process Related Things: Upload (PUT) and Download (GET) Request Flow](#process-related-things-upload-put-and-download-get-request-flow)
 7. [Security: Access Control, Bucket Policies, and Encryption](#security-access-control-bucket-policies-and-encryption)
-8. [Object Storage / Blob Storage: Characteristics, Pros, Cons, Use Cases, Components, Patterns, Benefits, Challenges, Best Practices and When to Use](#object-storage--blob-storage-characteristics-pros-cons-use-cases-components-patterns-benefits-challenges-best-practices-and-when-to-use)
+8. [Object Storage / Blob Storage: Characteristics, Pros, Cons, Use Cases, Components, Patterns, Benefits, Challenges, Best Practices and When to Use](#object-storage-blob-storage-characteristics-pros-cons-use-cases-components-patterns-benefits-challenges-best-practices-and-when-to-use)
 
+10. [Quick Reference](#quick-reference)
 ### Distributed Storage: Block vs File vs Object Storage
 
 Distributed storage systems spread data across multiple machines or data centers, providing scalability, fault tolerance, and high availability that a single server cannot achieve. Instead of writing every byte to one disk on one host, the system splits, replicates, and/or erasure-codes data across a cluster of nodes so that the loss of any single disk, node, rack, or even data center does not result in data loss or downtime.
 
 **Types of Storage Systems:**
-```
+```text
 Block Storage:
   └─ Raw disk blocks, low-level
   └─ Used by: VMs, databases
@@ -137,6 +138,8 @@ graph TD
     style File fill:#9a4ad9,color:#fff
 ```
 
+*The diagram above illustrates Distributed Storage: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Distributed Storage: Real-Life Use Case
 
 A video streaming platform uses all three storage types for different parts of its system: block storage (EBS-like volumes) backs the metadata database that stores video titles, users, and playback state, because that database needs low-latency random reads and writes; file storage (an NFS share) is used by the video transcoding cluster so multiple worker machines can read and write intermediate transcoding artifacts through a shared directory; and object storage (S3-like) holds the actual finished video files and thumbnails, since videos are written once, read millions of times, and need to scale to petabytes at low cost. Choosing one storage type for everything (e.g., putting finished videos on block storage) would either be far more expensive or would not scale to the required volume.
@@ -215,6 +218,8 @@ public class StorageModelComparison {
 }
 ```
 
+*The java snippet above illustrates Distributed Storage: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Distributed Storage: Interview Questions and Answers
 
 **Q1. What is the fundamental difference between block, file, and object storage?**
@@ -233,7 +238,7 @@ A: When multiple machines need POSIX-compliant shared access to the same files, 
 
 An object in object storage is not just a file; it is a single, versionable unit made of three parts: a unique **key** (its identifier within a bucket/container), the **data** itself (an opaque binary blob, from a few bytes up to multiple terabytes depending on the provider), and **metadata** (a set of key-value pairs describing the object, both system-defined like content type and size, and user-defined custom fields). Because there is no real directory tree, "folders" you see in a console (e.g. `images/profile/`) are purely a display convenience built by splitting keys on `/`; internally, the store just sees one flat string key.
 
-```
+```text
 Object = Key + Data + Metadata
 
 PUT object:
@@ -245,6 +250,8 @@ GET object:
   GET https://bucket.s3.amazonaws.com/images/profile/user-123.jpg
   → Returns the image with metadata in headers
 ```
+
+*The text snippet above illustrates Object Storage Data Model: Object = Key + Data + Metadata: it shows the concrete form of the idea described in this section.*
 
 #### Object Storage Data Model: Characteristics
 
@@ -314,6 +321,8 @@ graph LR
     style MetaIdx fill:#d9a54a,color:#000
 ```
 
+*The diagram above illustrates Object Storage Data Model: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Object Storage Data Model: Real-Life Use Case
 
 A photo-sharing application uploads a user's photo as an object with key `users/123/photos/2026/08/photo-456.jpg`, attaching custom metadata such as `camera-model`, `taken-at`, and `uploader-id`. A background image-processing pipeline listens for new-object events, reads the metadata to decide which resize presets to generate (e.g. skip generating a "portrait crop" for landscape photos based on width/height already present in metadata), and writes new derived objects (thumbnails) as separate keys. No separate metadata database call is needed to make that first triage decision, since the essential attributes travel with the object itself.
@@ -372,6 +381,8 @@ public class SimpleObjectStore {
     }
 }
 ```
+
+*The java snippet above illustrates Object Storage Data Model: Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Object Storage Data Model: Interview Questions and Answers
 
@@ -459,6 +470,8 @@ graph LR
     style Deleted fill:#999,color:#fff
 ```
 
+*The diagram above illustrates Storage Classes: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Storage Classes: Real-Life Use Case
 
 A hospital system stores patient imaging scans (MRI/CT files) in object storage. Scans are accessed frequently in the first few weeks after a diagnosis (hot tier), occasionally over the next two years for follow-up care (infrequent-access tier), and then must be retained for regulatory compliance for another 20 years but are almost never accessed (archive tier). A lifecycle policy automatically moves each scan through these tiers based on age, cutting long-term storage cost dramatically compared to keeping every scan in the hot tier indefinitely, while lifecycle-driven deletion after the mandated retention period keeps the organization compliant without manual audits.
@@ -509,6 +522,8 @@ public class LifecycleTieringSimulator {
 }
 ```
 
+*The java snippet above illustrates Storage Classes: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Storage Classes: Interview Questions and Answers
 
 **Q1. Why would an archive storage tier require you to "restore" an object before reading it, instead of just serving it directly?**
@@ -527,7 +542,7 @@ A: By analyzing actual access patterns (using storage analytics/inventory report
 
 Because objects are physically replicated (or erasure-coded) across many nodes for durability, every object store must define what a client sees when it reads an object shortly after (or concurrently with) a write to it. Historically, most object stores offered only **eventual consistency** for certain operations (most notably, bucket listing after an overwrite or delete), but modern object stores increasingly guarantee **strong read-after-write consistency** for individual object operations.
 
-```
+```text
 Eventual consistency (older/weaker model):
   PUT object (new version) -> ack
   GET object (immediately after) -> may return OLD version briefly
@@ -539,6 +554,8 @@ Strong read-after-write consistency (modern default, e.g. S3 since Dec 2020):
   GET object (immediately after) -> always returns NEW version
   LIST objects (immediately after) -> always reflects the change
 ```
+
+*The text snippet above illustrates Consistency Models in Object Storage: it shows the concrete form of the idea described in this section.*
 
 #### Consistency Models: Characteristics
 
@@ -612,6 +629,8 @@ sequenceDiagram
     API-->>Client: Returns NEW version (strong consistency)
 ```
 
+*The diagram above illustrates Consistency Models: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Consistency Models: Real-Life Use Case
 
 A CI/CD pipeline uploads a newly built application artifact to an object storage bucket, then immediately triggers a deployment job that downloads and deploys that exact artifact. With strong read-after-write consistency, the deployment job is guaranteed to receive the just-uploaded artifact, never a stale previous build; a decade ago, on an eventually consistent object store, teams had to add explicit polling/retry logic (or a separate strongly consistent "pointer" record) to avoid deploying a stale artifact, purely to work around the storage layer's weaker guarantee.
@@ -667,6 +686,8 @@ public class ConditionalWriteObjectStore {
 }
 ```
 
+*The java snippet above illustrates Consistency Models: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Consistency Models: Interview Questions and Answers
 
 **Q1. What is read-after-write consistency, and does S3-style object storage guarantee it?**
@@ -687,7 +708,7 @@ A: Object storage is designed for massive horizontal scale, where each key can b
 
 **Durability** measures the probability that a stored object survives over time without being lost or corrupted; it is a completely different metric from **availability**, which measures whether the object can be successfully read *right now*. An object store can be extremely durable (data is never lost) while briefly unavailable (a request times out), and vice versa. Object stores achieve their famous "11 nines" (99.999999999%) durability primarily through **replication** (storing multiple full copies) or **erasure coding** (storing data split into fragments plus parity fragments, so any subset of the fragments can reconstruct the original).
 
-```
+```text
 Replication (3x copies):
   Object -> [Copy 1: Node A] [Copy 2: Node B] [Copy 3: Node C]
   Storage overhead: 3x raw data size
@@ -698,6 +719,8 @@ Erasure Coding (e.g. 6 data + 3 parity shards, "6+3"):
   Storage overhead: 1.5x raw data size (vs 3x for replication)
   Can lose any 3 of 9 shards and still reconstruct the full object
 ```
+
+*The text snippet above illustrates Durability and Replication: it shows the concrete form of the idea described in this section.*
 
 #### Durability and Replication: Characteristics
 
@@ -780,6 +803,8 @@ graph TD
     style Lost3 fill:#d94a4a,color:#fff
 ```
 
+*The diagram above illustrates Durability and Replication: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Durability and Replication: Real-Life Use Case
 
 A national archive digitizes millions of historical documents and stores the scanned images in object storage with a "10 data + 4 parity" erasure coding scheme spread across multiple data centers in different cities. Over several years, individual disks fail regularly and are transparently replaced; on one occasion, an entire data center loses power for two days during a storm. Because the erasure coding scheme spreads shards across data centers and can tolerate up to 4 simultaneous shard losses, every single document remains fully reconstructable and readable (once traffic fails over to the surviving centers), even though one of the physical facilities holding a portion of the shards was completely offline.
@@ -837,6 +862,8 @@ public class SimpleErasureCoding {
 }
 ```
 
+*The java snippet above illustrates Durability and Replication: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Durability and Replication: Interview Questions and Answers
 
 **Q1. What is the difference between durability and availability in the context of object storage?**
@@ -855,7 +882,7 @@ A: Bit rot refers to silent, gradual data corruption on physical storage media t
 
 This section walks through what actually happens, end to end, when a client uploads (PUT) or downloads (GET) an object, including how large uploads are split into parts and how the system decides a write is durable enough to acknowledge.
 
-```
+```text
 Upload (PUT) flow, simplified:
   1. Client sends PUT bucket/key with the object body (or initiates a multipart upload for large objects)
   2. Load balancer / API gateway routes the request to an available API front-end node
@@ -878,6 +905,8 @@ Multipart upload (for large objects):
   3. Client calls "complete multipart upload" with the list of part ETags
   4. Server validates and assembles the parts into one logical object, computes a combined ETag
 ```
+
+*The text snippet above illustrates Process Related Things: Upload (PUT) and Download (GET) Request Flow: it shows the concrete form of the idea described in this section.*
 
 #### Upload/Download Flow: Characteristics
 
@@ -957,6 +986,8 @@ sequenceDiagram
     LB-->>Client: 200 OK + reassembled object + metadata headers
 ```
 
+*The diagram above illustrates Upload/Download Flow: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Upload/Download Flow: Real-Life Use Case
 
 A mobile app lets users upload short videos directly from their phones. Instead of routing the video through the application's backend servers (which would double network cost and add a scaling bottleneck), the backend generates a short-lived presigned PUT URL scoped to one specific key, and the phone uploads the video directly to the object store using that URL, in multiple parts uploaded in parallel for faster upload on a mobile network. Once the multipart upload completes, the object store fires a notification event that the backend consumes to trigger transcoding, keeping the backend entirely out of the actual data path.
@@ -1025,6 +1056,8 @@ public class MultipartUploadSimulator {
 }
 ```
 
+*The java snippet above illustrates Upload/Download Flow: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Upload/Download Flow: Interview Questions and Answers
 
 **Q1. Why does object storage split large uploads into multiple parts instead of sending the whole object in one HTTP request?**
@@ -1043,7 +1076,7 @@ A: The individual uploaded parts remain stored (and billed) indefinitely since t
 
 Object storage is internet-reachable by design (that is what makes presigned URLs and direct browser uploads possible), which makes access control the single most consequential security surface for this storage type. Security in object storage layers three mechanisms: **identity and access management (IAM)** for who can call the API at all, **bucket/object policies and ACLs** for fine-grained per-resource rules, and **encryption** (at rest and in transit) for protecting the data itself even if a lower layer is compromised.
 
-```
+```text
 Request authorization decision (simplified):
   1. Is the request signed by a valid, authenticated identity? (IAM)
   2. Does that identity's IAM policy allow this action on this resource?
@@ -1051,6 +1084,8 @@ Request authorization decision (simplified):
   4. Is the request over TLS, and does the bucket require encryption at rest?
   -> Only if every applicable check passes is the request allowed
 ```
+
+*The text snippet above illustrates Security: Access Control, Bucket Policies, and Encryption: it shows the concrete form of the idea described in this section.*
 
 #### Security: Characteristics
 
@@ -1125,6 +1160,8 @@ graph TD
     style Deny4 fill:#d94a4a,color:#fff
 ```
 
+*The diagram above illustrates Security: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Security: Real-Life Use Case
 
 A healthcare company stores patient records as objects and must comply with strict privacy regulations. They configure the bucket to deny any request that is not over TLS, deny any request that does not specify server-side encryption, and scope IAM policies so that only the specific microservice role responsible for a given department can read that department's prefix (e.g. `radiology/` vs `billing/`). All access is logged to a separate, access-restricted audit bucket. When a security audit is performed, the team can demonstrate exactly which identities accessed which records and when, and a penetration test confirms that no bucket is publicly accessible, satisfying the compliance requirement.
@@ -1184,6 +1221,8 @@ public class ObjectStorageAccessControl {
     }
 }
 ```
+
+*The java snippet above illustrates Security: Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Security: Interview Questions and Answers
 

@@ -315,6 +315,8 @@ flowchart LR
     Code --> Comments[Inline comments]
 ```
 
+*The diagram above illustrates Components: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Patterns
@@ -490,6 +492,8 @@ public class PriceService {
 }
 ```
 
+*The java snippet above illustrates 1. Self-describing service with Javadoc: it shows the concrete form of the idea described in this section.*
+
 #### 2. Documented configuration via a `@ConfigurationProperties` bean
 
 ```java
@@ -530,6 +534,8 @@ public class OrderProperties {
 }
 ```
 
+*The java snippet above illustrates 2. Documented configuration via a @ConfigurationProperties bean: it shows the concrete form of the idea described in this section.*
+
 #### 3. OpenAPI annotations for generated API documentation
 
 ```java
@@ -556,6 +562,8 @@ public class ProductController {
     }
 }
 ```
+
+*The java snippet above illustrates 3. OpenAPI annotations for generated API documentation: it shows the concrete form of the idea described in this section.*
 
 #### 4. Architectural decision recorded as a documented enum
 

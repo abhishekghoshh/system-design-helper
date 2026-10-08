@@ -68,7 +68,7 @@ flowchart LR
 
 Protocol Buffers (Protobuf) is a binary serialization format with a schema.
 
-```
+```text
 syntax = "proto3";
 
 service UserService {
@@ -329,6 +329,8 @@ flowchart LR
     Channel --> Base
 ```
 
+*The diagram above illustrates Components: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Patterns
@@ -494,6 +496,8 @@ message UserResponse {
 }
 ```
 
+*The protobuf snippet above illustrates 1. Proto definition: it shows the concrete form of the idea described in this section.*
+
 #### 2. gRPC service implementation
 
 ```java
@@ -517,6 +521,8 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
     }
 }
 ```
+
+*The java snippet above illustrates 2. gRPC service implementation: it shows the concrete form of the idea described in this section.*
 
 #### 3. gRPC client service
 
@@ -546,6 +552,8 @@ public class UserGrpcClient {
     }
 }
 ```
+
+*The java snippet above illustrates 3. gRPC client service: it shows the concrete form of the idea described in this section.*
 
 #### 4. Server streaming handler
 

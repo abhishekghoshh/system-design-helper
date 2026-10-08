@@ -330,6 +330,8 @@ flowchart LR
     Net --> Port[IP + port]
 ```
 
+*The diagram above illustrates Components: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Patterns
@@ -504,6 +506,8 @@ public class EchoServer {
 }
 ```
 
+*The java snippet above illustrates 1. TCP echo server: it shows the concrete form of the idea described in this section.*
+
 #### 2. TCP client
 
 ```java
@@ -533,6 +537,8 @@ public class EchoClient {
     }
 }
 ```
+
+*The java snippet above illustrates 2. TCP client: it shows the concrete form of the idea described in this section.*
 
 #### 3. Non-blocking server with Java NIO
 
@@ -589,6 +595,8 @@ public class NioEchoServer {
     }
 }
 ```
+
+*The java snippet above illustrates 3. Non-blocking server with Java NIO: it shows the concrete form of the idea described in this section.*
 
 #### 4. Spring Boot WebSocket endpoint
 

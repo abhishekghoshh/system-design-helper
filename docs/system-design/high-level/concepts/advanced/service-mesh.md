@@ -14,13 +14,50 @@
 
 ## Theory
 
+### Table of Contents
+
+1. [What is a Service Mesh?](#what-is-a-service-mesh)
+2. [Architecture: Data Plane vs Control Plane](#architecture-data-plane-vs-control-plane)
+3. [Feature 1: Traffic Management](#feature-1-traffic-management)
+4. [Feature 2: Load Balancing](#feature-2-load-balancing)
+5. [Feature 3: Service Discovery](#feature-3-service-discovery)
+6. [Feature 4: Fault Injection](#feature-4-fault-injection)
+7. [Feature 5: Circuit Breaking](#feature-5-circuit-breaking)
+8. [Feature 6: Observability](#feature-6-observability)
+9. [Feature 7: Security (mTLS)](#feature-7-security-mtls)
+10. [Popular Solutions Comparison](#popular-solutions-comparison)
+11. [Head-to-Head Comparison](#head-to-head-comparison)
+12. [When to Use a Service Mesh](#when-to-use-a-service-mesh)
+13. [Service Mesh vs API Gateway vs Load Balancer](#service-mesh-vs-api-gateway-vs-load-balancer)
+14. [Use Case Overview](#use-case-overview)
+15. [System Components](#system-components)
+16. [Architecture Diagram](#architecture-diagram)
+17. [Request Flow Through the Mesh](#request-flow-through-the-mesh)
+18. [Step 1: Kubernetes Namespace and Istio Setup](#step-1-kubernetes-namespace-and-istio-setup)
+19. [Step 2: mTLS Configuration (Strict Mode)](#step-2-mtls-configuration-strict-mode)
+20. [Step 3: Component Implementations](#step-3-component-implementations)
+21. [Step 4: Kubernetes Deployments with Sidecar Injection](#step-4-kubernetes-deployments-with-sidecar-injection)
+22. [Step 5: Istio Networking — Gateway, Virtual Services, and Traffic Management](#step-5-istio-networking-gateway-virtual-services-and-traffic-management)
+23. [Step 6: Authorization Policies (Zero-Trust Network)](#step-6-authorization-policies-zero-trust-network)
+24. [Step 7: Observability Configuration](#step-7-observability-configuration)
+25. [Step 8: Network Policies (Defense in Depth)](#step-8-network-policies-defense-in-depth)
+26. [Step 9: Pod Disruption Budgets and Horizontal Pod Autoscaling](#step-9-pod-disruption-budgets-and-horizontal-pod-autoscaling)
+27. [Step 10: Canary Deployments with Traffic Splitting](#step-10-canary-deployments-with-traffic-splitting)
+28. [Step 11: Rate Limiting](#step-11-rate-limiting)
+29. [Step 12: Deploy Everything](#step-12-deploy-everything)
+30. [How the Sidecar Pattern Works (Detailed)](#how-the-sidecar-pattern-works-detailed)
+31. [Service Discovery in the Mesh](#service-discovery-in-the-mesh)
+32. [Verification and Testing Commands](#verification-and-testing-commands)
+33. [Best Practices Summary](#best-practices-summary)
+
+
 ### What is a Service Mesh?
 
 A **service mesh** is a dedicated **infrastructure layer** that handles service-to-service communication in a microservices architecture. Instead of embedding networking logic (retries, timeouts, encryption, discovery) into every application, the mesh moves that responsibility into a **proxy sidecar** that runs alongside each service.
 
 **The core problem it solves:** In a monolith, function calls are in-process. In microservices, every "function call" becomes a network request — unreliable, unsecured, and unobservable by default. A service mesh makes the network reliable, secure, and observable without changing application code.
 
-```
+```text
 WITHOUT SERVICE MESH                          WITH SERVICE MESH
 ┌─────────────┐     ┌─────────────┐          ┌─────────────────────┐     ┌─────────────────────┐
 │  Service A  │     │  Service B  │          │      Service A      │     │      Service B      │
@@ -41,11 +78,13 @@ networking concerns in its                    Networking is decoupled from appli
 own language (Go, Java, Python...)            Same proxy works for ALL languages
 ```
 
+*The text snippet above illustrates What is a Service Mesh?: it shows the concrete form of the idea described in this section.*
+
 ### Architecture: Data Plane vs Control Plane
 
 Every service mesh has two fundamental components:
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────────────────┐
 │                          CONTROL PLANE                                   │
 │                                                                          │
@@ -92,7 +131,7 @@ Traffic management controls **how requests are routed** between services. The me
 
 #### Capabilities
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────┐
 │                    TRAFFIC MANAGEMENT                           │
 │                                                                 │
@@ -116,9 +155,11 @@ Traffic management controls **how requests are routed** between services. The me
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates Capabilities: it shows the concrete form of the idea described in this section.*
+
 #### Canary Deployment (Traffic Splitting)
 
-```
+```text
                     ┌─────────────┐
                     │   Incoming   │
                     │   Traffic    │
@@ -139,6 +180,8 @@ Traffic management controls **how requests are routed** between services. The me
                 │ 3 pods  │ │ 1 pod   │
                 └─────────┘ └─────────┘
 ```
+
+*The text snippet above illustrates Canary Deployment (Traffic Splitting): it shows the concrete form of the idea described in this section.*
 
 #### Istio Example: VirtualService + DestinationRule
 
@@ -182,6 +225,8 @@ spec:
         version: v2
 ```
 
+*The yaml snippet above illustrates Istio Example: VirtualService + DestinationRule: it shows the concrete form of the idea described in this section.*
+
 #### Header-Based Routing
 
 ```yaml
@@ -208,6 +253,8 @@ spec:
             subset: v1
 ```
 
+*The yaml snippet above illustrates Header-Based Routing: it shows the concrete form of the idea described in this section.*
+
 #### Traffic Mirroring (Shadow Traffic)
 
 ```yaml
@@ -231,6 +278,8 @@ spec:
         value: 100.0  # Mirror all traffic; responses from v2 are discarded
 ```
 
+*The yaml snippet above illustrates Traffic Mirroring (Shadow Traffic): it shows the concrete form of the idea described in this section.*
+
 ---
 
 ### Feature 2: Load Balancing
@@ -239,7 +288,7 @@ The mesh provides **client-side load balancing** at L7 — each sidecar proxy kn
 
 #### Load Balancing Algorithms
 
-```
+```text
 ROUND ROBIN                    LEAST REQUEST                  RANDOM
 (default)                      (best for varying latency)     (simple, uniform)
 
@@ -258,9 +307,11 @@ always routes to               Reduces latency and cross-zone costs
 same Pod (affinity)
 ```
 
+*The text snippet above illustrates Load Balancing Algorithms: it shows the concrete form of the idea described in this section.*
+
 #### Comparison: kube-proxy vs Service Mesh Load Balancing
 
-```
+```text
 kube-proxy (without mesh)              Service Mesh (with Envoy)
 ┌───────────────────┐                  ┌───────────────────┐
 │    Service VIP    │                  │  Envoy Sidecar    │
@@ -278,6 +329,8 @@ kube-proxy (without mesh)              Service Mesh (with Envoy)
 └───────────────────┘                  │  Full metrics     │
                                        └───────────────────┘
 ```
+
+*The text snippet above illustrates Comparison: kube-proxy vs Service Mesh Load Balancing: it shows the concrete form of the idea described in this section.*
 
 #### Istio DestinationRule Example
 
@@ -300,6 +353,8 @@ spec:
         maxRequestsPerConnection: 10  # Limit connection reuse (spread load)
 ```
 
+*The yaml snippet above illustrates Istio DestinationRule Example: it shows the concrete form of the idea described in this section.*
+
 #### Consistent Hashing (Session Affinity)
 
 ```yaml
@@ -320,6 +375,8 @@ spec:
         # useSourceIp: true
 ```
 
+*The yaml snippet above illustrates Consistent Hashing (Session Affinity): it shows the concrete form of the idea described in this section.*
+
 ---
 
 ### Feature 3: Service Discovery
@@ -328,7 +385,7 @@ Service discovery answers: **"Where are the instances of Service X right now?"**
 
 #### How Service Discovery Works in a Mesh
 
-```
+```text
 ┌───────────────────────────────────────────────────────────────────┐
 │                                                                   │
 │  1. Pod created → Kubernetes adds Endpoint                       │
@@ -364,6 +421,8 @@ Service discovery answers: **"Where are the instances of Service X right now?"**
 └───────────────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates How Service Discovery Works in a Mesh: it shows the concrete form of the idea described in this section.*
+
 #### xDS Discovery APIs
 
 | API | Full Name | Purpose |
@@ -374,7 +433,7 @@ Service discovery answers: **"Where are the instances of Service X right now?"**
 | **RDS** | Route Discovery Service | How to route requests to the right cluster |
 | **SDS** | Secret Discovery Service | TLS certificates for mTLS |
 
-```
+```text
 App sends request to "http://payment-service:8080/pay"
                 │
                 ▼
@@ -400,6 +459,8 @@ App sends request to "http://payment-service:8080/pay"
         Direct pod-to-pod connection to 10.1.0.6:8080
 ```
 
+*The text snippet above illustrates xDS Discovery APIs: it shows the concrete form of the idea described in this section.*
+
 #### Application Code — No Discovery Logic Needed
 
 The beauty of a service mesh is that application code uses plain DNS names:
@@ -414,16 +475,22 @@ async def call_payment():
     return resp.json()
 ```
 
+*The python snippet above illustrates Application Code — No Discovery Logic Needed: it shows the concrete form of the idea described in this section.*
+
 ```go
 // Go — same simple HTTP call
 resp, err := http.Get("http://payment-service:8080/pay")
 ```
+
+*The go snippet above illustrates Application Code — No Discovery Logic Needed: it shows the concrete form of the idea described in this section.*
 
 ```java
 // Java — RestTemplate or WebClient
 ResponseEntity<String> resp = restTemplate.getForEntity(
     "http://payment-service:8080/pay", String.class);
 ```
+
+*The java snippet above illustrates Application Code — No Discovery Logic Needed: it shows the concrete form of the idea described in this section.*
 
 ---
 
@@ -433,7 +500,7 @@ Fault injection lets you **deliberately introduce failures** into the system to 
 
 #### Types of Fault Injection
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────────┐
 │                     FAULT INJECTION                              │
 │                                                                  │
@@ -453,9 +520,11 @@ Fault injection lets you **deliberately introduce failures** into the system to 
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates Types of Fault Injection: it shows the concrete form of the idea described in this section.*
+
 #### How It Works
 
-```
+```text
 Normal flow:
   App A ──► Envoy A ──── mTLS ────► Envoy B ──► App B ──► Response
 
@@ -465,6 +534,8 @@ With delay fault (5s):
 With abort fault (503):
   App A ──► Envoy A ──── [RETURN 503 immediately] ✗ (never reaches Envoy B)
 ```
+
+*The text snippet above illustrates How It Works: it shows the concrete form of the idea described in this section.*
 
 #### Istio Fault Injection Examples
 
@@ -528,9 +599,11 @@ spec:
             host: payment-service
 ```
 
+*The yaml snippet above illustrates Istio Fault Injection Examples: it shows the concrete form of the idea described in this section.*
+
 #### Why Fault Injection Matters — Chaos Engineering
 
-```
+```text
 Production Scenario:
   Order Service ──► Payment Service (normally 100ms response)
 
@@ -552,6 +625,8 @@ With fault injection:  Discover the bug in staging, add timeout + circuit breake
                     └─────────────────────────┘
 ```
 
+*The text snippet above illustrates Why Fault Injection Matters — Chaos Engineering: it shows the concrete form of the idea described in this section.*
+
 ---
 
 ### Feature 5: Circuit Breaking
@@ -560,7 +635,7 @@ Circuit breaking **prevents cascading failures** by stopping requests to an unhe
 
 #### Circuit Breaker State Machine
 
-```
+```text
                  ┌──────────────────────────────────────────────────┐
                  │                                                  │
       success    │    ┌────────────┐    failures exceed    ┌───────▼──────┐
@@ -590,9 +665,11 @@ Circuit breaking **prevents cascading failures** by stopping requests to an unhe
                       └────────────────┘
 ```
 
+*The text snippet above illustrates Circuit Breaker State Machine: it shows the concrete form of the idea described in this section.*
+
 #### Without vs With Circuit Breaking
 
-```
+```text
 WITHOUT CIRCUIT BREAKING:
 
 Client ──► Service A ──► Service B (failing)
@@ -635,6 +712,8 @@ Client ──► Service A ──► Service B (failing)
               └───────────────────────────────┘
 ```
 
+*The text snippet above illustrates Without vs With Circuit Breaking: it shows the concrete form of the idea described in this section.*
+
 #### Istio Circuit Breaking via Outlier Detection
 
 In Istio, circuit breaking is implemented through **outlier detection** in `DestinationRule`. It works by ejecting (removing) unhealthy pods from the load balancing pool.
@@ -665,7 +744,7 @@ spec:
 
 **How outlier detection works:**
 
-```
+```text
 Pod pool: [A, B, C, D]
 
 1. Pod C returns 3 consecutive 5xx errors
@@ -683,13 +762,15 @@ Timeline:
   t=37  [A ✓] [B ✓] [C ✓] [D ✓]   ← C recovered (circuit closed)
 ```
 
+*The text snippet above illustrates Istio Circuit Breaking via Outlier Detection: it shows the concrete form of the idea described in this section.*
+
 ---
 
 ### Feature 6: Observability
 
 A service mesh provides **three pillars of observability** automatically — without adding any instrumentation to your application code.
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │                     THREE PILLARS OF OBSERVABILITY                           │
 │                                                                              │
@@ -720,9 +801,11 @@ A service mesh provides **three pillars of observability** automatically — wit
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates Feature 6: Observability: it shows the concrete form of the idea described in this section.*
+
 #### Golden Signals (What Envoy Reports Automatically)
 
-```
+```text
 For EVERY request through the mesh, Envoy emits:
 
 ┌──────────────────────────────────────────────────────────────┐
@@ -741,9 +824,11 @@ For EVERY request through the mesh, Envoy emits:
 Labels include: source, destination, response_code, method, etc.
 ```
 
+*The text snippet above illustrates Golden Signals (What Envoy Reports Automatically): it shows the concrete form of the idea described in this section.*
+
 #### Distributed Tracing Flow
 
-```
+```text
 User request: POST /api/order
 
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -793,6 +878,8 @@ spec:
         - name: prometheus
 ```
 
+*The yaml snippet above illustrates Istio Telemetry Configuration: it shows the concrete form of the idea described in this section.*
+
 ---
 
 ### Feature 7: Security (mTLS)
@@ -801,7 +888,7 @@ spec:
 
 #### How mTLS Works in a Service Mesh
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────────────────┐
 │                        mTLS HANDSHAKE                                    │
 │                                                                          │
@@ -832,11 +919,13 @@ spec:
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates How mTLS Works in a Service Mesh: it shows the concrete form of the idea described in this section.*
+
 #### SPIFFE Identity
 
 Istio uses **SPIFFE (Secure Production Identity Framework For Everyone)** to assign identities:
 
-```
+```text
 Each service gets a SPIFFE identity encoded in its X.509 certificate:
 
   spiffe://cluster.local/ns/production/sa/payment-service
@@ -853,9 +942,11 @@ which services can talk to which:
    to call spiffe://cluster.local/ns/production/sa/payment-service"
 ```
 
+*The text snippet above illustrates SPIFFE Identity: it shows the concrete form of the idea described in this section.*
+
 #### Certificate Lifecycle
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────────┐
 │                    CERTIFICATE MANAGEMENT                        │
 │                                                                  │
@@ -881,6 +972,8 @@ which services can talk to which:
 │  └──────────────┘                                                │
 └──────────────────────────────────────────────────────────────────┘
 ```
+
+*The text snippet above illustrates Certificate Lifecycle: it shows the concrete form of the idea described in this section.*
 
 #### mTLS Modes
 
@@ -916,6 +1009,8 @@ spec:
     mode: DISABLE
 ```
 
+*The yaml snippet above illustrates mTLS Modes: it shows the concrete form of the idea described in this section.*
+
 #### Authorization Policies (Zero-Trust)
 
 ```yaml
@@ -950,13 +1045,15 @@ spec:
             paths: ["/api/pay"]
 ```
 
+*The yaml snippet above illustrates Authorization Policies (Zero-Trust): it shows the concrete form of the idea described in this section.*
+
 ---
 
 ### Popular Solutions Comparison
 
 #### Istio
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────────┐
 │  ISTIO                                                           │
 │  "The most feature-rich service mesh"                           │
@@ -987,7 +1084,7 @@ spec:
 
 **Istio Architecture:**
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────────┐
 │                     istiod (Control Plane)                       │
 │                                                                  │
@@ -1033,9 +1130,11 @@ kubectl label namespace my-app istio-injection=enabled
 istioctl analyze
 ```
 
+*The bash snippet above illustrates Istio: it shows the concrete form of the idea described in this section.*
+
 #### Linkerd
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────────┐
 │  LINKERD                                                         │
 │  "The lightweight, simple service mesh"                         │
@@ -1067,7 +1166,7 @@ istioctl analyze
 
 **Linkerd Architecture:**
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────────┐
 │               Linkerd Control Plane                              │
 │                                                                  │
@@ -1140,9 +1239,11 @@ spec:
       weight: 10           # 10% to v2
 ```
 
+*The yaml snippet above illustrates Linkerd: it shows the concrete form of the idea described in this section.*
+
 #### Consul Connect
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────────┐
 │  CONSUL CONNECT                                                  │
 │  "Service mesh built on HashiCorp's service discovery"          │
@@ -1173,7 +1274,7 @@ spec:
 
 **Consul Connect Architecture:**
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────────┐
 │             Consul Server Cluster (3 or 5 nodes)                 │
 │                                                                  │
@@ -1227,6 +1328,8 @@ consul intention create -allow web api
 consul intention create -allow api database
 ```
 
+*The bash snippet above illustrates Consul Connect: it shows the concrete form of the idea described in this section.*
+
 ```hcl
 # Consul config file (HCL)
 Kind = "service-intentions"
@@ -1242,6 +1345,8 @@ Sources = [
   }
 ]
 ```
+
+*The hcl snippet above illustrates Consul Connect: it shows the concrete form of the idea described in this section.*
 
 ### Head-to-Head Comparison
 
@@ -1263,7 +1368,7 @@ Sources = [
 
 ### When to Use a Service Mesh
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                                                                         │
 │  USE a service mesh when:                                               │
@@ -1285,9 +1390,11 @@ Sources = [
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates When to Use a Service Mesh: it shows the concrete form of the idea described in this section.*
+
 ### Service Mesh vs API Gateway vs Load Balancer
 
-```
+```text
 ┌──────────────────┬──────────────────┬──────────────────┬──────────────────┐
 │                  │  Load Balancer   │  API Gateway     │  Service Mesh    │
 ├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
@@ -1331,6 +1438,8 @@ Sources = [
               └──────────────┘
 ```
 
+*The text snippet above illustrates Service Mesh vs API Gateway vs Load Balancer: it shows the concrete form of the idea described in this section.*
+
 ---
 
 ## End-to-End Service Mesh: Distributed Workflow Management System
@@ -1355,7 +1464,7 @@ Each component is written in a **different language**, has **multiple replicas**
 
 ### Architecture Diagram
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                          KUBERNETES CLUSTER                                     │
 │                                                                                 │
@@ -1420,9 +1529,11 @@ Each component is written in a **different language**, has **multiple replicas**
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates Architecture Diagram: it shows the concrete form of the idea described in this section.*
+
 ### Request Flow Through the Mesh
 
-```
+```text
 Scientist (Browser)
        │
        ▼
@@ -1459,6 +1570,8 @@ Scientist (Browser)
         └──────────────┘
 ```
 
+*The text snippet above illustrates Request Flow Through the Mesh: it shows the concrete form of the idea described in this section.*
+
 ---
 
 ### Step 1: Kubernetes Namespace and Istio Setup
@@ -1476,6 +1589,8 @@ istioctl install --set profile=demo -y
 # Verify installation
 kubectl get pods -n istio-system
 ```
+
+*The bash snippet above illustrates 1.1 Install Istio: it shows the concrete form of the idea described in this section.*
 
 #### 1.2 Namespace Configuration
 
@@ -1496,6 +1611,8 @@ metadata:
   labels:
     istio-injection: disabled
 ```
+
+*The yaml snippet above illustrates 1.2 Namespace Configuration: it shows the concrete form of the idea described in this section.*
 
 ```bash
 kubectl apply -f namespace.yaml
@@ -1522,6 +1639,8 @@ spec:
     mode: STRICT  # All traffic must be mTLS encrypted
 ```
 
+*The yaml snippet above illustrates 2.1 Mesh-Wide Strict mTLS: it shows the concrete form of the idea described in this section.*
+
 #### 2.2 Destination Rules for mTLS
 
 ```yaml
@@ -1541,7 +1660,7 @@ spec:
 
 **How mTLS works in Istio:**
 
-```
+```text
 Pod A (App Container)                    Pod B (App Container)
         │                                         ▲
         │ plaintext HTTP                          │ plaintext HTTP
@@ -1708,6 +1827,8 @@ func main() {
 }
 ```
 
+*The go snippet above illustrates 3.1 IAM Service (Go): it shows the concrete form of the idea described in this section.*
+
 ```dockerfile
 # iam-service/Dockerfile
 FROM golang:1.22-alpine AS builder
@@ -1724,6 +1845,8 @@ EXPOSE 8080
 USER 1000:1000
 ENTRYPOINT ["iam-service"]
 ```
+
+*The dockerfile snippet above illustrates 3.1 IAM Service (Go): it shows the concrete form of the idea described in this section.*
 
 #### 3.2 Science Gateway (Python/FastAPI)
 
@@ -1845,6 +1968,8 @@ async def health():
     return {"status": "healthy", "service": "science-gateway"}
 ```
 
+*The python snippet above illustrates 3.2 Science Gateway (Python/FastAPI): it shows the concrete form of the idea described in this section.*
+
 ```dockerfile
 # science-gateway/Dockerfile
 FROM python:3.12-slim
@@ -1856,6 +1981,8 @@ EXPOSE 8000
 USER 1000:1000
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
 ```
+
+*The dockerfile snippet above illustrates 3.2 Science Gateway (Python/FastAPI): it shows the concrete form of the idea described in this section.*
 
 #### 3.3 Global Wrapper Execution API (Java/Spring Boot)
 
@@ -1960,6 +2087,8 @@ public class ExecutionController {
 }
 ```
 
+*The java snippet above illustrates 3.3 Global Wrapper Execution API (Java/Spring Boot): it shows the concrete form of the idea described in this section.*
+
 ```java
 // global-execution-api/src/main/java/com/workflow/execution/ExecutionApplication.java
 package com.workflow.execution;
@@ -1981,6 +2110,8 @@ public class ExecutionApplication {
     }
 }
 ```
+
+*The java snippet above illustrates 3.3 Global Wrapper Execution API (Java/Spring Boot): it shows the concrete form of the idea described in this section.*
 
 #### 3.4 Local Batch Execution API (Go)
 
@@ -2096,6 +2227,8 @@ func main() {
 }
 ```
 
+*The go snippet above illustrates 3.4 Local Batch Execution API (Go): it shows the concrete form of the idea described in this section.*
+
 #### 3.5 Local Interactive API (Python/Flask)
 
 ```python
@@ -2159,6 +2292,8 @@ def health():
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
 ```
+
+*The python snippet above illustrates 3.5 Local Interactive API (Python/Flask): it shows the concrete form of the idea described in this section.*
 
 #### 3.6 Data Management Service (Java/Quarkus)
 
@@ -2245,6 +2380,8 @@ public class DataManagementResource {
     }
 }
 ```
+
+*The java snippet above illustrates 3.6 Data Management Service (Java/Quarkus): it shows the concrete form of the idea described in this section.*
 
 ---
 
@@ -2336,6 +2473,8 @@ metadata:
   namespace: workflow-system
 ```
 
+*The yaml snippet above illustrates 4.1 IAM Service Deployment: it shows the concrete form of the idea described in this section.*
+
 #### 4.2 Science Gateway Deployment
 
 ```yaml
@@ -2417,6 +2556,8 @@ metadata:
   name: science-gateway
   namespace: workflow-system
 ```
+
+*The yaml snippet above illustrates 4.2 Science Gateway Deployment: it shows the concrete form of the idea described in this section.*
 
 #### 4.3 Global Wrapper Execution API Deployment
 
@@ -2501,6 +2642,8 @@ metadata:
   namespace: workflow-system
 ```
 
+*The yaml snippet above illustrates 4.3 Global Wrapper Execution API Deployment: it shows the concrete form of the idea described in this section.*
+
 #### 4.4 Batch Execution API Deployment
 
 ```yaml
@@ -2576,6 +2719,8 @@ metadata:
   namespace: workflow-system
 ```
 
+*The yaml snippet above illustrates 4.4 Batch Execution API Deployment: it shows the concrete form of the idea described in this section.*
+
 #### 4.5 Interactive API Deployment
 
 ```yaml
@@ -2649,6 +2794,8 @@ metadata:
   name: interactive-api
   namespace: workflow-system
 ```
+
+*The yaml snippet above illustrates 4.5 Interactive API Deployment: it shows the concrete form of the idea described in this section.*
 
 #### 4.6 Data Management Deployment
 
@@ -2736,6 +2883,8 @@ metadata:
   name: data-management
   namespace: workflow-system
 ```
+
+*The yaml snippet above illustrates 4.6 Data Management Deployment: it shows the concrete form of the idea described in this section.*
 
 #### 4.7 MinIO (Local Datalake/S3) Deployment
 
@@ -2849,6 +2998,8 @@ stringData:
   secret-key: "minioadmin123"    # Change in production
 ```
 
+*The yaml snippet above illustrates 4.7 MinIO (Local Datalake/S3) Deployment: it shows the concrete form of the idea described in this section.*
+
 ---
 
 ### Step 5: Istio Networking — Gateway, Virtual Services, and Traffic Management
@@ -2884,6 +3035,8 @@ spec:
       tls:
         httpsRedirect: true  # Force HTTPS
 ```
+
+*The yaml snippet above illustrates 5.1 Ingress Gateway: it shows the concrete form of the idea described in this section.*
 
 #### 5.2 Virtual Services (Routing Rules)
 
@@ -2963,6 +3116,8 @@ spec:
         perTryTimeout: 30s
       timeout: 120s  # Batch jobs may take time to submit
 ```
+
+*The yaml snippet above illustrates 5.2 Virtual Services (Routing Rules): it shows the concrete form of the idea described in this section.*
 
 #### 5.3 Destination Rules (Load Balancing + Connection Pooling)
 
@@ -3105,6 +3260,8 @@ spec:
       mode: ISTIO_MUTUAL
 ```
 
+*The yaml snippet above illustrates 5.3 Destination Rules (Load Balancing + Connection Pooling): it shows the concrete form of the idea described in this section.*
+
 ---
 
 ### Step 6: Authorization Policies (Zero-Trust Network)
@@ -3244,7 +3401,7 @@ spec:
 
 **Zero-Trust Network Topology:**
 
-```
+```text
                     ┌──────────────────────────────────────────────┐
                     │         Authorization Policy Map             │
                     │                                              │
@@ -3264,6 +3421,8 @@ spec:
                     │  ✗ All other communication paths DENIED     │
                     └──────────────────────────────────────────────┘
 ```
+
+*The text snippet above illustrates Step 6: Authorization Policies (Zero-Trust Network): it shows the concrete form of the idea described in this section.*
 
 ---
 
@@ -3315,6 +3474,8 @@ spec:
     app: jaeger
 ```
 
+*The yaml snippet above illustrates 7.1 Distributed Tracing with Jaeger: it shows the concrete form of the idea described in this section.*
+
 #### 7.2 Prometheus and Grafana
 
 ```yaml
@@ -3354,6 +3515,8 @@ data:
             replacement: ${1}:15090
 ```
 
+*The yaml snippet above illustrates 7.2 Prometheus and Grafana: it shows the concrete form of the idea described in this section.*
+
 #### 7.3 Istio Telemetry Configuration
 
 ```yaml
@@ -3378,6 +3541,8 @@ spec:
     - providers:
         - name: prometheus
 ```
+
+*The yaml snippet above illustrates 7.3 Istio Telemetry Configuration: it shows the concrete form of the idea described in this section.*
 
 ---
 
@@ -3444,6 +3609,8 @@ spec:
             matchLabels:
               kubernetes.io/metadata.name: istio-system
 ```
+
+*The yaml snippet above illustrates Step 8: Network Policies (Defense in Depth): it shows the concrete form of the idea described in this section.*
 
 ---
 
@@ -3534,6 +3701,8 @@ spec:
           averageUtilization: 70
 ```
 
+*The yaml snippet above illustrates Step 9: Pod Disruption Budgets and Horizontal Pod Autoscaling: it shows the concrete form of the idea described in this section.*
+
 ---
 
 ### Step 10: Canary Deployments with Traffic Splitting
@@ -3579,6 +3748,8 @@ spec:
       labels:
         version: v2
 ```
+
+*The yaml snippet above illustrates Step 10: Canary Deployments with Traffic Splitting: it shows the concrete form of the idea described in this section.*
 
 ---
 
@@ -3632,6 +3803,8 @@ spec:
                     key: x-local-rate-limit
                     value: "true"
 ```
+
+*The yaml snippet above illustrates Step 11: Rate Limiting: it shows the concrete form of the idea described in this section.*
 
 ---
 
@@ -3692,11 +3865,13 @@ echo "=== Checking mTLS status ==="
 istioctl authn tls-check -n workflow-system
 ```
 
+*The bash snippet above illustrates Step 12: Deploy Everything: it shows the concrete form of the idea described in this section.*
+
 ---
 
 ### How the Sidecar Pattern Works (Detailed)
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │                     POD BOUNDARY                        │
 │                                                         │
@@ -3737,7 +3912,7 @@ istioctl authn tls-check -n workflow-system
 
 **What happens when Pod A calls Pod B:**
 
-```
+```text
 1. App A sends HTTP to "http://iam-service:8080/auth/validate"
 2. iptables redirects this to Envoy sidecar A (port 15001)
 3. Envoy A resolves "iam-service" via Pilot/xDS configuration
@@ -3750,13 +3925,15 @@ istioctl authn tls-check -n workflow-system
 10. Metrics, traces, and logs are emitted at each step
 ```
 
+*The text snippet above illustrates How the Sidecar Pattern Works (Detailed): it shows the concrete form of the idea described in this section.*
+
 ---
 
 ### Service Discovery in the Mesh
 
 Service discovery happens at **three layers**:
 
-```
+```text
 ┌────────────────────────────────────────────┐
 │           Layer 1: Kubernetes DNS          │
 │                                            │
@@ -3789,6 +3966,8 @@ Service discovery happens at **three layers**:
 │  goes directly pod-to-pod                  │
 └────────────────────────────────────────────┘
 ```
+
+*The text snippet above illustrates Service Discovery in the Mesh: it shows the concrete form of the idea described in this section.*
 
 ---
 
@@ -3826,6 +4005,8 @@ istioctl dashboard jaeger
 # View metrics in Grafana
 istioctl dashboard grafana
 ```
+
+*The bash snippet above illustrates Verification and Testing Commands: it shows the concrete form of the idea described in this section.*
 
 ---
 

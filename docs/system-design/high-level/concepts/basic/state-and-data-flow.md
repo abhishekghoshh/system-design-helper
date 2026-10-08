@@ -11,6 +11,17 @@
 
 ## Theory
 
+### Table of Contents
+
+1. [What is State and Data Flow?](#what-is-state-and-data-flow)
+2. [What is State?](#what-is-state)
+3. [Types of State](#types-of-state)
+4. [Data Flow Patterns](#data-flow-patterns)
+5. [Stateless vs Stateful](#stateless-vs-stateful)
+6. [State Management Challenges](#state-management-challenges)
+7. [Summary: State Management Principles](#summary-state-management-principles)
+
+
 ### What is State and Data Flow?
 
 **State** is any data that can change over time and affects how a system behaves or what it renders. **Data flow** describes how that state moves between components, services, or layers of a system.
@@ -27,13 +38,15 @@ flowchart LR
     D --> A
 ```
 
+*The diagram above illustrates What is State and Data Flow?: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### What is State?
 
 State is the **current snapshot** of a system at any point in time. It answers the question: *"What is true right now?"*
 
-```
+```text
 Examples of state:
   - Is the user logged in?           → Authentication state
   - What items are in the cart?      → Application state
@@ -85,6 +98,8 @@ graph TD
     App -- "auth token sent to" --> Server
 ```
 
+*The diagram above illustrates Client-Side State: it maps the key components and their interactions described in this section.*
+
 #### Server-Side State
 
 State that lives on the backend. Unlike client state, this is typically **persistent** and **shared** across many users.
@@ -115,6 +130,8 @@ graph LR
     Server -- "rate limit counter" --> Redis
 ```
 
+*The diagram above illustrates Server-Side State: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Data Flow Patterns
@@ -123,13 +140,13 @@ graph LR
 
 Data moves in a **strict single direction**: state → view → action → state. No component can reach back and mutate state directly; it must dispatch an *action* that goes through a controlled update path.
 
-```
+```text
   State → View → Action → State (updated) → View (re-renders)
 ```
 
 **Detailed React/Redux example:**
 
-```
+```text
   Redux Store holds: { cart: [{ id: 1, qty: 2 }] }
           ↓
   <CartIcon /> reads cart.length from store → renders "1 item"
@@ -143,6 +160,8 @@ Data moves in a **strict single direction**: state → view → action → state
           ↓
   Store notifies subscribers → <CartIcon /> re-renders → "2 items"
 ```
+
+*The text snippet above illustrates 1. Unidirectional Data Flow (One-Way): it shows the concrete form of the idea described in this section.*
 
 ```mermaid
 sequenceDiagram
@@ -170,7 +189,7 @@ sequenceDiagram
 
 The model (state) and the view are **automatically synchronized** in both directions. When the user types in an input, the model updates. When the model changes (e.g., from an API), the input field updates automatically.
 
-```
+```text
   Model ←→ View
 
   Angular example:
@@ -180,6 +199,8 @@ The model (state) and the view are **automatically synchronized** in both direct
     Code sets email = "test@example.com"
       → input shows "test@example.com"       (Model → View)
 ```
+
+*The text snippet above illustrates 2. Bidirectional Data Flow (Two-Way Binding): it shows the concrete form of the idea described in this section.*
 
 ```mermaid
 flowchart LR
@@ -199,7 +220,7 @@ flowchart LR
 
 The most fundamental pattern on the web. The client *asks* for data; the server *responds* with it. No data flows until the client initiates.
 
-```
+```text
   Client                              Server
     |── GET /api/products?page=2 ──→ |
     |                                 |── SELECT * FROM products LIMIT 20 OFFSET 20
@@ -208,6 +229,8 @@ The most fundamental pattern on the web. The client *asks* for data; the server 
   Data path:
     Browser → HTTP Request → Load Balancer → App Server → DB → App Server → HTTP Response → Browser
 ```
+
+*The text snippet above illustrates 3. Request-Response (Client-Server): it shows the concrete form of the idea described in this section.*
 
 ```mermaid
 sequenceDiagram
@@ -235,7 +258,7 @@ sequenceDiagram
 
 Services communicate by publishing and subscribing to **events** through a message broker. The publisher does not know who consumes the event; the consumer does not know who published it.
 
-```
+```text
   Service A (Order Service) publishes event: "OrderPlaced"
     ↓
   Message Broker (Kafka / RabbitMQ / SNS)
@@ -243,6 +266,8 @@ Services communicate by publishing and subscribing to **events** through a messa
   Email Service  Inventory Service  Analytics Service
   (sends email)  (decrements stock) (records for reporting)
 ```
+
+*The text snippet above illustrates 4. Event-Driven / Pub-Sub: it shows the concrete form of the idea described in this section.*
 
 ```mermaid
 flowchart TD
@@ -296,7 +321,7 @@ sequenceDiagram
 ```
 
 **WebSocket lifecycle:**
-```
+```text
 1. Client opens HTTP connection and sends Upgrade: websocket header
 2. Server responds 101 Switching Protocols
 3. A persistent TCP connection is maintained
@@ -344,7 +369,7 @@ flowchart LR
 
 **Modern Best Practice:** Keep application servers **stateless**. Push all state to external stores:
 
-```
+```text
   Application Server (stateless)
         ↓
   ┌─────────────┬──────────────┬──────────────┐
@@ -365,7 +390,7 @@ When any server is killed and replaced, the new instance reconnects to Redis and
 
 Cached data becomes outdated when the source of truth changes but the cache is not invalidated.
 
-```
+```text
   Timeline:
     T=0: Client fetches product price → caches $99
     T=5: Admin updates price to $79 in DB
@@ -382,7 +407,7 @@ Cached data becomes outdated when the source of truth changes but the cache is n
 
 Two concurrent operations read the same state, make decisions, and write back — the second write overwrites the first.
 
-```
+```text
   Classic "lost update" race condition:
 
   User A reads:  balance = $100
@@ -404,11 +429,13 @@ WHERE id = 1 AND version = 5;
 -- If 0 rows affected → someone else updated first → retry
 ```
 
+*The sql snippet above illustrates Race Conditions: it shows the concrete form of the idea described in this section.*
+
 #### State Synchronization
 
 Keeping state consistent across multiple clients or services that all hold a copy.
 
-```
+```text
   Example: Google Docs — 3 users editing the same paragraph simultaneously
 
   User 1 types "Hello"  → local state updated immediately
@@ -425,7 +452,7 @@ Keeping state consistent across multiple clients or services that all hold a cop
 
 Too many independent state variables make the system hard to reason about — especially when they are interdependent.
 
-```
+```text
   Bad pattern (12 separate booleans):
     isLoading, isError, isSuccess, hasData,
     isModalOpen, isDropdownOpen, isSidebarOpen,
@@ -453,6 +480,8 @@ stateDiagram-v2
     Error --> Loading : retry()
     Success --> Loading : refetch()
 ```
+
+*The diagram above illustrates State Explosion: it maps the key components and their interactions described in this section.*
 
 ---
 

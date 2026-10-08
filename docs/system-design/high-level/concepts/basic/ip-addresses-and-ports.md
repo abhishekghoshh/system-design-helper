@@ -11,6 +11,12 @@
 
 ## Theory
 
+### Table of Contents
+
+1. [IP Addresses: The Internet's Postal System](#ip-addresses-the-internets-postal-system)
+2. [Ports: Doorways to Applications](#ports-doorways-to-applications)
+
+
 ### IP Addresses: The Internet's Postal System
 
 **IP Address**: A unique numerical label assigned to every device on a network that uses the Internet Protocol (IP) for communication. Think of it exactly like a postal address — without one, data packets have no destination to route towards.
@@ -25,7 +31,7 @@ Routers read these headers and forward packets hop-by-hop until they reach the d
 
 **Format**: 32-bit address (4 bytes), written as dotted decimal notation. Each of the 4 "octets" is a number from 0–255.
 
-```
+```text
 192  .  168  .   1   .  100
  ↓       ↓       ↓       ↓
  8 bits  8 bits  8 bits  8 bits  =  32 bits total
@@ -46,7 +52,7 @@ Total unique IPv4 addresses: 2^32 = 4,294,967,296 (~4.3 billion)
 
 The original IP addressing scheme divided the 32-bit space into fixed classes. While largely superseded by CIDR (below), classes explain why you'll commonly see `10.x.x.x`, `172.16–31.x.x`, and `192.168.x.x` as private network addresses.
 
-```
+```text
 Class A: 0.0.0.0      to 127.255.255.255
          Network: 8 bits  |  Host: 24 bits  →  16,777,214 hosts/network
          First bit always 0
@@ -76,7 +82,7 @@ Special ranges:
 
 CIDR (Classless Inter-Domain Routing, RFC 1519) replaced classful addressing. You specify the network with a slash and a prefix length — the number of bits that form the "network" portion. This allows flexible, efficient IP allocation.
 
-```
+```text
 192.168.1.0/24  →  prefix length 24
 
 Breakdown:
@@ -101,7 +107,7 @@ Common subnet sizes:
 
 RFC 1918 defines three address blocks permanently reserved for private/internal use. These are free to reuse inside any organization but are never forwarded by public internet routers.
 
-```
+```text
 Private IP Ranges (RFC 1918):
 ┌───────────────────────────────────────────────────────────────┐
 │ Range                           CIDR        Class   # Hosts   │
@@ -124,7 +130,7 @@ Public IPs:
 ```
 
 **Real-World Example — Home Network:**
-```
+```text
 Your Home Network:
 ┌─────────────────────────────────────────────────────────────┐
 │ Public IP: 203.0.113.45  (assigned by ISP via DHCP/PPPoE)  │
@@ -162,13 +168,15 @@ graph TD
     Router --> TV
 ```
 
+*The diagram above illustrates IPv4 Architecture: it maps the key components and their interactions described in this section.*
+
 ---
 
 #### IPv6: The Future (and Present)
 
 **Format**: 128-bit address (16 bytes), written as 8 groups of 4 hexadecimal digits separated by colons.
 
-```
+```text
 Full form (128 bits, 32 hex digits):
   2001:0db8:85a3:0000:0000:8a2e:0370:7334
 
@@ -189,7 +197,7 @@ IPv6 in URLs — wrap in square brackets to distinguish : from port separator:
 
 **Why IPv6?**
 
-```
+```text
 IPv4 Problem:
   → 2^32 = ~4.3 billion addresses — exhausted by IANA in February 2011
   → ARIN (North America) ran out in 2015
@@ -208,7 +216,7 @@ IPv6 Solution:
 
 **IPv6 Address Types:**
 
-```
+```text
 Type            Prefix      IPv4 Equivalent      Scope
 ──────────────────────────────────────────────────────────────────────
 Global Unicast  2000::/3    Public IP            Internet-wide
@@ -221,7 +229,7 @@ Anycast         (any GUA)   —                    Nearest of a group
 
 **Global Unicast Address Structure:**
 
-```
+```text
 2001:db8:85a3:1234:5678:8a2e:370:7334
 │◄──────── 48 bits ────────►│◄16b►│◄────── 64 bits ──────────►│
     Global Routing Prefix    Subnet    Interface ID
@@ -237,7 +245,7 @@ Example breakdown:
 
 **Dual-Stack (IPv4 + IPv6 coexistence):**
 
-```
+```text
 Most production servers today run both protocols simultaneously.
 
 example.com DNS records:
@@ -256,13 +264,15 @@ Transition mechanisms:
   → NAT64: translate IPv6 ↔ IPv4 at border
 ```
 
+*The text snippet above illustrates IPv6: The Future (and Present): it shows the concrete form of the idea described in this section.*
+
 ---
 
 ### Ports: Doorways to Applications
 
 **Concept**: An IP address gets you to the right server (the building). A port number gets you to the right application on that server (the apartment). Multiple services can run simultaneously on the same server because each binds to a unique port.
 
-```
+```text
 Server: 192.168.1.100
 ┌─────────────────────────────────────────────────────┐
 │ Port 22:    SSH Daemon         ← ssh user@server    │
@@ -287,7 +297,7 @@ A TCP/UDP connection is uniquely identified by a 5-tuple:
 
 **TCP vs UDP Ports:**
 
-```
+```text
 TCP (Transmission Control Protocol):
   ✓ Connection-oriented: requires 3-way handshake before data transfer
   ✓ Reliable: guarantees delivery, ordering, and error detection
@@ -334,11 +344,13 @@ sequenceDiagram
     Note over C: Port 54231 enters TIME_WAIT (~60s),<br/>then released back to OS pool
 ```
 
+*The diagram above illustrates Ports: Doorways to Applications: it maps the key components and their interactions described in this section.*
+
 #### Port Ranges and Their Purposes
 
 **Well-Known Ports (0–1023):** Assigned by IANA; require root/administrator to bind.
 
-```
+```text
 Port     Protocol  Transport  Description
 ──────────────────────────────────────────────────────────────────────────────
 20       FTP-data  TCP        File Transfer — data channel (active mode)
@@ -365,7 +377,7 @@ Port     Protocol  Transport  Description
 
 **Registered Ports (1024–49151):** Application-specific; no root required to bind.
 
-```
+```text
 Port     Service                Common Use
 ────────────────────────────────────────────────────────────────────────
 3000     Node.js / Grafana      Express/React dev server, Grafana dashboard
@@ -385,7 +397,7 @@ Port     Service                Common Use
 
 **Dynamic/Ephemeral Ports (49152–65535):** Auto-assigned by the OS for outgoing connections.
 
-```
+```text
 When your browser makes a request:
   Your OS picks a temporary "ephemeral" port from its available pool.
 
@@ -413,13 +425,15 @@ Visualized:
   (all three are distinct 5-tuples — OS tracks them independently)
 ```
 
+*The text snippet above illustrates Port Ranges and Their Purposes: it shows the concrete form of the idea described in this section.*
+
 #### Real-World Use Cases
 
 **Use Case 1: Web Server with HTTPS Redirect**
 
 When a user types `http://example.com`, their browser connects to port 80. The server redirects them to HTTPS (port 443), where all subsequent communication is encrypted.
 
-```
+```text
 Server setup (Nginx):
 ┌──────────────────────────────────────────────────────────────┐
 │ example.com (1.2.3.4)                                        │
@@ -427,6 +441,8 @@ Server setup (Nginx):
 │   Port 443 → Nginx: TLS termination + serve content         │
 └──────────────────────────────────────────────────────────────┘
 ```
+
+*The text snippet above illustrates Real-World Use Cases: it shows the concrete form of the idea described in this section.*
 
 ```mermaid
 sequenceDiagram
@@ -453,7 +469,7 @@ sequenceDiagram
 
 In a microservices architecture, each service owns its own port. The API gateway is the single external entry point, routing requests to the correct service internally. Only ports 80/443 are exposed to the internet.
 
-```
+```text
 External traffic (port 443 only — everything else blocked by firewall)
         ↓
 ┌─────────────────────────────────────────────────────────┐
@@ -476,6 +492,8 @@ External traffic (port 443 only — everything else blocked by firewall)
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates Real-World Use Cases: it shows the concrete form of the idea described in this section.*
+
 ```mermaid
 graph LR
     Client["👤 Client"] -->|"HTTPS :443"| GW["API Gateway<br/>10.0.1.10:443"]
@@ -491,7 +509,7 @@ graph LR
 
 Write traffic goes to the primary. Read traffic is spread across replicas to scale read throughput. The replicas stay in sync via WAL (Write-Ahead Log) streaming replication.
 
-```
+```text
 Application:
   → Writes → Primary  (10.0.2.10:5432)
   → Reads  → Read Load Balancer (10.0.2.1:5432) → Replica 1 or 2
@@ -508,6 +526,8 @@ PostgreSQL Cluster:
   Replication lag: typically <1 second (async) or 0 (synchronous mode)
 ```
 
+*The text snippet above illustrates Real-World Use Cases: it shows the concrete form of the idea described in this section.*
+
 ```mermaid
 graph TD
     App["🖥️ Application"]
@@ -518,6 +538,8 @@ graph TD
     Primary -->|"WAL streaming"| R1
     Primary -->|"WAL streaming"| R2
 ```
+
+*The diagram above illustrates Real-World Use Cases: it maps the key components and their interactions described in this section.*
 
 ```python
 # Application config — separate write and read connections
@@ -537,13 +559,15 @@ def get_read_engine():
     return create_engine(random.choice(read_replicas), pool_size=20)
 ```
 
+*The python snippet above illustrates Real-World Use Cases: it shows the concrete form of the idea described in this section.*
+
 #### Code Example: Socket Programming
 
 Sockets are the OS API between your application code and the network stack. Understanding sockets reveals exactly how IP addresses and port numbers work at runtime.
 
 **How a socket works at the OS level:**
 
-```
+```text
 Server side:                          Client side:
   socket()    ← create endpoint         socket()    ← create endpoint
   bind()      ← assign IP:port          connect()   ← initiate 3-way handshake
@@ -687,13 +711,15 @@ client.close()
 # Note: no connection teardown — UDP is stateless
 ```
 
+*The python snippet above illustrates Code Example: Socket Programming: it shows the concrete form of the idea described in this section.*
+
 #### Network Address Translation (NAT)
 
 NAT solves the IPv4 exhaustion problem by allowing many private IP devices to share a single public IP address. The router acts as a translator, rewriting packet headers on the fly.
 
 **Three Types of NAT:**
 
-```
+```text
 SNAT (Source NAT / Masquerade):
   Direction: Outbound (private → internet)
   Action:    Rewrites the SOURCE IP (and port) of outgoing packets
@@ -713,7 +739,7 @@ PAT (Port Address Translation / NAT Overload):
 
 **How PAT Works in Detail:**
 
-```
+```text
 Internal Network                    NAT Router (PAT)              Internet
                                     WAN: 203.0.113.45
 ┌───────────────────────┐          ┌─────────────────┐         ┌──────────────┐
@@ -753,7 +779,7 @@ sequenceDiagram
 
 **Port Forwarding (DNAT) — Exposing Internal Services:**
 
-```
+```text
 Goal: Make your home server (192.168.1.50:80) reachable from the internet.
 
 Router DNAT rule:
@@ -773,7 +799,7 @@ Common port forwarding use cases:
 
 **NAT Limitations (why IPv6 matters):**
 
-```
+```text
 NAT breaks:
   → End-to-end connectivity (can't initiate inbound without port forwarding)
   → Protocols that embed IPs in payload (FTP active mode, SIP/VoIP)
@@ -783,6 +809,8 @@ NAT breaks:
 
 IPv6 eliminates the need for NAT by giving every device a globally unique IP.
 ```
+
+*The text snippet above illustrates Network Address Translation (NAT): it shows the concrete form of the idea described in this section.*
 
 #### Common Networking Commands
 
@@ -891,6 +919,8 @@ watch -n 1 "ss -tn | grep ESTABLISHED | wc -l"  # count connections per second
 # ESTAB    0       0       192.168.1.10:54231    142.250.80.46:443
 ```
 
+*The bash snippet above illustrates Common Networking Commands: it shows the concrete form of the idea described in this section.*
+
 #### Security Considerations
 
 **Principle of Least Exposure:**
@@ -967,7 +997,7 @@ graph TD
 
 **Best Practices with Rationale:**
 
-```
+```text
 ┌────────────────────────────────────────────────────────────────────────────┐
 │ DO                                          WHY                            │
 ├────────────────────────────────────────────────────────────────────────────┤
@@ -995,7 +1025,7 @@ graph TD
 
 **Common Port-Based Attacks and Mitigations:**
 
-```
+```text
 Attack                      Port(s)      Mitigation
 ──────────────────────────────────────────────────────────────────────────────
 SSH Brute Force             22           fail2ban, key-only auth, non-std port
@@ -1006,3 +1036,5 @@ Elasticsearch Data Leak     9200         Bind to private IP, enable X-Pack secur
 SSRF → Internal Ports       various      Validate/block internal IPs in user input
 Port Scanning               all          IDS/IPS (Snort/Suricata), block repeated SYN
 ```
+
+*The text snippet above illustrates Security Considerations: it shows the concrete form of the idea described in this section.*

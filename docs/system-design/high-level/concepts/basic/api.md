@@ -34,7 +34,6 @@ An API (Application Programming Interface) is a contract that lets different sof
   - [Youtube](#youtube)
     - [Single Videos](#single-videos)
   - [Theory](#theory)
-    - [List of Topics](#list-of-topics)
     - [REST](#rest)
     - [GraphQL](#graphql)
     - [gRPC](#grpc)
@@ -195,6 +194,8 @@ public class UserGraphQLController {
 }
 ```
 
+*The java snippet above illustrates GraphQL: it shows the concrete form of the idea described in this section.*
+
 ```graphql
 # schema.graphqls
 type User {
@@ -273,6 +274,8 @@ message StockReply {
   int32 quantity = 1;
 }
 ```
+
+*The protobuf snippet above illustrates gRPC: it shows the concrete form of the idea described in this section.*
 
 ```java
 public class InventoryServiceImpl extends InventoryServiceGrpc.InventoryServiceImplBase {
@@ -812,6 +815,8 @@ public class OrderController {
     }
 }
 ```
+
+*The java snippet above illustrates HATEOAS: it shows the concrete form of the idea described in this section.*
 
 ```json
 {

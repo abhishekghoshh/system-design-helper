@@ -25,6 +25,14 @@
 
 This is a high-yield topic in video/streaming system design rounds (e.g. "design Netflix/YouTube/Twitch") — each subtopic below includes the core theory, a diagram, a real-life use case, a Java code example, and interview questions with answers.
 
+- [What Is Adaptive Bitrate Streaming?](#what-is-adaptive-bitrate-streaming)
+- [Bitrate Ladder Design & Video Encoding Profiles](#bitrate-ladder-design-video-encoding-profiles)
+- [Segmentation: GOPs, Chunks & Segment Duration](#segmentation-gops-chunks-segment-duration)
+- [Manifest Formats: HLS (M3U8) vs MPEG-DASH (MPD)](#manifest-formats-hls-m3u8-vs-mpeg-dash-mpd)
+- [Packaging: CMAF & Unified Delivery](#packaging-cmaf-unified-delivery)
+- [Client-Side ABR Algorithms (Buffer-Based, Throughput-Based & Hybrid)](#client-side-abr-algorithms-buffer-based-throughput-based-hybrid)
+- [CDN, Origin & Edge Delivery Architecture for ABR](#cdn-origin-edge-delivery-architecture-for-abr)
+- [QoE Metrics & Monitoring (Rebuffering, Startup Time, Bitrate Switches)](#qoe-metrics-monitoring-rebuffering-startup-time-bitrate-switches)
 ### What Is Adaptive Bitrate Streaming?
 
 Adaptive Bitrate (ABR) Streaming is a technique for delivering video/audio over plain HTTP where the same source content is encoded into **multiple quality renditions** (different resolution + bitrate combinations), split into small time-aligned **segments**, and the **client player** continuously monitors its network throughput and local buffer health to decide — segment by segment — the best rendition it can sustain without stalling.
@@ -74,6 +82,8 @@ public class SimpleAbrPlayer {
     }
 }
 ```
+
+*The java snippet above illustrates Code Example (Java): it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions
 
@@ -140,6 +150,8 @@ public class BitrateLadderBuilder {
 }
 ```
 
+*The java snippet above illustrates Code Example (Java): it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions
 
 **1. Why shouldn't the bitrate ladder include a rendition of higher resolution than the source?**
@@ -196,6 +208,8 @@ public class Segmenter {
     }
 }
 ```
+
+*The java snippet above illustrates Code Example (Java): it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions
 
@@ -268,6 +282,8 @@ public class HlsMasterPlaylistParser {
 }
 ```
 
+*The java snippet above illustrates Code Example (Java): it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions
 
 **1. What's the structural difference between HLS and DASH manifests?**
@@ -335,6 +351,8 @@ public class CmafTrack {
     }
 }
 ```
+
+*The java snippet above illustrates Code Example (Java): it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions
 
@@ -414,6 +432,8 @@ public class AbrController {
 }
 ```
 
+*The java snippet above illustrates Code Example (Java): it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions
 
 **1. Why is throughput-based ABR alone prone to oscillation/aggressive switching?**
@@ -480,6 +500,8 @@ public class EdgeCache {
     }
 }
 ```
+
+*The java snippet above illustrates Code Example (Java): it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions
 
@@ -552,6 +574,8 @@ public class PlayerMetrics {
     }
 }
 ```
+
+*The java snippet above illustrates Code Example (Java): it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions
 

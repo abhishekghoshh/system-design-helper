@@ -16,6 +16,18 @@
 
 ## Theory
 
+### Table of Contents
+
+1. [Purpose and Mindset](#purpose-and-mindset)
+2. [Architectural Foundations](#architectural-foundations)
+3. [System Laws and Design Principles](#system-laws-and-design-principles)
+4. [Operational Excellence](#operational-excellence)
+5. [Learning and Practice](#learning-and-practice)
+6. [Synthesis](#synthesis)
+7. [Applied Frameworks and Professional Growth](#applied-frameworks-and-professional-growth)
+8. [References and Further Exploration](#references-and-further-exploration)
+
+
 ### Purpose and Mindset
 
 #### The Grand Vision
@@ -33,6 +45,8 @@ flowchart TD
    T --> SD
    B --> SD
 ```
+
+*The diagram above illustrates The Grand Vision: it maps the key components and their interactions described in this section.*
 
 #### Why Learn System Design
 
@@ -57,6 +71,8 @@ flowchart LR
     SD --> CA["Communicate architecture<br/>clearly to any audience"]
 ```
 
+*The diagram above illustrates Why Learn System Design: it maps the key components and their interactions described in this section.*
+
 #### The Fundamental Truth: Everything Is a Trade-off
 
 In system design, there are no perfect solutions, only optimal choices for specific contexts. Every decision involves sacrificing one quality for another:
@@ -80,6 +96,8 @@ flowchart LR
    K["Correctness"] --> T
    T --> D["Context-specific design choice"]
 ```
+
+*The diagram above illustrates The Fundamental Truth: Everything Is a Trade-off: it maps the key components and their interactions described in this section.*
 
 ### Architectural Foundations
 
@@ -170,6 +188,8 @@ flowchart TD
     PS -->|"Best when"| U2["Multiple consumers<br/>need the same event"]
     ST -->|"Best when"| U3["Low-latency continuous<br/>updates to client"]
 ```
+
+*The diagram above illustrates The Three Pillars of System Design: it maps the key components and their interactions described in this section.*
 
 #### The Evolutionary Stages of System Design
 
@@ -271,6 +291,8 @@ flowchart TD
    C1 --> A1 --> L1 --> T1 --> C2
 ```
 
+*The diagram above illustrates The Hierarchy of Optimization: it maps the key components and their interactions described in this section.*
+
 #### The CAP Theorem: The Immutable Law
 
 The CAP theorem is not merely theoretical. It is a **fundamental law of distributed systems** that shapes design decisions.
@@ -338,6 +360,8 @@ flowchart LR
     end
 ```
 
+*The diagram above illustrates The Data Gravity Principle: it maps the key components and their interactions described in this section.*
+
 #### The Principle of Least Surprise
 
 Systems should behave in ways that users and developers expect.
@@ -388,6 +412,8 @@ flowchart LR
    D1 -->|"No"| X["Cascading failure<br/>system outage"]
 ```
 
+*The diagram above illustrates The Principle of Graceful Degradation: it maps the key components and their interactions described in this section.*
+
 ### Operational Excellence
 
 #### The Observability Imperative
@@ -419,6 +445,8 @@ flowchart LR
    E --> I["Fix / Tune / Redesign"]
    I --> S
 ```
+
+*The diagram above illustrates The Observability Imperative: it maps the key components and their interactions described in this section.*
 
 #### The Security-First Mindset
 
@@ -478,6 +506,8 @@ flowchart LR
     ASSET --> E["Elevation of Privilege — can access expand?"]
 ```
 
+*The diagram above illustrates The Security-First Mindset: it maps the key components and their interactions described in this section.*
+
 #### The Testing Pyramid: Quality Assurance
 
 Quality is not accidental. It must be engineered deliberately.
@@ -511,6 +541,8 @@ flowchart TD
     E2E --> PERF
     E2E --> CHAOS
 ```
+
+*The diagram above illustrates The Testing Pyramid: Quality Assurance: it maps the key components and their interactions described in this section.*
 
 #### The Cost-Consciousness Principle
 
@@ -558,6 +590,8 @@ flowchart TD
     Q2 -->|"Yes"| MICRO["Microservices can be justified<br/>Evaluate cost per service boundary"]
 ```
 
+*The diagram above illustrates The Cost-Consciousness Principle: it maps the key components and their interactions described in this section.*
+
 ### Learning and Practice
 
 #### How to Learn System Design
@@ -578,6 +612,8 @@ flowchart LR
    P --> R["Review and Feedback"]
    R --> F
 ```
+
+*The diagram above illustrates How to Learn System Design: it maps the key components and their interactions described in this section.*
 
 #### How to Approach System Design in Interviews
 
@@ -627,6 +663,8 @@ flowchart LR
     T3 -.->|"mirrors"| S3
 ```
 
+*The diagram above illustrates The Human Element: it maps the key components and their interactions described in this section.*
+
 ### Synthesis
 
 #### The Unified Theory of System Design
@@ -664,6 +702,8 @@ flowchart TD
    EV["Economic Viability"] --> U
 ```
 
+*The diagram above illustrates The Unified Theory of System Design: it maps the key components and their interactions described in this section.*
+
 
 ### Applied Frameworks and Professional Growth
 
@@ -691,6 +731,8 @@ flowchart TD
 
     CU --> AT --> CE --> MO --> HC
 ```
+
+*The diagram above illustrates The Essential Truth: it maps the key components and their interactions described in this section.*
 
 #### The Core Trade-offs
 
@@ -891,6 +933,8 @@ flowchart LR
    HD --> DD["Deep Dive"]
    DD --> TR["Trade-offs"]
 ```
+
+*The diagram above illustrates The System Design Mental Model: it maps the key components and their interactions described in this section.*
 
 #### Interview-Specific Guidance
 

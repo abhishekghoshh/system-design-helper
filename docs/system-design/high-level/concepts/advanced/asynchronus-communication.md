@@ -30,13 +30,29 @@
 
 ## Theory
 
+### Table of Contents
+
+1. [Introduction](#introduction)
+2. [Core Concepts: Producers, Consumers, Brokers, Queues and Topics](#core-concepts-producers-consumers-brokers-queues-and-topics)
+3. [Point-to-Point Messaging (Queue Model)](#point-to-point-messaging-queue-model)
+4. [Publish/Subscribe Messaging (Topic Model)](#publishsubscribe-messaging-topic-model)
+5. [Fan-Out Pattern](#fan-out-pattern)
+6. [Message Acknowledgment and Redelivery](#message-acknowledgment-and-redelivery)
+7. [Dead Letter Queues (DLQ)](#dead-letter-queues-dlq)
+8. [Delivery Guarantees: At-Most-Once, At-Least-Once, Exactly-Once](#delivery-guarantees-at-most-once-at-least-once-exactly-once)
+9. [Idempotent Consumers](#idempotent-consumers)
+10. [Message Ordering and Partitioning](#message-ordering-and-partitioning)
+11. [Backpressure and Load Leveling](#backpressure-and-load-leveling)
+12. [Message Queues vs Event Streaming](#message-queues-vs-event-streaming)
+
+
 ### Introduction
 
 **Asynchronous communication** is a messaging style where the sender does not block waiting for the receiver to process a request. Instead, the sender hands off a unit of work and immediately continues, while the actual processing happens independently, often through a **message queue** sitting between the two sides.
 
 In a synchronous system, Service A calls Service B directly and waits for a response. If Service B is slow or down, Service A is blocked:
 
-```
+```text
 Synchronous (tightly coupled):
   User -> API -> Process Video -> Return Response
   Problem: User waits 5 minutes for video to process
@@ -67,7 +83,7 @@ flowchart LR
 
 This page is organized into the following topics, each covering the core theory, a Mermaid diagram, a real-life use case, interview questions with answers, and a Java implementation sketch:
 
-- [Asynchronus Communication/Message Queue](#asynchronus-communicationmessage-queue)
+- [Asynchronous Communication/Message Queue](#asynchronus-communicationmessage-queue)
   - [Blogs and websites](#blogs-and-websites)
   - [Medium](#medium)
   - [Youtube](#youtube)

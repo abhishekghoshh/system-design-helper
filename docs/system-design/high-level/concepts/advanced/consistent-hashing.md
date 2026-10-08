@@ -81,6 +81,8 @@ print(hash_key("user:1002"))   # Completely different integer
 print(hash_key("user:1001"))   # Same as first call — deterministic
 ```
 
+*The python snippet above illustrates Understanding Hash Functions: it shows the concrete form of the idea described in this section.*
+
 ```java
 import java.security.MessageDigest;
 import java.math.BigInteger;
@@ -98,6 +100,8 @@ public class HashExample {
     }
 }
 ```
+
+*The java snippet above illustrates Understanding Hash Functions: it shows the concrete form of the idea described in this section.*
 
 #### Understanding Hash Functions: Characteristics
 
@@ -190,7 +194,7 @@ $$\text{Server Index} = \text{Hash}(\text{key}) \mod N$$
 
 **Example with 3 servers:**
 
-```
+```text
 Hash("key-A") = 1234567  →  1234567 % 3 = 0  →  Server 0
 Hash("key-B") = 2345678  →  2345678 % 3 = 2  →  Server 2
 Hash("key-C") = 3456789  →  3456789 % 3 = 0  →  Server 0
@@ -200,7 +204,7 @@ Hash("key-E") = 5678901  →  5678901 % 3 = 0  →  Server 0
 
 **Diagram — Modulo-Based Hashing:**
 
-```
+```text
                     ┌─────────────┐
                     │ Hash(key)   │
                     │   mod N     │
@@ -219,7 +223,7 @@ Hash("key-E") = 5678901  →  5678901 % 3 = 0  →  Server 0
 
 **What happens when we add Server 3 (N becomes 4)?**
 
-```
+```text
 Hash("key-A") = 1234567  →  1234567 % 4 = 3  →  Server 3  ← MOVED from Server 0!
 Hash("key-B") = 2345678  →  2345678 % 4 = 2  →  Server 2  ← Same
 Hash("key-C") = 3456789  →  3456789 % 4 = 1  →  Server 1  ← MOVED from Server 0!
@@ -335,6 +339,8 @@ public class ModuloHashRouter {
 }
 ```
 
+*The java snippet above illustrates Normal Hashing: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Normal Hashing: Interview Questions and Answers
 
 **Q1. What is wrong with `hash(key) % N` as a sharding strategy in a system that auto-scales?**
@@ -373,7 +379,7 @@ The more servers you have, the worse it gets! This is catastrophic for large-sca
 
 **Real-World Impact of Rebalancing:**
 
-```
+```text
 Timeline of a Naive Rebalancing Event:
 
 T=0s    Server added to cluster
@@ -462,6 +468,8 @@ sequenceDiagram
     Note over Cache,DB: Cascading failure risk (thundering herd)
 ```
 
+*The diagram above illustrates The Rebalancing Problem: Diagram: it maps the key components and their interactions described in this section.*
+
 #### The Rebalancing Problem: Real-Life Use Case
 
 A social media platform's session-cache cluster (10 nodes, modulo hashing, ~50 million sessions) added an 11th node during a routine capacity expansion. Because ~91% of session keys remapped instantly, nearly all session lookups became cache misses within the same second, and the backing session database, sized for a 5-8% steady-state miss rate, saw a roughly 10x spike in query volume. The resulting latency spike triggered upstream service timeouts and a partial outage, an incident that was the direct motivator for migrating the cluster to consistent hashing with virtual nodes.
@@ -496,6 +504,8 @@ public class RebalancingCostCalculator {
     }
 }
 ```
+
+*The java snippet above illustrates The Rebalancing Problem: Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### The Rebalancing Problem: Interview Questions and Answers
 
@@ -653,6 +663,8 @@ public class BasicConsistentHashRing {
 }
 ```
 
+*The java snippet above illustrates Introduction to Consistent Hashing: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Introduction to Consistent Hashing: Interview Questions and Answers
 
 **Q1. In one sentence, what problem does consistent hashing solve that modulo hashing does not?**
@@ -675,7 +687,7 @@ A: No. With only a handful of physical servers hashed directly onto the ring, di
 
 Map the hash output space to a circular ring. If using a hash function with output range `[0, 2^32 - 1]`, the ring has positions from `0` to `2^32 - 1`, where position `2^32` wraps around to position `0`.
 
-```
+```text
                         0
                     ┌───●───┐
                    /         \
@@ -692,13 +704,15 @@ Map the hash output space to a circular ring. If using a hash function with outp
 
 Hash each server's identifier (IP address, hostname, etc.) to determine its position on the ring.
 
-```
+```text
 Hash("Server-A") = 15    →  Position 15 on ring
 Hash("Server-B") = 45    →  Position 45 on ring
 Hash("Server-C") = 80    →  Position 80 on ring
 ```
 
-```
+*The text snippet above illustrates How Consistent Hashing Works: Step by Step: it shows the concrete form of the idea described in this section.*
+
+```text
                      0
                  ┌───────┐
                 /    15    \
@@ -716,7 +730,7 @@ Hash("Server-C") = 80    →  Position 80 on ring
 
 Each key is hashed and placed on the ring. It is then assigned to the **first server encountered moving clockwise** from its position.
 
-```
+```text
 Hash("key1") = 10  →  Next server clockwise = Server-A (15)  ✓
 Hash("key2") = 20  →  Next server clockwise = Server-B (45)  ✓
 Hash("key3") = 50  →  Next server clockwise = Server-C (80)  ✓
@@ -724,7 +738,9 @@ Hash("key4") = 85  →  Next server clockwise = Server-A (15)  ✓ (wraps around
 Hash("key5") = 42  →  Next server clockwise = Server-B (45)  ✓
 ```
 
-```
+*The text snippet above illustrates How Consistent Hashing Works: Step by Step: it shows the concrete form of the idea described in this section.*
+
+```text
                        0
                   ┌──────────┐
                  / 10(key1)   \
@@ -756,7 +772,7 @@ Hash("key5") = 42  →  Next server clockwise = Server-B (45)  ✓
 
 When `Server-D` is added at position `30`, only the keys between `Server-A (15)` and `Server-D (30)` need to move.
 
-```
+```text
 Before:                              After:
 key2(20) → Server-B(45)             key2(20) → Server-D(30) ← MOVED
 key5(42) → Server-B(45)             key5(42) → Server-B(45) ← Same
@@ -765,7 +781,9 @@ Only key2 moves! (from Server-B to Server-D)
 All other keys stay exactly where they are.
 ```
 
-```
+*The text snippet above illustrates How Consistent Hashing Works: Step by Step: it shows the concrete form of the idea described in this section.*
+
+```text
                        0
                   ┌──────────┐
                  / 10(key1)   \
@@ -787,12 +805,14 @@ All other keys stay exactly where they are.
 
 When `Server-B (45)` is removed, only the keys assigned to `Server-B` need to be reassigned to the next server clockwise.
 
-```
+```text
 key2(20) was on Server-B → Now goes to Server-C(80)
 key5(42) was on Server-B → Now goes to Server-C(80)
 
 All other keys remain untouched!
 ```
+
+*The text snippet above illustrates How Consistent Hashing Works: Step by Step: it shows the concrete form of the idea described in this section.*
 
 #### How Consistent Hashing Works: Characteristics
 
@@ -891,6 +911,8 @@ public class ConsistentHashingWalkthrough {
 }
 ```
 
+*The java snippet above illustrates How Consistent Hashing Works: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### How Consistent Hashing Works: Interview Questions and Answers
 
 **Q1. Walk through, step by step, how a key gets assigned to a server in consistent hashing.**
@@ -913,7 +935,7 @@ A: Because "next clockwise" is computed relative to the current ring state; once
 
 With only physical nodes on the ring, the distribution of keys can be extremely uneven, especially with a small number of servers.
 
-```
+```text
 Unbalanced Ring (3 servers, poor hash placement):
 
                      0
@@ -938,7 +960,7 @@ Unbalanced Ring (3 servers, poor hash placement):
 
 Instead of placing each server at a single point on the ring, place it at **multiple points** using different hash functions or suffixes.
 
-```
+```text
 Physical Server → Multiple Virtual Nodes:
 
 Server-A → Hash("Server-A#1") = 15
@@ -954,7 +976,9 @@ Server-C → Hash("Server-C#1") = 80
             Hash("Server-C#3") = 350
 ```
 
-```
+*The text snippet above illustrates Virtual Nodes (vNodes): Solving the Balance Problem: it shows the concrete form of the idea described in this section.*
+
+```text
 Ring with Virtual Nodes (3 servers × 3 vnodes each = 9 points):
 
                          0
@@ -998,13 +1022,15 @@ Ring with Virtual Nodes (3 servers × 3 vnodes each = 9 points):
 
 Different servers can have different numbers of virtual nodes based on their capacity:
 
-```
+```text
 Server-A (16 GB RAM, 8 cores)  → 200 virtual nodes
 Server-B (8 GB RAM, 4 cores)   → 100 virtual nodes  
 Server-C (32 GB RAM, 16 cores) → 400 virtual nodes
 
 Server-C handles ~4x the load of Server-B — matching its capacity!
 ```
+
+*The text snippet above illustrates Virtual Nodes (vNodes): Solving the Balance Problem: it shows the concrete form of the idea described in this section.*
 
 #### Virtual Nodes: Characteristics
 
@@ -1072,6 +1098,8 @@ graph TD
     end
 ```
 
+*The diagram above illustrates Virtual Nodes: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Virtual Nodes: Real-Life Use Case
 
 Apache Cassandra assigns each physical node 256 virtual nodes (called "vnodes") by default (configurable via `num_tokens`). This lets a heterogeneous cluster, where new nodes are often more powerful than nodes purchased years earlier, balance load proportionally by giving newer, beefier nodes a higher `num_tokens` value, while also making it possible to add or remove a single physical node and have its data redistribute across many existing nodes in small, parallel chunks rather than as one enormous bulk transfer to/from a single neighbor.
@@ -1124,6 +1152,8 @@ public class WeightedVirtualNodeRing {
     }
 }
 ```
+
+*The java snippet above illustrates Virtual Nodes: Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Virtual Nodes: Interview Questions and Answers
 
@@ -1591,6 +1621,8 @@ func (r *Ring) GetDistribution(keys []string) map[string]int {
 }
 ```
 
+*The go snippet above illustrates Complete Implementation: Diagram: it shows the concrete form of the idea described in this section.*
+
 #### Complete Implementation: Real-Life Use Case
 
 A company building a custom client-side sharding library for Memcached (similar in spirit to the `libketama` library used by many Memcached clients) would start from an implementation almost identical to the Java or Go version shown here: a `TreeMap`/sorted-slice ring, 100-160 virtual nodes per configured cache server, and a `getNode(key)` lookup called on every cache request. Because the ring logic lives entirely in the client, no server-side coordination or gossip protocol is needed, every client independently computes the same server for the same key as long as they share the same server list and hash function.
@@ -1617,7 +1649,7 @@ The key operation in consistent hashing is finding which server a key maps to. T
 
 **Algorithm:**
 
-```
+```text
 FUNCTION find_server(key):
     hash_value = hash(key)
     
@@ -1700,6 +1732,8 @@ flowchart LR
     Wrap -- Yes --> WrapResult["Wrap to position 0<br/>(first entry)"]
 ```
 
+*The diagram above illustrates Lookup Algorithm: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Lookup Algorithm: Real-Life Use Case
 
 A high-traffic CDN edge proxy performing millions of cache-routing lookups per second implements its ring as an immutable sorted array rebuilt (via read-copy-update) only on the rare event of a cache server being added or removed. Because lookups never need to acquire a lock (they only read an atomically-swapped, immutable array reference), the O(log(N x V)) binary search proceeds at full CPU speed with zero contention between concurrent request-handling threads, a design directly enabled by treating lookup as this page's core, isolated primitive.
@@ -1749,6 +1783,8 @@ public class RingLookup {
 }
 ```
 
+*The java snippet above illustrates Lookup Algorithm: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Lookup Algorithm: Interview Questions and Answers
 
 **Q1. Why is the lookup complexity expressed as O(log(N x V)) rather than just O(log N)?**
@@ -1773,7 +1809,7 @@ In production systems, data is **replicated** across multiple servers for fault 
 
 For a replication factor of 3, a key is stored on the server it maps to **plus** the next 2 distinct physical servers clockwise on the ring.
 
-```
+```text
 Ring with Replication Factor = 3:
 
                        0
@@ -1827,6 +1863,8 @@ def get_replicas(self, key: str, num_replicas: int = 3) -> list[str]:
     return replicas
 ```
 
+*The python snippet above illustrates Replication with Consistent Hashing: it shows the concrete form of the idea described in this section.*
+
 ```java
 public List<T> getReplicas(String key, int numReplicas) {
     if (ring.isEmpty()) return Collections.emptyList();
@@ -1858,6 +1896,8 @@ public List<T> getReplicas(String key, int numReplicas) {
     return replicas;
 }
 ```
+
+*The java snippet above illustrates Replication with Consistent Hashing: it shows the concrete form of the idea described in this section.*
 
 #### Replication: Characteristics
 
@@ -1917,6 +1957,8 @@ graph TD
     style R2 fill:#4ad971,color:#000
 ```
 
+*The diagram above illustrates Replication: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Replication: Real-Life Use Case
 
 Apache Cassandra assigns a replication factor (commonly 3) per keyspace and uses a rack-aware and datacenter-aware snitch/strategy layered on top of the basic clockwise-walk algorithm shown here, ensuring that the N replicas of any given row are spread across distinct racks (and, in multi-datacenter deployments, distinct datacenters). This means a single rack losing power, or an entire datacenter going offline, still leaves at least one replica of every row reachable, directly built on the same "next N distinct clockwise" primitive described in this topic.
@@ -1947,7 +1989,7 @@ Each server has a capacity limit: $\text{max\_load} = \lceil \frac{\text{avg\_lo
 
 where $\epsilon$ is a small constant (e.g., 0.25). If a server is at capacity, the key overflows to the next server clockwise.
 
-```
+```text
 Example with ε = 0.25, 4 servers, 100 keys:
   Average load = 25 keys per server
   Max load per server = ceil(25 × 1.25) = 32 keys
@@ -2001,6 +2043,8 @@ class BoundedLoadConsistentHash(ConsistentHashRing):
         self.total_keys += 1
         return node
 ```
+
+*The python snippet above illustrates Bounded-Load Consistent Hashing: it shows the concrete form of the idea described in this section.*
 
 #### Bounded-Load Consistent Hashing: Characteristics
 
@@ -2059,6 +2103,8 @@ flowchart TD
     CheckB -- No --> AssignB["Assign to Server-B (overflow)<br/>increment load"]
     CheckB -- Yes --> NextC["Continue walking clockwise..."]
 ```
+
+*The diagram above illustrates Bounded-Load Consistent Hashing: Diagram: it maps the key components and their interactions described in this section.*
 
 #### Bounded-Load Consistent Hashing: Real-Life Use Case
 
@@ -2137,6 +2183,8 @@ public class BoundedLoadConsistentHashRing {
 }
 ```
 
+*The java snippet above illustrates Bounded-Load Consistent Hashing: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Bounded-Load Consistent Hashing: Interview Questions and Answers
 
 **Q1. How is bounded-load consistent hashing different from simply adding more virtual nodes?**
@@ -2184,6 +2232,8 @@ def jump_consistent_hash(key: int, num_buckets: int) -> int:
     return b
 ```
 
+*The python snippet above illustrates Jump Consistent Hashing: it shows the concrete form of the idea described in this section.*
+
 ```go
 func JumpConsistentHash(key uint64, numBuckets int) int {
     var b, j int64
@@ -2196,6 +2246,8 @@ func JumpConsistentHash(key uint64, numBuckets int) int {
     return int(b)
 }
 ```
+
+*The go snippet above illustrates Jump Consistent Hashing: it shows the concrete form of the idea described in this section.*
 
 ```java
 public static int jumpConsistentHash(long key, int numBuckets) {
@@ -2271,6 +2323,8 @@ flowchart LR
     Loop -->|"j < numBuckets, continue"| Loop
 ```
 
+*The diagram above illustrates Jump Consistent Hashing: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Jump Consistent Hashing: Real-Life Use Case
 
 Google's internal storage systems (as described in the original Lamping and Veach paper) use jump consistent hash to map keys to a fixed, append-only-growing set of numerically indexed storage buckets, where the O(1) memory footprint matters at the scale of billions of keys spread across thousands of buckets, and where bucket membership almost always only grows (new storage buckets are provisioned), making the "no arbitrary removal" limitation largely irrelevant to that specific use case.
@@ -2295,7 +2349,7 @@ A: It means the algorithm needs to store nothing beyond the current bucket count
 
 **Rendezvous hashing** is another alternative where each key computes a hash with **every** server, and the server with the highest hash wins.
 
-```
+```text
 For key "user:42":
   score("user:42", "server-A") = hash("user:42" + "server-A") = 847293
   score("user:42", "server-B") = hash("user:42" + "server-B") = 291047
@@ -2396,6 +2450,8 @@ flowchart TD
     style Winner fill:#4ad971,color:#000
 ```
 
+*The diagram above illustrates Rendezvous Hashing: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Rendezvous Hashing: Real-Life Use Case
 
 Rendezvous hashing (also called Highest Random Weight hashing) was originally developed for multicast/CDN cache-server selection at the University of Michigan, and remains popular in DNS-based load balancing and small-to-medium content-delivery deployments where the cache server set numbers in the tens rather than hundreds, since its O(N) lookup is negligible at that scale while its simplicity (no ring, no virtual node tuning) meaningfully reduces implementation and operational complexity.
@@ -2441,6 +2497,8 @@ public class RendezvousHash {
 }
 ```
 
+*The java snippet above illustrates Rendezvous Hashing: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Rendezvous Hashing: Interview Questions and Answers
 
 **Q1. Why is rendezvous hashing's lookup O(N) while ring-based consistent hashing's is O(log(N x V))?**
@@ -2463,7 +2521,7 @@ When nodes are added or removed, some keys must move. A production system needs 
 
 **Migration Flow When Adding a Node:**
 
-```
+```text
 Step 1: Add new node to the ring (with virtual nodes)
 
 Step 2: Identify affected key ranges
@@ -2485,7 +2543,7 @@ Step 5: Delete migrated data from old node (async cleanup)
 
 **Zero-Downtime Migration Strategy:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────┐
 │                 Migration Timeline                   │
 │                                                     │
@@ -2510,6 +2568,8 @@ Step 5: Delete migrated data from old node (async cleanup)
 │  └─ Migration complete ✓                            │
 └─────────────────────────────────────────────────────┘
 ```
+
+*The text snippet above illustrates Data Migration During Scaling: it shows the concrete form of the idea described in this section.*
 
 #### Data Migration: Characteristics
 
@@ -2582,6 +2642,8 @@ sequenceDiagram
     Note over Migrator,OldNode: Phase 4: CLEANUP (async)
     Migrator->>OldNode: Delete migrated data
 ```
+
+*The diagram above illustrates Data Migration: Diagram: it maps the key components and their interactions described in this section.*
 
 #### Data Migration: Real-Life Use Case
 
@@ -2658,6 +2720,8 @@ public class MigrationCoordinator {
 }
 ```
 
+*The java snippet above illustrates Data Migration: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Data Migration: Interview Questions and Answers
 
 **Q1. Why does a production migration use a multi-phase (prepare/dual-write/switch/cleanup) process instead of copying data and immediately switching over?**
@@ -2682,7 +2746,7 @@ Even with consistent hashing and virtual nodes, certain **hot keys** (extremely 
 
 **1. Key Splitting / Sharding Hot Keys:**
 
-```
+```text
 Instead of:
   "trending:post:12345" → Server-A  (overloaded!)
 
@@ -2696,7 +2760,7 @@ Client picks a random shard for reads, writes go to all shards.
 
 **2. Local Caching + Short TTL:**
 
-```
+```text
 Client → Check Local Cache (TTL: 1-5 seconds)
   HIT  → Return immediately (no network call)
   MISS → Consistent hash → Server → Cache locally → Return
@@ -2704,7 +2768,7 @@ Client → Check Local Cache (TTL: 1-5 seconds)
 
 **3. Read Replicas for Hot Keys:**
 
-```
+```text
 Hot key detected (>1000 QPS):
   ┌──────────────┐
   │ Monitoring    │ ──→ Detect hot key
@@ -2723,6 +2787,8 @@ Hot key detected (>1000 QPS):
   │ across nodes  │
   └──────────────┘
 ```
+
+*The text snippet above illustrates Handling Hotspots and Hot Keys: it shows the concrete form of the idea described in this section.*
 
 #### Handling Hotspots: Characteristics
 
@@ -2781,6 +2847,8 @@ flowchart TD
     Split --> Fanout["Writes fan out to all shards<br/>Reads pick one shard randomly"]
 ```
 
+*The diagram above illustrates Handling Hotspots: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Handling Hotspots: Real-Life Use Case
 
 During a major sporting event, a sports news app's "live score" key for the championship game receives orders of magnitude more read traffic than any other key in the system. The platform mitigates this with a two-second client-side cache TTL in front of its consistent-hash-routed cache tier, which absorbs the overwhelming majority of repeated reads for that single key, while the underlying write path (score updates) remains simple since only a handful of writes per minute actually occur; a technique that avoids needing to split or specially replicate the key at all for what is fundamentally a read-hotspot problem.
@@ -2836,6 +2904,8 @@ public class HotKeySplitter {
 }
 ```
 
+*The java snippet above illustrates Handling Hotspots: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Handling Hotspots: Interview Questions and Answers
 
 **Q1. Why can a hot key overload a server even in a well-balanced consistent hash ring with virtual nodes?**
@@ -2870,7 +2940,7 @@ A: Use an approximate, low-overhead streaming counting structure such as a Count
 
 **Amazon DynamoDB Architecture (Simplified):**
 
-```
+```text
 Client Request (key: "user:42")
          │
          ▼
@@ -2895,7 +2965,7 @@ Client Request (key: "user:42")
 
 **Apache Cassandra Token Ring:**
 
-```
+```text
                     Token Range: 0 to 2^63-1
 
                          0
@@ -2936,6 +3006,8 @@ server {
     }
 }
 ```
+
+*The nginx snippet above illustrates Real-World Usage: it shows the concrete form of the idea described in this section.*
 
 #### Real-World Usage: Characteristics
 
@@ -2994,6 +3066,8 @@ graph TD
     CH --> Slots["Fixed-Slot Variant<br/>Redis Cluster (16384 slots)"]
 ```
 
+*The diagram above illustrates Real-World Usage: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Real-World Usage: Java Code Example
 
 ```java
@@ -3042,6 +3116,8 @@ public class MemcachedStyleClient {
 }
 ```
 
+*The java snippet above illustrates Real-World Usage: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Real-World Usage: Interview Questions and Answers
 
 **Q1. Why does Memcached implement consistent hashing entirely on the client side, while Cassandra implements it inside the cluster itself?**
@@ -3072,7 +3148,7 @@ A: If different application instances or services have an inconsistent view of t
 
 **Decision Tree for Choosing a Partitioning Strategy:**
 
-```
+```text
 Need to partition data across servers?
 │
 ├─ Servers change frequently?
@@ -3098,6 +3174,8 @@ Need to partition data across servers?
     │
     └─ No → Consistent Hashing or Modulo
 ```
+
+*The text snippet above illustrates Consistent Hashing vs. Other Partitioning Strategies: it shows the concrete form of the idea described in this section.*
 
 #### Consistent Hashing vs. Other Strategies: Characteristics
 
@@ -3156,6 +3234,8 @@ quadrantChart
     "Rendezvous Hashing": [0.15, 0.2]
     "Hash Slot (Redis style)": [0.25, 0.7]
 ```
+
+*The diagram above illustrates Consistent Hashing vs. Other Strategies: Diagram: it maps the key components and their interactions described in this section.*
 
 #### Consistent Hashing vs. Other Strategies: Real-Life Use Case
 

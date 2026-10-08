@@ -24,6 +24,19 @@
 
 ## Theory
 
+### Table of Contents
+
+1. [Introduction](#introduction)
+2. [Monolithic Architecture](#monolithic-architecture)
+3. [Why Microservices?](#why-microservices)
+4. [Microservices Design Phases](#microservices-design-phases)
+5. [Decomposition Patterns](#decomposition-patterns)
+6. [Strangler Fig Pattern](#strangler-fig-pattern)
+7. [Data Management in Microservices](#data-management-in-microservices)
+8. [Saga Pattern](#saga-pattern)
+9. [CQRS Pattern](#cqrs-pattern)
+
+
 ### Introduction
 
 - This topic covers the evolution from **monolithic** to **microservices** architecture, the catalog of patterns used to design, decompose, and operate microservices, and the trade-offs interviewers expect you to reason about.
@@ -50,6 +63,8 @@ flowchart TB
     Monolith --> DB[(Single Shared Database)]
     Client([Client]) --> UI
 ```
+
+*The diagram above illustrates Monolithic Architecture: it maps the key components and their interactions described in this section.*
 
 #### Disadvantages of Monolithic Architecture
 
@@ -87,6 +102,8 @@ flowchart TB
     S1 -.->|"events / async calls"| S2
     S1 -.-> S3
 ```
+
+*The diagram above illustrates Why Microservices?: it maps the key components and their interactions described in this section.*
 
 #### Advantages of Microservices
 
@@ -183,6 +200,8 @@ public class OrderController {
 }
 ```
 
+*The java snippet above illustrates 1. Decompose by Business Capability: it shows the concrete form of the idea described in this section.*
+
 #### 2. Decompose by Subdomain (Domain-Driven Design)
 
 - Uses DDD's concept of **bounded contexts**: a large domain (e.g. "Payments") is broken down further into subdomains — **Core** (the differentiator, e.g. fraud detection), **Supporting** (e.g. refunds), and **Generic** (e.g. currency conversion, often bought off-the-shelf).
@@ -227,6 +246,8 @@ flowchart LR
     end
 ```
 
+*The diagram above illustrates Strangler Fig Pattern: it maps the key components and their interactions described in this section.*
+
 ```mermaid
 flowchart LR
     subgraph Stage2["Stage 2: Mid-migration"]
@@ -235,6 +256,8 @@ flowchart LR
         R2 -->|"everything else"| M2[Monolith]
     end
 ```
+
+*The diagram above illustrates Strangler Fig Pattern: it maps the key components and their interactions described in this section.*
 
 ```mermaid
 flowchart LR
@@ -454,6 +477,8 @@ public class InventoryService {
     }
 }
 ```
+
+*The java snippet above illustrates Choreography-based Saga: it shows the concrete form of the idea described in this section.*
 
 #### Orchestration-based Saga
 

@@ -14,6 +14,17 @@
 
 ## Theory
 
+### Table of Contents
+
+1. [REST API: Advantages](#rest-api-advantages)
+2. [REST API: Disadvantages](#rest-api-disadvantages)
+3. [Alternatives to REST](#alternatives-to-rest)
+4. [REST API Best Practices](#rest-api-best-practices)
+5. [When to Use REST vs Alternatives](#when-to-use-rest-vs-alternatives)
+6. [REST Architectural Constraints](#rest-architectural-constraints)
+7. [Introduction](#introduction)
+
+
 Architectural style using HTTP for web services.
 
 **Principles:**
@@ -32,7 +43,7 @@ Architectural style using HTTP for web services.
 - Implement HATEOAS (links to related resources)
 
 **Example:**
-```
+```http
 GET    /api/v1/users          # List users
 GET    /api/v1/users/{id}     # Get user
 POST   /api/v1/users          # Create user
@@ -40,9 +51,11 @@ PUT    /api/v1/users/{id}     # Update user
 DELETE /api/v1/users/{id}     # Delete user
 ```
 
+*The http snippet above illustrates Theory: it shows the concrete form of the idea described in this section.*
+
 ### REST API: Advantages
 
-```
+```text
 ✓ Simple & Intuitive
   - Easy to understand (resources + HTTP methods)
   - Self-documenting (URLs describe resources)
@@ -80,7 +93,7 @@ DELETE /api/v1/users/{id}     # Delete user
 ```
 
 **Performance:**
-```
+```text
 Typical REST API:
   Request: 500-2000 bytes (headers + JSON)
   Response: 1000-5000 bytes
@@ -88,9 +101,11 @@ Typical REST API:
   Throughput: 1000-5000 req/sec (single server)
 ```
 
+*The text snippet above illustrates REST API: Advantages: it shows the concrete form of the idea described in this section.*
+
 ### REST API: Disadvantages
 
-```
+```http
 ✗ Over-fetching
   - Get entire user object when you only need name
   - Wastes bandwidth
@@ -146,10 +161,12 @@ Typical REST API:
   - Not event-driven
 ```
 
+*The http snippet above illustrates REST API: Disadvantages: it shows the concrete form of the idea described in this section.*
+
 ### Alternatives to REST
 
 **1. GraphQL**
-```
+```text
 What it solves:
   ✓ Over-fetching → Request exact fields needed
   ✓ Under-fetching → Get related data in one request
@@ -196,7 +213,7 @@ When REST is better:
 ```
 
 **2. gRPC**
-```
+```text
 What it solves:
   ✓ Performance → Binary protocol (10x faster)
   ✓ Type safety → Protobuf contracts
@@ -247,7 +264,7 @@ When REST is better:
 ```
 
 **3. SOAP**
-```
+```text
 Legacy protocol (don't use for new projects)
 
 Advantages:
@@ -271,7 +288,7 @@ Migration path: SOAP → REST or GraphQL
 ```
 
 **4. tRPC (TypeScript RPC)**
-```
+```text
 For TypeScript full-stack:
 
 Advantages over REST:
@@ -300,10 +317,12 @@ Limitation:
   - Not for public APIs
 ```
 
+*The text snippet above illustrates Alternatives to REST: it shows the concrete form of the idea described in this section.*
+
 ### REST API Best Practices
 
 **URL Design:**
-```
+```http
 Good:
   GET  /users              (list)
   GET  /users/123          (get one)
@@ -323,7 +342,7 @@ Bad:
 ```
 
 **Status Codes:**
-```
+```text
 Use correctly:
   200 OK                   ← Success with body
   201 Created              ← Resource created
@@ -343,7 +362,7 @@ Use correctly:
 ```
 
 **Response Format:**
-```
+```json
 Consistent structure:
   {
     "data": {...},
@@ -380,7 +399,7 @@ Pagination:
 ```
 
 **Versioning:**
-```
+```http
 Option 1: URL versioning (most common)
   /api/v1/users
   /api/v2/users
@@ -405,7 +424,7 @@ Recommendation: URL versioning (/v1/, /v2/)
 ```
 
 **Security:**
-```
+```text
 ✓ Use HTTPS always
 ✓ Authenticate with JWT/OAuth
 ✓ Validate all input
@@ -418,7 +437,7 @@ Recommendation: URL versioning (/v1/, /v2/)
 ```
 
 **Performance:**
-```
+```text
 ✓ Implement caching headers
 ✓ Use gzip/brotli compression
 ✓ Paginate large collections
@@ -428,6 +447,8 @@ Recommendation: URL versioning (/v1/, /v2/)
 ✓ Monitor slow endpoints
 ✓ Implement request timeout
 ```
+
+*The text snippet above illustrates REST API Best Practices: it shows the concrete form of the idea described in this section.*
 
 ### When to Use REST vs Alternatives
 

@@ -77,7 +77,7 @@ Manage distributed transactions across services.
 
 Each service listens for events and performs its local work, then publishes the next event. There is no central coordinator.
 
-```
+```text
 Order Service → publishes "OrderCreated"
   → Payment Service listens → publishes "PaymentCompleted"
     → Inventory Service listens → publishes "InventoryReserved"
@@ -320,6 +320,8 @@ flowchart LR
     C -->|Events| Bus
 ```
 
+*The diagram above illustrates Components: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Patterns
@@ -501,6 +503,8 @@ public class OrderSagaOrchestrator {
 }
 ```
 
+*The java snippet above illustrates 1. Saga orchestrator with a state machine: it shows the concrete form of the idea described in this section.*
+
 #### 2. Choreography event handler
 
 ```java
@@ -519,6 +523,8 @@ public class PaymentSagaListener {
 }
 ```
 
+*The java snippet above illustrates 2. Choreography event handler: it shows the concrete form of the idea described in this section.*
+
 #### 3. Compensation service
 
 ```java
@@ -536,6 +542,8 @@ public class PaymentCompensationService {
     }
 }
 ```
+
+*The java snippet above illustrates 3. Compensation service: it shows the concrete form of the idea described in this section.*
 
 #### 4. Idempotent operation with a key
 

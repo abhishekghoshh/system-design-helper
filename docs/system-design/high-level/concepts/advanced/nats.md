@@ -338,6 +338,8 @@ flowchart LR
     Server --> Cluster[Cluster peers]
 ```
 
+*The diagram above illustrates Components: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Patterns
@@ -498,6 +500,8 @@ public class NatsPublisher {
 }
 ```
 
+*The java snippet above illustrates 1. Publishing a message: it shows the concrete form of the idea described in this section.*
+
 #### 2. Subscribing to a subject
 
 ```java
@@ -524,6 +528,8 @@ public class NatsSubscriber {
     }
 }
 ```
+
+*The java snippet above illustrates 2. Subscribing to a subject: it shows the concrete form of the idea described in this section.*
 
 #### 3. Request-reply service
 
@@ -553,6 +559,8 @@ public class NatsRequestor {
     }
 }
 ```
+
+*The java snippet above illustrates 3. Request-reply service: it shows the concrete form of the idea described in this section.*
 
 #### 4. Queue group subscriber
 

@@ -26,6 +26,16 @@
 
 Each topic below covers the detailed theory, a diagram, a real-life use case, a Java code example (using Selenium/Java to observe or simulate the concept), and interview questions with answers.
 
+- [What Is the Browser Rendering Pipeline?](#what-is-the-browser-rendering-pipeline)
+- [HTML Parsing & DOM Construction](#html-parsing-dom-construction)
+- [CSS Parsing & CSSOM Construction](#css-parsing-cssom-construction)
+- [Render Tree Construction](#render-tree-construction)
+- [Layout (Reflow)](#layout-reflow)
+- [Paint](#paint)
+- [Composite & GPU Layers](#composite-gpu-layers)
+- [JavaScript Parsing, Execution & Render-Blocking Behavior](#javascript-parsing-execution-render-blocking-behavior)
+- [Layout Thrashing & Forced Synchronous Layout](#layout-thrashing-forced-synchronous-layout)
+- [Core Web Vitals & The Critical Rendering Path](#core-web-vitals-the-critical-rendering-path)
 ### What Is the Browser Rendering Pipeline?
 
 The browser rendering pipeline is the sequence of steps a browser engine (Blink, Gecko, WebKit) takes to convert HTML, CSS, and JavaScript into pixels on the screen. Understanding it is essential because every millisecond of perceived page performance developers try to shave off maps directly onto one of these stages.
@@ -116,7 +126,7 @@ The HTML parser converts a raw byte stream into a tree of DOM nodes. This happen
 2. **Characters -> tokens**: the tokenizer emits start tags, end tags, attributes, text, and comments.
 3. **Tokens -> DOM nodes**: the tree construction stage uses a stack of open elements to build the node tree, handling implicit tag closing (e.g. `<p>` auto-closes an open `<p>`) and malformed markup recovery.
 
-```
+```text
 <html>
   <body>
     <h1>Hello</h1>
@@ -132,6 +142,8 @@ Document
          ├─ h1 -> "Hello"
          └─ p  -> "World"
 ```
+
+*The text snippet above illustrates HTML Parsing & DOM Construction: it shows the concrete form of the idea described in this section.*
 
 ```mermaid
 flowchart LR
@@ -205,7 +217,7 @@ Because HTML parsing is a streaming, incremental process: the tokenizer and tree
 
 CSS is parsed independently from HTML into the CSSOM (CSS Object Model) - a tree of style rules where every node inherits computed properties from its parent unless overridden.
 
-```
+```text
 body { font-size: 16px; }
 h1 { color: blue; }
 
@@ -345,7 +357,7 @@ Yes. Being positioned outside the visible viewport does not remove an element fr
 
 Layout ("reflow") walks the render tree and computes the exact pixel position and size of every box, based on the CSS box model, containing block sizes, and flow rules (block, inline, flex, grid).
 
-```
+```text
 Viewport: 1200px wide
 
 <div style="width: 50%">        -> 600px wide
@@ -408,7 +420,7 @@ No - `transform` is applied after layout, purely as a visual transformation duri
 
 Paint fills in the actual pixels for every box in the render tree - background colors, borders, text, shadows, images - based on the geometry layout computed.
 
-```
+```text
 For each render tree node (in paint order):
   -> Draw background color
   -> Draw border
@@ -471,7 +483,7 @@ Each layer consumes GPU memory and requires the browser to manage and composite 
 
 Compositing is the final stage: previously painted layers are combined in the correct stacking order and handed to the GPU to produce the final on-screen frame.
 
-```
+```text
 Layer 1: Background
 Layer 2: Main content
 Layer 3: Fixed header

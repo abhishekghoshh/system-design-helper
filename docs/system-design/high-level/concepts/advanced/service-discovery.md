@@ -348,6 +348,8 @@ flowchart LR
     LoadBalancer --> Instance
 ```
 
+*The diagram above illustrates Components: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Patterns
@@ -511,6 +513,8 @@ public class EurekaDiscoveryService {
 }
 ```
 
+*The java snippet above illustrates 1. Eureka client discovery: it shows the concrete form of the idea described in this section.*
+
 #### 2. Manual registration to a registry
 
 ```java
@@ -537,6 +541,8 @@ public class SimpleRegistry {
 }
 ```
 
+*The java snippet above illustrates 2. Manual registration to a registry: it shows the concrete form of the idea described in this section.*
+
 #### 3. Health check endpoint
 
 ```java
@@ -553,6 +559,8 @@ public class ServiceHealthIndicator implements HealthIndicator {
     }
 }
 ```
+
+*The java snippet above illustrates 3. Health check endpoint: it shows the concrete form of the idea described in this section.*
 
 #### 4. Discovery-aware REST client
 

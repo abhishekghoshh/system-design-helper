@@ -32,6 +32,8 @@ This page is organized into the following topics. Each topic includes a detailed
 14. [Complete Example: E-commerce Product Cache](#complete-example-e-commerce-product-cache)
 15. [Distributed Cache and Caching Strategies: Characteristics, Pros, Cons, Use Cases, Components, Patterns, Benefits, Challenges, Best Practices and When to Use](#distributed-cache-and-caching-strategies-characteristics-pros-cons-use-cases-components-patterns-benefits-challenges-best-practices-and-when-to-use)
 
+17. [Caching Strategies (Cache Patterns)](#caching-strategies-cache-patterns)
+18. [Summary](#summary)
 ### What is Caching?
 
 **Caching** is a technique to store frequently accessed data in a fast-access storage layer (cache) to reduce latency and improve application performance. Instead of repeatedly fetching data from slow data sources (database, external API, disk), the application retrieves it from the cache.
@@ -44,7 +46,7 @@ This page is organized into the following topics. Each topic includes a detailed
 - **Better User Experience**: Faster page loads and responses
 
 **Cache Hierarchy:**
-```
+```text
 Fastest ↑
 --------
 CPU Cache (L1, L2, L3) - Nanoseconds
@@ -130,6 +132,8 @@ flowchart LR
     C --> F
 ```
 
+*The diagram above illustrates What is Caching?: Diagram: it maps the key components and their interactions described in this section.*
+
 #### What is Caching?: Real-Life Use Case
 
 A news website's homepage displays the "Top 10 Trending Articles". Thousands of users load this same list every second, but the underlying query (sorting millions of articles by view count) is expensive to compute. Instead of recomputing it per request, the backend computes the list once every 30 seconds and caches it. Every homepage load for those 30 seconds is served from cache in under a millisecond, while the expensive aggregation query runs at most twice a minute regardless of traffic volume.
@@ -180,6 +184,8 @@ public class RedisCacheConfig {
 }
 ```
 
+*The java snippet above illustrates What is Caching?: Java / Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
+
 #### What is Caching?: Interview Questions and Answers
 
 **Q1: What is caching and why is it used?**
@@ -204,7 +210,7 @@ A **distributed cache** is a caching system that spans multiple servers/nodes, a
 #### Why Distributed Cache?
 
 **Problem with Local Cache:**
-```
+```text
 ┌─────────────┐       ┌─────────────┐       ┌─────────────┐
 │  App Server │       │  App Server │       │  App Server │
 │      1      │       │      2      │       │      3      │
@@ -222,7 +228,7 @@ Problem: After update, Server 1 and 2 have stale data!
 ```
 
 **Solution with Distributed Cache:**
-```
+```text
 ┌─────────────┐       ┌─────────────┐       ┌─────────────┐
 │  App Server │       │  App Server │       │  App Server │
 │      1      │       │      2      │       │      3      │
@@ -243,6 +249,8 @@ Problem: After update, Server 1 and 2 have stale data!
 
 All servers read from same cache - Always consistent!
 ```
+
+*The text snippet above illustrates Why Distributed Cache?: it shows the concrete form of the idea described in this section.*
 
 #### Distributed Cache: Characteristics
 
@@ -359,6 +367,8 @@ flowchart TB
     C3 --> DB
 ```
 
+*The diagram above illustrates Distributed Cache: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Distributed Cache: Real-Life Use Case
 
 An e-commerce platform runs 50 stateless application instances behind a load balancer, auto-scaling between 20 and 100 instances based on traffic. Product catalog data (name, price, description) is cached in a 6-node Redis Cluster shared by every instance. When an instance is added during a traffic spike, it immediately benefits from the already-warm cache instead of starting with an empty local cache; when an admin updates a product's price, every instance sees the update within milliseconds because there is only one cache to invalidate, not 100 separate local caches.
@@ -426,6 +436,8 @@ public class ProductService {
 }
 ```
 
+*The java snippet above illustrates Distributed Cache: Java / Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Distributed Cache: Interview Questions and Answers
 
 **Q1: Why do we need a distributed cache instead of just using an in-process (local) cache on each server?**
@@ -447,7 +459,7 @@ A: A distributed cache provides consistency across instances, larger effective c
 
 #### 1. Single-Node Cache
 
-```
+```text
 ┌──────────────┐
 │ Application  │
 ├──────────────┤
@@ -460,7 +472,7 @@ A: A distributed cache provides consistency across instances, larger effective c
 
 #### 2. Centralized Cache
 
-```
+```text
 ┌─────────┐    ┌─────────┐    ┌─────────┐
 │  App 1  │    │  App 2  │    │  App 3  │
 └────┬────┘    └────┬────┘    └────┬────┘
@@ -477,7 +489,7 @@ A: A distributed cache provides consistency across instances, larger effective c
 
 #### 3. Distributed Cache Cluster (Recommended)
 
-```
+```text
 ┌─────────┐    ┌─────────┐    ┌─────────┐
 │  App 1  │    │  App 2  │    │  App 3  │
 └────┬────┘    └────┬────┘    └────┬────┘
@@ -560,6 +572,8 @@ flowchart TB
     end
 ```
 
+*The diagram above illustrates Cache Architecture Patterns: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Cache Architecture Patterns: Real-Life Use Case
 
 A startup begins with a single monolithic server and an in-process LRU cache (single-node). As traffic grows, they scale to 3 application instances behind a load balancer and move to a single shared Redis instance (centralized) so all instances see consistent data. Once traffic grows further and the dataset outgrows one Redis instance's memory, they migrate to a 6-node Redis Cluster (distributed cluster) with replication, matching the classic architectural progression described above.
@@ -602,6 +616,8 @@ public class ClusterRedisConfig {
 }
 ```
 
+*The java snippet above illustrates Cache Architecture Patterns: Java / Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Cache Architecture Patterns: Interview Questions and Answers
 
 **Q1: Why would a team start with a single-node cache instead of going straight to a distributed cluster?**
@@ -639,7 +655,7 @@ Cache-Aside, also known as **Lazy Loading**, is the most common and straightforw
 **When cache is empty (cold start)**: Every request is a cache miss initially, gradually warming up as requests come in. This "lazy" approach means you only cache what's actually used, which is memory-efficient but has initial performance cost.
 
 **Flow Diagram:**
-```
+```text
 Read Request:
 ┌─────────────┐
 │ Application │
@@ -735,6 +751,8 @@ print(cache_aside.get_user(1))  # CACHE HIT - from cache
 cache_aside.update_user(1, "Jane")  # Invalidates cache
 print(cache_aside.get_user(1))  # CACHE MISS - loads fresh data
 ```
+
+*The python snippet above illustrates Cache-Aside (Lazy Loading): it shows the concrete form of the idea described in this section.*
 
 #### Cache-Aside (Lazy Loading): Characteristics
 
@@ -951,7 +969,7 @@ product = product_cache.get_product_details(123)
 ```
 
 **Performance Metrics:**
-```
+```text
 Without Cache:
 - Database query time: 50-100ms (complex joins)
 - Requests per second: ~20-50
@@ -963,6 +981,8 @@ With Cache-Aside:
 - Requests per second: 1000+ (mostly cache hits)
 - Database load reduction: 90%+
 ```
+
+*The text snippet above illustrates Cache-Aside (Lazy Loading): When to Use: it shows the concrete form of the idea described in this section.*
 
 #### Cache-Aside (Lazy Loading): Diagram
 
@@ -988,6 +1008,8 @@ sequenceDiagram
     DB-->>App: ack
     App->>Cache: DEL user:1
 ```
+
+*The diagram above illustrates Cache-Aside (Lazy Loading): Diagram: it maps the key components and their interactions described in this section.*
 
 #### Cache-Aside (Lazy Loading): Java / Spring Boot Code Example
 
@@ -1064,6 +1086,8 @@ public class UserCacheableService {
 }
 ```
 
+*The java snippet above illustrates Cache-Aside (Lazy Loading): Java / Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Cache-Aside (Lazy Loading): Interview Questions and Answers
 
 **Q1: How does Cache-Aside handle a cache miss?**
@@ -1102,7 +1126,7 @@ Write-Through is a caching pattern where every write operation goes through the 
 **Difference from Cache-Aside**: In Cache-Aside, writes go to DB first and cache may be invalidated. In Write-Through, cache is the write interface and it propagates to DB. This means Write-Through guarantees cache population on write, while Cache-Aside may leave cache empty after a write.
 
 **Flow Diagram:**
-```
+```text
 Write Request:
 ┌─────────────┐
 │ Application │
@@ -1196,6 +1220,8 @@ print(write_through.get_user(1))  # CACHE HIT - always in cache
 write_through.update_user(1, "Jane")
 print(write_through.get_user(1))  # CACHE HIT - updated data
 ```
+
+*The python snippet above illustrates Write-Through Cache: it shows the concrete form of the idea described in this section.*
 
 #### Write-Through Cache: Characteristics
 
@@ -1426,7 +1452,7 @@ session_store.update_session_activity(session_id)
 - ⚠️ **Write Cost**: Acceptable because session creates/updates are infrequent compared to reads
 
 **Performance Comparison:**
-```
+```text
 Session Reads (per request):
 - Without cache: 10-20ms (DB query)
 - With Write-Through cache: <1ms (cache hit)
@@ -1437,6 +1463,8 @@ Session Writes:
 - Cache-Aside: 10-20ms (DB only)
 - Trade-off: Slightly slower writes for much faster reads
 ```
+
+*The text snippet above illustrates Write-Through Cache: When to Use: it shows the concrete form of the idea described in this section.*
 
 #### Write-Through Cache: Diagram
 
@@ -1456,6 +1484,8 @@ sequenceDiagram
     App->>Cache: GET session:123
     Cache-->>App: value (always present, always fresh)
 ```
+
+*The diagram above illustrates Write-Through Cache: Diagram: it maps the key components and their interactions described in this section.*
 
 #### Write-Through Cache: Java / Spring Boot Code Example
 
@@ -1513,6 +1543,8 @@ public class SessionService {
 }
 ```
 
+*The java snippet above illustrates Write-Through Cache: Java / Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Write-Through Cache: Interview Questions and Answers
 
 **Q1: How does Write-Through differ from Cache-Aside on the write path?**
@@ -1556,7 +1588,7 @@ Write-Behind, also called **Write-Back**, is a high-performance caching pattern 
 **Performance benefit**: Can handle 10-100x more writes than Write-Through because application isn't blocked by slow database operations. Database load is also reduced through batching and coalescing.
 
 **Flow Diagram:**
-```
+```text
 Write Request:
 ┌─────────────┐
 │ Application │
@@ -1919,7 +1951,7 @@ print("Scores now persisted to database!")
 
 **Performance Benefits:**
 
-```
+```text
 Without Write-Behind:
 - Score update latency: 10-20ms (DB write)
 - Max updates/second: ~50-100 per DB connection
@@ -1980,6 +2012,8 @@ sequenceDiagram
     end
 ```
 
+*The diagram above illustrates Write-Behind (Write-Back) Cache: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Write-Behind (Write-Back) Cache: Interview Questions and Answers
 
 **Q1: What is the key difference between Write-Behind and Write-Through?**
@@ -2027,7 +2061,7 @@ Read-Through is a caching pattern where the cache itself is responsible for load
 **Limitation**: Requires cache system or framework that supports automatic data loading, or custom implementation of the proxy pattern. Not all caching systems provide this out-of-the-box.
 
 **Flow Diagram:**
-```
+```text
 Read Request:
 ┌─────────────┐
 │ Application │
@@ -2166,6 +2200,8 @@ sequenceDiagram
     Note over App,DB: Application never talks to DB directly
 ```
 
+*The diagram above illustrates Read-Through Cache: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Read-Through Cache: Java / Spring Boot Code Example
 
 ```java
@@ -2202,6 +2238,8 @@ public class UserService {
     }
 }
 ```
+
+*The java snippet above illustrates Read-Through Cache: Java / Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Read-Through Cache: Interview Questions and Answers
 
@@ -2243,7 +2281,7 @@ Refresh-Ahead is an advanced, **proactive** caching pattern where the cache auto
 4. **Periodic**: Refresh hot data at fixed intervals (every 10 minutes for homepage data)
 
 **Smart refresh logic**:
-```
+```text
 if (data_accessed_recently AND ttl_remaining < threshold):
     return cached_data  # Fast response to user
     trigger_async_refresh()  # Update cache in background
@@ -2262,7 +2300,7 @@ if (data_accessed_recently AND ttl_remaining < threshold):
 **Perfect for**: E-commerce homepages, trending content, game leaderboards, stock prices, sports scores - any scenario where specific data is accessed very frequently and staleness is unacceptable.
 
 **Flow Diagram:**
-```
+```text
 ┌─────────────┐
 │ Application │
 └──────┬──────┘
@@ -2417,6 +2455,8 @@ sequenceDiagram
     Note over App,DB: Caller never waited on the refresh - always served from cache
 ```
 
+*The diagram above illustrates Refresh-Ahead Cache: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Refresh-Ahead Cache: Java / Spring Boot Code Example
 
 ```java
@@ -2469,6 +2509,8 @@ public class RefreshAheadProductService {
 }
 ```
 
+*The java snippet above illustrates Refresh-Ahead Cache: Java / Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Refresh-Ahead Cache: Interview Questions and Answers
 
 **Q1: How does Refresh-Ahead differ from a simple TTL-based cache?**
@@ -2503,7 +2545,7 @@ Write-Around is an optimization of the Cache-Aside pattern specifically designed
 - Cache is populated **only by reads**, ensuring only accessed data uses cache space
 
 **Cache pollution scenario (that Write-Around solves)**:
-```
+```text
 Scenario: Logging system writing 10,000 log entries per second
 
 With Write-Through:
@@ -2532,7 +2574,7 @@ With Write-Around:
 **Trade-off**: First read after write always misses cache (cold read), which is acceptable when reads are rare or happen much later than writes.
 
 **Flow Diagram:**
-```
+```text
 Write Request:
 ┌─────────────┐
 │ Application │
@@ -2659,6 +2701,8 @@ def update_user_write_around(user_id, new_name):
     db.update(user_id, new_name)
     cache.delete(f"user:{user_id}")  # ← Cache invalidated only
 ```
+
+*The python snippet above illustrates Write-Around Cache: it shows the concrete form of the idea described in this section.*
 
 #### Write-Around Cache: Characteristics
 
@@ -2788,6 +2832,8 @@ sequenceDiagram
     App->>Cache: SET log:123 (TTL)
 ```
 
+*The diagram above illustrates Write-Around Cache: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Write-Around Cache: Java / Spring Boot Code Example
 
 ```java
@@ -2825,6 +2871,8 @@ public class LogService {
     }
 }
 ```
+
+*The java snippet above illustrates Write-Around Cache: Java / Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Write-Around Cache: Interview Questions and Answers
 
@@ -2896,6 +2944,8 @@ flowchart TD
     I -->|No| K[Cache-Aside - default choice]
 ```
 
+*The diagram above illustrates Caching Strategy Comparison: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Caching Strategy Comparison: Java / Spring Boot Code Example
 
 ```java
@@ -2925,6 +2975,8 @@ public class CachingStrategySelector {
     }
 }
 ```
+
+*The java snippet above illustrates Caching Strategy Comparison: Java / Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Caching Strategy Comparison: Interview Questions and Answers
 
@@ -3041,6 +3093,8 @@ flowchart LR
     H --> I
 ```
 
+*The diagram above illustrates Cache Eviction Policies: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Cache Eviction Policies: Real-Life Use Case
 
 A CDN edge cache node has a fixed 50GB of disk/memory capacity for cached video segments but the total catalog is several petabytes. Using an LRU-based eviction policy, the node naturally keeps whichever titles were most recently requested by nearby users and evicts stale/rarely watched titles, so a new episode airing today displaces month-old, rarely-watched content, without any explicit business logic being needed to decide what to remove.
@@ -3072,6 +3126,8 @@ public class SimpleLruCache<K, V> extends LinkedHashMap<K, V> {
     }
 }
 ```
+
+*The java snippet above illustrates Cache Eviction Policies: Java / Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Cache Eviction Policies: Interview Questions and Answers
 
@@ -3123,6 +3179,8 @@ def update_user(user_id, new_name):
 
 # Subscribers delete from their local cache
 ```
+
+*The python snippet above illustrates Cache Invalidation Strategies: it shows the concrete form of the idea described in this section.*
 
 #### Cache Invalidation Strategies: Characteristics
 
@@ -3191,6 +3249,8 @@ sequenceDiagram
     Note over App1,App2: Both instances now free of the stale entry
 ```
 
+*The diagram above illustrates Cache Invalidation Strategies: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Cache Invalidation Strategies: Java / Spring Boot Code Example
 
 ```java
@@ -3240,6 +3300,8 @@ public class LocalCacheInvalidationListener implements MessageListener {
     }
 }
 ```
+
+*The java snippet above illustrates Cache Invalidation Strategies: Java / Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Cache Invalidation Strategies: Interview Questions and Answers
 
@@ -3328,6 +3390,8 @@ flowchart TD
     K -- No --> M[Cache as-is]
 ```
 
+*The diagram above illustrates Best Practices: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Best Practices: Java / Spring Boot Code Example
 
 ```java
@@ -3390,6 +3454,8 @@ public class ResilientProductService {
     }
 }
 ```
+
+*The java snippet above illustrates Best Practices: Java / Spring Boot Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Best Practices: Interview Questions and Answers
 
@@ -3559,6 +3625,8 @@ for i in range(150):
 # Check performance
 product_cache.get_cache_stats()
 ```
+
+*The python snippet above illustrates Complete Example: E-commerce Product Cache: it shows the concrete form of the idea described in this section.*
 
 ### Summary
 

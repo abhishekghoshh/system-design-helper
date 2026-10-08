@@ -237,8 +237,8 @@ Key Space: 2^56 = 72,057,594,037,927,936 possible keys
 
 1977:  Would take years to brute force
 1998:  EFF's DES Cracker broke DES in 56 hours
-2006:  COPACOBANA broke DES in 9 days (cost: $10,000)
-2025:  Can be broken in seconds with cloud computing
+2006:  COPACOBANA broke DES in under a week (cost: ~$10,000)
+2025:  Can be broken in hours with cloud computing
 
 Example Attack Cost:
 AWS EC2: ~$100 to crack DES in a few hours
@@ -386,8 +386,8 @@ AES OPERATIONS:
 └─────────────────────────────────────────────────┘
 
 Security Level:
-AES-128: 2^128 possible keys (unbreakable with current tech)
-AES-256: 2^256 possible keys (quantum-resistant)
+AES-128: 2^128 possible keys (infeasible to brute force with current tech)
+AES-256: 2^256 possible keys (~128-bit effective strength against quantum/Grover attacks)
 ```
 
 **Advantages:**
@@ -396,7 +396,7 @@ AES-256: 2^256 possible keys (quantum-resistant)
 - ✅ **Flexible**: Multiple key sizes
 - ✅ **Efficient**: Low memory and CPU usage
 - ✅ **Widely Adopted**: Industry standard
-- ✅ **Government Approved**: NSA Suite B
+- ✅ **Government Approved**: NSA CNSA Suite (formerly Suite B)
 - ✅ **Well Studied**: Analyzed for over 20 years
 
 **Performance Comparison:**
@@ -423,7 +423,7 @@ AES processes data through multiple rounds of transformations. Let's understand 
 EXAMPLE: AES-128 (10 rounds)
 
 INPUT PLAINTEXT: "Hello World 123!" (16 bytes)
-KEY: 256-bit key (we'll use 128-bit for simplicity)
+KEY: 128-bit key (16 bytes, AES-128 uses one 128-bit key expanded into 11 round keys)
 
 STEP 1: Convert to State Matrix (4×4 bytes)
 ────────────────────────────────────────────
@@ -2895,7 +2895,7 @@ KEY CHARACTERISTICS:
 - ✅ **Less Bandwidth**: Smaller certificates and signatures
 - ✅ **Mobile Friendly**: Lower CPU and power consumption
 - ✅ **Future Proof**: Better resistance to quantum attacks (relatively)
-- ✅ **NSA Approved**: Suite B cryptography
+- ✅ **NSA Approved**: CNSA Suite cryptography
 
 **Key Size Comparison:**
 ```

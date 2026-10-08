@@ -12,6 +12,18 @@
 
 ## Theory
 
+### Table of Contents
+
+1. [What is SMTP Protocol?](#what-is-smtp-protocol)
+2. [SMTP Secured (SMTPS)](#smtp-secured-smtps)
+3. [SMTP Server Components](#smtp-server-components)
+4. [SMTP Commands](#smtp-commands)
+5. [SMTP Status Codes](#smtp-status-codes)
+6. [Complete Email Sending Flow](#complete-email-sending-flow)
+7. [DNS Records for Email](#dns-records-for-email)
+8. [Cross-Server Email Flow (Gmail to Outlook)](#cross-server-email-flow-gmail-to-outlook)
+
+
 ### What is SMTP Protocol?
 
 **SMTP (Simple Mail Transfer Protocol)** is an application-layer protocol used for sending and transferring email messages between mail servers and from email clients to mail servers.
@@ -38,7 +50,7 @@
 
 An SMTP server consists of several key components:
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                      SMTP Server                            │
 │                                                             │
@@ -144,7 +156,7 @@ Status codes indicate the result of SMTP commands:
 
 ### Complete Email Sending Flow
 
-```
+```text
 Client                                    SMTP Server
   │                                            │
   │────── TCP Connection (Port 25/587) ──────▶│
@@ -226,7 +238,7 @@ Client                                    SMTP Server
 **Record Type**: MX (dedicated record type)
 
 **Example:**
-```
+```text
 example.com.    MX    10    mail1.example.com.
 example.com.    MX    20    mail2.example.com.
 example.com.    MX    30    mail3.example.com.
@@ -250,25 +262,25 @@ example.com.    MX    30    mail3.example.com.
 **Example Configurations:**
 
 1. **Single Mail Server:**
-   ```
+```text
    example.com.    MX    10    mail.example.com.
    ```
 
 2. **Primary with Backup:**
-   ```
+```text
    example.com.    MX    10    mail1.example.com.
    example.com.    MX    20    mail2.example.com.
    ```
 
 3. **Load Balanced Primary:**
-   ```
+```text
    example.com.    MX    10    mail1.example.com.
    example.com.    MX    10    mail2.example.com.
    example.com.    MX    20    backup.example.com.
    ```
 
 4. **Cloud Email Services:**
-   ```
+```text
    example.com.    MX    1     aspmx.l.google.com.
    example.com.    MX    5     alt1.aspmx.l.google.com.
    example.com.    MX    5     alt2.aspmx.l.google.com.
@@ -278,7 +290,7 @@ example.com.    MX    30    mail3.example.com.
 
 **MX Lookup Process:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │ Step 1: DNS Query for MX Records                           │
 │ Query: example.com MX                                       │
@@ -331,7 +343,7 @@ example.com.    MX    30    mail3.example.com.
 **Record Type**: A (Address)
 
 **Example:**
-```
+```text
 mail1.example.com.    A    192.0.2.10
 mail2.example.com.    A    192.0.2.11
 www.example.com.      A    192.0.2.1
@@ -339,7 +351,7 @@ example.com.          A    192.0.2.1
 ```
 
 **Multiple A Records (Round-Robin Load Balancing):**
-```
+```text
 mail.example.com.     A    192.0.2.10
 mail.example.com.     A    192.0.2.11
 mail.example.com.     A    192.0.2.12
@@ -349,24 +361,26 @@ mail.example.com.     A    192.0.2.12
 
 Similar to A record but for IPv6 addresses:
 
-```
+```text
 mail1.example.com.    AAAA    2001:db8::1
 mail2.example.com.    AAAA    2001:db8::2
 ```
 
 **Email DNS Resolution Flow:**
 
-```
+```text
 1. MX Query: example.com → mail.example.com
 2. A Query: mail.example.com → 192.0.2.10
 3. SMTP Connection: 192.0.2.10:25
 ```
 
 **Dual Stack (IPv4 + IPv6):**
-```
+```text
 mail.example.com.     A       192.0.2.10
 mail.example.com.     AAAA    2001:db8::1
 ```
+
+*The text snippet above illustrates A Record (Address Record): it shows the concrete form of the idea described in this section.*
 
 #### PTR Record (Pointer Record)
 
@@ -375,7 +389,7 @@ mail.example.com.     AAAA    2001:db8::1
 **Record Type**: PTR (set in reverse DNS zone)
 
 **Example:**
-```
+```text
 10.2.0.192.in-addr.arpa.    PTR    mail.example.com.
 ```
 
@@ -387,7 +401,7 @@ mail.example.com.     AAAA    2001:db8::1
 
 **Forward vs Reverse DNS:**
 
-```
+```text
 Forward Lookup (A):
   mail.example.com → 192.0.2.10
 
@@ -397,7 +411,7 @@ Reverse Lookup (PTR):
 
 **PTR Validation Process:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │ Email received from IP: 192.0.2.10                     │
 │ EHLO: mail.example.com                                  │
@@ -426,7 +440,7 @@ Reverse Lookup (PTR):
 
 The PTR record must match at least one A record:
 
-```
+```text
 PTR: 192.0.2.10 → mail.example.com
 A:   mail.example.com → 192.0.2.10 ✓ MATCH
 ```
@@ -445,7 +459,7 @@ A:   mail.example.com → 192.0.2.10 ✓ MATCH
 
 **Examples:**
 
-```
+```text
 example.com.                          TXT    "v=spf1 mx ~all"
 default._domainkey.example.com.       TXT    "v=DKIM1; k=rsa; p=MIGfMA..."
 _dmarc.example.com.                   TXT    "v=DMARC1; p=reject; rua=..."
@@ -456,7 +470,7 @@ example.com.                          TXT    "google-site-verification=abc123"
 
 A domain can have multiple TXT records for different purposes:
 
-```
+```text
 example.com.    TXT    "v=spf1 include:_spf.google.com ~all"
 example.com.    TXT    "google-site-verification=abc123xyz"
 example.com.    TXT    "MS=ms12345678"
@@ -467,9 +481,11 @@ example.com.    TXT    "stripe-verification=secret123"
 
 - **Single string**: 255 characters
 - **Multiple strings**: Can concatenate for longer records
-  ```
+```text
   TXT    "v=DKIM1; p=MIGfMA0GCSqGSIb3DQEBAQUAA4G..." "NADCBiQKBgQDXyz123..."
   ```
+
+*The text snippet above illustrates TXT Record (Text Record): it shows the concrete form of the idea described in this section.*
 
 #### CNAME Record (Canonical Name)
 
@@ -478,7 +494,7 @@ example.com.    TXT    "stripe-verification=secret123"
 **Record Type**: CNAME
 
 **Example:**
-```
+```text
 mail.example.com.     CNAME    mail.hosting-provider.com.
 ```
 
@@ -486,13 +502,13 @@ mail.example.com.     CNAME    mail.hosting-provider.com.
 
 - **Cannot coexist** with MX record at same level
 - **Invalid for email**:
-  ```
+```text
   example.com.    MX    10    mail.example.com.
   mail.example.com. CNAME  mailserver.provider.com.  ✗ WRONG
   ```
   
 - **Correct usage**:
-  ```
+```text
   example.com.    MX    10    mail.example.com.
   mail.example.com. A     192.0.2.10                ✓ CORRECT
   ```
@@ -500,12 +516,12 @@ mail.example.com.     CNAME    mail.hosting-provider.com.
 **Valid CNAME Use Cases:**
 
 1. **Subdomain delegation:**
-   ```
+```text
    webmail.example.com.    CNAME    mail.google.com.
    ```
 
 2. **Service aliases:**
-   ```
+```text
    smtp.example.com.       CNAME    mail1.example.com.
    imap.example.com.       CNAME    mail1.example.com.
    ```
@@ -519,7 +535,7 @@ mail.example.com.     CNAME    mail.hosting-provider.com.
 **Record Type**: TXT record published in DNS
 
 **Example:**
-```
+```text
 example.com.    TXT    "v=spf1 ip4:192.0.2.0/24 ip6:2001:db8::/32 include:_spf.google.com a mx ~all"
 ```
 
@@ -548,23 +564,23 @@ example.com.    TXT    "v=spf1 ip4:192.0.2.0/24 ip6:2001:db8::/32 include:_spf.g
 **Complete Examples:**
 
 1. **Simple SPF (only MX servers can send)**
-   ```
+```text
    example.com.    TXT    "v=spf1 mx -all"
    ```
 
 2. **SPF with multiple sources**
-   ```
+```text
    example.com.    TXT    "v=spf1 ip4:192.0.2.0/24 include:_spf.google.com include:sendgrid.net mx ~all"
    ```
 
 3. **SPF for subdomain**
-   ```
+```text
    mail.example.com.    TXT    "v=spf1 ip4:192.0.2.10 -all"
    ```
 
 **SPF Validation Process:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────┐
 │ 1. Email received from IP 192.0.2.15                           │
 │    MAIL FROM: <user@example.com>                               │
@@ -595,9 +611,11 @@ example.com.    TXT    "v=spf1 ip4:192.0.2.0/24 ip6:2001:db8::/32 include:_spf.g
 
 **SPF Headers Added:**
 
-```
+```text
 Received-SPF: pass (google.com: domain of sender@example.com designates 192.0.2.15 as permitted sender)
 ```
+
+*The text snippet above illustrates SPF Record (Sender Policy Framework): it shows the concrete form of the idea described in this section.*
 
 #### DKIM Record (DomainKeys Identified Mail)
 
@@ -606,7 +624,7 @@ Received-SPF: pass (google.com: domain of sender@example.com designates 192.0.2.
 **Record Type**: TXT record at subdomain `<selector>._domainkey.<domain>`
 
 **Example:**
-```
+```text
 default._domainkey.example.com.    TXT    "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC..."
 ```
 
@@ -626,7 +644,7 @@ default._domainkey.example.com.    TXT    "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQE
 
 When an email is sent, the DKIM signature is added to the email header:
 
-```
+```text
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=example.com; s=default;
   h=from:to:subject:date:message-id:mime-version;
@@ -652,7 +670,7 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 
 **DKIM Signing & Verification Process:**
 
-```
+```text
 ┌──────────────────── SENDER SIDE ────────────────────┐
 │                                                      │
 │  1. Compose Email                                    │
@@ -723,7 +741,7 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 
 Organizations often use multiple selectors for different purposes:
 
-```
+```text
 default._domainkey.example.com    TXT    "v=DKIM1; k=rsa; p=..."
 marketing._domainkey.example.com  TXT    "v=DKIM1; k=rsa; p=..."
 transactional._domainkey.example.com TXT "v=DKIM1; k=rsa; p=..."
@@ -761,7 +779,7 @@ transactional._domainkey.example.com TXT "v=DKIM1; k=rsa; p=..."
 **Record Type**: TXT record at subdomain `_dmarc.<domain>`
 
 **Example:**
-```
+```text
 _dmarc.example.com.    TXT    "v=DMARC1; p=reject; rua=mailto:dmarc-reports@example.com; ruf=mailto:dmarc-forensic@example.com; pct=100; adkim=s; aspf=s; sp=reject; fo=1"
 ```
 
@@ -792,14 +810,14 @@ _dmarc.example.com.    TXT    "v=DMARC1; p=reject; rua=mailto:dmarc-reports@exam
 **Alignment Modes:**
 
 **Strict Alignment (`s`)**: Domains must match exactly
-```
+```text
 From: user@example.com
 DKIM: d=example.com         ✓ PASS
 DKIM: d=mail.example.com    ✗ FAIL
 ```
 
 **Relaxed Alignment (`r`)**: Organizational domain must match
-```
+```text
 From: user@example.com
 DKIM: d=example.com         ✓ PASS
 DKIM: d=mail.example.com    ✓ PASS (subdomain okay)
@@ -808,7 +826,7 @@ DKIM: d=other.com           ✗ FAIL
 
 **DMARC Authentication Flow:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────┐
 │ Email Received                                                  │
 │ From: user@example.com                                          │
@@ -948,7 +966,7 @@ DKIM: d=other.com           ✗ FAIL
 
 **DMARC Deployment Strategy:**
 
-```
+```text
 Phase 1: Monitoring (p=none)
 ┌─────────────────────────────────────────┐
 │ _dmarc.example.com TXT                  │
@@ -988,22 +1006,22 @@ Phase 4: Full Rejection (p=reject, pct=100)
 **Common DMARC Configurations:**
 
 1. **Monitoring Only:**
-   ```
+```text
    v=DMARC1; p=none; rua=mailto:dmarc@example.com
    ```
 
 2. **Strict Security:**
-   ```
+```text
    v=DMARC1; p=reject; rua=mailto:dmarc@example.com; ruf=mailto:forensic@example.com; pct=100; adkim=s; aspf=s
    ```
 
 3. **Subdomain Different Policy:**
-   ```
+```text
    v=DMARC1; p=reject; sp=quarantine; rua=mailto:dmarc@example.com
    ```
 
 4. **Gradual Rollout:**
-   ```
+```text
    v=DMARC1; p=quarantine; pct=25; rua=mailto:dmarc@example.com
    ```
 
@@ -1025,7 +1043,7 @@ Phase 4: Full Rejection (p=reject, pct=100)
 
 Complete flow when sending email from `user@gmail.com` to `recipient@outlook.com`:
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────────┐
 │ 1. User composes email in Gmail                                 │
 └──────────────────────────────────────────────────────────────────┘

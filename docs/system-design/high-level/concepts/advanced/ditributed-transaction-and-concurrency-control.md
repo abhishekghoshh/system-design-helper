@@ -64,6 +64,19 @@
 
 ## Theory
 
+### Table of Contents
+
+1. [1. What is a Transaction and What is Isolation in a Transaction?](#1-what-is-a-transaction-and-what-is-isolation-in-a-transaction)
+2. [2. What are the Isolation Problems?](#2-what-are-the-isolation-problems)
+3. [3. What are the Isolation Levels?](#3-what-are-the-isolation-levels)
+4. [Summary: Choosing the Right Isolation Level](#summary-choosing-the-right-isolation-level)
+5. [4. Optimistic vs Pessimistic Concurrency Control](#4-optimistic-vs-pessimistic-concurrency-control)
+6. [4.5 Two-Phase Locking (2PL) Protocol](#45-two-phase-locking-2pl-protocol)
+7. [5. Deadlock Problem in Concurrency Control](#5-deadlock-problem-in-concurrency-control)
+8. [6. Distributed Transactions](#6-distributed-transactions)
+9. [7. Saga Pattern](#7-saga-pattern)
+
+
 ### 1. What is a Transaction and What is Isolation in a Transaction?
 
 #### What is a Transaction?
@@ -72,7 +85,7 @@ A **transaction** is a logical unit of work that consists of one or more databas
 
 **ACID Properties of Transactions:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                    ACID PROPERTIES                          │
 ├─────────────────────────────────────────────────────────────┤
@@ -110,7 +123,7 @@ A **transaction** is a logical unit of work that consists of one or more databas
 
 **Transaction Example:**
 
-```
+```text
 Bank Transfer Transaction:
 ┌────────────────────────────────────────────┐
 │ BEGIN TRANSACTION;                         │
@@ -136,13 +149,15 @@ Bank Transfer Transaction:
 └────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates What is a Transaction?: it shows the concrete form of the idea described in this section.*
+
 #### What is Isolation?
 
 **Isolation** is the "I" in ACID. It determines how and when changes made by one transaction become visible to other concurrent transactions.
 
 **Why Isolation is Critical:**
 
-```
+```text
 Without Isolation:
 
 Transaction 1: Transfer $100 from A to B
@@ -163,7 +178,7 @@ Problem: T2 sees inconsistent state (money disappeared!)
 
 **Isolation Levels Trade-off:**
 
-```
+```text
 ┌────────────────────────────────────────────────────────────┐
 │         Isolation Level Spectrum                           │
 ├────────────────────────────────────────────────────────────┤
@@ -257,6 +272,8 @@ def bank_transfer(from_account, to_account, amount):
         return False
 ```
 
+*The python snippet above illustrates What is Isolation?: it shows the concrete form of the idea described in this section.*
+
 ---
 
 ### 2. What are the Isolation Problems?
@@ -271,7 +288,7 @@ A **dirty read** occurs when a transaction reads data that has been modified by 
 
 **Context & Problem:**
 
-```
+```text
 Timeline of Dirty Read:
 
 Time    Transaction 1                    Transaction 2
@@ -298,7 +315,7 @@ Problem: Transaction 2 read uncommitted data that was rolled back!
 
 **Visual Diagram:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │                    DIRTY READ ANOMALY                   │
 ├─────────────────────────────────────────────────────────┤
@@ -381,7 +398,7 @@ A **non-repeatable read** occurs when a transaction reads the same row twice and
 
 **Context & Problem:**
 
-```
+```text
 Timeline of Non-Repeatable Read:
 
 Time    Transaction 1                    Transaction 2
@@ -407,7 +424,7 @@ Problem: Same query, different results within one transaction!
 
 **Visual Diagram:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │             NON-REPEATABLE READ ANOMALY                 │
 ├─────────────────────────────────────────────────────────┤
@@ -437,7 +454,7 @@ Problem: Same query, different results within one transaction!
 
 **Real-World Example:**
 
-```
+```text
 Banking Report Transaction:
 
 1. 9:00 AM: Report reads Account A balance: $1000
@@ -540,7 +557,7 @@ A **phantom read** occurs when a transaction re-executes a query with a **range 
 
 **Context & Problem:**
 
-```
+```text
 Timeline of Phantom Read:
 
 Time    Transaction 1                    Transaction 2
@@ -567,7 +584,7 @@ Problem: New rows appeared (like phantoms!) between reads
 
 **Visual Diagram:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │                  PHANTOM READ ANOMALY                   │
 ├─────────────────────────────────────────────────────────┤
@@ -603,7 +620,7 @@ Problem: New rows appeared (like phantoms!) between reads
 
 **Concrete Example:**
 
-```
+```sql
 E-commerce Inventory Transaction:
 
 T1: Admin wants to know total pending orders
@@ -800,7 +817,7 @@ The **weakest isolation level**, also known as **"dirty read"** mode. At this le
 
 **Locking Strategy:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │     READ UNCOMMITTED - Locking Strategy                 │
 ├─────────────────────────────────────────────────────────┤
@@ -842,7 +859,7 @@ The **weakest isolation level**, also known as **"dirty read"** mode. At this le
 
 **How Locking Works (or Doesn't):**
 
-```
+```text
 Scenario: Two transactions accessing same row
 
 T1: UPDATE account SET balance = 500 WHERE id = 1
@@ -869,7 +886,7 @@ Result: T2 read value (500) that never committed!
 
 **How it Works:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │           READ UNCOMMITTED - How it Works               │
 ├─────────────────────────────────────────────────────────┤
@@ -896,7 +913,7 @@ Result: T2 read value (500) that never committed!
 
 **Visual Diagram:**
 
-```
+```text
 READ UNCOMMITTED - All Problems Allowed:
 
 ┌──────────────────────────────────────────────────────┐
@@ -996,7 +1013,7 @@ Database locks are the fundamental mechanism used to control concurrent access t
 
 **Lock Types:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │              DATABASE LOCK TYPES                        │
 ├─────────────────────────────────────────────────────────┤
@@ -1026,7 +1043,7 @@ Database locks are the fundamental mechanism used to control concurrent access t
 
 **Lock Compatibility Matrix:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │          LOCK COMPATIBILITY MATRIX                      │
 ├─────────────────────────────────────────────────────────┤
@@ -1057,7 +1074,7 @@ Database locks are the fundamental mechanism used to control concurrent access t
 
 **Visual Diagram - Lock Interactions:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         SHARED LOCKS - Multiple Readers                 │
 ├─────────────────────────────────────────────────────────┤
@@ -1108,7 +1125,7 @@ Database locks are the fundamental mechanism used to control concurrent access t
 
 **How Locks Prevent Isolation Problems:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │   LOCKS vs ISOLATION PROBLEMS                           │
 ├─────────────────────────────────────────────────────────┤
@@ -1178,7 +1195,7 @@ Database locks are the fundamental mechanism used to control concurrent access t
 
 **Lock Usage in Isolation Levels:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │      ISOLATION LEVELS - LOCK STRATEGIES                 │
 ├─────────────────────────────────────────────────────────┤
@@ -1402,7 +1419,7 @@ def explicit_lock_usage(db):
 
 **Real-World Lock Timeline:**
 
-```
+```text
 Example: Banking Transfer with Locks
 
 Time  T1 (Transfer)              Locks           T2 (Balance Check)
@@ -1474,7 +1491,7 @@ This table provides a **quick reference** showing which isolation problems can o
 
 **Isolation Problems Matrix:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │           ISOLATION PROBLEMS vs ISOLATION LEVELS                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
@@ -1520,7 +1537,7 @@ This table provides a **quick reference** showing which isolation problems can o
 
 **Visual Progression:**
 
-```
+```text
 Isolation Level Strength (Weakest → Strongest):
 
 READ UNCOMMITTED
@@ -1552,7 +1569,7 @@ SERIALIZABLE
    - Repeatable Read → Serializable: Prevents phantom reads
 
 2. **Trade-off: Consistency vs Performance**:
-   ```
+```text
    Read Uncommitted:  ████████████ Performance (12/10)
                       ░░░░░░░░░░░░ Consistency (0/10)
    
@@ -1574,7 +1591,7 @@ SERIALIZABLE
    - **SQLite**: Serializable (by default, due to file-level locking)
 
 4. **Choosing the Right Level**:
-   ```
+```text
    Use Case                          → Recommended Level
    ──────────────────────────────────────────────────────
    Monitoring dashboard              → Read Uncommitted
@@ -1647,7 +1664,7 @@ def serializable_example(db):
 
 **Performance Impact:**
 
-```
+```text
 Benchmark: 1000 concurrent transactions reading/writing same data
 
 Isolation Level      Throughput    Avg Latency    Deadlocks    Blocked Txns
@@ -1659,6 +1676,8 @@ Serializable         300 tx/sec    50 ms          10-20        40%
 
 Note: Actual numbers vary by workload, database, and MVCC implementation
 ```
+
+*The text snippet above illustrates 2.5 Isolation Problems vs Isolation Levels - Summary Table: it shows the concrete form of the idea described in this section.*
 
 ---
 
@@ -1679,7 +1698,7 @@ The **most widely used isolation level** and the default in most production data
 
 **Locking Strategy:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │      READ COMMITTED - Locking Strategy                  │
 ├─────────────────────────────────────────────────────────┤
@@ -1750,7 +1769,7 @@ The **most widely used isolation level** and the default in most production data
 
 **How Locking Works:**
 
-```
+```text
 Scenario: Transaction reads data being modified
 
 Timeline:
@@ -1792,7 +1811,7 @@ But: T2 released lock after read (allows non-repeatable read)
 
 **Why Non-Repeatable Reads Still Happen:**
 
-```
+```text
 T1: BEGIN
 T1: SELECT balance FROM account WHERE id = 1
     ↓
@@ -1820,7 +1839,7 @@ Cause: T1 didn't hold lock between reads
 
 **How it Works:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │            READ COMMITTED - How it Works                │
 ├─────────────────────────────────────────────────────────┤
@@ -1848,7 +1867,7 @@ Cause: T1 didn't hold lock between reads
 
 **Visual Diagram:**
 
-```
+```text
 READ COMMITTED - Prevents Dirty Reads:
 
 ┌──────────────────────────────────────────────────────┐
@@ -2024,7 +2043,7 @@ A **stronger isolation level** that guarantees once a transaction reads a row, a
 
 **Locking Strategy:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │     REPEATABLE READ - Locking Strategy                  │
 ├─────────────────────────────────────────────────────────┤
@@ -2109,7 +2128,7 @@ A **stronger isolation level** that guarantees once a transaction reads a row, a
 
 **How Locking Works (Lock-Based):**
 
-```
+```text
 Scenario: Traditional lock-based REPEATABLE READ
 
 T1: BEGIN
@@ -2154,7 +2173,7 @@ Cause: Shared locks held for entire transaction duration
 
 **How MVCC Works (MySQL InnoDB):**
 
-```
+```text
 Scenario: MVCC-based REPEATABLE READ (MySQL InnoDB)
 
 Database maintains multiple versions of each row:
@@ -2205,7 +2224,7 @@ Advantages of MVCC approach:
 
 **Phantom Reads Example:**
 
-```
+```text
 Why phantoms still occur (even with row locks):
 
 T1: BEGIN
@@ -2240,7 +2259,7 @@ Solution: Use SERIALIZABLE (locks ranges/gaps)
 
 **How it Works:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │           REPEATABLE READ - How it Works                │
 ├─────────────────────────────────────────────────────────┤
@@ -2270,7 +2289,7 @@ Solution: Use SERIALIZABLE (locks ranges/gaps)
 
 **Visual Diagram:**
 
-```
+```text
 REPEATABLE READ - Consistent Row Reads:
 
 ┌──────────────────────────────────────────────────────┐
@@ -2481,7 +2500,7 @@ The **strictest and strongest isolation level**, providing **complete isolation*
 
 **Locking Strategy:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       SERIALIZABLE - Locking Strategy                   │
 ├─────────────────────────────────────────────────────────┤
@@ -2569,7 +2588,7 @@ The **strictest and strongest isolation level**, providing **complete isolation*
 
 **How Range Locking Works (MySQL InnoDB):**
 
-```
+```text
 Scenario: Preventing phantom reads with gap locks
 
 Index on 'age' column: [20, 25, 30, 35, 40]
@@ -2627,7 +2646,7 @@ Key: Gap locks prevent inserts in locked ranges
 
 **How SSI Works (PostgreSQL):**
 
-```
+```text
 Scenario: Serializable Snapshot Isolation
 
 PostgreSQL uses conflict detection, not locking!
@@ -2687,7 +2706,7 @@ Disadvantages:
 
 **Lock Escalation and Performance:**
 
-```
+```text
 Scenario: Full table scan with SERIALIZABLE
 
 Query: SELECT * FROM orders WHERE status = 'pending'
@@ -2722,7 +2741,7 @@ Databases decide when to escalate:
 
 **Deadlock Example:**
 
-```
+```text
 Scenario: Classic deadlock with SERIALIZABLE
 
 T1: BEGIN SERIALIZABLE
@@ -2775,7 +2794,7 @@ Deadlock prevention strategies:
 
 **How it Works:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │            SERIALIZABLE - How it Works                  │
 ├─────────────────────────────────────────────────────────┤
@@ -2807,7 +2826,7 @@ Deadlock prevention strategies:
 
 **Visual Diagram:**
 
-```
+```text
 SERIALIZABLE - Complete Isolation:
 
 ┌──────────────────────────────────────────────────────┐
@@ -3051,7 +3070,7 @@ def serializable_implementation_comparison():
 
 **Comparison Table:**
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────┐
 │         Isolation Level Comparison                           │
 ├──────────────────────────────────────────────────────────────┤
@@ -3132,6 +3151,8 @@ def choose_isolation_level(use_case):
     return "READ COMMITTED"
 ```
 
+*The python snippet above illustrates Summary: Choosing the Right Isolation Level: it shows the concrete form of the idea described in this section.*
+
 ---
 
 ### 4. Optimistic vs Pessimistic Concurrency Control
@@ -3148,7 +3169,7 @@ Concurrency control mechanisms can be broadly categorized into two fundamental a
 
 **Core Philosophy:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │     PESSIMISTIC CONCURRENCY CONTROL - Philosophy        │
 ├─────────────────────────────────────────────────────────┤
@@ -3171,7 +3192,7 @@ Concurrency control mechanisms can be broadly categorized into two fundamental a
 
 **How Pessimistic Control Works:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │        PESSIMISTIC CONCURRENCY CONTROL - Flow           │
 ├─────────────────────────────────────────────────────────┤
@@ -3200,7 +3221,7 @@ Concurrency control mechanisms can be broadly categorized into two fundamental a
 
 **Visual Timeline Example:**
 
-```
+```text
 Pessimistic Locking Timeline:
 
 Time  T1 (Pessimistic)           Locks         T2 (Pessimistic)
@@ -3223,7 +3244,7 @@ Result: T2 WAITED for T1 to finish (prevented conflict)
 
 **Implementation Approaches:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │    PESSIMISTIC CONTROL - Implementation Types           │
 ├─────────────────────────────────────────────────────────┤
@@ -3393,7 +3414,7 @@ def pessimistic_shared_read(db, account_id):
 
 **Core Philosophy:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │     OPTIMISTIC CONCURRENCY CONTROL - Philosophy         │
 ├─────────────────────────────────────────────────────────┤
@@ -3417,7 +3438,7 @@ def pessimistic_shared_read(db, account_id):
 
 **How Optimistic Control Works:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │        OPTIMISTIC CONCURRENCY CONTROL - Flow            │
 ├─────────────────────────────────────────────────────────┤
@@ -3456,7 +3477,7 @@ def pessimistic_shared_read(db, account_id):
 
 **Visual Timeline Example:**
 
-```
+```text
 Optimistic Concurrency Timeline:
 
 Time  T1 (Optimistic)                    T2 (Optimistic)
@@ -3481,7 +3502,7 @@ Result: T1 succeeded, T2 detected conflict and RETRIED
 
 **Implementation Approaches:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │    OPTIMISTIC CONTROL - Implementation Types            │
 ├─────────────────────────────────────────────────────────┤
@@ -3757,7 +3778,7 @@ While Optimistic Concurrency Control (OCC) offers significant advantages in low-
 
 **Critical Scenarios Where OCC Fails:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │     WHY OPTIMISTIC CONTROL FAILS IN SOME SCENARIOS      │
 ├─────────────────────────────────────────────────────────┤
@@ -4187,7 +4208,7 @@ def process_sensor_data_better_v2(db, sensor_id, reading):
 
 **Mathematical Analysis of Retry Overhead:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │     RETRY OVERHEAD CALCULATION                          │
 ├─────────────────────────────────────────────────────────┤
@@ -4233,7 +4254,7 @@ def process_sensor_data_better_v2(db, sensor_id, reading):
 
 **Decision Matrix: When to AVOID Optimistic Concurrency Control:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │     DON'T USE OPTIMISTIC CONTROL WHEN:                  │
 ├─────────────────────────────────────────────────────────┤
@@ -4323,7 +4344,7 @@ def process_sensor_data_better_v2(db, sensor_id, reading):
 
 **Visual Comparison:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │           PESSIMISTIC vs OPTIMISTIC                     │
 ├─────────────────────────────────────────────────────────┤
@@ -4361,7 +4382,7 @@ def process_sensor_data_better_v2(db, sensor_id, reading):
 
 **Decision Tree:**
 
-```
+```text
 Choose Concurrency Control Strategy:
 
 High Contention (many conflicts)?
@@ -4544,7 +4565,7 @@ def checkout_order_hybrid(db, cart_id, user_id):
 
 **Performance Comparison:**
 
-```
+```text
 Performance vs Contention Level:
 
 Throughput
@@ -4571,7 +4592,7 @@ Key Insights:
 
 **When to Use Each:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │              USE PESSIMISTIC WHEN:                      │
 ├─────────────────────────────────────────────────────────┤
@@ -4604,6 +4625,8 @@ Key Insights:
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 4.3 Comparison: Pessimistic vs Optimistic: it shows the concrete form of the idea described in this section.*
+
 ---
 
 #### 4.4 Detailed Advantages and Disadvantages of Both Concurrency Controls
@@ -4618,7 +4641,7 @@ Understanding the detailed advantages and disadvantages of each concurrency cont
 
 **Advantages:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │    PESSIMISTIC CONTROL - ADVANTAGES                     │
 ├─────────────────────────────────────────────────────────┤
@@ -4724,7 +4747,7 @@ Understanding the detailed advantages and disadvantages of each concurrency cont
 
 **Disadvantages:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │    PESSIMISTIC CONTROL - DISADVANTAGES                  │
 ├─────────────────────────────────────────────────────────┤
@@ -4846,13 +4869,15 @@ Understanding the detailed advantages and disadvantages of each concurrency cont
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 4.4 Detailed Advantages and Disadvantages of Both Concurrency Controls: it shows the concrete form of the idea described in this section.*
+
 ---
 
 ##### 4.4.2 Optimistic Concurrency Control - Detailed Analysis
 
 **Advantages:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │    OPTIMISTIC CONTROL - ADVANTAGES                      │
 ├─────────────────────────────────────────────────────────┤
@@ -4991,7 +5016,7 @@ Understanding the detailed advantages and disadvantages of each concurrency cont
 
 **Disadvantages:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │    OPTIMISTIC CONTROL - DISADVANTAGES                   │
 ├─────────────────────────────────────────────────────────┤
@@ -5169,13 +5194,15 @@ Understanding the detailed advantages and disadvantages of each concurrency cont
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 4.4 Detailed Advantages and Disadvantages of Both Concurrency Controls: it shows the concrete form of the idea described in this section.*
+
 ---
 
 ##### 4.4.3 Side-by-Side Summary
 
 **Quick Reference Table:**
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────────────────┐
 │         PESSIMISTIC vs OPTIMISTIC - PROS & CONS SUMMARY                  │
 ├──────────────────────────────────────────────────────────────────────────┤
@@ -5245,6 +5272,8 @@ def choose_concurrency_control(workload):
     return "PESSIMISTIC"
 ```
 
+*The python snippet above illustrates 4.4 Detailed Advantages and Disadvantages of Both Concurrency Controls: it shows the concrete form of the idea described in this section.*
+
 ---
 
 ### 4.5 Two-Phase Locking (2PL) Protocol
@@ -5272,7 +5301,7 @@ The protocol emerged from the need to solve a critical problem: **how to allow m
 **Core Problem 2PL Solves:**
 
 Consider this scenario without proper locking discipline:
-```
+```text
 T1: Read(A) → Process → Read(B) → Write(C)
 T2: Write(A) → Read(B) → Write(C)
 ```
@@ -5306,7 +5335,7 @@ Understanding 2PL is essential for:
 
 **Definition:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         TWO-PHASE LOCKING (2PL) DEFINITION              │
 ├─────────────────────────────────────────────────────────┤
@@ -5343,7 +5372,7 @@ Understanding 2PL is essential for:
 
 **Visual Timeline - 2PL Phases:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       TWO-PHASE LOCKING - TIMELINE DIAGRAM              │
 ├─────────────────────────────────────────────────────────┤
@@ -5385,7 +5414,7 @@ Understanding 2PL is essential for:
 
 **Detailed Example with Banking Transfer:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │        2PL EXAMPLE: BANK TRANSFER                       │
 ├─────────────────────────────────────────────────────────┤
@@ -5444,7 +5473,7 @@ Understanding 2PL is essential for:
 
 **What 2PL Guarantees:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │           2PL GUARANTEES                                │
 ├─────────────────────────────────────────────────────────┤
@@ -5479,7 +5508,7 @@ Understanding 2PL is essential for:
 
 **Violation Example (What NOT to do):**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │        INVALID - 2PL VIOLATION                          │
 ├─────────────────────────────────────────────────────────┤
@@ -5501,6 +5530,8 @@ Understanding 2PL is essential for:
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
+
+*The text snippet above illustrates 4.5.1 What is Two-Phase Locking?: it shows the concrete form of the idea described in this section.*
 
 ---
 
@@ -5524,7 +5555,7 @@ The widespread adoption of 2PL across virtually all major database systems isn't
 
 **Real-World Database Systems:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         2PL USAGE IN DATABASE SYSTEMS                   │
 ├─────────────────────────────────────────────────────────┤
@@ -5571,7 +5602,7 @@ The widespread adoption of 2PL across virtually all major database systems isn't
 
 **Use Cases by Industry:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         2PL USE CASES BY INDUSTRY                       │
 ├─────────────────────────────────────────────────────────┤
@@ -5611,6 +5642,8 @@ The widespread adoption of 2PL across virtually all major database systems isn't
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 4.5.2 Where is 2PL Used?: it shows the concrete form of the idea described in this section.*
+
 ---
 
 #### 4.5.3 How 2PL is Useful to Pessimistic Concurrency Control
@@ -5622,7 +5655,7 @@ Pessimistic concurrency control without 2PL is like having a lock on your front 
 **The Fundamental Problem:**
 
 Imagine a scenario where transactions can lock and unlock resources arbitrarily:
-```
+```text
 T1: Lock(A) → Read(A) → Unlock(A) → Lock(B) → Read(B) → Write(C)
 T2: Lock(B) → Read(B) → Unlock(B) → Lock(A) → Read(A) → Write(C)
 ```
@@ -5692,7 +5725,7 @@ When designing distributed systems or microservices, understanding 2PL helps you
 
 **Key Benefits of 2PL for Pessimistic Control:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │    HOW 2PL HELPS PESSIMISTIC CONCURRENCY CONTROL        │
 ├─────────────────────────────────────────────────────────┤
@@ -5795,7 +5828,7 @@ When designing distributed systems or microservices, understanding 2PL helps you
 
 **Comparison: Pessimistic WITHOUT 2PL vs WITH 2PL:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │    PESSIMISTIC LOCKING: WITHOUT vs WITH 2PL             │
 ├─────────────────────────────────────────────────────────┤
@@ -6005,7 +6038,7 @@ transfer_with_2pl("A", "B", 100)
 ```
 
 **Output:**
-```
+```text
 Transaction started - GROWING PHASE
 
 1. Acquiring lock on A
@@ -6032,7 +6065,7 @@ Transaction committed - all locks released
 
 **Why 2PL Makes Pessimistic Control Effective:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │    2PL: THE FOUNDATION OF PESSIMISTIC CONTROL           │
 ├─────────────────────────────────────────────────────────┤
@@ -6061,6 +6094,8 @@ Transaction committed - all locks released
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
+
+*The text snippet above illustrates 4.5.3 How 2PL is Useful to Pessimistic Concurrency Control: it shows the concrete form of the idea described in this section.*
 
 ---
 
@@ -6124,7 +6159,7 @@ Think of the two phases like preparing for a presentation:
 
 **Phase 1: Growing Phase (Lock Acquisition Phase)**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         PHASE 1: GROWING PHASE (EXPANSION)              │
 ├─────────────────────────────────────────────────────────┤
@@ -6177,7 +6212,7 @@ Think of the two phases like preparing for a presentation:
 
 **Phase 2: Shrinking Phase (Lock Release Phase)**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │        PHASE 2: SHRINKING PHASE (CONTRACTION)           │
 ├─────────────────────────────────────────────────────────┤
@@ -6229,7 +6264,7 @@ Think of the two phases like preparing for a presentation:
 
 **Complete Phase Diagram:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │    COMPLETE TWO-PHASE LOCKING PHASE DIAGRAM             │
 ├─────────────────────────────────────────────────────────┤
@@ -6267,7 +6302,7 @@ Think of the two phases like preparing for a presentation:
 
 **State Transition Diagram:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         2PL STATE TRANSITION DIAGRAM                    │
 ├─────────────────────────────────────────────────────────┤
@@ -6320,7 +6355,7 @@ Think of the two phases like preparing for a presentation:
 
 **Why Two Phases are Necessary:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │      WHY TWO DISTINCT PHASES ARE NECESSARY              │
 ├─────────────────────────────────────────────────────────┤
@@ -6366,6 +6401,8 @@ Think of the two phases like preparing for a presentation:
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
+
+*The text snippet above illustrates 4.5.4 Different Phases of Two-Phase Locking (Detailed): it shows the concrete form of the idea described in this section.*
 
 ---
 
@@ -6423,7 +6460,7 @@ There's no "one size fits all" because different systems have different prioriti
 
 To understand why variants exist, consider this disaster scenario with basic 2PL:
 
-```
+```text
 T1: Processes customer order (100 steps)
     Step 50: Updates inventory
     Step 51: Releases inventory lock (shrinking phase starts)
@@ -6449,7 +6486,7 @@ This actually happened in early database systems, sometimes causing hours of wor
 
 The choice isn't just technical - it's about understanding your system's **operational requirements**:
 
-```
+```text
 Question 1: Can you tolerate cascading aborts?
 ├─ No  → Not Basic 2PL
 └─ Yes → Maybe Basic 2PL (rare in practice)
@@ -6475,7 +6512,7 @@ When in doubt, choose Strict 2PL - it's the "sensible default" that works well f
 
 **Overview of 2PL Types:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         FOUR TYPES OF TWO-PHASE LOCKING                 │
 ├─────────────────────────────────────────────────────────┤
@@ -6503,6 +6540,8 @@ When in doubt, choose Strict 2PL - it's the "sensible default" that works well f
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 4.5.5 Different Types of Two-Phase Locking: it shows the concrete form of the idea described in this section.*
+
 ---
 
 ##### Type 1: Basic 2PL (Standard Two-Phase Locking)
@@ -6513,7 +6552,7 @@ The **basic** or **standard** 2PL is the original protocol we've discussed. Lock
 
 **Rules:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │             BASIC 2PL - RULES                           │
 ├─────────────────────────────────────────────────────────┤
@@ -6537,7 +6576,7 @@ The **basic** or **standard** 2PL is the original protocol we've discussed. Lock
 
 **Timeline Diagram:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │          BASIC 2PL - TIMELINE                           │
 ├─────────────────────────────────────────────────────────┤
@@ -6572,7 +6611,7 @@ The **basic** or **standard** 2PL is the original protocol we've discussed. Lock
 
 **Cascading Abort Problem:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       BASIC 2PL - CASCADING ABORT PROBLEM               │
 ├─────────────────────────────────────────────────────────┤
@@ -6605,7 +6644,7 @@ The **basic** or **standard** 2PL is the original protocol we've discussed. Lock
 
 **Pros and Cons:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │          BASIC 2PL - ADVANTAGES & DISADVANTAGES         │
 ├─────────────────────────────────────────────────────────┤
@@ -6625,6 +6664,8 @@ The **basic** or **standard** 2PL is the original protocol we've discussed. Lock
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 4.5.5 Different Types of Two-Phase Locking: it shows the concrete form of the idea described in this section.*
+
 ---
 
 ##### Type 2: Strict 2PL (Most Common)
@@ -6635,7 +6676,7 @@ The **basic** or **standard** 2PL is the original protocol we've discussed. Lock
 
 **Rules:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │             STRICT 2PL - RULES                          │
 ├─────────────────────────────────────────────────────────┤
@@ -6665,7 +6706,7 @@ The **basic** or **standard** 2PL is the original protocol we've discussed. Lock
 
 **Timeline Diagram:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │          STRICT 2PL - TIMELINE                          │
 ├─────────────────────────────────────────────────────────┤
@@ -6701,7 +6742,7 @@ The **basic** or **standard** 2PL is the original protocol we've discussed. Lock
 
 **No Cascading Aborts:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       STRICT 2PL - NO CASCADING ABORTS                  │
 ├─────────────────────────────────────────────────────────┤
@@ -6734,7 +6775,7 @@ The **basic** or **standard** 2PL is the original protocol we've discussed. Lock
 
 **Real-World Usage:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       STRICT 2PL - DATABASE USAGE                       │
 ├─────────────────────────────────────────────────────────┤
@@ -6757,7 +6798,7 @@ The **basic** or **standard** 2PL is the original protocol we've discussed. Lock
 
 **Pros and Cons:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         STRICT 2PL - ADVANTAGES & DISADVANTAGES         │
 ├─────────────────────────────────────────────────────────┤
@@ -6778,6 +6819,8 @@ The **basic** or **standard** 2PL is the original protocol we've discussed. Lock
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 4.5.5 Different Types of Two-Phase Locking: it shows the concrete form of the idea described in this section.*
+
 ---
 
 ##### Type 3: Rigorous 2PL (Strongest)
@@ -6788,7 +6831,7 @@ The **basic** or **standard** 2PL is the original protocol we've discussed. Lock
 
 **Rules:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │           RIGOROUS 2PL - RULES                          │
 ├─────────────────────────────────────────────────────────┤
@@ -6818,7 +6861,7 @@ The **basic** or **standard** 2PL is the original protocol we've discussed. Lock
 
 **Timeline Diagram:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         RIGOROUS 2PL - TIMELINE                         │
 ├─────────────────────────────────────────────────────────┤
@@ -6853,7 +6896,7 @@ The **basic** or **standard** 2PL is the original protocol we've discussed. Lock
 
 **Characteristics:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         RIGOROUS 2PL - CHARACTERISTICS                  │
 ├─────────────────────────────────────────────────────────┤
@@ -6883,7 +6926,7 @@ The **basic** or **standard** 2PL is the original protocol we've discussed. Lock
 
 **Use Cases:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │           RIGOROUS 2PL - USE CASES                      │
 ├─────────────────────────────────────────────────────────┤
@@ -6906,7 +6949,7 @@ The **basic** or **standard** 2PL is the original protocol we've discussed. Lock
 
 **Pros and Cons:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       RIGOROUS 2PL - ADVANTAGES & DISADVANTAGES         │
 ├─────────────────────────────────────────────────────────┤
@@ -6929,6 +6972,8 @@ The **basic** or **standard** 2PL is the original protocol we've discussed. Lock
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 4.5.5 Different Types of Two-Phase Locking: it shows the concrete form of the idea described in this section.*
+
 ---
 
 ##### Type 4: Conservative 2PL (Deadlock-Free)
@@ -6939,7 +6984,7 @@ The **basic** or **standard** 2PL is the original protocol we've discussed. Lock
 
 **Rules:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │          CONSERVATIVE 2PL - RULES                       │
 ├─────────────────────────────────────────────────────────┤
@@ -6970,7 +7015,7 @@ The **basic** or **standard** 2PL is the original protocol we've discussed. Lock
 
 **Timeline Diagram:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │        CONSERVATIVE 2PL - TIMELINE                      │
 ├─────────────────────────────────────────────────────────┤
@@ -7004,7 +7049,7 @@ The **basic** or **standard** 2PL is the original protocol we've discussed. Lock
 
 **Why Deadlock-Free:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │      CONSERVATIVE 2PL - DEADLOCK PREVENTION             │
 ├─────────────────────────────────────────────────────────┤
@@ -7114,7 +7159,7 @@ class ConservativeTwoPhaseLocking:
 
 **Use Cases:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         CONSERVATIVE 2PL - USE CASES                    │
 ├─────────────────────────────────────────────────────────┤
@@ -7142,7 +7187,7 @@ class ConservativeTwoPhaseLocking:
 
 **Pros and Cons:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │      CONSERVATIVE 2PL - ADVANTAGES & DISADVANTAGES      │
 ├─────────────────────────────────────────────────────────┤
@@ -7165,13 +7210,15 @@ class ConservativeTwoPhaseLocking:
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 4.5.5 Different Types of Two-Phase Locking: it shows the concrete form of the idea described in this section.*
+
 ---
 
 ##### Comparison of All 2PL Types
 
 **Side-by-Side Comparison:**
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │              COMPARISON OF ALL 2PL TYPES                                     │
 ├──────────────────────────────────────────────────────────────────────────────┤
@@ -7205,7 +7252,7 @@ class ConservativeTwoPhaseLocking:
 
 **Visual Comparison - Lock Timelines:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       LOCK TIMELINES - ALL 2PL TYPES                    │
 ├─────────────────────────────────────────────────────────┤
@@ -7241,7 +7288,7 @@ class ConservativeTwoPhaseLocking:
 
 **Decision Matrix:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         WHICH 2PL TYPE TO USE?                          │
 ├─────────────────────────────────────────────────────────┤
@@ -7271,6 +7318,8 @@ class ConservativeTwoPhaseLocking:
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
+
+*The text snippet above illustrates 4.5.5 Different Types of Two-Phase Locking: it shows the concrete form of the idea described in this section.*
 
 ---
 
@@ -7337,7 +7386,7 @@ Detecting deadlocks isn't trivial. Databases typically use one of two approaches
 
 When a deadlock is detected, one transaction must be chosen as the **victim** and aborted. Databases use sophisticated algorithms:
 
-```
+```text
 Victim Selection Criteria (weighted):
 1. Transaction age (prefer aborting younger transactions)
 2. Number of locks held (prefer aborting those with fewer locks)
@@ -7362,7 +7411,7 @@ This illustrates why deadlock prevention isn't just academic - it has real busin
 
 **What is Deadlock:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │                 DEADLOCK DEFINITION                     │
 ├─────────────────────────────────────────────────────────┤
@@ -7384,7 +7433,7 @@ This illustrates why deadlock prevention isn't just academic - it has real busin
 
 **Deadlock Scenario - Visual Diagram:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │          CLASSIC DEADLOCK SCENARIO                      │
 ├─────────────────────────────────────────────────────────┤
@@ -7420,7 +7469,7 @@ This illustrates why deadlock prevention isn't just academic - it has real busin
 
 **Resource Allocation Graph:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │        DEADLOCK - RESOURCE ALLOCATION GRAPH             │
 ├─────────────────────────────────────────────────────────┤
@@ -7453,7 +7502,7 @@ This illustrates why deadlock prevention isn't just academic - it has real busin
 
 **Detailed Timeline Example:**
 
-```
+```text
 Banking Transfer Deadlock:
 
 T1: Transfer $100 from Account A to Account B
@@ -7485,7 +7534,7 @@ t10   T1 receives error                                  T1 must retry
 
 **Four Conditions for Deadlock (Coffman Conditions):**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         FOUR CONDITIONS FOR DEADLOCK                    │
 ├─────────────────────────────────────────────────────────┤
@@ -7591,13 +7640,15 @@ def transaction_2(db):
 # Running both concurrently → DEADLOCK!
 ```
 
+*The python snippet above illustrates 5.1 Deadlock in Pessimistic Concurrency Control: it shows the concrete form of the idea described in this section.*
+
 ---
 
 **Deadlock Solutions for Pessimistic Control:**
 
 **Solution 1: Lock Ordering (Prevention)**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         SOLUTION 1: LOCK ORDERING (Prevention)          │
 ├─────────────────────────────────────────────────────────┤
@@ -7631,6 +7682,8 @@ def transaction_2(db):
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
+
+*The text snippet above illustrates 5.1 Deadlock in Pessimistic Concurrency Control: it shows the concrete form of the idea described in this section.*
 
 ```python
 def transfer_with_lock_ordering(db, from_account, to_account, amount):
@@ -7672,11 +7725,13 @@ def transfer_with_lock_ordering(db, from_account, to_account, amount):
     return True
 ```
 
+*The python snippet above illustrates 5.1 Deadlock in Pessimistic Concurrency Control: it shows the concrete form of the idea described in this section.*
+
 ---
 
 **Solution 2: Deadlock Detection & Recovery**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │    SOLUTION 2: DEADLOCK DETECTION (Detection & Abort)   │
 ├─────────────────────────────────────────────────────────┤
@@ -7719,6 +7774,8 @@ def transfer_with_lock_ordering(db, from_account, to_account, amount):
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
+
+*The text snippet above illustrates 5.1 Deadlock in Pessimistic Concurrency Control: it shows the concrete form of the idea described in this section.*
 
 ```python
 # Database automatically detects and resolves deadlocks
@@ -7773,11 +7830,13 @@ def transfer_with_deadlock_retry(db, from_account, to_account, amount):
     return False  # Failed after retries
 ```
 
+*The python snippet above illustrates 5.1 Deadlock in Pessimistic Concurrency Control: it shows the concrete form of the idea described in this section.*
+
 ---
 
 **Solution 3: Timeout (Avoidance)**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       SOLUTION 3: TIMEOUT (Deadlock Avoidance)          │
 ├─────────────────────────────────────────────────────────┤
@@ -7812,6 +7871,8 @@ def transfer_with_deadlock_retry(db, from_account, to_account, amount):
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
+
+*The text snippet above illustrates 5.1 Deadlock in Pessimistic Concurrency Control: it shows the concrete form of the idea described in this section.*
 
 ```python
 def transfer_with_timeout(db, from_account, to_account, amount):
@@ -7858,11 +7919,13 @@ def transfer_with_timeout(db, from_account, to_account, amount):
         return False
 ```
 
+*The python snippet above illustrates 5.1 Deadlock in Pessimistic Concurrency Control: it shows the concrete form of the idea described in this section.*
+
 ---
 
 **Solution 4: Two-Phase Locking with Pre-Declaration**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │   SOLUTION 4: PRE-DECLARATION (Prevention)              │
 ├─────────────────────────────────────────────────────────┤
@@ -7884,6 +7947,8 @@ def transfer_with_timeout(db, from_account, to_account, amount):
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
+
+*The text snippet above illustrates 5.1 Deadlock in Pessimistic Concurrency Control: it shows the concrete form of the idea described in this section.*
 
 ```python
 def transfer_with_predeclaration(db, from_account, to_account, amount):
@@ -7912,6 +7977,8 @@ def transfer_with_predeclaration(db, from_account, to_account, amount):
     
     db.commit()
 ```
+
+*The python snippet above illustrates 5.1 Deadlock in Pessimistic Concurrency Control: it shows the concrete form of the idea described in this section.*
 
 ---
 
@@ -7947,7 +8014,7 @@ The cruel irony: **Livelock wastes more resources than deadlock** because transa
 
 In 2015, a popular social media platform experienced a livelock storm:
 
-```
+```text
 Scenario: Trending post with millions of likes
 - 10,000 users click "like" simultaneously
 - All read current like_count (optimistic read)
@@ -7975,7 +8042,7 @@ This is worse than deadlock because:
 
 Livelock often leads to **starvation** - some transactions never succeed:
 
-```
+```text
 Unfair scenario:
 - T1: Short transaction (10ms), high retry rate
 - T2: Long transaction (1000ms), low retry rate
@@ -7992,14 +8059,14 @@ This violates **fairness** - some transactions are systematically disadvantaged.
 **Why This is Harder to Debug:**
 
 Deadlocks have clear symptoms:
-```
+```text
 Database log: "Deadlock detected, transaction T1 aborted"
 Application: Exception with clear error code
 Monitoring: Deadlock counter increments
 ```
 
 Livelock symptoms are subtle:
-```
+```text
 Database log: Nothing (just normal retries)
 Application: Slow response times, eventual timeouts
 Monitoring: High CPU, low throughput (confusing!)
@@ -8037,7 +8104,7 @@ This is why distributed databases like Google Spanner use **hybrid approaches**:
 
 **Why No Deadlocks in Optimistic Control:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │     OPTIMISTIC CONTROL - NO DEADLOCKS                   │
 ├─────────────────────────────────────────────────────────┤
@@ -8057,7 +8124,7 @@ This is why distributed databases like Google Spanner use **hybrid approaches**:
 
 **Livelock Problem in Optimistic Control:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │              LIVELOCK SCENARIO                          │
 ├─────────────────────────────────────────────────────────┤
@@ -8091,7 +8158,7 @@ This is why distributed databases like Google Spanner use **hybrid approaches**:
 
 **Visual Diagram - Livelock:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │           LIVELOCK IN OPTIMISTIC CONTROL                │
 ├─────────────────────────────────────────────────────────┤
@@ -8160,13 +8227,15 @@ def optimistic_transaction_livelock(db, account_id, amount):
         return True
 ```
 
+*The python snippet above illustrates 5.2 Deadlock in Optimistic Concurrency Control: it shows the concrete form of the idea described in this section.*
+
 ---
 
 **Livelock Solutions for Optimistic Control:**
 
 **Solution 1: Exponential Backoff with Jitter**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │   SOLUTION 1: EXPONENTIAL BACKOFF + JITTER              │
 ├─────────────────────────────────────────────────────────┤
@@ -8193,6 +8262,8 @@ def optimistic_transaction_livelock(db, account_id, amount):
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
+
+*The text snippet above illustrates 5.2 Deadlock in Optimistic Concurrency Control: it shows the concrete form of the idea described in this section.*
 
 ```python
 import random
@@ -8251,11 +8322,13 @@ def optimistic_with_exponential_backoff(db, account_id, amount):
     return False
 ```
 
+*The python snippet above illustrates 5.2 Deadlock in Optimistic Concurrency Control: it shows the concrete form of the idea described in this section.*
+
 ---
 
 **Solution 2: Priority-Based Retry**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │      SOLUTION 2: PRIORITY-BASED RETRY                   │
 ├─────────────────────────────────────────────────────────┤
@@ -8281,6 +8354,8 @@ def optimistic_with_exponential_backoff(db, account_id, amount):
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
+
+*The text snippet above illustrates 5.2 Deadlock in Optimistic Concurrency Control: it shows the concrete form of the idea described in this section.*
 
 ```python
 def optimistic_with_priority(db, account_id, amount, base_priority=0):
@@ -8332,11 +8407,13 @@ def optimistic_with_priority(db, account_id, amount, base_priority=0):
     return False
 ```
 
+*The python snippet above illustrates 5.2 Deadlock in Optimistic Concurrency Control: it shows the concrete form of the idea described in this section.*
+
 ---
 
 **Solution 3: Maximum Retry Limit + Fallback**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │   SOLUTION 3: MAX RETRIES + FALLBACK TO PESSIMISTIC     │
 ├─────────────────────────────────────────────────────────┤
@@ -8358,6 +8435,8 @@ def optimistic_with_priority(db, account_id, amount, base_priority=0):
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
+
+*The text snippet above illustrates 5.2 Deadlock in Optimistic Concurrency Control: it shows the concrete form of the idea described in this section.*
 
 ```python
 def adaptive_concurrency_control(db, account_id, amount):
@@ -8426,11 +8505,13 @@ def adaptive_concurrency_control(db, account_id, amount):
         return False
 ```
 
+*The python snippet above illustrates 5.2 Deadlock in Optimistic Concurrency Control: it shows the concrete form of the idea described in this section.*
+
 ---
 
 **Comparison: Deadlock vs Livelock:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │          DEADLOCK vs LIVELOCK COMPARISON                │
 ├─────────────────────────────────────────────────────────┤
@@ -8468,6 +8549,8 @@ def adaptive_concurrency_control(db, account_id, amount):
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 5.2 Deadlock in Optimistic Concurrency Control: it shows the concrete form of the idea described in this section.*
+
 ---
 
 ### 6. Distributed Transactions
@@ -8499,7 +8582,7 @@ The pioneering work by **Jim Gray** (Turing Award winner, 1998) on transaction p
 
 **Real-World Distributed Transaction Examples:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         DISTRIBUTED TRANSACTION EXAMPLES                │
 ├─────────────────────────────────────────────────────────┤
@@ -8545,7 +8628,7 @@ The pioneering work by **Jim Gray** (Turing Award winner, 1998) on transaction p
 
 **Distributed Transaction Architecture:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │      DISTRIBUTED TRANSACTION ARCHITECTURE               │
 ├─────────────────────────────────────────────────────────┤
@@ -8587,7 +8670,7 @@ The pioneering work by **Jim Gray** (Turing Award winner, 1998) on transaction p
 
 **Key Components:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │    DISTRIBUTED TRANSACTION COMPONENTS                   │
 ├─────────────────────────────────────────────────────────┤
@@ -8623,7 +8706,7 @@ The pioneering work by **Jim Gray** (Turing Award winner, 1998) on transaction p
 
 **Distributed Transaction Lifecycle:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │      DISTRIBUTED TRANSACTION LIFECYCLE                  │
 ├─────────────────────────────────────────────────────────┤
@@ -8660,7 +8743,7 @@ The pioneering work by **Jim Gray** (Turing Award winner, 1998) on transaction p
 
 **Challenges in Distributed Transactions:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │    CHALLENGES IN DISTRIBUTED TRANSACTIONS               │
 ├─────────────────────────────────────────────────────────┤
@@ -8700,6 +8783,8 @@ The pioneering work by **Jim Gray** (Turing Award winner, 1998) on transaction p
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 6. Distributed Transactions: it shows the concrete form of the idea described in this section.*
+
 ---
 
 #### 6.1 Two-Phase Commit (2PC) Protocol
@@ -8725,7 +8810,7 @@ Jim Gray's work on transaction processing at IBM in the 1970s introduced 2PC as 
 
 **The Two-Phase Commit Protocol:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         TWO-PHASE COMMIT (2PC) PROTOCOL                 │
 ├─────────────────────────────────────────────────────────┤
@@ -8792,7 +8877,7 @@ Jim Gray's work on transaction processing at IBM in the 1970s introduced 2PC as 
 
 **Detailed Timeline - Successful Commit:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       2PC TIMELINE - SUCCESSFUL COMMIT                  │
 ├─────────────────────────────────────────────────────────┤
@@ -8849,7 +8934,7 @@ Jim Gray's work on transaction processing at IBM in the 1970s introduced 2PC as 
 
 **Detailed Timeline - Abort Scenario:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       2PC TIMELINE - ABORT SCENARIO                     │
 ├─────────────────────────────────────────────────────────┤
@@ -8902,7 +8987,7 @@ Jim Gray's work on transaction processing at IBM in the 1970s introduced 2PC as 
 
 **State Machine - Coordinator:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       2PC COORDINATOR STATE MACHINE                     │
 ├─────────────────────────────────────────────────────────┤
@@ -8951,7 +9036,7 @@ Jim Gray's work on transaction processing at IBM in the 1970s introduced 2PC as 
 
 **State Machine - Participant:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       2PC PARTICIPANT STATE MACHINE                     │
 ├─────────────────────────────────────────────────────────┤
@@ -9001,13 +9086,15 @@ Jim Gray's work on transaction processing at IBM in the 1970s introduced 2PC as 
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 6.1 Two-Phase Commit (2PC) Protocol: it shows the concrete form of the idea described in this section.*
+
 ---
 
 #### 6.2 How Two-Phase Commit Works (Step-by-Step)
 
 **Complete Example: Bank Transfer Across Two Banks**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │    2PC EXAMPLE: TRANSFER $500 ACROSS TWO BANKS          │
 ├─────────────────────────────────────────────────────────┤
@@ -9024,7 +9111,7 @@ Jim Gray's work on transaction processing at IBM in the 1970s introduced 2PC as 
 
 **Phase 1: Prepare (Voting Phase)**
 
-```
+```text
 Step 1: Coordinator sends PREPARE
 ─────────────────────────────────
 
@@ -9087,7 +9174,7 @@ Coordinator:
 
 **Phase 2: Commit (Decision Phase)**
 
-```
+```text
 Step 4: Coordinator sends decision
 ──────────────────────────────────
 
@@ -9141,11 +9228,13 @@ Bank B Account #2002: $300  → $800  (added $500)    ✅
 Total: $1300 → $1300 (conserved) ✅
 ```
 
+*The text snippet above illustrates 6.2 How Two-Phase Commit Works (Step-by-Step): it shows the concrete form of the idea described in this section.*
+
 ---
 
 #### 6.3 Advantages of Two-Phase Commit
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         2PC ADVANTAGES                                  │
 ├─────────────────────────────────────────────────────────┤
@@ -9192,11 +9281,13 @@ Total: $1300 → $1300 (conserved) ✅
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 6.3 Advantages of Two-Phase Commit: it shows the concrete form of the idea described in this section.*
+
 ---
 
 #### 6.4 Disadvantages of Two-Phase Commit
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         2PC DISADVANTAGES                               │
 ├─────────────────────────────────────────────────────────┤
@@ -9255,13 +9346,15 @@ Total: $1300 → $1300 (conserved) ✅
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 6.4 Disadvantages of Two-Phase Commit: it shows the concrete form of the idea described in this section.*
+
 ---
 
 #### 6.5 Problems in Two-Phase Commit
 
 **Problem 1: Coordinator Failure (Blocking)**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       PROBLEM 1: COORDINATOR FAILURE                    │
 ├─────────────────────────────────────────────────────────┤
@@ -9302,7 +9395,7 @@ Total: $1300 → $1300 (conserved) ✅
 
 **Problem 2: Participant Failure After Voting YES**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │    PROBLEM 2: PARTICIPANT FAILURE AFTER YES VOTE        │
 ├─────────────────────────────────────────────────────────┤
@@ -9340,7 +9433,7 @@ Total: $1300 → $1300 (conserved) ✅
 
 **Problem 3: Network Partition**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       PROBLEM 3: NETWORK PARTITION                      │
 ├─────────────────────────────────────────────────────────┤
@@ -9381,7 +9474,7 @@ Total: $1300 → $1300 (conserved) ✅
 
 **Problem 4: Heuristic Decisions (Manual Intervention)**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       PROBLEM 4: HEURISTIC DECISIONS                    │
 ├─────────────────────────────────────────────────────────┤
@@ -9422,7 +9515,7 @@ Total: $1300 → $1300 (conserved) ✅
 
 **Problem 5: Performance Degradation**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       PROBLEM 5: PERFORMANCE ISSUES                     │
 ├─────────────────────────────────────────────────────────┤
@@ -9462,7 +9555,7 @@ Total: $1300 → $1300 (conserved) ✅
 
 **Summary: When 2PC Fails**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         WHEN TWO-PHASE COMMIT FAILS                     │
 ├─────────────────────────────────────────────────────────┤
@@ -9492,6 +9585,8 @@ Total: $1300 → $1300 (conserved) ✅
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 6.5 Problems in Two-Phase Commit: it shows the concrete form of the idea described in this section.*
+
 ---
 
 #### 6.6 Three-Phase Commit (3PC) Protocol
@@ -9518,7 +9613,7 @@ The fundamental problem with 2PC is that participants enter an **uncertain state
 
 **Historical Context:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         EVOLUTION: 2PC → 3PC                            │
 ├─────────────────────────────────────────────────────────┤
@@ -9543,7 +9638,7 @@ The fundamental problem with 2PC is that participants enter an **uncertain state
 
 **The Three Phases:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         THREE-PHASE COMMIT PROTOCOL                     │
 ├─────────────────────────────────────────────────────────┤
@@ -9575,7 +9670,7 @@ The fundamental problem with 2PC is that participants enter an **uncertain state
 
 **3PC Protocol Diagram (Success Scenario):**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       3PC PROTOCOL - SUCCESSFUL COMMIT                  │
 ├─────────────────────────────────────────────────────────┤
@@ -9642,7 +9737,7 @@ The fundamental problem with 2PC is that participants enter an **uncertain state
 
 **3PC Abort Scenario (Vote NO in Phase 1):**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       3PC PROTOCOL - ABORT SCENARIO                     │
 ├─────────────────────────────────────────────────────────┤
@@ -9690,7 +9785,7 @@ The fundamental problem with 2PC is that participants enter an **uncertain state
 
 **Key Difference from 2PC - The PreCommit State:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │    WHY PHASE 2 (PRE-COMMIT) MAKES 3PC NON-BLOCKING      │
 ├─────────────────────────────────────────────────────────┤
@@ -9728,7 +9823,7 @@ The fundamental problem with 2PC is that participants enter an **uncertain state
 
 **3PC State Machine - Coordinator:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       3PC COORDINATOR STATE MACHINE                     │
 ├─────────────────────────────────────────────────────────┤
@@ -9791,7 +9886,7 @@ The fundamental problem with 2PC is that participants enter an **uncertain state
 
 **3PC State Machine - Participant:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       3PC PARTICIPANT STATE MACHINE                     │
 ├─────────────────────────────────────────────────────────┤
@@ -9854,13 +9949,15 @@ The fundamental problem with 2PC is that participants enter an **uncertain state
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 6.6 Three-Phase Commit (3PC) Protocol: it shows the concrete form of the idea described in this section.*
+
 ---
 
 #### 6.7 How Three-Phase Commit Handles Coordinator Failure
 
 **The Non-Blocking Property:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │    3PC: HANDLING COORDINATOR FAILURE (NON-BLOCKING)     │
 ├─────────────────────────────────────────────────────────┤
@@ -9918,7 +10015,7 @@ The fundamental problem with 2PC is that participants enter an **uncertain state
 
 **Termination Protocol (Participant Self-Recovery):**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │    3PC TERMINATION PROTOCOL (PARTICIPANT RECOVERY)      │
 ├─────────────────────────────────────────────────────────┤
@@ -9967,7 +10064,7 @@ The fundamental problem with 2PC is that participants enter an **uncertain state
 
 **Comparison: 2PC vs 3PC Coordinator Failure:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │    COORDINATOR FAILURE: 2PC vs 3PC                      │
 ├─────────────────────────────────────────────────────────┤
@@ -10013,11 +10110,13 @@ The fundamental problem with 2PC is that participants enter an **uncertain state
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 6.7 How Three-Phase Commit Handles Coordinator Failure: it shows the concrete form of the idea described in this section.*
+
 ---
 
 #### 6.8 Advantages of Three-Phase Commit
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         3PC ADVANTAGES                                  │
 ├─────────────────────────────────────────────────────────┤
@@ -10072,11 +10171,13 @@ The fundamental problem with 2PC is that participants enter an **uncertain state
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 6.8 Advantages of Three-Phase Commit: it shows the concrete form of the idea described in this section.*
+
 ---
 
 #### 6.9 Disadvantages of Three-Phase Commit
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         3PC DISADVANTAGES                               │
 ├─────────────────────────────────────────────────────────┤
@@ -10144,13 +10245,15 @@ The fundamental problem with 2PC is that participants enter an **uncertain state
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 6.9 Disadvantages of Three-Phase Commit: it shows the concrete form of the idea described in this section.*
+
 ---
 
 #### 6.10 Problems in Three-Phase Commit
 
 **Problem 1: Network Partition (Split-Brain)**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       PROBLEM 1: NETWORK PARTITION (CRITICAL!)          │
 ├─────────────────────────────────────────────────────────┤
@@ -10220,7 +10323,7 @@ The fundamental problem with 2PC is that participants enter an **uncertain state
 
 **Problem 2: Increased Message Complexity**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       PROBLEM 2: MESSAGE OVERHEAD                       │
 ├─────────────────────────────────────────────────────────┤
@@ -10263,7 +10366,7 @@ The fundamental problem with 2PC is that participants enter an **uncertain state
 
 **Problem 3: Complexity and Bug-Prone Implementation**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       PROBLEM 3: IMPLEMENTATION COMPLEXITY              │
 ├─────────────────────────────────────────────────────────┤
@@ -10307,7 +10410,7 @@ The fundamental problem with 2PC is that participants enter an **uncertain state
 
 **Problem 4: Performance Under Normal Operation**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       PROBLEM 4: PERFORMANCE DEGRADATION                │
 ├─────────────────────────────────────────────────────────┤
@@ -10351,7 +10454,7 @@ The fundamental problem with 2PC is that participants enter an **uncertain state
 
 **Problem 5: False Assumptions (FLP Impossibility)**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       PROBLEM 5: FLP IMPOSSIBILITY                      │
 ├─────────────────────────────────────────────────────────┤
@@ -10395,7 +10498,7 @@ The fundamental problem with 2PC is that participants enter an **uncertain state
 
 **Summary: Why 3PC Is Rarely Used**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         WHY 3PC FAILED IN PRACTICE                      │
 ├─────────────────────────────────────────────────────────┤
@@ -10435,6 +10538,8 @@ The fundamental problem with 2PC is that participants enter an **uncertain state
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 6.10 Problems in Three-Phase Commit: it shows the concrete form of the idea described in this section.*
+
 ---
 
 ### 7. Saga Pattern
@@ -10447,7 +10552,7 @@ The **Saga pattern** is a design pattern for managing distributed transactions b
 
 Sagas represent a paradigm shift from traditional ACID transactions:
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         PARADIGM SHIFT: ACID → SAGA                     │
 ├─────────────────────────────────────────────────────────┤
@@ -10494,7 +10599,7 @@ While originally designed for database transactions, Sagas experienced a **renai
 
 **What is a Saga?**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         SAGA COMPONENTS                                 │
 ├─────────────────────────────────────────────────────────┤
@@ -10534,13 +10639,15 @@ While originally designed for database transactions, Sagas experienced a **renai
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 7. Saga Pattern: it shows the concrete form of the idea described in this section.*
+
 ---
 
 #### 7.1 Types of Saga Implementation
 
 **1. Choreography-Based Saga (Event-Driven)**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         CHOREOGRAPHY-BASED SAGA                         │
 ├─────────────────────────────────────────────────────────┤
@@ -10593,7 +10700,7 @@ While originally designed for database transactions, Sagas experienced a **renai
 
 **2. Orchestration-Based Saga (Centralized)**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         ORCHESTRATION-BASED SAGA                        │
 ├─────────────────────────────────────────────────────────┤
@@ -10635,7 +10742,7 @@ While originally designed for database transactions, Sagas experienced a **renai
 
 **Comparison: Choreography vs Orchestration**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │    CHOREOGRAPHY vs ORCHESTRATION                        │
 ├─────────────────────────────────────────────────────────┤
@@ -10658,13 +10765,15 @@ While originally designed for database transactions, Sagas experienced a **renai
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 7.1 Types of Saga Implementation: it shows the concrete form of the idea described in this section.*
+
 ---
 
 #### 7.2 Saga Pattern Example: E-Commerce Order
 
 **Scenario:** Process an order involving payment, inventory, and shipping
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         SAGA EXAMPLE: E-COMMERCE ORDER                  │
 ├─────────────────────────────────────────────────────────┤
@@ -10686,7 +10795,7 @@ While originally designed for database transactions, Sagas experienced a **renai
 
 **Success Scenario (All Steps Succeed):**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         SAGA SUCCESS FLOW                               │
 ├─────────────────────────────────────────────────────────┤
@@ -10726,7 +10835,7 @@ While originally designed for database transactions, Sagas experienced a **renai
 
 **Failure Scenario (Payment Fails - Compensation Triggered):**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         SAGA FAILURE & COMPENSATION FLOW                │
 ├─────────────────────────────────────────────────────────┤
@@ -10769,7 +10878,7 @@ While originally designed for database transactions, Sagas experienced a **renai
 
 **Complex Failure Scenario (Inventory Fails After Payment):**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         SAGA COMPLEX COMPENSATION                       │
 ├─────────────────────────────────────────────────────────┤
@@ -10825,7 +10934,7 @@ While originally designed for database transactions, Sagas experienced a **renai
 
 **Saga State Machine:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         SAGA STATE MACHINE                              │
 ├─────────────────────────────────────────────────────────┤
@@ -10880,11 +10989,13 @@ While originally designed for database transactions, Sagas experienced a **renai
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 7.2 Saga Pattern Example: E-Commerce Order: it shows the concrete form of the idea described in this section.*
+
 ---
 
 #### 7.3 Advantages of Saga Pattern
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         SAGA PATTERN ADVANTAGES                         │
 ├─────────────────────────────────────────────────────────┤
@@ -10953,11 +11064,13 @@ While originally designed for database transactions, Sagas experienced a **renai
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 7.3 Advantages of Saga Pattern: it shows the concrete form of the idea described in this section.*
+
 ---
 
 #### 7.4 Disadvantages of Saga Pattern
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         SAGA PATTERN DISADVANTAGES                      │
 ├─────────────────────────────────────────────────────────┤
@@ -11026,13 +11139,15 @@ While originally designed for database transactions, Sagas experienced a **renai
 └─────────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates 7.4 Disadvantages of Saga Pattern: it shows the concrete form of the idea described in this section.*
+
 ---
 
 #### 7.5 Problems in Saga Pattern
 
 **Problem 1: Lack of Isolation (Anomalies)**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       PROBLEM 1: ISOLATION ANOMALIES                    │
 ├─────────────────────────────────────────────────────────┤
@@ -11078,7 +11193,7 @@ While originally designed for database transactions, Sagas experienced a **renai
 
 **Anomaly 2: Lost Updates**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       ANOMALY 2: LOST UPDATE                            │
 ├─────────────────────────────────────────────────────────┤
@@ -11112,7 +11227,7 @@ While originally designed for database transactions, Sagas experienced a **renai
 
 **Problem 2: Compensation Failures**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       PROBLEM 2: COMPENSATION FAILURES                  │
 ├─────────────────────────────────────────────────────────┤
@@ -11159,7 +11274,7 @@ While originally designed for database transactions, Sagas experienced a **renai
 
 **Problem 3: Non-Compensatable Operations**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       PROBLEM 3: NON-COMPENSATABLE OPERATIONS           │
 ├─────────────────────────────────────────────────────────┤
@@ -11212,7 +11327,7 @@ While originally designed for database transactions, Sagas experienced a **renai
 
 **Problem 4: Ordering and Idempotency Issues**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       PROBLEM 4: MESSAGE ORDERING & IDEMPOTENCY         │
 ├─────────────────────────────────────────────────────────┤
@@ -11264,7 +11379,7 @@ While originally designed for database transactions, Sagas experienced a **renai
 
 **Problem 5: Complexity in Choreography**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │       PROBLEM 5: CHOREOGRAPHY COMPLEXITY                │
 ├─────────────────────────────────────────────────────────┤
@@ -11314,7 +11429,7 @@ While originally designed for database transactions, Sagas experienced a **renai
 
 **Summary: Saga Pattern Trade-offs**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         SAGA PATTERN: WHEN TO USE                       │
 ├─────────────────────────────────────────────────────────┤
@@ -11348,5 +11463,7 @@ While originally designed for database transactions, Sagas experienced a **renai
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
+
+*The text snippet above illustrates 7.5 Problems in Saga Pattern: it shows the concrete form of the idea described in this section.*
 
 ---

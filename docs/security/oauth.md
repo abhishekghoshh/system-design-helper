@@ -543,9 +543,9 @@ if __name__ == '__main__':
 
 #### 3. Resource Owner Password Credentials Flow
 
-**Best for**: Trusted first-party applications only (not recommended for third-party apps)
+**Best for**: Legacy migration only — removed from the OAuth 2.1 draft; do not use for new applications
 
-**Description**: User provides credentials directly to the client application, which exchanges them for an access token.
+**Description**: User provides credentials directly to the client application, which exchanges them for an access token. Because the client sees the raw password, this flow defeats the purpose of delegated authorization.
 
 ```
 ┌──────────┐
@@ -574,16 +574,15 @@ if __name__ == '__main__':
      │                                                         │
      ▼                                                         ▼
 
-⚠️  USE WITH CAUTION:
-    - Only for highly trusted applications (own company apps)
+⚠️  USE WITH CAUTION (removed in OAuth 2.1 — migrate to Authorization Code + PKCE):
+    - Only for highly trusted first-party apps during legacy migration
     - User credentials exposed to client
     - No OAuth benefits for third-party apps
 ```
 
 **When to use:**
-- Mobile apps for your own service
-- Migration from legacy authentication systems
-- Testing and development
+- Legacy migration from password-based auth (temporary, plan migration to Authorization Code + PKCE)
+- Testing and development (never production)
 
 **Python Implementation Example:**
 
@@ -1057,7 +1056,7 @@ Content-Type: application/json
 }
 ```
 
-**Error Responses**:
+**Error Responses** (pseudo-HTTP showing three separate error bodies a server may return):
 ```http
 // Invalid or expired refresh token
 {

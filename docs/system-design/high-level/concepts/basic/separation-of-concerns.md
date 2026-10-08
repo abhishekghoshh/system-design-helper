@@ -11,6 +11,17 @@
 
 ## Theory
 
+### Table of Contents
+
+1. [What is Separation of Concerns?](#what-is-separation-of-concerns)
+2. [Why It Matters](#why-it-matters)
+3. [Levels of Separation](#levels-of-separation)
+4. [Related Principles](#related-principles)
+5. [Real-World Examples](#real-world-examples)
+6. [Benefits](#benefits)
+7. [Anti-Patterns (Violations of SoC)](#anti-patterns-violations-of-soc)
+
+
 ### What is Separation of Concerns?
 
 **Separation of Concerns (SoC)** is a design principle that divides a system into distinct sections, where each section addresses a specific concern (responsibility). Each part should know as little as possible about the others.
@@ -32,13 +43,15 @@ graph TD
     style D fill:#6a6,color:#fff
 ```
 
+*The diagram above illustrates What is Separation of Concerns?: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Why It Matters
 
 Without SoC, a single function accumulates responsibilities over time — a phenomenon known as **feature creep at the function level**. The function becomes a bottleneck: every developer on the team touches it, every bug lives inside it, and testing it requires simulating all its dependencies at once.
 
-```
+```text
 Without SoC (everything mixed together):
   function handleOrder(req) {
     // Validate input         ← What if validation rules change?
@@ -53,7 +66,9 @@ Without SoC (everything mixed together):
   → One change risks breaking everything else
 ```
 
-```
+*The text snippet above illustrates Why It Matters: it shows the concrete form of the idea described in this section.*
+
+```text
 With SoC (separated responsibilities):
   validateInput(req)        → Validation layer
   authenticateUser(req)     → Auth middleware
@@ -90,6 +105,8 @@ sequenceDiagram
     Payment->>Analytics: track event
     Notifier-->>Client: confirmation email sent
 ```
+
+*The diagram above illustrates Why It Matters: it maps the key components and their interactions described in this section.*
 
 ---
 
@@ -173,13 +190,15 @@ classDiagram
     UserValidator --> User : validates
 ```
 
+*The diagram above illustrates Levels of Separation: it maps the key components and their interactions described in this section.*
+
 ---
 
 **2. Module/Layer Level — Layered Architecture**
 
 As a codebase grows, individual files need to be organized into **layers**, each with a specific role. The classic N-tier model separates the application into:
 
-```
+```text
 Presentation Layer (UI, API endpoints)
         ↓
 Business Logic Layer (rules, workflows)
@@ -217,6 +236,8 @@ class UserRepository:
         return User.from_row(row)       # maps DB row to domain object
 ```
 
+*The python snippet above illustrates Levels of Separation: it shows the concrete form of the idea described in this section.*
+
 ```mermaid
 graph TD
     A["Presentation Layer<br/>(Flask routes, REST controllers)"]
@@ -242,7 +263,7 @@ graph TD
 
 At scale, even well-layered monoliths become deployment bottlenecks. If the notification logic and the payment logic live in the same process, a bug in notifications can take down payments. Microservices apply SoC at the **deployment boundary**:
 
-```
+```text
 User Service         → Manages user accounts, profiles, auth
 Payment Service      → Handles charges, refunds, billing
 Notification Service → Sends emails, SMS, push notifications
@@ -281,7 +302,7 @@ graph LR
 
 The broadest level of SoC is the split between client and server:
 
-```
+```text
 Frontend (Client):  UI rendering, user interaction, local state
 Backend (Server):   Business logic, data persistence, security
 Database:           Storage, querying, transactions
@@ -319,6 +340,8 @@ graph TD
     F --> H
     F --> I
 ```
+
+*The diagram above illustrates Levels of Separation: it maps the key components and their interactions described in this section.*
 
 ---
 
@@ -444,6 +467,8 @@ graph TD
     style D fill:#7ed321,color:#fff
 ```
 
+*The diagram above illustrates Related Principles: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Real-World Examples
@@ -452,7 +477,7 @@ graph TD
 
 MVC is one of the oldest applications of SoC in UI development. It cleanly separates data management, presentation, and user input handling:
 
-```
+```text
 Model:      Data and business logic (what the app knows)
 View:       UI presentation (what the user sees)
 Controller: Handles input, coordinates Model and View (what the app does in response)
@@ -483,6 +508,8 @@ def show_post(id):
     return render_post(post)           # passes to View
 ```
 
+*The python snippet above illustrates Real-World Examples: it shows the concrete form of the idea described in this section.*
+
 ```mermaid
 graph LR
     User -->|HTTP Request| Controller
@@ -504,7 +531,7 @@ graph LR
 
 Clean Architecture (by Robert C. Martin, aka "Uncle Bob") is a more rigorous application of SoC. It organizes code into concentric circles, where the **dependency rule** states: *source code dependencies must point inward only*.
 
-```
+```text
 Entities          (core business rules — framework agnostic)
   ← Use Cases     (application-specific rules — orchestrate entities)
     ← Interface Adapters  (controllers, presenters, gateways — translate)
@@ -563,7 +590,7 @@ graph TD
 
 SoC in API design means grouping endpoints by **domain entity** (the resource they manage), not by operation type:
 
-```
+```text
 /api/users      → User concern    (CRUD on user accounts)
 /api/products   → Product concern (CRUD on product catalog)
 /api/orders     → Order concern   (CRUD on orders)
@@ -571,7 +598,7 @@ SoC in API design means grouping endpoints by **domain entity** (the resource th
 
 **Violation — mixing concerns in a single endpoint:**
 
-```
+```http
 POST /api/process   → body: { type: "create_user" | "place_order" | "send_email" }
 ```
 
@@ -579,7 +606,7 @@ This is an RPC-style blob endpoint. You can't cache it, you can't apply auth pol
 
 **Correct REST design — one concern per resource path:**
 
-```
+```http
 POST   /api/users              → create user
 GET    /api/users/{id}         → read user
 PUT    /api/users/{id}         → update user
@@ -612,6 +639,8 @@ graph TD
     style ProductController fill:#7ed321,color:#fff
     style OrderController fill:#f5a623,color:#fff
 ```
+
+*The diagram above illustrates Real-World Examples: it maps the key components and their interactions described in this section.*
 
 ---
 
@@ -701,6 +730,8 @@ def get_user(id):
     user = user_service.get_user(id)   # concern boundary: HTTP → Service
     return jsonify(user.to_dict())     # only formats the response
 ```
+
+*The python snippet above illustrates Anti-Patterns (Violations of SoC): it shows the concrete form of the idea described in this section.*
 
 ---
 

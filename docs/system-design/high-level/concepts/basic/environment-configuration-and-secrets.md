@@ -11,6 +11,22 @@
 
 ## Theory
 
+### Table of Contents
+
+1. [Introduction](#introduction)
+2. [Why It Matters](#why-it-matters)
+3. [Configuration Hierarchy](#configuration-hierarchy)
+4. [Environment Variables](#environment-variables)
+5. [.env Files (Local Development)](#env-files-local-development)
+6. [Secrets Management (Production)](#secrets-management-production)
+7. [Secret Rotation](#secret-rotation)
+8. [Best Practices](#best-practices)
+9. [Configuration per Environment](#configuration-per-environment)
+10. [Kubernetes and Docker Secrets](#kubernetes-and-docker-secrets)
+11. [Real-Life Case Studies](#real-life-case-studies)
+12. [The 12-Factor App Principle (Factor III — Config)](#the-12-factor-app-principle-factor-iii-config)
+
+
 ### Introduction
 
 - Environment configuration is the practice of managing settings that change between environments (development, staging, production) **outside** of your application code, so the exact same build artifact can run unmodified in every environment.
@@ -50,7 +66,7 @@ flowchart LR
 
 ### Why It Matters
 
-```
+```text
 ❌ Hardcoded (NEVER do this):
   db_password = "super_secret_123"
   api_key = "sk-live-abc123xyz"
@@ -95,7 +111,9 @@ flowchart TB
     L5 -->|"toggle behavior without a deploy"| App
 ```
 
-```
+*The diagram above illustrates Configuration Hierarchy: it maps the key components and their interactions described in this section.*
+
+```text
 1. Environment Variables (most common)
    └─ Set on the host/container: export DB_HOST=localhost
 
@@ -133,6 +151,8 @@ flowchart LR
     EnvBlock -->|injected at process start| Proc[Application Process]
     Proc -->|reads once at startup| Config[In-memory Config Object]
 ```
+
+*The diagram above illustrates Environment Variables: it maps the key components and their interactions described in this section.*
 
 ```bash
 # Setting environment variables
@@ -226,6 +246,8 @@ API_KEY=sk-test-dev-key
 NODE_ENV=development
 LOG_LEVEL=debug
 ```
+
+*The bash snippet above illustrates .env Files (Local Development): it shows the concrete form of the idea described in this section.*
 
 ```bash
 # .env.example (committed to Git — template without real values)
@@ -350,6 +372,8 @@ spring:
         default-context: payments-service # reads secret/payments-service/*
 ```
 
+*The yaml snippet above illustrates Secrets Management (Production): it shows the concrete form of the idea described in this section.*
+
 ```java
 @ConfigurationProperties(prefix = "database")
 public class DatabaseProperties {
@@ -421,7 +445,7 @@ public Connection getDbConnection() throws SQLException {
 
 ### Best Practices
 
-```
+```text
 ✓ Never hardcode secrets in source code
 ✓ Use .env for local dev, secret managers for production
 ✓ Add .env to .gitignore
@@ -439,6 +463,8 @@ public Connection getDbConnection() throws SQLException {
 ✗ Never use the same secret across environments
 ✗ Never commit .env files to Git
 ```
+
+*The text snippet above illustrates Best Practices: it shows the concrete form of the idea described in this section.*
 
 #### OWASP Mapping and Tooling
 
@@ -468,6 +494,8 @@ flowchart LR
     Load --> Stage["application-staging.yaml\n(debug=false, port=8080)"]
     Load --> Prod["application-production.yaml\n(debug=false, port=8080)"]
 ```
+
+*The diagram above illustrates Configuration per Environment: it maps the key components and their interactions described in this section.*
 
 ```yaml
 # config/development.yaml
@@ -506,6 +534,8 @@ logging:
 feature-flags:
   new-checkout-flow: false
 ```
+
+*The yaml snippet above illustrates Configuration per Environment: it shows the concrete form of the idea described in this section.*
 
 ```java
 @Configuration
@@ -551,6 +581,8 @@ flowchart TB
     ExtVault["External Secret Manager\n(Vault / AWS Secrets Manager)"] -->|"External Secrets Operator\nsyncs into"| Sec
 ```
 
+*The diagram above illustrates Kubernetes and Docker Secrets: it maps the key components and their interactions described in this section.*
+
 ```yaml
 # Kubernetes Secret (base64-encoded — NOT encryption; enable etcd encryption-at-rest for real protection)
 apiVersion: v1
@@ -574,6 +606,8 @@ spec:
             - secretRef:
                 name: db-credentials  # secret settings
 ```
+
+*The yaml snippet above illustrates Kubernetes and Docker Secrets: it shows the concrete form of the idea described in this section.*
 
 ```yaml
 # docker-compose.yaml — using Docker secrets (mounted as files, not env vars, reducing accidental leakage via `docker inspect`)

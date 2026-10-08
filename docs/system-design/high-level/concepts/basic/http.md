@@ -23,7 +23,7 @@
 1. [HTTP and REST Fundamentals](#http-and-rest-fundamentals)
 2. [HTTPS: Security Through Encryption](#https-security-through-encryption)
 3. [HTTP/1.1 vs HTTP/2 vs HTTP/3](#http11-vs-http2-vs-http3)
-4. [HTTP: Advantages & Disadvantages](#http-advantages--disadvantages)
+4. [HTTP: Advantages & Disadvantages](#http-advantages-disadvantages)
 5. [Alternatives to HTTP](#alternatives-to-http)
 6. [Decision Matrix: Which Protocol?](#decision-matrix-which-protocol)
 7. [When NOT to Use HTTP](#when-not-to-use-http)
@@ -45,7 +45,7 @@
 **HTTP (HyperText Transfer Protocol)** is the foundation of data communication on the web. It's a **request-response**, **stateless**, **application-layer** protocol that defines how clients (browsers, apps) and servers exchange information.
 
 **How HTTP Works:**
-```
+```text
 1. Client opens a TCP connection to the server
 2. Client sends an HTTP request (method, URL, headers, body)
 3. Server processes the request
@@ -102,13 +102,13 @@ Application layer protocol for web communication.
 **HTTP Status Codes:**
 
 **1xx - Informational** (Request received, processing)
-```
+```text
 100 Continue          → "Keep sending request body"
 101 Switching Protocols → "Upgrading to WebSocket"
 ```
 
 **2xx - Success** (Request succeeded)
-```
+```text
 200 OK                → "Success, here's your data"
 201 Created           → "Resource created successfully"
 202 Accepted          → "Request accepted, processing async"
@@ -117,7 +117,7 @@ Application layer protocol for web communication.
 ```
 
 **3xx - Redirection** (Further action needed)
-```
+```text
 301 Moved Permanently → "Resource moved, update bookmarks"
 302 Found            → "Temporary redirect, try this URL"
 304 Not Modified     → "Use your cached version"
@@ -126,7 +126,7 @@ Application layer protocol for web communication.
 ```
 
 **4xx - Client Errors** (Client messed up)
-```
+```text
 400 Bad Request      → "Your request is malformed"
 401 Unauthorized     → "You need to authenticate"
 403 Forbidden        → "Authenticated but not allowed"
@@ -137,7 +137,7 @@ Application layer protocol for web communication.
 ```
 
 **5xx - Server Errors** (Server messed up)
-```
+```text
 500 Internal Server Error → "Something broke on our end"
 502 Bad Gateway          → "Upstream server error"
 503 Service Unavailable  → "Temporarily down/overloaded"
@@ -170,10 +170,12 @@ HTTP/1.1 400 Bad Request
 {"error": "email is required"}
 ```
 
+*The http snippet above illustrates HTTP and REST Fundamentals: it shows the concrete form of the idea described in this section.*
+
 ### HTTPS: Security Through Encryption
 
 **HTTP vs HTTPS:**
-```
+```text
 HTTP (Insecure):
 Client ←─────plaintext─────→ Server
        "password123"  ← Anyone can read!
@@ -184,7 +186,7 @@ Client ←───encrypted───→ Server
 ```
 
 **TLS Handshake (How HTTPS Works):**
-```
+```text
 1. Client Hello
    ┌────────┐                    ┌────────┐
    │ Client │ ──────────────────→ │ Server │
@@ -222,7 +224,7 @@ Client ←───encrypted───→ Server
 
 **What HTTPS Protects Against:**
 
-```
+```text
 ✓ Eavesdropping
   Attacker: Can't read passwords, credit cards, messages
 
@@ -240,7 +242,7 @@ Client ←───encrypted───→ Server
 ```
 
 **SSL Certificate Example:**
-```
+```text
 Certificate:
   Subject: CN=example.com
   Issuer: CN=Let's Encrypt
@@ -264,10 +266,12 @@ curl -vI https://example.com
 # Browser: Click padlock icon in address bar
 ```
 
+*The bash snippet above illustrates HTTPS: Security Through Encryption: it shows the concrete form of the idea described in this section.*
+
 ### HTTP/1.1 vs HTTP/2 vs HTTP/3
 
 **HTTP/1.1 (1997-2015):**
-```
+```text
 Limitations:
 ┌──────────────────────────────────────┐
 │ Request 1 → Response 1               │
@@ -283,7 +287,7 @@ Problems:
 ```
 
 **HTTP/2 (2015):**
-```
+```text
 Improvements:
 ┌──────────────────────────────────────┐
 │      Single TCP Connection           │
@@ -310,7 +314,7 @@ Before browser even asks!
 ```
 
 **HTTP/3 (2020+):**
-```
+```text
 Built on QUIC (over UDP, not TCP):
 
 HTTP/2 Problem:
@@ -337,7 +341,7 @@ HTTP/3: Connection continues seamlessly (fast)
 ```
 
 **Performance Comparison:**
-```
+```http
 Loading website with 100 resources:
 
 HTTP/1.1:
@@ -359,7 +363,7 @@ HTTP/3:
 ```
 
 **Adoption Status:**
-```
+```http
 HTTP/1.1: 100% support (fallback)
 HTTP/2:   ~95% support (widely deployed)
 HTTP/3:   ~70% support (growing rapidly)
@@ -371,10 +375,12 @@ Major sites using HTTP/3:
 - Netflix
 ```
 
+*The http snippet above illustrates HTTP/1.1 vs HTTP/2 vs HTTP/3: it shows the concrete form of the idea described in this section.*
+
 ### HTTP: Advantages & Disadvantages
 
 **Advantages:**
-```
+```text
 ✓ Universal Support
   - Works on every platform
   - Every language has HTTP libraries
@@ -407,7 +413,7 @@ Major sites using HTTP/3:
 ```
 
 **Disadvantages:**
-```
+```http
 ✗ Overhead
   - Text format larger than binary
   - Headers repeated on every request
@@ -439,10 +445,12 @@ Major sites using HTTP/3:
   - Server resources per connection
 ```
 
+*The http snippet above illustrates HTTP: Advantages & Disadvantages: it shows the concrete form of the idea described in this section.*
+
 ### Alternatives to HTTP
 
 **1. WebSockets**
-```
+```text
 Use When:
   ✓ Bidirectional communication needed
   ✓ Real-time updates (chat, gaming)
@@ -468,7 +476,7 @@ Example:
 ```
 
 **2. gRPC**
-```
+```text
 Use When:
   ✓ Microservices communication
   ✓ Performance critical
@@ -495,7 +503,7 @@ Comparison:
 ```
 
 **3. GraphQL**
-```
+```text
 Use When:
   ✓ Complex data requirements
   ✓ Multiple client types (web, mobile)
@@ -522,7 +530,7 @@ Example:
 ```
 
 **4. Server-Sent Events (SSE)**
-```
+```text
 Use When:
   ✓ One-way updates (server → client)
   ✓ Simpler than WebSocket
@@ -551,7 +559,7 @@ Example:
 ```
 
 **5. Message Queues (Kafka, RabbitMQ)**
-```
+```text
 Use When:
   ✓ Asynchronous processing
   ✓ Decoupling services
@@ -578,7 +586,7 @@ Example:
 ```
 
 **6. UDP-based Protocols (QUIC, WebRTC)**
-```
+```text
 Use When:
   ✓ Real-time media (video, voice)
   ✓ Gaming
@@ -602,6 +610,8 @@ Example:
   File download: TCP (every byte matters)
 ```
 
+*The text snippet above illustrates Alternatives to HTTP: it shows the concrete form of the idea described in this section.*
+
 ### Decision Matrix: Which Protocol?
 
 | Need | Best Choice | Why |
@@ -618,7 +628,7 @@ Example:
 
 ### When NOT to Use HTTP
 
-```
+```text
 ✗ Real-time gaming
   → Use UDP/WebSocket (latency critical)
 
@@ -638,10 +648,12 @@ Example:
   → Consider BitTorrent/custom (P2P, resumable)
 ```
 
+*The text snippet above illustrates When NOT to Use HTTP: it shows the concrete form of the idea described in this section.*
+
 ### HTTP Best Practices
 
 **Do's:**
-```
+```text
 ✓ Use HTTPS everywhere (even dev)
 ✓ Implement proper HTTP status codes
 ✓ Use HTTP/2 minimum (HTTP/3 when possible)
@@ -655,7 +667,7 @@ Example:
 ```
 
 **Don'ts:**
-```
+```http
 ✗ Don't use GET for state changes
 ✗ Don't send sensitive data in URLs
 ✗ Don't ignore status codes (don't return 200 for errors)
@@ -829,7 +841,7 @@ flowchart LR
     Server -->|HTTP Response| Client
     Client --> Proxy[Proxy / CDN]
     Proxy --> Server
-```
+```text
 
 ---
 
@@ -955,7 +967,7 @@ public class UserController {
             : ResponseEntity.notFound().build();
     }
 }
-```
+```text
 
 #### 2. Global exception handler
 
@@ -980,7 +992,7 @@ public class GlobalExceptionHandler {
             .body(Map.of("error", "Internal server error"));
     }
 }
-```
+```text
 
 #### 3. HTTP client with RestClient
 
@@ -1008,7 +1020,7 @@ public class ExternalApiClient {
             .body(User.class);
     }
 }
-```
+```text
 
 #### 4. Caching with ETag and cache headers
 
@@ -1032,7 +1044,7 @@ public class ProductController {
             .body(product);
     }
 }
-```
+```text
 
 **Interview questions and answers**
 
@@ -1045,3 +1057,5 @@ public class ProductController {
 - **Q: How do you secure a Spring Boot HTTP API?**
   **A:** Use HTTPS, validate all input, apply authentication and authorization, return proper status codes, and implement rate limiting.
 ```
+
+*The text snippet above illustrates 4. Caching with ETag and cache headers: it shows the concrete form of the idea described in this section.*

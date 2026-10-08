@@ -11,6 +11,22 @@
 
 ## Theory
 
+### Table of Contents
+
+1. [Introduction](#introduction)
+2. [Measuring Availability: The Nines](#measuring-availability-the-nines)
+3. [Reliability, MTBF, MTTR and MTTF](#reliability-mtbf-mttr-and-mttf)
+4. [Single Point of Failure (SPOF)](#single-point-of-failure-spof)
+5. [Redundancy: Active-Active vs Active-Passive](#redundancy-active-active-vs-active-passive)
+6. [Load Balancing for Availability](#load-balancing-for-availability)
+7. [Health Checks and Failover Mechanisms](#health-checks-and-failover-mechanisms)
+8. [Geographic Distribution and Multi-Region Architecture](#geographic-distribution-and-multi-region-architecture)
+9. [Data Replication for Reliability](#data-replication-for-reliability)
+10. [Resilience Patterns: Circuit Breaker, Retry, Bulkhead, Timeout](#resilience-patterns-circuit-breaker-retry-bulkhead-timeout)
+11. [Disaster Recovery: RTO and RPO](#disaster-recovery-rto-and-rpo)
+12. [Chaos Engineering](#chaos-engineering)
+
+
 ### Introduction
 
 **Availability** and **Reliability** are two related but distinct properties of a system, and interviewers frequently probe the difference:
@@ -42,7 +58,7 @@ flowchart LR
 
 This page is organized into the following topics, each covering the core theory, a Mermaid diagram, a real-life use case, interview questions with answers, and a Java code example:
 
-- [Availability \& Reliability](#availability--reliability)
+- [Availability \& Reliability](#availability-reliability)
   - [Blogs and websites](#blogs-and-websites)
   - [Medium](#medium)
   - [Youtube](#youtube)

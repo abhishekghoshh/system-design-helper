@@ -15,6 +15,24 @@
 
 ## Theory
 
+### Table of Contents
+
+1. [WebSockets vs Polling vs Server-Sent Events](#websockets-vs-polling-vs-server-sent-events)
+2. [1. Polling (Short Polling)](#1-polling-short-polling)
+3. [2. Long Polling](#2-long-polling)
+4. [3. Server-Sent Events (SSE)](#3-server-sent-events-sse)
+5. [4. WebSockets](#4-websockets)
+6. [Comparison Table](#comparison-table)
+7. [Bandwidth & Overhead Comparison](#bandwidth-overhead-comparison)
+8. [Use Cases](#use-cases)
+9. [Decision Matrix](#decision-matrix)
+10. [When to Use What?](#when-to-use-what)
+11. [Evolution Timeline](#evolution-timeline)
+12. [Performance Comparison (Real-World Scenario)](#performance-comparison-real-world-scenario)
+13. [Best Practices](#best-practices)
+14. [Summary](#summary)
+
+
 ### WebSockets vs Polling vs Server-Sent Events
 
 These are three different approaches for real-time client-server communication, each with different characteristics and use cases.
@@ -28,7 +46,7 @@ The client repeatedly sends HTTP requests to the server at regular intervals to 
 
 #### How It Works
 
-```
+```text
 ┌─────────┐                                           ┌─────────┐
 │ Client  │                                           │ Server  │
 └────┬────┘                                           └────┬────┘
@@ -61,6 +79,8 @@ The client repeatedly sends HTTP requests to the server at regular intervals to 
      
      Process repeats indefinitely...
 ```
+
+*The text snippet above illustrates How It Works: it shows the concrete form of the idea described in this section.*
 
 #### Python Implementation
 
@@ -141,6 +161,8 @@ if __name__ == '__main__':
     poll_server()
 ```
 
+*The python snippet above illustrates Python Implementation: it shows the concrete form of the idea described in this section.*
+
 #### Advantages
 1. ✅ **Simple to implement** - Uses standard HTTP requests
 2. ✅ **Stateless** - No connection state to maintain
@@ -165,7 +187,7 @@ The client sends a request to the server, and the server holds the request open 
 
 #### How It Works
 
-```
+```text
 ┌─────────┐                                           ┌─────────┐
 │ Client  │                                           │ Server  │
 └────┬────┘                                           └────┬────┘
@@ -200,6 +222,8 @@ The client sends a request to the server, and the server holds the request open 
      │                                                      │
      └──────────────────────────────────────────────────────┘
 ```
+
+*The text snippet above illustrates How It Works: it shows the concrete form of the idea described in this section.*
 
 #### Python Implementation
 
@@ -307,6 +331,8 @@ if __name__ == '__main__':
     long_poll_client()
 ```
 
+*The python snippet above illustrates Python Implementation: it shows the concrete form of the idea described in this section.*
+
 #### Advantages
 1. ✅ **Near real-time** - Minimal delay when data arrives
 2. ✅ **Reduced requests** - Only reconnects when data received or timeout
@@ -331,7 +357,7 @@ A unidirectional channel from server to client over a single HTTP connection. Th
 
 #### How It Works
 
-```
+```text
 ┌─────────┐                                           ┌─────────┐
 │ Client  │                                           │ Server  │
 └────┬────┘                                           └────┬────┘
@@ -371,9 +397,11 @@ A unidirectional channel from server to client over a single HTTP connection. Th
      └──────────────────────────────────────────────────────┘
 ```
 
+*The text snippet above illustrates How It Works: it shows the concrete form of the idea described in this section.*
+
 #### SSE Event Format
 
-```
+```text
 event: message
 id: 1
 retry: 10000
@@ -387,6 +415,8 @@ event: heartbeat
 data: ping
 
 ```
+
+*The text snippet above illustrates SSE Event Format: it shows the concrete form of the idea described in this section.*
 
 #### Python Implementation
 
@@ -564,6 +594,8 @@ eventSource.onerror = (error) => {
 // eventSource.close();
 ```
 
+*The javascript snippet above illustrates Python Implementation: it shows the concrete form of the idea described in this section.*
+
 #### Advantages
 1. ✅ **Real-time** - Instant server-to-client push
 2. ✅ **Efficient** - Single long-lived connection
@@ -589,7 +621,7 @@ Full-duplex bidirectional communication channel over a single TCP connection. Bo
 
 #### How It Works
 
-```
+```http
 ┌─────────┐                                           ┌─────────┐
 │ Client  │                                           │ Server  │
 └────┬────┘                                           └────┬────┘
@@ -644,9 +676,11 @@ Full-duplex bidirectional communication channel over a single TCP connection. Bo
      └──────────────────────────────────────────────────────┘
 ```
 
+*The http snippet above illustrates How It Works: it shows the concrete form of the idea described in this section.*
+
 #### WebSocket Frame Structure
 
-```
+```text
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-------+-+-------------+-------------------------------+
@@ -672,6 +706,8 @@ Opcode: 4 bits - 0x0=continuation, 0x1=text, 0x2=binary, 0x8=close, 0x9=ping, 0x
 MASK: 1 bit - Is payload masked? (client→server must be masked)
 Payload length: 7 bits, 7+16 bits, or 7+64 bits
 ```
+
+*The text snippet above illustrates WebSocket Frame Structure: it shows the concrete form of the idea described in this section.*
 
 #### Python Implementation
 
@@ -841,6 +877,8 @@ function closeConnection() {
 }
 ```
 
+*The javascript snippet above illustrates Python Implementation: it shows the concrete form of the idea described in this section.*
+
 #### Advantages
 1. ✅ **Full-duplex** - Bidirectional communication
 2. ✅ **Real-time** - Extremely low latency
@@ -885,7 +923,7 @@ function closeConnection() {
 #### Example: Sending 100 bytes of data
 
 **Short Polling (every 5 seconds):**
-```
+```text
 Request Headers:  ~800 bytes
 Response Headers: ~500 bytes
 Data:             100 bytes
@@ -897,7 +935,7 @@ Efficiency:       ~0.7% (100/1400)
 ```
 
 **Long Polling:**
-```
+```text
 Request Headers:  ~800 bytes
 Response Headers: ~500 bytes
 Data:             100 bytes
@@ -909,7 +947,7 @@ Efficiency:          ~0.7% (100/1400)
 ```
 
 **Server-Sent Events:**
-```
+```text
 Initial Request:  ~800 bytes
 Initial Response: ~500 bytes
 Per Event:        ~50 bytes (event overhead) + 100 bytes = 150 bytes
@@ -921,7 +959,7 @@ Efficiency:       ~24% (500/2050)
 ```
 
 **WebSockets:**
-```
+```text
 Initial Handshake: ~1,300 bytes (one-time)
 Per Message:       ~6 bytes (frame overhead) + 100 bytes = 106 bytes
 
@@ -930,6 +968,8 @@ Handshake:        ~1,300 bytes
 Total:            ~1,830 bytes (1.8 KB)
 Efficiency:       ~27% (500/1830)
 ```
+
+*The text snippet above illustrates Example: Sending 100 bytes of data: it shows the concrete form of the idea described in this section.*
 
 ---
 
@@ -979,7 +1019,7 @@ Efficiency:       ~27% (500/1830)
 
 ### Decision Matrix
 
-```
+```text
                     Short Polling  Long Polling    SSE      WebSockets
                     ═══════════════════════════════════════════════════
 Unidirectional         ✅            ✅            ✅          ✅
@@ -992,6 +1032,8 @@ Firewall friendly     ✅            ✅            ✅          ⚠️
 Binary data           ⚠️            ⚠️            ❌          ✅
 Scales well           ❌            ⚠️            ✅          ✅
 ```
+
+*The text snippet above illustrates Decision Matrix: it shows the concrete form of the idea described in this section.*
 
 ---
 
@@ -1027,7 +1069,7 @@ Scales well           ❌            ⚠️            ✅          ✅
 
 ### Evolution Timeline
 
-```
+```text
 2000s: Short Polling
   └─> Simple HTTP requests
   └─> High overhead, poor for real-time
@@ -1050,6 +1092,8 @@ Future: HTTP/3 + QUIC
   └─> Better mobile support
   └─> Reduced latency
 ```
+
+*The text snippet above illustrates Evolution Timeline: it shows the concrete form of the idea described in this section.*
 
 ---
 
@@ -1087,6 +1131,8 @@ def poll_with_backoff():
             delay = min(delay * 2, max_delay)  # Exponential backoff
 ```
 
+*The python snippet above illustrates For Polling:: it shows the concrete form of the idea described in this section.*
+
 #### For SSE:
 ```python
 # Include heartbeats to detect dead connections
@@ -1098,6 +1144,8 @@ def sse_with_heartbeat():
             yield ":heartbeat\n\n"  # Comment (ignored by client)
         time.sleep(15)
 ```
+
+*The python snippet above illustrates For SSE:: it shows the concrete form of the idea described in this section.*
 
 #### For WebSockets:
 ```javascript
@@ -1113,6 +1161,8 @@ class WebSocketClient {
     }
 }
 ```
+
+*The javascript snippet above illustrates For WebSockets:: it shows the concrete form of the idea described in this section.*
 
 ---
 

@@ -31,6 +31,11 @@ This page is organized into the following topics. Each topic includes a detailed
 12. [The Wisdom: How to Choose](#the-wisdom-how-to-choose)
 13. [CAP Theorem: Characteristics, Pros, Cons, Use Cases, Components, Patterns, Benefits, Challenges, Best Practices and When to Use](#cap-theorem-characteristics-pros-cons-use-cases-components-patterns-benefits-challenges-best-practices-and-when-to-use)
 
+15. [The Deep Theory: Why CAP is Inevitable](#the-deep-theory-why-cap-is-inevitable)
+16. [The Three Properties: Deep Dive](#the-three-properties-deep-dive)
+17. [The Fundamental Insight](#the-fundamental-insight)
+18. [PACELC Theorem](#pacelc-theorem)
+19. [Quick Recap: CAP Theorem Fundamentals](#quick-recap-cap-theorem-fundamentals)
 ### The Immutable Law of Distributed Systems
 
 The CAP Theorem is not a guideline or best practice—it's a **fundamental law of physics** for distributed systems, as immutable as the laws of thermodynamics. Formulated by Eric Brewer in 2000 and proven by Seth Gilbert and Nancy Lynch in 2002, it states an impossible choice:
@@ -48,13 +53,13 @@ The CAP Theorem is not a guideline or best practice—it's a **fundamental law o
 Imagine a distributed database with two nodes, N1 and N2.
 
 **Scenario: Network Partition**
-```
+```text
 N1 (New York)  |  NETWORK PARTITION  |  N2 (London)
    X = 10      |      (no communication)     |    X = 10
 ```
 
 **User A writes to N1:**
-```
+```text
 N1: X = 20  |  PARTITION  |  N2: X = 10
 ```
 
@@ -63,20 +68,20 @@ N1 cannot tell N2 about the update. Now User B reads from N2.
 **The Impossible Choice:**
 
 **Option 1: Choose Consistency (CP)**
-```
+```text
 N2: "I can't guarantee I have the latest value"
 N2: Returns ERROR or TIMEOUT
 Result: Not Available (❌ A)
 ```
 
 **Option 2: Choose Availability (AP)**
-```
+```text
 N2: "I'll return my value: X = 10"
 Result: Inconsistent (wrong value!) (❌ C)
 ```
 
 **Option 3: Choose CA (Ignore partitions)**
-```
+```text
 Assume network never fails
 Result: System breaks during partition (❌ P)
 ```
@@ -206,7 +211,7 @@ A: A "like" counter or view counter on a social media post. If the count is off 
 Linearizability—every read receives the most recent write or an error.
 
 **What It Means:**
-```
+```text
 Write(X = 5) completes at time T
   ⇓
 Any Read(X) starting at or after T returns 5
@@ -379,7 +384,7 @@ A: The minority side (the side that cannot reach a quorum) must refuse writes (a
 Every request receives a response, without guarantee it contains the most recent write.
 
 **What It Means:**
-```
+```text
 Any non-failing node must respond
   ⇓
 No timeouts, no errors (except when node truly dead)
@@ -551,7 +556,7 @@ A: Business invariants can be silently violated, e.g., two regions each accept a
 System continues operating despite arbitrary message loss between nodes.
 
 **What It Means:**
-```
+```text
 Network can drop/delay any messages
   ⇓
 System still functions (maybe degraded)
@@ -729,7 +734,7 @@ Since P is mandatory, you choose between C and A **during a partition**.
 **Philosophy**: "Better to be unavailable than wrong."
 
 **Behavior During Partition:**
-```
+```text
 Write request arrives at partitioned node
   ↓
 Node: "Can't reach other nodes to coordinate"
@@ -758,7 +763,7 @@ Client knows operation didn't complete
 - Any system where correctness > uptime
 
 **Real Example: Bank ATM**
-```
+```text
 Partition occurs
   ↓
 ATM can't reach central database
@@ -920,7 +925,7 @@ A: Clients on the minority side of the partition (or connected to a leaderless c
 **Philosophy**: "Better to be approximately right than unavailable."
 
 **Behavior During Partition:**
-```
+```text
 Write request arrives at partitioned node
   ↓
 Node: "Can't reach others, but I'll accept anyway"
@@ -949,7 +954,7 @@ Will sync with others later (eventual consistency)
 - Any system where uptime > perfect accuracy
 
 **Real Example: Shopping Cart**
-```
+```text
 Partition occurs
   ↓
 User adds item to cart
@@ -1149,7 +1154,7 @@ Real systems don't make a hard choice—they offer **tunable consistency**.
 **Tunable Consistency Levels:**
 
 **Write Consistency:**
-```
+```text
 ANY:  Success if any node acknowledges (even hinted handoff)
 ONE:  Success if one replica acknowledges (AP)
 QUORUM: Success if majority acknowledges (CP)
@@ -1157,14 +1162,14 @@ ALL:  Success if all replicas acknowledge (CP, slower)
 ```
 
 **Read Consistency:**
-```
+```text
 ONE:  Return from first replica (fast, might be stale)
 QUORUM: Read from majority, return newest (slower, consistent)
 ALL:  Read from all replicas (slowest, most consistent)
 ```
 
 **The Magic Formula:**
-```
+```text
 If (Write_Replicas + Read_Replicas) > Replication_Factor:
     Guaranteed to see latest write (Strong Consistency)
 
@@ -1307,7 +1312,7 @@ A: No. It only lets you choose, per operation, where on the C-A spectrum that sp
 **CAP Only Discusses Partitions. What About Normal Operation?**
 
 PACELC Theorem (Daniel Abadi, 2012):
-```
+```text
 If Partition:
     Choose between Availability and Consistency
 Else (no partition):

@@ -53,6 +53,7 @@ This page is organized into the following topics. Each topic includes a detailed
 10. [Fault Tolerance in Microservices and Distributed Systems](#fault-tolerance-in-microservices-and-distributed-systems)
 11. [Fault Tolerance: Characteristics, Pros, Cons, Use Cases, Components, Patterns, Benefits, Challenges, Best Practices and When to Use](#fault-tolerance-characteristics-pros-cons-use-cases-components-patterns-benefits-challenges-best-practices-and-when-to-use)
 
+12. [Disaster Recovery](#disaster-recovery)
 ### Introduction: What Is Fault Tolerance
 
 Fault tolerance is a system's ability to **keep functioning correctly (or acceptably) when parts of it fail**. It is not the absence of failures — failures are guaranteed at scale: disks die, networks partition, processes crash, dependencies hang. Fault tolerance is the discipline of designing so that these inevitable faults do not become user-visible outages.
@@ -944,6 +945,8 @@ chaos:
       rest-controller: true          # attack all @RestController endpoints
       service: false
 ```
+
+*The yaml snippet above illustrates Java/Spring Boot Code Example: Chaos Monkey for Spring Boot: it shows the concrete form of the idea described in this section.*
 
 ```java
 // A chaos experiment as a test: with latency assaults enabled on the

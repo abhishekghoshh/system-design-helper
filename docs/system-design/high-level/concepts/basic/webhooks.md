@@ -36,7 +36,7 @@ The idea is deliberately simple and reuses infrastructure everyone already has: 
 
 **How Webhooks Work (the delivery lifecycle):**
 
-```
+```text
 1. Registration (once, ahead of time)
    Client  --  POST /webhooks  (url, events, secret)  -->  Provider
    Provider -- 201 Created (subscription id)          -->  Client
@@ -122,6 +122,8 @@ sequenceDiagram
     Worker->>Worker: Verify signature, check idempotency, apply business logic
 ```
 
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case
 
 An e-commerce platform integrates Stripe for payments. Instead of polling Stripe's API every few seconds to ask "has this payment completed yet?" for every open checkout session, the platform registers a webhook endpoint once. When a customer's card is charged, Stripe's dispatcher sends a signed `POST` request to the platform's `/webhooks/stripe` endpoint within a second or two of the charge completing. The platform's endpoint verifies the signature, enqueues the event, responds `200 OK` immediately, and a background worker then marks the order as paid and triggers fulfillment, all without the platform ever needing to ask Stripe "is it done yet?"
@@ -174,6 +176,8 @@ public class WebhookReceiver implements HttpHandler {
 }
 ```
 
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. What is a webhook, and how does it differ from a regular API call?**
@@ -215,6 +219,8 @@ graph TD
     E --> C
     E -->|Max retries exceeded| F[Dead-letter the event]
 ```
+
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
 
 #### Real-Life Use Case
 
@@ -261,6 +267,8 @@ public class StatelessWebhookRequest {
 }
 ```
 
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. Is a webhook connection persistent, like a WebSocket?**
@@ -277,7 +285,7 @@ A: It needs a publicly reachable HTTP endpoint available whenever the provider m
 
 ### Advantages of Webhooks (Pros and Benefits)
 
-```
+```text
 ✓ Real-Time Notifications
   - Event is pushed the instant it happens
   - No polling delay
@@ -325,6 +333,8 @@ graph LR
     end
 ```
 
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case
 
 A logistics company's tracking dashboard used to poll a carrier's API every 30 seconds per shipment to check for status changes, which meant thousands of largely wasted requests per hour once they had a few thousand active shipments. Switching to the carrier's webhook for `shipment.status_changed` cut their outbound request volume by over 95% and reduced the time between an actual status change and it showing on the dashboard from up to 30 seconds to typically under 2 seconds.
@@ -356,6 +366,8 @@ public class ShipmentWebhookHandler implements HttpHandler {
 }
 ```
 
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. Why do webhooks reduce load compared to polling?**
@@ -372,7 +384,7 @@ A: Adding a new subscriber is purely a data/configuration change (registering a 
 
 ### Disadvantages of Webhooks (Cons and Challenges)
 
-```
+```text
 ✗ Requires a Publicly Reachable Endpoint
   - Consumer must expose an HTTP(S) URL
   - Firewalls, NAT, and local development make this harder
@@ -417,6 +429,8 @@ graph TD
     B -->|Yes, but signature not checked| F[Forged request risk if endpoint is discovered]
 ```
 
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case
 
 A startup's webhook consumer briefly went down during a deployment. During that window, three payment events were retried by the provider and eventually delivered together after the deployment finished, one of them a duplicate of an event that had actually been processed just before the outage (the acknowledgment was lost, not the processing). Because the team had not implemented idempotency checks keyed on the event id, the duplicate delivery caused the order to be marked as paid twice and triggered a second fulfillment email, an incident that was only caught because a customer complained, and that led directly to adding an idempotency table keyed on event id before any handler logic ran.
@@ -454,6 +468,8 @@ public class IdempotentWebhookProcessor {
     }
 }
 ```
+
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 
@@ -517,6 +533,8 @@ sequenceDiagram
     end
 ```
 
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case
 
 A fintech company discovered, during a security review, that their webhook endpoint validated only that the request body was well-formed JSON, not that it actually came from their payment provider. A penetration test confirmed that a forged `payment.succeeded` event, aimed at the same URL, would have been processed and would have marked an unpaid order as paid. The fix was to add HMAC-SHA256 signature verification (using the secret issued at subscription time) plus a 5-minute timestamp tolerance window, after which the same forged request was correctly rejected with a `401`.
@@ -567,6 +585,8 @@ public class WebhookSignatureVerifier {
     }
 }
 ```
+
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 
@@ -634,6 +654,8 @@ sequenceDiagram
     end
 ```
 
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case
 
 A ride-hailing platform's driver-payout service consumes a `trip.completed` webhook to calculate earnings. During a brief network blip, the provider's first delivery attempt timed out after the payout service had actually already finished processing it, so the provider retried and delivered the same event again five minutes later. Because the payout service recorded the event id inside the same transaction as crediting the driver's balance, the retried delivery was detected as a duplicate and safely ignored, preventing the driver from being paid twice for the same trip.
@@ -680,6 +702,8 @@ public class IdempotentPayoutProcessor {
     }
 }
 ```
+
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 
@@ -731,6 +755,8 @@ graph TD
     G -->|Yes, one-directional stream is enough| I[Server-Sent Events]
 ```
 
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case
 
 A SaaS analytics company offers three ways for customers to receive event data: an internal Kafka topic (used only by their own microservices), a webhook (used by external customers' backends to receive events in near real time), and a polling API (used as a fallback by customers whose network policy forbids any inbound connection from the internet). Most customers use the webhook, since it gives them near-real-time delivery without needing to adopt Kafka or hold open a persistent connection; only a small number of highly restricted enterprise customers fall back to polling.
@@ -765,6 +791,8 @@ public class PollingClient {
     }
 }
 ```
+
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 
@@ -828,6 +856,8 @@ graph TD
     Deliveries -->|max retries exceeded| DLQ[(Dead-Letter Store)]
 ```
 
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case
 
 A payments platform's original webhook implementation called subscriber URLs directly from inside the same request handler that processed the charge, which meant a single slow subscriber endpoint could add seconds of latency to the checkout flow itself. Re-architecting to publish an internal event to a queue, with a separate dispatcher worker pool handling all outbound delivery asynchronously, decoupled checkout latency entirely from subscriber response times, and let the platform add per-subscriber circuit breakers so one customer's broken integration no longer risked slowing down the core payment flow for anyone.
@@ -883,6 +913,8 @@ public class WebhookDispatcher {
 }
 ```
 
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. Why should an application never call subscriber webhook URLs synchronously from the same code path that produces the event?**
@@ -931,6 +963,8 @@ sequenceDiagram
         Worker->>Worker: Idempotency check + apply business logic
     end
 ```
+
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
 
 #### Real-Life Use Case
 
@@ -1002,6 +1036,8 @@ public class ReliableWebhookEndpoint implements HttpHandler {
 }
 ```
 
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. What is the minimum work a webhook receiving endpoint should do before returning a response?**
@@ -1037,6 +1073,8 @@ graph LR
     Shopify[E-commerce Platform] -->|order.created| Fulfillment[Fulfillment Service]
     Datadog[Monitoring] -->|alert.triggered| PagerDuty[On-call System]
 ```
+
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
 
 #### Real-Life Use Case
 
@@ -1086,6 +1124,8 @@ public class OrderCreatedFanOutExample {
 }
 ```
 
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1. Why do payment providers like Stripe rely on webhooks instead of expecting merchants to poll for payment status?**
@@ -1131,6 +1171,8 @@ graph TD
     K[Monitor Dispatch and Receipt] --> F
 ```
 
+*The diagram above illustrates Diagram: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case
 
 A developer-tools company audited their webhook system after a customer complained about occasional missed events, and found they were missing four of the ten practices above: payloads were unsigned, the schema had no version field (a recent field rename had silently broken several customers' integrations), retries used a fixed 1-minute interval with no cap (causing retry storms during outages), and there was no delivery dashboard for customers to self-diagnose issues. Addressing all four (HMAC signing, a `schema_version` field, exponential backoff with a 20-attempt cap, and a customer-facing delivery log) eliminated the support tickets tied to "missing" events within a month, since most had actually been delivered and processed but were invisible to the customer beforehand.
@@ -1165,6 +1207,8 @@ public class WebhookConfigChecklist {
             String schemaVersion) {}
 }
 ```
+
+*The java snippet above illustrates Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 

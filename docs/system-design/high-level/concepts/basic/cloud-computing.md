@@ -29,6 +29,17 @@ On-demand delivery of computing resources (servers, storage, databases, networki
 10. [Best Practices](#best-practices)
 11. [When to Use Cloud Computing](#when-to-use-cloud-computing)
 
+13. [IaaS — Infrastructure as a Service](#iaas-infrastructure-as-a-service)
+14. [PaaS — Platform as a Service](#paas-platform-as-a-service)
+15. [SaaS — Software as a Service](#saas-software-as-a-service)
+16. [FaaS — Functions as a Service (Serverless)](#faas-functions-as-a-service-serverless)
+17. [Service Model Comparison](#service-model-comparison)
+18. [Public Cloud](#public-cloud)
+19. [Private Cloud](#private-cloud)
+20. [Hybrid Cloud](#hybrid-cloud)
+21. [Multi-Cloud](#multi-cloud)
+22. [Deployment Model Comparison](#deployment-model-comparison)
+23. [Java and Spring Boot Examples](#java-and-spring-boot-examples)
 ---
 
 ## Service Models
@@ -65,6 +76,8 @@ graph TD
     User -->|"No ops"| SaaS
     User -->|"Pay per invocation"| FaaS
 ```
+
+*The diagram above illustrates Service Models: it maps the key components and their interactions described in this section.*
 
 ### IaaS — Infrastructure as a Service
 
@@ -197,6 +210,8 @@ graph TD
     Org -->|"Uses multiple providers"| Multi["🌐 Multi-Cloud\nAWS + GCP + Azure"]
 ```
 
+*The diagram above illustrates Deployment Models: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Public Cloud
@@ -242,7 +257,7 @@ A mix of public and private cloud connected via a secure network (VPN or dedicat
 
 **Example scenario:**
 
-```
+```text
 [ On-Premise Private Cloud ]          [ AWS Public Cloud ]
   - Patient records (HIPAA)    <--->    - ML model training (burst)
   - Core banking transactions           - Static asset CDN
@@ -508,6 +523,8 @@ flowchart TB
     Cloud --> Messaging[Messaging]
 ```
 
+*The diagram above illustrates Components: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Architectural Patterns
@@ -689,6 +706,8 @@ public class CloudStorageService {
 }
 ```
 
+*The java snippet above illustrates 1. Using AWS SDK for S3: it shows the concrete form of the idea described in this section.*
+
 #### 2. Cloud configuration with Spring Cloud
 
 ```yaml
@@ -696,6 +715,8 @@ spring:
   config:
     import: optional:configserver:http://localhost:8888
 ```
+
+*The yaml snippet above illustrates 2. Cloud configuration with Spring Cloud: it shows the concrete form of the idea described in this section.*
 
 ```java
 import org.springframework.beans.factory.annotation.Value;
@@ -718,6 +739,8 @@ public class CloudConfigController {
 }
 ```
 
+*The java snippet above illustrates 2. Cloud configuration with Spring Cloud: it shows the concrete form of the idea described in this section.*
+
 #### 3. Autoscaling-aware health endpoint
 
 ```java
@@ -737,6 +760,8 @@ public class CloudHealthIndicator implements HealthIndicator {
     }
 }
 ```
+
+*The java snippet above illustrates 3. Autoscaling-aware health endpoint: it shows the concrete form of the idea described in this section.*
 
 #### 4. Serverless-style function handler
 

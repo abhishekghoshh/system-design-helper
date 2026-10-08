@@ -73,7 +73,7 @@ flowchart LR
 
 Add more resources to a single machine (CPU, RAM, SSD).
 
-```
+```text
 Small Server → Bigger Server
 ✓ Simple, no code changes
 ✗ Hard limit (biggest machine available)
@@ -85,7 +85,7 @@ Small Server → Bigger Server
 
 Add more machines.
 
-```
+```text
 1 Server → 10 Servers → 100 Servers
 ✓ Virtually unlimited
 ✓ Fault tolerant
@@ -93,6 +93,8 @@ Add more machines.
 ✗ Requires stateless design
 ✗ Distributed system complexity
 ```
+
+*The text snippet above illustrates Vertical vs Horizontal Scaling: it shows the concrete form of the idea described in this section.*
 
 ```mermaid
 flowchart LR
@@ -373,6 +375,8 @@ flowchart LR
     Autoscaler[Autoscaler] --> App
 ```
 
+*The diagram above illustrates Components: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Patterns
@@ -540,6 +544,8 @@ public class ProductService {
 }
 ```
 
+*The java snippet above illustrates 1. Cache-aside service with Redis: it shows the concrete form of the idea described in this section.*
+
 #### 2. Configurable cache TTL
 
 ```java
@@ -563,6 +569,8 @@ public class CacheConfig {
 }
 ```
 
+*The java snippet above illustrates 2. Configurable cache TTL: it shows the concrete form of the idea described in this section.*
+
 #### 3. Asynchronous queue producer
 
 ```java
@@ -583,6 +591,8 @@ public class JobProducer {
     }
 }
 ```
+
+*The java snippet above illustrates 3. Asynchronous queue producer: it shows the concrete form of the idea described in this section.*
 
 #### 4. Database connection pooling with HikariCP
 

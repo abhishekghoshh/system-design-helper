@@ -272,6 +272,8 @@ flowchart LR
     Presenter --> Response["Response to caller"]
 ```
 
+*The diagram above illustrates Dependency Rule and Layers: Diagram: it maps the key components and their interactions described in this section.*
+
 #### Dependency Rule and Layers: Real-Life Use Case
 
 An online learning platform originally shipped its course-enrollment logic tightly coupled to Django's ORM: the enrollment view directly queried Django model objects and applied business rules (seat limits, prerequisite checks) inline in the view function. When the company needed to expose the exact same enrollment logic through a new mobile app's GraphQL API and a partner-facing batch import job, the business rules had to be copy-pasted and re-validated in three places, and a seat-limit bug was fixed in the web view but forgotten in the batch job, causing overselling. After refactoring around the Dependency Rule, an `EnrollStudentUseCase` in the application layer became the single place seat-limit and prerequisite logic lived; the REST view, the GraphQL resolver, and the batch job became three thin Controllers that all called the same Use Case, eliminating the duplicated-logic bug class entirely.
@@ -344,6 +346,8 @@ public class EnrollmentRestController {
     }
 }
 ```
+
+*The java snippet above illustrates Dependency Rule and Layers: Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### Dependency Rule and Layers: Interview Questions and Answers
 
@@ -438,6 +442,8 @@ graph LR
     Calc --> Report
 ```
 
+*The diagram above illustrates SRP: Diagram: it maps the key components and their interactions described in this section.*
+
 #### SRP: Real-Life Use Case
 
 A payroll system originally had a single `Employee` class with `calculatePay()`, `save()`, and `printPaySlip()` methods. When the finance team changed the overtime-pay formula, a bug was accidentally introduced into `printPaySlip()` because both methods shared a private field that the overtime change touched. After applying SRP, the team split the class into `PayCalculator` (owned by finance/payroll rules), `EmployeeRepository` (owned by the data/persistence team), and `PaySlipPrinter` (owned by the reporting team). Subsequent changes to the pay formula could no longer break the pay-slip printing, because the two now share only an immutable, already-computed `PayResult` value object.
@@ -501,6 +507,8 @@ public class PayrollDemo {
     }
 }
 ```
+
+*The java snippet above illustrates SRP: Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### SRP: Interview Questions and Answers
 
@@ -661,6 +669,8 @@ public class OcpDemo {
 }
 ```
 
+*The java snippet above illustrates OCP: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### OCP: Interview Questions and Answers
 
 **Q1. What does "closed for modification" actually forbid, and what does it allow?**
@@ -748,6 +758,8 @@ classDiagram
     note for Square "setWidth() must also change\nheight to stay a square,\nbreaking Rectangle's\nindependent width/height contract"
 ```
 
+*The diagram above illustrates LSP: Diagram: it maps the key components and their interactions described in this section.*
+
 #### LSP: Real-Life Use Case
 
 A reporting library shipped a `Reader` base class whose contract promised `read()` would return `-1` at end-of-stream and never throw for a normal, readable resource. A team added a `NetworkReader` subclass that, when the connection dropped mid-stream, threw an unchecked `ConnectionLostException` instead of returning `-1`. Every piece of client code written against `Reader` (following the original contract) crashed with an unhandled exception the first time a network hiccup occurred in production, because none of it expected a `Reader` to throw there. The fix was to make dropped connections return a well-defined end-of-stream/error result consistent with the base contract (or introduce an explicit checked exception documented on the base type itself), restoring substitutability.
@@ -821,6 +833,8 @@ public class LspDemo {
     }
 }
 ```
+
+*The java snippet above illustrates LSP: Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### LSP: Interview Questions and Answers
 
@@ -992,6 +1006,8 @@ public class IspDemo {
 }
 ```
 
+*The java snippet above illustrates ISP: Java Code Example: it shows the concrete form of the idea described in this section.*
+
 #### ISP: Interview Questions and Answers
 
 **Q1. What is the practical symptom that tells you an interface violates ISP?**
@@ -1147,6 +1163,8 @@ public class DipDemo {
     }
 }
 ```
+
+*The java snippet above illustrates DIP: Java Code Example: it shows the concrete form of the idea described in this section.*
 
 #### DIP: Interview Questions and Answers
 

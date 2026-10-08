@@ -131,6 +131,8 @@ class UdpEchoClient {
 }
 ```
 
+*The java snippet above illustrates Java Code: A Minimal UDP Echo (Client and Server): it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1: Why does UDP exist if TCP already provides reliable delivery?**
@@ -146,7 +148,7 @@ A: IP fragmentation kicks in, the datagram is split into multiple IP fragments a
 
 Every UDP datagram carries a fixed **8-byte header**, far smaller than TCP's minimum 20 bytes, followed by the application data.
 
-```
+```text
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -203,6 +205,8 @@ sequenceDiagram
     Note over R: Receiver sees only 2, 3, no gap notification, no reordering by UDP itself
 ```
 
+*The diagram above illustrates Diagram: Why Ordering and Delivery Are Not Guaranteed: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: Live Sports Streaming
 
 A live sports broadcast sent over UDP-based streaming (e.g. RTP) will occasionally show a brief glitch or pixelation, that is a lost or corrupted datagram simply being skipped, rather than the stream freezing to wait for a retransmission the way a TCP-based download would stall. Viewers overwhelmingly prefer the brief glitch to a multi-second freeze, which is exactly the trade-off UDP's characteristics are optimized for.
@@ -242,6 +246,8 @@ public class UdpOutOfOrderDemo {
     }
 }
 ```
+
+*The java snippet above illustrates Java Code: Observing Out-of-Order and Lost Datagrams: it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 
@@ -285,6 +291,8 @@ graph LR
     style UDPLayer2 fill:#4a90d9,color:#fff
 ```
 
+*The diagram above illustrates Diagram: UDP Component Interaction: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: NTP (Network Time Protocol)
 
 NTP uses UDP port 123 to synchronize clocks across the internet. Each request/response pair is a single small datagram, timestamped on both send and receive. Because clock sync needs to be fast and lightweight (run periodically on millions of devices) and an occasional lost or duplicate sync attempt is harmless (the client just tries again on its next interval), UDP's minimal-component model, one datagram out, one datagram back, no persistent connection, is a perfect fit.
@@ -324,6 +332,8 @@ public class UdpPortDemuxDemo {
 }
 ```
 
+*The java snippet above illustrates Java Code: Demultiplexing by Port with Multiple Sockets: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1: Why doesn't UDP need a "connection" component the way TCP does?**
@@ -362,6 +372,8 @@ graph TD
     style Group fill:#f5a623,color:#000
 ```
 
+*The diagram above illustrates Diagram: Publish-Subscribe via UDP Multicast: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: Multiplayer Game State Synchronization
 
 Competitive online games (e.g. first-person shooters) send player position/action updates dozens of times per second over UDP, using the custom-reliability-layer pattern: each update carries a sequence number, the receiver only cares about the *latest* one (an older, delayed update is discarded, not queued), and only a small subset of "important" events (like a kill confirmation) get an explicit application-level acknowledgment and retry, everything else follows the fire-and-forget pattern because a missed movement update is instantly superseded by the next one.
@@ -399,6 +411,8 @@ public class UdpReliableSendPattern {
     }
 }
 ```
+
+*The java snippet above illustrates Java Code: Simple Application-Level Reliability Pattern (ACK + Retry): it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 
@@ -448,6 +462,8 @@ sequenceDiagram
     end
 ```
 
+*The diagram above illustrates Diagram: Latency Comparison, TCP Handshake vs UDP: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: Voice over IP (VoIP)
 
 VoIP calls are extremely latency-sensitive; humans notice audio delay above roughly 150ms as awkward, unnatural conversation. VoIP protocols (e.g. RTP over UDP) accept that some audio packets will be lost, and rely on codecs that can conceal small gaps (packet loss concealment) rather than retransmitting missed audio, since a retransmitted, late audio packet is useless once its moment in the conversation has passed. UDP's low-latency, no-retransmission behavior is precisely what makes real-time voice communication feel natural.
@@ -476,6 +492,8 @@ public class UdpLatencyDemo {
     }
 }
 ```
+
+*The java snippet above illustrates Java Code: Measuring Round-Trip Latency Savings: it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 
@@ -520,6 +538,8 @@ sequenceDiagram
     Note over Victim: Receives unsolicited, amplified traffic flood
 ```
 
+*The diagram above illustrates Diagram: Amplification Attack Using a Spoofed UDP Source: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: DNS Amplification DDoS Attacks
 
 Attackers have historically abused open DNS resolvers by sending small UDP queries with a spoofed source IP address matching a victim's server. Because UDP performs no handshake to validate that the claimed sender actually requested anything, the resolver sends its (much larger) response directly to the victim, achieving significant traffic amplification (often 50x or more) from a small amount of attacker-controlled bandwidth. This class of attack directly stems from UDP's connectionless, no-verification design, and defenses (response rate limiting, DNS Cookie, BCP38 source-address filtering) exist specifically to mitigate it.
@@ -551,6 +571,8 @@ public class UdpLossHandlingDemo {
     }
 }
 ```
+
+*The java snippet above illustrates Java Code: Handling Silent Packet Loss with a Timeout: it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 
@@ -600,6 +622,8 @@ graph TD
     style Congestion fill:#d94a4a,color:#fff
 ```
 
+*The diagram above illustrates Diagram: Decision Flow for Adding Reliability on Top of UDP: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: QUIC / HTTP/3
 
 QUIC is the textbook example of "best practices for UDP" applied at scale: it runs over UDP but layers in its own connection identifiers, per-stream sequence numbers, selective acknowledgment, encryption (mandatory, unlike plain UDP), and its own congestion control (based on TCP-proven algorithms like CUBIC or BBR). Browsers and CDNs adopted it precisely because it lets them fix TCP's head-of-line blocking problem while still being a responsible, congestion-aware citizen of the shared internet, exactly the balance the best practices above describe.
@@ -645,6 +669,8 @@ public class UdpBestPracticeSender {
 }
 ```
 
+*The java snippet above illustrates Java Code: Applying Sequence Numbers and a Retry Loop Together: it shows the concrete form of the idea described in this section.*
+
 #### Interview Questions and Answers
 
 **Q1: Why is "keep datagrams under the MTU" considered a best practice rather than an optimization detail?**
@@ -686,6 +712,8 @@ graph TD
     style UDP fill:#4ad971,color:#000
 ```
 
+*The diagram above illustrates Diagram: Choosing Between UDP and TCP: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: Online Multiplayer Racing Game
 
 A racing game sends the position, speed, and steering angle of every car roughly 20-60 times per second. Choosing UDP here is correct because: the exchange is small and frequent (favoring low overhead), a missed update is instantly superseded by the next one only tens of milliseconds later (favoring "newer beats older"), and latency is critical for fair, responsive gameplay (a delayed update actively harms the experience). Choosing TCP would introduce retransmission-induced lag spikes exactly when the network hiccups, the worst possible moment for a competitive racing game.
@@ -711,6 +739,8 @@ public class ProtocolChoiceDemo {
     }
 }
 ```
+
+*The java snippet above illustrates Java Code: Choosing Protocol Based on Requirements (Illustrative): it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 
@@ -754,6 +784,8 @@ graph TD
     style TimeSync fill:#4ad971,color:#000
 ```
 
+*The diagram above illustrates Diagram: A Modern Application Mixing UDP and TCP by Use Case: it maps the key components and their interactions described in this section.*
+
 #### Real-Life Use Case: A Complete Video Call
 
 Opening a video call touches nearly every UDP use case at once: the client resolves the calling service's hostname via **DNS** (UDP), synchronizes its clock via **NTP** (UDP) so timestamps line up correctly, negotiates the call over a signaling channel (often TCP/WebSocket for reliability of control messages), and then streams audio/video over **RTP/WebRTC** (UDP) for the actual real-time media, with a jitter buffer smoothing out arrival timing and codec-level concealment handling any lost packets.
@@ -784,6 +816,8 @@ public class IotTelemetrySender {
     }
 }
 ```
+
+*The java snippet above illustrates Java Code: A Minimal Telemetry Sender (IoT-style Fire-and-Forget): it shows the concrete form of the idea described in this section.*
 
 #### Interview Questions and Answers
 

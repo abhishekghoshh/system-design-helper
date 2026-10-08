@@ -331,6 +331,8 @@ flowchart LR
     Loader --> Data[Data sources]
 ```
 
+*The diagram above illustrates Components: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Patterns
@@ -488,6 +490,8 @@ type User {
 }
 ```
 
+*The graphql snippet above illustrates 1. GraphQL schema: it shows the concrete form of the idea described in this section.*
+
 #### 2. Query resolver
 
 ```java
@@ -513,6 +517,8 @@ public class UserController {
 }
 ```
 
+*The java snippet above illustrates 2. Query resolver: it shows the concrete form of the idea described in this section.*
+
 #### 3. Mutation resolver
 
 ```java
@@ -535,6 +541,8 @@ public class UserMutationController {
     }
 }
 ```
+
+*The java snippet above illustrates 3. Mutation resolver: it shows the concrete form of the idea described in this section.*
 
 #### 4. Repository service
 

@@ -17,6 +17,14 @@
 
 ## Theory
 
+### Table of Contents
+
+1. [Overview](#overview)
+2. [How it works](#how-it-works)
+3. [Code explanation](#code-explanation)
+4. [Code implementation in GO](#code-implementation-in-go)
+
+
 ### Overview
 A gossip protocol (also known as epidemic protocol) is a method for spreading information through a distributed system. Each node randomly selects other nodes and shares state information, similar to how gossip spreads in a social network. This approach ensures eventual consistency without requiring centralized coordination.
 
@@ -33,7 +41,7 @@ A gossip protocol (also known as epidemic protocol) is a method for spreading in
 4. Peers receive and merge the information into their own state
 5. Information gradually propagates through the entire system
 
-### Code explaination
+### Code explanation
 
 #### Structs
 
@@ -62,7 +70,7 @@ A gossip protocol (also known as epidemic protocol) is a method for spreading in
 
 #### Data Flow
 
-```
+```http
                     ┌─────────────────────────────────────────────────┐
                     │                 GossipNode                      │
                     │                                                 │
@@ -94,6 +102,8 @@ A gossip protocol (also known as epidemic protocol) is a method for spreading in
                     │         if FailCount >= 3: remove node        │
                     └─────────────────────────────────────────────────┘
 ```
+
+*The http snippet above illustrates Data Flow: it shows the concrete form of the idea described in this section.*
 
 ### Code implementation in GO
 ```go
@@ -361,3 +371,5 @@ func main() {
 	}
 }
 ```
+
+*The go snippet above illustrates Code implementation in GO: it shows the concrete form of the idea described in this section.*

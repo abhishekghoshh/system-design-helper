@@ -86,7 +86,7 @@ It determines what resources or actions an authenticated user can access. After 
 
 **How They Work Together:**
 
-```
+```text
 User enters credentials
   → Authentication: "Is this user real?" (validates identity)
     → YES → Authorization: "What can this user do?" (checks permissions)
@@ -112,7 +112,7 @@ User enters credentials
 
 **Real-World Example — E-commerce App:**
 
-```
+```text
 Customer logs in (Authentication)
   → Can view products, place orders (Authorization: customer role)
   → Cannot access admin dashboard (Authorization: denied)
@@ -197,7 +197,7 @@ A compact, self-contained token for secure information transfer.
 
 **Structure:**
 
-```
+```text
 Header.Payload.Signature
 ```
 
@@ -404,6 +404,8 @@ flowchart LR
     App --> Audit[Audit log]
 ```
 
+*The diagram above illustrates Components: it maps the key components and their interactions described in this section.*
+
 ---
 
 ### Patterns
@@ -566,6 +568,8 @@ public class SecurityConfig {
 }
 ```
 
+*The java snippet above illustrates 1. Securing endpoints with Spring Security: it shows the concrete form of the idea described in this section.*
+
 #### 2. JWT validation service
 
 ```java
@@ -610,6 +614,8 @@ public class JwtService {
 }
 ```
 
+*The java snippet above illustrates 2. JWT validation service: it shows the concrete form of the idea described in this section.*
+
 #### 3. OAuth resource server configuration
 
 ```java
@@ -633,6 +639,8 @@ public class ResourceServerConfig {
     }
 }
 ```
+
+*The java snippet above illustrates 3. OAuth resource server configuration: it shows the concrete form of the idea described in this section.*
 
 #### 4. Role-based authorization on a controller method
 
