@@ -1,0 +1,3182 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="https://abhishekghoshh.github.io/system-design-helper/basics/maths/" rel="canonical"/>
+<link href="../pointers/" rel="prev"/>
+<link href="../behavioural/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.50" name="generator"/>
+<title>Maths - System Design Helper</title>
+<link href="../../assets/stylesheets/main.a40c8224.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+<meta content="website" property="og:type"/>
+<meta content="Maths - System Design Helper" property="og:title"/>
+<meta content="None" property="og:description"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/basics/maths.png" property="og:image"/>
+<meta content="image/png" property="og:image:type"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/basics/maths/" property="og:url"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Maths - System Design Helper" name="twitter:title"/>
+<meta content="None" name="twitter:description"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/basics/maths.png" name="twitter:image"/>
+</head>
+<body data-md-color-accent="purple" data-md-color-primary="teal" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#maths-for-developers">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="System Design Helper" class="md-header__button md-logo" data-md-component="logo" href="../.." title="System Design Helper">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            System Design Helper
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Maths
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="purple" data-md-color-media="" data-md-color-primary="teal" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="lime" data-md-color-media="" data-md-color-primary="teal" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+        
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../cpu/">
+          
+  
+  Basics
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ai/ai/">
+          
+  
+  AI
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../devops/">
+          
+  
+  DevOps
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../security/introduction/">
+          
+  
+  Security
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../system-design/books/">
+          
+  
+  System Design
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="System Design Helper" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="System Design Helper">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    System Design Helper
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    Home
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+<span class="md-ellipsis">
+    Basics
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            Basics
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cpu/">
+<span class="md-ellipsis">
+    CPU
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../pointers/">
+<span class="md-ellipsis">
+    Pointers
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    Maths
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    Maths
+  </span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#youtube">
+<span class="md-ellipsis">
+      Youtube
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#theory">
+<span class="md-ellipsis">
+      Theory
+    </span>
+</a>
+<nav aria-label="Theory" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-topics-covered">
+<span class="md-ellipsis">
+      1. Topics Covered
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-complexity-and-big-o">
+<span class="md-ellipsis">
+      2. Complexity and Big-O
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-statistics-p50-p99-and-distributions">
+<span class="md-ellipsis">
+      3. Statistics p50 p99 and Distributions
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-linear-algebra-intuition">
+<span class="md-ellipsis">
+      4. Linear Algebra Intuition
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-python-examples-with-numpy">
+<span class="md-ellipsis">
+      5. Python Examples with NumPy
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-gotchas-and-numerical-pitfalls">
+<span class="md-ellipsis">
+      6. Gotchas and Numerical Pitfalls
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-tools-and-ecosystem">
+<span class="md-ellipsis">
+      7. Tools and Ecosystem
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-interview-questions-and-answers">
+<span class="md-ellipsis">
+      8. Interview Questions and Answers
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../behavioural/">
+<span class="md-ellipsis">
+    Behavioural
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../developer-experiences/">
+<span class="md-ellipsis">
+    Developer Experiences
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../open-source-tools/">
+<span class="md-ellipsis">
+    Open Source Tools
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../software-architect/">
+<span class="md-ellipsis">
+    Software Architect
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../wisdom/">
+<span class="md-ellipsis">
+    Wisdom
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+<span class="md-ellipsis">
+    AI
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            AI
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ai/ai/">
+<span class="md-ellipsis">
+    AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ai/ai-tools/">
+<span class="md-ellipsis">
+    AI Tools
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ai/agentic-ai/">
+<span class="md-ellipsis">
+    Agentic AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ai/gen-ai/">
+<span class="md-ellipsis">
+    Gen AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ai/langchain-and-langgraph/">
+<span class="md-ellipsis">
+    LangChain and LangGraph
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ai/MCP/">
+<span class="md-ellipsis">
+    MCP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ai/RAG/">
+<span class="md-ellipsis">
+    RAG
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ai/llm-wiki/">
+<span class="md-ellipsis">
+    LLM Wiki
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ai/vector-embeddings/">
+<span class="md-ellipsis">
+    Vector Embeddings
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ai/vibe-coding/">
+<span class="md-ellipsis">
+    Vibe Coding
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ai/courses/">
+<span class="md-ellipsis">
+    Courses
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    DevOps
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            DevOps
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../devops/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../devops/deployment-strategies/">
+<span class="md-ellipsis">
+    Deployment Strategies
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+<span class="md-ellipsis">
+    Security
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            Security
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/authentication-and-authorization/">
+<span class="md-ellipsis">
+    Authentication &amp; Authorization
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/oauth/">
+<span class="md-ellipsis">
+    OAuth
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/rbac/">
+<span class="md-ellipsis">
+    RBAC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/sso/">
+<span class="md-ellipsis">
+    SSO
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/ssl/">
+<span class="md-ellipsis">
+    SSL
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/ssh/">
+<span class="md-ellipsis">
+    SSH
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/jwt/">
+<span class="md-ellipsis">
+    JWT
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/encryption/">
+<span class="md-ellipsis">
+    Encryption
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/environment-variables/">
+<span class="md-ellipsis">
+    Environment Variables
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/devsecops/">
+<span class="md-ellipsis">
+    DevSecOps
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/firewall/">
+<span class="md-ellipsis">
+    Firewall
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+<span class="md-ellipsis">
+    Certificate
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_13_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_13">
+<span class="md-nav__icon md-icon"></span>
+            Certificate
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/certificate/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/certificate/certificate-authority/">
+<span class="md-ellipsis">
+    Certificate Authority
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/certificate/client-certificates/">
+<span class="md-ellipsis">
+    Client Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/certificate/server-certificates/">
+<span class="md-ellipsis">
+    Server Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/certificate/self-signed-certificates/">
+<span class="md-ellipsis">
+    Self-Signed Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/certificate/links/">
+<span class="md-ellipsis">
+    Links
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_14" id="__nav_5_14_label" tabindex="0">
+<span class="md-ellipsis">
+    Reverse Proxy
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_14_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_14">
+<span class="md-nav__icon md-icon"></span>
+            Reverse Proxy
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/reverse-proxy/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/reverse-proxy/haproxy/">
+<span class="md-ellipsis">
+    HAProxy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/reverse-proxy/nginx/">
+<span class="md-ellipsis">
+    Nginx
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+<span class="md-ellipsis">
+    System Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            System Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/books/">
+<span class="md-ellipsis">
+    Books
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/courses/">
+<span class="md-ellipsis">
+    Courses
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/interview/">
+<span class="md-ellipsis">
+    Interview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4" id="__nav_6_4_label" tabindex="0">
+<span class="md-ellipsis">
+    High Level Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_4">
+<span class="md-nav__icon md-icon"></span>
+            High Level Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1" id="__nav_6_4_1_label" tabindex="0">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_1_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_1">
+<span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_1_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1_2" id="__nav_6_4_1_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Basic
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_1_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_1_2">
+<span class="md-nav__icon md-icon"></span>
+            Basic
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/philosophy-of-system-design/">
+<span class="md-ellipsis">
+    Philosophy of System Design
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/client-server-architecture/">
+<span class="md-ellipsis">
+    Client-Server Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/separation-of-concerns/">
+<span class="md-ellipsis">
+    Separation of Concerns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/state-and-data-flow/">
+<span class="md-ellipsis">
+    State and Data Flow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/back-of-envelope-calculation/">
+<span class="md-ellipsis">
+    Back of Envelope Calculation
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/cloud-computing/">
+<span class="md-ellipsis">
+    Cloud Computing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/ip-addresses-and-ports/">
+<span class="md-ellipsis">
+    IP Addresses &amp; Ports
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/sockets/">
+<span class="md-ellipsis">
+    Sockets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/dns-server/">
+<span class="md-ellipsis">
+    DNS Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/networking/">
+<span class="md-ellipsis">
+    Networking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/tcp/">
+<span class="md-ellipsis">
+    TCP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/udp/">
+<span class="md-ellipsis">
+    UDP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/http/">
+<span class="md-ellipsis">
+    HTTP / HTTPS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/websockets/">
+<span class="md-ellipsis">
+    WebSockets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/smtp-server/">
+<span class="md-ellipsis">
+    SMTP Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/api/">
+<span class="md-ellipsis">
+    API
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/restfull-architecture/">
+<span class="md-ellipsis">
+    RESTful Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/data-serialization/">
+<span class="md-ellipsis">
+    Data Serialization
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/webhooks/">
+<span class="md-ellipsis">
+    Webhooks
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/load-balancer-and-proxy-server/">
+<span class="md-ellipsis">
+    Load Balancer &amp; Proxy Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/cdn/">
+<span class="md-ellipsis">
+    CDN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/hashing/">
+<span class="md-ellipsis">
+    Hashing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/storage/">
+<span class="md-ellipsis">
+    Storage
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/s3/">
+<span class="md-ellipsis">
+    S3
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/caching/">
+<span class="md-ellipsis">
+    Caching
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/scalability/">
+<span class="md-ellipsis">
+    Scalability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/browser-rendering-pipeline/">
+<span class="md-ellipsis">
+    Browser Rendering Pipeline
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/availability-and-reliability/">
+<span class="md-ellipsis">
+    Availability &amp; Reliability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/architecture-patterns/">
+<span class="md-ellipsis">
+    Architecture Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/security-basics/">
+<span class="md-ellipsis">
+    Security Basics
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/passwords/">
+<span class="md-ellipsis">
+    Passwords
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/environment-configuration-and-secrets/">
+<span class="md-ellipsis">
+    Environment Configuration &amp; Secrets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/process/">
+<span class="md-ellipsis">
+    Process
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/code-documentation/">
+<span class="md-ellipsis">
+    Code Documentation
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/additional-concepts/">
+<span class="md-ellipsis">
+    Additional Concepts
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_1_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1_3" id="__nav_6_4_1_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Advanced
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_1_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_1_3">
+<span class="md-nav__icon md-icon"></span>
+            Advanced
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/webrtc/">
+<span class="md-ellipsis">
+    WebRTC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/voice-over-internet-protocol/">
+<span class="md-ellipsis">
+    VoIP (Voice Over Internet Protocol)
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/graphql/">
+<span class="md-ellipsis">
+    GraphQL
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/grpc/">
+<span class="md-ellipsis">
+    gRPC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/asynchronus-communication/">
+<span class="md-ellipsis">
+    Asynchronous Communication
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/nats/">
+<span class="md-ellipsis">
+    NATS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/api-gateway/">
+<span class="md-ellipsis">
+    API Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/service-discovery/">
+<span class="md-ellipsis">
+    Service Discovery
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/service-mesh/">
+<span class="md-ellipsis">
+    Service Mesh
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/consistent-hashing/">
+<span class="md-ellipsis">
+    Consistent Hashing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/distributed-caches-and-caching-strategies/">
+<span class="md-ellipsis">
+    Distributed Caches &amp; Caching Strategies
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/scaling-to-one-million/">
+<span class="md-ellipsis">
+    Scaling to One Million
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/adaptive-bitrate-streaming/">
+<span class="md-ellipsis">
+    Adaptive Bitrate Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/consistency/">
+<span class="md-ellipsis">
+    Consistency
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/cap-theorm/">
+<span class="md-ellipsis">
+    CAP Theorem
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/fault-tolerance/">
+<span class="md-ellipsis">
+    Fault Tolerance
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/clean-architecture/">
+<span class="md-ellipsis">
+    Clean Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/microservices-patterns/">
+<span class="md-ellipsis">
+    Microservices Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/raft-consensus-algorithm/">
+<span class="md-ellipsis">
+    Raft Consensus Algorithm
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/gossip-protocol/">
+<span class="md-ellipsis">
+    Gossip Protocol
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/ditributed-transaction-and-concurrency-control/">
+<span class="md-ellipsis">
+    Distributed Transaction &amp; Concurrency Control
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/cdc/">
+<span class="md-ellipsis">
+    CDC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/resilience-patterns/">
+<span class="md-ellipsis">
+    Resilience Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/thundering-effect/">
+<span class="md-ellipsis">
+    Thundering Herd Effect
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/observability/">
+<span class="md-ellipsis">
+    Observability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/cqrs/">
+<span class="md-ellipsis">
+    CQRS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/event-sourcing/">
+<span class="md-ellipsis">
+    Event Sourcing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/saga-pattern/">
+<span class="md-ellipsis">
+    Saga Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/data-processing/">
+<span class="md-ellipsis">
+    Data Processing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/programming-language/">
+<span class="md-ellipsis">
+    Programming Language
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/github-server/">
+<span class="md-ellipsis">
+    GitHub Server
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2" id="__nav_6_4_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Designing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Designing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_2_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2_2" id="__nav_6_4_2_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Basic
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_2_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_2_2">
+<span class="md-nav__icon md-icon"></span>
+            Basic
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/url-shortner/">
+<span class="md-ellipsis">
+    URL Shortener
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/rate-limiter/">
+<span class="md-ellipsis">
+    Rate Limiter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/notification-system/">
+<span class="md-ellipsis">
+    Notification System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/webhook/">
+<span class="md-ellipsis">
+    Webhook
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/cdn/">
+<span class="md-ellipsis">
+    CDN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/autocomplete/">
+<span class="md-ellipsis">
+    Autocomplete
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/pastebin/">
+<span class="md-ellipsis">
+    Pastebin
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/leaderboard/">
+<span class="md-ellipsis">
+    Leaderboard
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/inventory-management-system/">
+<span class="md-ellipsis">
+    Inventory Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/library-management-system/">
+<span class="md-ellipsis">
+    Library Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/job-board/">
+<span class="md-ellipsis">
+    Job Board
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/bug-issue-tracker/">
+<span class="md-ellipsis">
+    Bug/Issue Tracker
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/todo-list-app/">
+<span class="md-ellipsis">
+    To-Do List App
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/attendance-tracking-system/">
+<span class="md-ellipsis">
+    Attendance Tracking System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/customer-support-ticketing-system/">
+<span class="md-ellipsis">
+    Customer Support Ticketing System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/digital-wallet/">
+<span class="md-ellipsis">
+    Digital Wallet
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/vending-machine/">
+<span class="md-ellipsis">
+    Vending Machine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/rate-and-review-system/">
+<span class="md-ellipsis">
+    Rate-and-Review System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/hotel-booking/">
+<span class="md-ellipsis">
+    Hotel Booking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/app-store/">
+<span class="md-ellipsis">
+    App Store
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/yelp/">
+<span class="md-ellipsis">
+    Yelp
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/carpooling-system/">
+<span class="md-ellipsis">
+    Carpooling System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/blogging-platform/">
+<span class="md-ellipsis">
+    Blogging Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/image-gallery-with-tagging/">
+<span class="md-ellipsis">
+    Image Gallery with Tagging
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/polling-voting-app/">
+<span class="md-ellipsis">
+    Polling/Voting App
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/online-voting-system/">
+<span class="md-ellipsis">
+    Online Voting System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/expense-splitting-app/">
+<span class="md-ellipsis">
+    Expense-Splitting App
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/vpn/">
+<span class="md-ellipsis">
+    VPN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/chess-game/">
+<span class="md-ellipsis">
+    Chess Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/how-to-host-your-own-x/">
+<span class="md-ellipsis">
+    How to Host Your Own X
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_2_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2_3" id="__nav_6_4_2_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Advanced
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_2_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_2_3">
+<span class="md-nav__icon md-icon"></span>
+            Advanced
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/key-value-store/">
+<span class="md-ellipsis">
+    Key Value Store
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/log-system/">
+<span class="md-ellipsis">
+    Log System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/search-engine/">
+<span class="md-ellipsis">
+    Search Engine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/authentication-system/">
+<span class="md-ellipsis">
+    Authentication System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-counter/">
+<span class="md-ellipsis">
+    Distributed Counter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-cache/">
+<span class="md-ellipsis">
+    Distributed Cache
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-locking-service/">
+<span class="md-ellipsis">
+    Distributed Locking Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-job-scheduler/">
+<span class="md-ellipsis">
+    Distributed Job Scheduler
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-rate-limiter/">
+<span class="md-ellipsis">
+    Distributed Rate Limiter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-rate-limited-api-gateway/">
+<span class="md-ellipsis">
+    Distributed Rate-Limited API Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-configuration-management-system/">
+<span class="md-ellipsis">
+    Distributed Configuration Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/multi-region-deployment-system/">
+<span class="md-ellipsis">
+    Multi-Region Deployment System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/feature-flag-experimentation-platform/">
+<span class="md-ellipsis">
+    Feature Flag and Experimentation Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/notification-fanout-service/">
+<span class="md-ellipsis">
+    Notification Fan-Out Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/chat-system/">
+<span class="md-ellipsis">
+    Chat System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/whatspp/">
+<span class="md-ellipsis">
+    WhatsApp
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/live-comments/">
+<span class="md-ellipsis">
+    Live Comments
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-messaging-queue/">
+<span class="md-ellipsis">
+    Distributed Messaging Queue
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/slack/">
+<span class="md-ellipsis">
+    Slack
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/fault-tolerant-order-processing-system/">
+<span class="md-ellipsis">
+    Fault-Tolerant Order Processing System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/video-streaming/">
+<span class="md-ellipsis">
+    Video Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/netflix/">
+<span class="md-ellipsis">
+    Netflix
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/spotify/">
+<span class="md-ellipsis">
+    Spotify
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/live-streaming/">
+<span class="md-ellipsis">
+    Live Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/Image-Optimisation-on-the-fly/">
+<span class="md-ellipsis">
+    Image Optimisation On The Fly
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/amazon-flipkart/">
+<span class="md-ellipsis">
+    Amazon/Flipkart
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/e-commerce/">
+<span class="md-ellipsis">
+    E-Commerce
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/ecommerce-checkout/">
+<span class="md-ellipsis">
+    E-Commerce Checkout
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/payment-gateway/">
+<span class="md-ellipsis">
+    Payment Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/stripe/">
+<span class="md-ellipsis">
+    Stripe
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/upi-payments/">
+<span class="md-ellipsis">
+    UPI Payments
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/settlement-reconciliation-system/">
+<span class="md-ellipsis">
+    Settlement and Reconciliation System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/fraud-detection-pipeline/">
+<span class="md-ellipsis">
+    Fraud Detection Pipeline
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/quick-commerce-inventory-system/">
+<span class="md-ellipsis">
+    Quick-Commerce Inventory System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/ecommerce-search-ranking-system/">
+<span class="md-ellipsis">
+    E-Commerce Search &amp; Ranking System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/twitter/">
+<span class="md-ellipsis">
+    Twitter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/social-media/">
+<span class="md-ellipsis">
+    Social Media
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/hashtag-service/">
+<span class="md-ellipsis">
+    Hashtag Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/recomendation-engine/">
+<span class="md-ellipsis">
+    Recommendation Engine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/facebook/">
+<span class="md-ellipsis">
+    Facebook
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/instagram/">
+<span class="md-ellipsis">
+    Instagram
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/tiktok/">
+<span class="md-ellipsis">
+    TikTok
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/bookmyshow/">
+<span class="md-ellipsis">
+    BookMyShow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/uber/">
+<span class="md-ellipsis">
+    Uber
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/food-delivery/">
+<span class="md-ellipsis">
+    Food Delivery
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/flight-booking/">
+<span class="md-ellipsis">
+    Flight Booking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/google-maps/">
+<span class="md-ellipsis">
+    Google Maps
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/google-drive/">
+<span class="md-ellipsis">
+    Google Drive
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/data-warehouse/">
+<span class="md-ellipsis">
+    Data Warehouse
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-geospatial-data-platform/">
+<span class="md-ellipsis">
+    Distributed Geospatial Data Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/redis/">
+<span class="md-ellipsis">
+    Redis
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/large-language-model/">
+<span class="md-ellipsis">
+    Large Language Model
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/leetcode/">
+<span class="md-ellipsis">
+    LeetCode
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/vercel/">
+<span class="md-ellipsis">
+    Vercel
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/email-automation-platform/">
+<span class="md-ellipsis">
+    Email Automation Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/google-docs/">
+<span class="md-ellipsis">
+    Google Docs
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/online-code-editor/">
+<span class="md-ellipsis">
+    Online Code Editor
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/stock-broker-system/">
+<span class="md-ellipsis">
+    Stock Broker System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-transaction-banking-system/">
+<span class="md-ellipsis">
+    Distributed Transaction Banking System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/real-time-bidding-auction-system/">
+<span class="md-ellipsis">
+    Real-Time Bidding/Auction System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/multiplayer-game/">
+<span class="md-ellipsis">
+    Multiplayer Game
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_3" id="__nav_6_4_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Links
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Links
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/links/udemy/">
+<span class="md-ellipsis">
+    Udemy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/links/websites/">
+<span class="md-ellipsis">
+    Websites
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/links/youtube/">
+<span class="md-ellipsis">
+    YouTube
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
+<span class="md-ellipsis">
+    Low Level Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_5">
+<span class="md-nav__icon md-icon"></span>
+            Low Level Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_2" id="__nav_6_5_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_2">
+<span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/concepts/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/concepts/hashmap/">
+<span class="md-ellipsis">
+    HashMap
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/concepts/mvc/">
+<span class="md-ellipsis">
+    MVC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/concepts/null-object-pattern/">
+<span class="md-ellipsis">
+    Null Object Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/concepts/solid-principles/">
+<span class="md-ellipsis">
+    SOLID Principles
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/concepts/technical-debt/">
+<span class="md-ellipsis">
+    Technical Debt
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3" id="__nav_6_5_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Design Patterns
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_3">
+<span class="md-nav__icon md-icon"></span>
+            Design Patterns
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/design-pattern/">
+<span class="md-ellipsis">
+    Design Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_2" id="__nav_6_5_3_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Creational
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_2">
+<span class="md-nav__icon md-icon"></span>
+            Creational
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/creational/creational/">
+<span class="md-ellipsis">
+    All Creational Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/creational/singleton/">
+<span class="md-ellipsis">
+    Singleton
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/creational/prototype/">
+<span class="md-ellipsis">
+    Prototype
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/creational/builder/">
+<span class="md-ellipsis">
+    Builder
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/creational/factory/">
+<span class="md-ellipsis">
+    Factory
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/creational/abstract-factory/">
+<span class="md-ellipsis">
+    Abstract Factory
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/creational/object-pool/">
+<span class="md-ellipsis">
+    Object Pool
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_3" id="__nav_6_5_3_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Structural
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_3">
+<span class="md-nav__icon md-icon"></span>
+            Structural
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/structural/">
+<span class="md-ellipsis">
+    All Structural Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/adapter/">
+<span class="md-ellipsis">
+    Adapter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/bridge/">
+<span class="md-ellipsis">
+    Bridge
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/composite/">
+<span class="md-ellipsis">
+    Composite
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/decorator/">
+<span class="md-ellipsis">
+    Decorator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/facade/">
+<span class="md-ellipsis">
+    Facade
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/flyweight/">
+<span class="md-ellipsis">
+    Flyweight
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/proxy/">
+<span class="md-ellipsis">
+    Proxy
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_4" id="__nav_6_5_3_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Behavioral
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_4_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_4">
+<span class="md-nav__icon md-icon"></span>
+            Behavioral
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/behavioral/">
+<span class="md-ellipsis">
+    All Behavioral Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/chain-of-responsibility/">
+<span class="md-ellipsis">
+    Chain of Responsibility
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/command/">
+<span class="md-ellipsis">
+    Command
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/interpreter/">
+<span class="md-ellipsis">
+    Interpreter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/iterator/">
+<span class="md-ellipsis">
+    Iterator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/mediator/">
+<span class="md-ellipsis">
+    Mediator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/memento/">
+<span class="md-ellipsis">
+    Memento
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/observer/">
+<span class="md-ellipsis">
+    Observer
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/state/">
+<span class="md-ellipsis">
+    State
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/strategy/">
+<span class="md-ellipsis">
+    Strategy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/template/">
+<span class="md-ellipsis">
+    Template
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/visitor/">
+<span class="md-ellipsis">
+    Visitor
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_4" id="__nav_6_5_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Designing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_4_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_4">
+<span class="md-nav__icon md-icon"></span>
+            Designing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/access-management-system/">
+<span class="md-ellipsis">
+    Access Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/account-balance-tracker/">
+<span class="md-ellipsis">
+    Account Balance Tracker
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/air-traffic-controller/">
+<span class="md-ellipsis">
+    Air Traffic Controller
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/apply-coupons-on-shopping-cart/">
+<span class="md-ellipsis">
+    Apply Coupons on Shopping Cart
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/atm/">
+<span class="md-ellipsis">
+    ATM
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/bookmyshow/">
+<span class="md-ellipsis">
+    BookMyShow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/cache-system/">
+<span class="md-ellipsis">
+    Cache System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/car-rental-service/">
+<span class="md-ellipsis">
+    Car Rental Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/chess-game/">
+<span class="md-ellipsis">
+    Chess Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/cricbuzz/">
+<span class="md-ellipsis">
+    Cricbuzz
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/elevator-system/">
+<span class="md-ellipsis">
+    Elevator System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/inventory-management-system/">
+<span class="md-ellipsis">
+    Inventory Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/locker-allocation-system/">
+<span class="md-ellipsis">
+    Locker Allocation System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/logging-system/">
+<span class="md-ellipsis">
+    Logging System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/meeting-scheduler/">
+<span class="md-ellipsis">
+    Meeting Scheduler
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/parking-lot/">
+<span class="md-ellipsis">
+    Parking Lot
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/payment-gateway/">
+<span class="md-ellipsis">
+    Payment Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/snake-and-ladder/">
+<span class="md-ellipsis">
+    Snake and Ladder
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/splitwise/">
+<span class="md-ellipsis">
+    Splitwise
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/stock-exchange-book/">
+<span class="md-ellipsis">
+    Stock Exchange Book
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/tic-tac-toe/">
+<span class="md-ellipsis">
+    Tic Tac Toe
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/vending-machine/">
+<span class="md-ellipsis">
+    Vending Machine
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="maths-for-developers">Maths for Developers</h1>
+<h2 id="youtube">Youtube</h2>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=mzw3P3np_pc">Math Every Programmer ACTUALLY Needs</a></li>
+</ul>
+<h2 id="theory">Theory</h2>
+<p>This page covers the math backend and AI developers actually use: arithmetic that shows up in
+capacity planning, complexity analysis that decides whether a design survives production load,
+statistics that make latency SLOs and experiments meaningful, and linear algebra intuition that
+makes embeddings, rankings, and ML systems legible without a PhD.
+It spans binary numbers, exponents, logarithms, factorials, modular arithmetic, mean and median,
+randomness and entropy, and vectors — the nine stub topics — rebuilt as interview-ready tools.</p>
+<p>This guide turns that stub into a complete reference for backend and system-design interviews.
+You will learn to estimate cost with Big-O and back-of-the-envelope arithmetic, to read p50/p99
+and distributions without fooling yourself with averages, to reason about vectors and matrices
+as data transformations, to verify every claim with small NumPy programs, and to avoid the
+classic numerical traps — overflow, float error, modulo bias, and stale percentile math — that
+cause real outages and wrong experiment reads.
+No advanced math background is assumed; every formula is tied back to code you can run.</p>
+<p>Think of this math as the observability layer for engineering decisions. Complexity tells you
+whether a design scales, statistics tells you whether a measurement means anything, and linear
+algebra tells you what an ML model is doing geometrically. Backend interviews test whether you
+can move between all three: size a cache with exponents, defend a p99 SLO with distributions,
+and explain a cosine-similarity ranking with vectors.</p>
+<h3 id="1-topics-covered">1. Topics Covered</h3>
+<ol>
+<li><a href="#2-complexity-and-big-o">Complexity and Big-O</a></li>
+<li><a href="#3-statistics-p50-p99-and-distributions">Statistics p50 p99 and Distributions</a></li>
+<li><a href="#4-linear-algebra-intuition">Linear Algebra Intuition</a></li>
+<li><a href="#5-python-examples-with-numpy">Python Examples with NumPy</a></li>
+<li><a href="#6-gotchas-and-numerical-pitfalls">Gotchas and Numerical Pitfalls</a></li>
+<li><a href="#7-tools-and-ecosystem">Tools and Ecosystem</a></li>
+<li><a href="#8-interview-questions-and-answers">Interview Questions and Answers</a></li>
+</ol>
+<p>Each numbered item links to the matching section below. Headings use plain words so every anchor resolves on GitHub preview.</p>
+<h3 id="2-complexity-and-big-o">2. Complexity and Big-O</h3>
+<p>Big-O describes how cost grows with input size <code>n</code>, ignoring constants and lower-order terms.
+It answers the only question that matters at scale: when <code>n</code> goes 10x, does cost go 2x, 10x,
+100x, or explode. Backend work lives in this question — list scans, index lookups, joins,
+caches, queues, and retries all have a growth curve, and picking the wrong curve is how a
+service that flies in staging falls over on launch day.</p>
+<p>Start with arithmetic intuition because complexity is just counting with exponents and logarithms:</p>
+<ul>
+<li><strong>Binary numbers:</strong> every bit doubles the range. <code>k</code> bits represent <code>2^k</code> values. That is why
+  a 32-bit unsigned int tops out at about 4.29 billion, why 64 IDs feel infinite until you do
+  birthday-math, and why flags, bitmasks, Bloom filters, and CIDR prefixes all speak powers of two.
+  Shifting left by one is multiply by two; shifting right is floor-divide by two.</li>
+<li><strong>Exponents:</strong> repeated multiplication. <code>2^10 = 1024</code>, <code>2^20 ~ 1M</code>, <code>2^30 ~ 1B</code>, <code>10^9</code> is the
+  scale where O(n^2) dies. Doubling growth eats hardware fast: 30 doublings turn 1 into a billion.
+  Retries with exponential backoff, SSTable fan-out, and viral queue growth all follow this curve.</li>
+<li><strong>Logarithms:</strong> the inverse of exponents. <code>log2(n)</code> asks how many times you can halve <code>n</code> before
+  reaching 1. <code>log2(1M) ~ 20</code>, <code>log2(1B) ~ 30</code>. Every balanced tree, binary search, and LSM level
+  is logarithmic because each step discards a fraction of the problem. Log scale is also how you
+  read latency graphs without panicking over noise.</li>
+<li><strong>Factorials and combinatorics:</strong> <code>n!</code> grows faster than exponential and counts orderings. Five
+  services have 120 call orders; ten have 3.6 million. Permutations (<code>nPk</code>) and combinations
+  (<code>nCk</code>) bound brute-force search, test matrices, and feature-flag interactions. When someone
+  proposes trying all orderings, factorial math is your veto.</li>
+<li><strong>Floor division and modular arithmetic:</strong> <code>//</code> and <code>%</code> partition work. Sharding (<code>hash % N</code>),
+  ring hashes, round-robin, pagination (<code>offset // page_size</code>), and even-odd checks all rest on
+  modular structure. Key facts: <code>(a + b) % m</code> composes cleanly, division needs a modular inverse
+  that only exists when coprime, and negative modulo differs by language — Python returns
+  non-negative, Java and Go can return negative, which breaks naive sharding.</li>
+<li><strong>Back-of-the-envelope arithmetic:</strong> combine the above into Fermi estimates. <code>86,400</code> seconds
+  per day, <code>~30M</code> seconds per year, <code>1 KB ~ 10^3</code>, <code>1 MB ~ 10^6</code>, <code>1 GB ~ 10^9</code>. A service at
+  1,000 RPS with 1 KB responses serves ~86 GB per day. At 10 ms per query, one core handles ~100
+  QPS, so 5,000 QPS needs ~50 cores before replication. Interviews reward this fluency more than
+  exact answers.</li>
+</ul>
+<p>Formal Big-O in one pass:</p>
+<ul>
+<li><strong>Definition:</strong> <code>f(n)</code> is <code>O(g(n))</code> if beyond some <code>n0</code>, <code>f(n) &lt;= c * g(n)</code> for a constant <code>c</code>.
+  It is an upper bound on growth, not an exact timer. <code>O(1)</code> means bounded regardless of <code>n</code>;
+  <code>O(log n)</code> means halving progress; <code>O(n)</code> scans; <code>O(n log n)</code> sorts and builds indexes;
+  <code>O(n^2)</code> nests loops; <code>O(2^n)</code> and <code>O(n!)</code> exhaustively search.</li>
+<li><strong>Best, average, worst:</strong> hash lookup is <code>O(1)</code> average but <code>O(n)</code> worst when every key collides.
+  Quicksort is <code>O(n log n)</code> average, <code>O(n^2)</code> adversarial. SLOs care about worst and tail, so quote
+  worst-case for capacity and average-case for cost, and name the adversary that triggers the worst.</li>
+<li><strong>Amortized:</strong> an operation that is occasionally expensive but cheap on average, like dynamic-array
+  append (<code>O(1)</code> amortized despite <code>O(n)</code> resizes) or LSM compaction. GC pauses and vector growth
+  follow the same logic: rare spikes inside a cheap average, which is exactly what p99 exposes.</li>
+<li><strong>Space complexity:</strong> time gets attention, memory decides feasibility. A hash index is <code>O(n)</code> space
+  for <code>O(1)</code> lookup; an <code>n x n</code> similarity matrix is <code>O(n^2)</code> space and dies at 1M rows. Streaming,
+  sketching (HyperLogLog, Count-Min), and pagination trade accuracy or passes for sublinear memory.</li>
+<li><strong>Hidden constants:</strong> Big-O drops constants that dominate at small <code>n</code>. An <code>O(n)</code> scan over a
+  contiguous array beats an <code>O(log n)</code> tree with pointer hops until <code>n</code> is large, because cache
+  lines and branch costs live in the constant. Always ask what <code>n</code> actually is before optimizing.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Complexity</th>
+<th>Growth when n 10x</th>
+<th>Example in backend work</th>
+<th>Scales to 1B?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>O(1)</td>
+<td>Same cost</td>
+<td>Hash lookup, cache hit, flag check</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>O(log n)</td>
+<td>Adds ~3 steps</td>
+<td>B-tree index, binary search, balanced set</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>O(n)</td>
+<td>10x cost</td>
+<td>Full scan, ETL pass, log replay</td>
+<td>Yes with streaming</td>
+</tr>
+<tr>
+<td>O(n log n)</td>
+<td>~13x cost</td>
+<td>Sort, index build, merge join</td>
+<td>Yes with batching</td>
+</tr>
+<tr>
+<td>O(n^2)</td>
+<td>100x cost</td>
+<td>Nested-loop join, all-pairs compare</td>
+<td>No beyond ~100K</td>
+</tr>
+<tr>
+<td>O(2^n)</td>
+<td>Astronomically worse</td>
+<td>Subset search, exact TSP</td>
+<td>No beyond ~40</td>
+</tr>
+<tr>
+<td>O(n!)</td>
+<td>Worse than exponential</td>
+<td>Permutation brute force</td>
+<td>No beyond ~12</td>
+</tr>
+</tbody>
+</table>
+<p>Use this table to answer can this query survive growth: name the <code>n</code>, name the curve, multiply by
+10, and check the third column. A nested-loop join over 1M rows is 1T comparisons — dead on arrival —
+while a B-tree lookup over 1B rows is ~30 hops and boring. That contrast is the whole interview answer.</p>
+<p>Complexity visualized as growth curves looks like this:</p>
+<pre class="mermaid"><code>xychart-beta
+    title "Operations growth vs input size (log scale)"
+    x-axis [10, 100, "1K", "10K", "100K", "1M"]
+    y-axis "Relative operations (log)" 1 --&gt; 1000000000000
+    line [1, 1, 1, 1, 1, 1]
+    line [3, 7, 10, 13, 17, 20]
+    line [10, 100, 1000, 10000, 100000, 1000000]
+    line [100, 10000, 1000000, 100000000, 10000000000, 1000000000000]
+</code></pre>
+<p>The chart above plots constant, logarithmic, linear, and quadratic curves on shared axes. Constant
+stays flat, logarithmic climbs in stairs, linear tracks <code>n</code>, and quadratic explodes off the chart
+by <code>100K</code> — which is why reviewers ask is there a nested loop hiding here.</p>
+<p>Practical rules that follow:</p>
+<ul>
+<li>Index the lookup path so hot reads are <code>O(log n)</code> or <code>O(1)</code>; leave scans for offline jobs.</li>
+<li>Bound fan-out: one request spawning <code>n</code> sub-requests turns an <code>O(n)</code> endpoint into <code>O(n^2)</code> load.</li>
+<li>Page, stream, and cursor through large sets; never materialize <code>O(n)</code> rows into one response.</li>
+<li>Cache the repeated subproblem (memoize, materialize, precompute) when the same <code>O(n)</code> work recurs.</li>
+<li>Load-test at 10x current <code>n</code> and compare against the predicted curve; divergence means a hidden
+  quadratic such as retry storms or lock contention.</li>
+</ul>
+<h3 id="3-statistics-p50-p99-and-distributions">3. Statistics p50 p99 and Distributions</h3>
+<p>Averages lie about production. A service with 50 ms average latency can still breach its SLO if
+1 percent of requests take 5 seconds, because users remember the slow ones and retries amplify
+them. Statistics for backend work is therefore tail-first: summarize the whole distribution,
+defend percentiles in SLOs, and know which distribution shape you are looking at before you
+average anything.</p>
+<p>Mean, median, and mode answer different questions:</p>
+<ul>
+<li><strong>Mean (average):</strong> sum divided by count. Sensitive to every outlier, which makes it the right
+  measure for totals (total cost equals mean cost times count) and the wrong measure for typical
+  experience. One 10-second timeout among a hundred 50 ms requests drags the mean to ~150 ms even
+  though 99 percent of users saw 50 ms. Report means for capacity math, never alone for latency.</li>
+<li><strong>Median (p50):</strong> the middle value when sorted — half of samples are faster, half slower. Robust
+  to outliers, so it describes the typical request well. But typical is not the SLO: a great p50
+  with a terrible p99 means half your users are happy and enough are furious to page you.</li>
+<li><strong>Mode:</strong> the most common value. Useful for discrete outcomes (most common status code, most
+  common shard key) and for spotting bimodal behavior where mean and median both sit in a valley
+  nobody actually experiences.</li>
+<li><strong>Variance and standard deviation:</strong> variance is mean squared deviation from the mean; standard
+  deviation is its square root, back in original units. A 100 ms mean with 10 ms stddev is stable;
+  the same mean with 200 ms stddev is a coin flip. Track stddev over rolling windows to catch
+  regressions the mean hides, and use coefficient of variation (stddev divided by mean) to compare
+  jitter across endpoints with different baselines.</li>
+</ul>
+<p>Percentiles are the SLO vocabulary:</p>
+<ul>
+<li><strong>Definitions:</strong> p50 is the median; p90, p95, p99 mean 90, 95, 99 percent of samples fall at or
+  below the value. p99.9 (often written p999) and p99.99 matter for multi-hop paths because tails
+  compound: ten sequential hops each with 99 percent success yield ~90.4 percent end-to-end success.</li>
+<li><strong>How they are computed:</strong> sort samples, pick the rank. Nearest-rank takes <code>ceil(p/100 * n)</code>;
+  linear interpolation blends adjacent ranks for smoother values. Small samples make high
+  percentiles meaningless — p99 over 50 requests is just the max with a fancy name. Rule of thumb:
+  you need at least ~100x samples for a stable percentile (1,000 requests for p99, 100,000 for p999).</li>
+<li><strong>Tail math at scale:</strong> 1 percent sounds small until multiplied. At 1,000 RPS, p99 violations hit
+  10 users per second, 864,000 per day. At 1M daily active users, a p99.9 bug still hits 1,000 users
+  daily. That is why SLOs pair a percentile with a window: 99.9 percent of requests under 300 ms
+  over 30 days, with error budgets and burn-rate alerts attached.</li>
+<li><strong>Histograms over single numbers:</strong> Prometheus histograms, HDRHistogram, and DDSketch record the
+  shape, not just one percentile, so you can recompute any quantile later and see bimodality. Emit
+  histogram buckets at the source; averaging pre-aggregated percentiles across hosts is invalid math
+  because percentiles do not compose by averaging.</li>
+</ul>
+<p>Distributions tell you which tool applies:</p>
+<table>
+<thead>
+<tr>
+<th>Distribution</th>
+<th>Shape and signature</th>
+<th>Where it appears</th>
+<th>What to do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Normal (Gaussian)</td>
+<td>Symmetric bell around mean</td>
+<td>Measurement noise, benchmark repeats</td>
+<td>Mean plus stddev summarizes well</td>
+</tr>
+<tr>
+<td>Log-normal / long-tail</td>
+<td>Bulk fast, tail stretches right</td>
+<td>RPC latency, response sizes, job durations</td>
+<td>Quote p50/p99, plot log scale</td>
+</tr>
+<tr>
+<td>Exponential</td>
+<td>Memoryless gaps between events</td>
+<td>Inter-arrival times, failure gaps</td>
+<td>Model with rates, expect bursts</td>
+</tr>
+<tr>
+<td>Poisson</td>
+<td>Counts of events per interval</td>
+<td>Requests per second, errors per minute</td>
+<td>Size queues and rate limits</td>
+</tr>
+<tr>
+<td>Zipf / power-law</td>
+<td>Few hot keys, long cold tail</td>
+<td>Key popularity, follower counts, word freq</td>
+<td>Cache top-K, shard hot keys</td>
+</tr>
+<tr>
+<td>Uniform</td>
+<td>Every value equally likely</td>
+<td>Hash outputs, jitter, sampling</td>
+<td>Use for spreading and dedup checks</td>
+</tr>
+<tr>
+<td>Bimodal</td>
+<td>Two humps, valley in middle</td>
+<td>Cache hit vs miss, cold vs warm start</td>
+<td>Split by path, never average together</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Latency is log-normal, not normal:</strong> most requests cluster near the fast path while GC pauses,
+  cold starts, cross-AZ hops, and disk reads stretch a long right tail. Plotting latency on a linear
+  axis hides this; plot log-scale axes or CDF curves so the tail is visible. Alert on p99 movement,
+  investigate with trace exemplars from the slow bucket.</li>
+<li><strong>Arrivals are Poisson-ish:</strong> independent users produce roughly Poisson arrivals — bursty at short
+  windows, smooth over long ones. Provision for bursts (token buckets, bounded queues, autoscale on
+  queue depth), not just the minute-average RPS. Queueing theory then bites: utilization above ~70
+  percent turns small arrival variance into large wait variance.</li>
+<li><strong>Popularity is Zipfian:</strong> the top 1 percent of keys often serve 50+ percent of traffic. That skew
+  is why a small LRU wins big, why one hot shard melts, and why consistent hashing plus hot-key
+  replication (read replicas, request coalescing, negative-result caching) beats uniform sharding.</li>
+<li><strong>Randomness and entropy:</strong> <code>random()</code> in most languages is a deterministic PRNG — fine for jitter,
+  sampling, and tests with a fixed seed, but predictable. Tokens, session IDs, password resets, and
+  anything adversarial need a CSPRNG (<code>secrets</code> in Python, <code>crypto/rand</code> in Go, <code>SecureRandom</code> in
+  Java). Entropy matters numerically too: 64 random bits make collisions negligible until ~5B IDs
+  by birthday math (<code>sqrt(2^64) ~ 4.3B</code>), while 32 random bits collide after ~77K IDs. Never take
+  <code>% n</code> over a small PRNG range for sharding without checking modulo bias; prefer library <code>choice</code>
+  or rejection sampling.</li>
+<li><strong>Experiment intuition:</strong> an A/B read needs a null hypothesis, a minimum detectable effect, and a
+  fixed sample size computed up front. Peeking daily and stopping at the first green p-value inflates
+  false positives dramatically. Report conversion with Wilson or bootstrap confidence intervals, not
+  point estimates, and segment by the randomization unit. Watch for Simpson's paradox (a variant wins
+  in every segment but loses overall because segments are imbalanced) and novelty or seasonality effects.</li>
+</ul>
+<p>Practical rules that follow:</p>
+<ul>
+<li>SLO on percentiles (p95/p99 latency, p99.9 availability), capacity-plan on means and totals.</li>
+<li>Keep histograms at the edge; never average percentiles across instances — aggregate histograms first.</li>
+<li>Size buffers and timeouts from the tail (p99 plus headroom), not from the median.</li>
+<li>Distrust any average over a bimodal or Zipfian mix; split by path or key first.</li>
+<li>Fix experiment sample size before launch; call no winner before it is reached.</li>
+</ul>
+<h3 id="4-linear-algebra-intuition">4. Linear Algebra Intuition</h3>
+<p>Linear algebra is the geometry of ML-backed backends: search relevance, recommendations, fraud
+scoring, and LLM features all reduce to vectors moving through matrices. You rarely hand-derive
+proofs on the job, but interviews expect geometric intuition — what a vector means, what a matrix
+does, and why cosine similarity ranks results — plus awareness of cost, because every extra
+dimension multiplies storage and compute.</p>
+<p>Vectors as data with direction and size:</p>
+<ul>
+<li><strong>What a vector is:</strong> an ordered list of numbers, written <code>[0.2, -1.1, 3.0]</code>, that you can read
+  two ways. Algebraically it is a row in a table (user age, purchase count, session minutes).
+  Geometrically it is an arrow from the origin to a point, with a direction (which way it points)
+  and a magnitude (how long it is). Embeddings use the second reading: <code>text-embedding-3-small</code>
+  maps the sentence refund my flight to a 1,536-dimensional point, and nearby points mean similar.</li>
+<li><strong>Norms measure length:</strong> L2 (Euclidean) norm is <code>sqrt(sum(x_i^2))</code> — the straight-line distance
+  from the origin. L1 (Manhattan) norm is <code>sum(|x_i|)</code> — the grid-street distance. Normalizing a
+  vector (dividing by its norm) projects it onto the unit sphere so only direction matters, which is
+  exactly what cosine ranking wants. Regularization in training is norm pressure: L2 shrinks weights
+  smoothly, L1 pushes them to zero and sparsifies.</li>
+<li><strong>Dot product measures alignment:</strong> <code>a . b = sum(a_i * b_i) = |a| |b| cos(theta)</code>. Large positive
+  means pointing the same way, near zero means orthogonal (unrelated), negative means opposite.
+  That single number powers scoring: query vector dotted with each document vector ranks matches.</li>
+<li><strong>Cosine similarity normalizes alignment:</strong> <code>cos(theta) = (a . b) / (|a| |b|)</code>, ranging from -1
+  to 1 (0 to 1 for non-negative embeddings). Two long reviews and two short ones about the same
+  topic score alike because length cancels out. This is the default ranking for embedding search,
+  dedup detection, and candidate retrieval before a heavier reranker runs.</li>
+<li><strong>Euclidean distance measures gap:</strong> <code>sqrt(sum((a_i - b_i)^2))</code>. Good for clustering and
+  nearest-neighbor when magnitude matters (geo coordinates, usage profiles). For text embeddings,
+  cosine usually beats Euclidean because verbosity should not equal relevance — normalize first and
+  the two orderings often agree.</li>
+</ul>
+<p>Matrices as transformations in bulk:</p>
+<ul>
+<li><strong>What a matrix is:</strong> a rectangle of numbers that transforms vectors. A <code>3 x 1536</code> matrix turns a
+  1,536-dimensional embedding into 3 class scores; a <code>768 x 768</code> attention projection rotates and
+  rescales hidden states. Rows are output features, columns are input features, and each entry is
+  how much one input moves one output.</li>
+<li><strong>Matrix-vector product is a weighted vote:</strong> each output is a dot product of one matrix row with
+  the input vector. A fully connected layer is just that vote plus a bias and a nonlinearity. Batch
+  many inputs into a matrix-matrix product and GPUs/TPUs parallelize the votes — the reason inference
+  servers batch requests instead of scoring one by one.</li>
+<li><strong>Transpose, identity, and inverse:</strong> transpose flips rows and columns (<code>A^T</code>), turning row-layout
+  into column-layout for the next multiply. Identity (<code>I</code>) is the do-nothing matrix with ones on the
+  diagonal. Inverse (<code>A^-1</code>) undoes a transformation but rarely exists exactly in ML; least-squares
+  and pseudoinverses solve the closest feasible undo, which is what regression and calibration do.</li>
+<li><strong>Rank and dimensionality:</strong> rank is the number of independent directions a matrix preserves. A
+  low-rank matrix compresses: 1M users times 100K items never materializes as a dense matrix because
+  factorization keeps two thin matrices (users-by-64 and items-by-64) whose product approximates it.
+  PCA, SVD, and embedding projections all trade a little accuracy for 100x less storage and compute.</li>
+<li><strong>Curse of dimensionality:</strong> in high dimensions, random vectors are all nearly orthogonal and
+  distances concentrate, so brute-force neighbor lists degrade. Mitigations are the standard stack:
+  normalize, reduce dimensions, and index with ANN structures (HNSW, IVF) that trade recall for
+  sublinear lookup — O(log n) graph hops instead of an O(n) scan over every embedding.</li>
+</ul>
+<pre class="mermaid"><code>flowchart LR
+    T["Text: refund my flight"] --&gt; E["Embedding model: 1536-dim vector"]
+    E --&gt; N["Normalize: divide by L2 norm"]
+    N --&gt; S["Cosine similarity vs document vectors"]
+    S --&gt; R["Rank top-K and rerank"]
+    R --&gt; A["Return results with scores"]
+</code></pre>
+<p>The flow above is the canonical embedding-search path. Raw text becomes a point in vector space,
+normalization strips length so angle decides, a dot-product scan (or ANN index) scores candidates,
+and only the top-K pay for expensive reranking or LLM grading. Quote it whenever an interview asks
+how semantic search works end to end.</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Geometric meaning</th>
+<th>Backend and AI use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>L2 norm</td>
+<td>Vector length</td>
+<td>Normalize before cosine rank</td>
+</tr>
+<tr>
+<td>Dot product</td>
+<td>Alignment score</td>
+<td>Retrieval and logit scoring</td>
+</tr>
+<tr>
+<td>Cosine similarity</td>
+<td>Angle between vectors</td>
+<td>Semantic search, dedup</td>
+</tr>
+<tr>
+<td>Euclidean distance</td>
+<td>Straight-line gap</td>
+<td>Clustering, geo features</td>
+</tr>
+<tr>
+<td>Matrix multiply</td>
+<td>Transform and mix features</td>
+<td>Layers, projections, batching</td>
+</tr>
+<tr>
+<td>Transpose</td>
+<td>Swap rows and columns</td>
+<td>Layout prep, attention scores</td>
+</tr>
+<tr>
+<td>Low-rank factorization</td>
+<td>Compress directions</td>
+<td>Recsys, PCA, ANN prep</td>
+</tr>
+</tbody>
+</table>
+<p>Practical rules that follow:</p>
+<ul>
+<li>Normalize embeddings before cosine comparison; store them normalized to skip repeat work.</li>
+<li>Keep dimensions as small as accuracy allows — 256 dims at 4 bytes is 1 KB per vector, so 10M
+  vectors need ~10 GB before index overhead; halving dims halves RAM and scan cost.</li>
+<li>Retrieve with ANN top-K, then rerank narrowly; never run an LLM grader over the full corpus.</li>
+<li>Log similarity score distributions, not just top-1 hits, so relevance regressions show up as
+  distribution shifts instead of anecdotes.</li>
+</ul>
+<h3 id="5-python-examples-with-numpy">5. Python Examples with NumPy</h3>
+<p>Every claim above is checkable in a few lines. The two programs below use only the standard
+library plus NumPy, run anywhere, and print numbers you can quote. The first contrasts mean
+versus percentiles on skewed latency; the second implements cosine ranking over toy embeddings
+so the geometry from the previous section becomes concrete code.</p>
+<p>Skewed latency: why the mean hides the tail:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="c1"># Simulate 10,000 RPC latencies in ms: fast path plus a slow 1 percent tail.</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="c1"># Most requests cluster near 40-60 ms; GC pauses and cross-AZ hops stretch the rest.</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="n">fast</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">9900</span><span class="p">)</span>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="n">slow</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2000</span><span class="p">),</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="n">latency</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">fast</span><span class="p">,</span> <span class="n">slow</span><span class="p">])</span>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="n">mean</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">latency</span><span class="p">))</span>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="n">p50</span><span class="p">,</span> <span class="n">p95</span><span class="p">,</span> <span class="n">p99</span> <span class="o">=</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">latency</span><span class="p">,</span> <span class="n">q</span><span class="p">))</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">99</span><span class="p">))</span>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"samples: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">latency</span><span class="p">)</span><span class="si">}</span><span class="s2">  mean: </span><span class="si">{</span><span class="n">mean</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">ms  p50: </span><span class="si">{</span><span class="n">p50</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">ms  p95: </span><span class="si">{</span><span class="n">p95</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">ms  p99: </span><span class="si">{</span><span class="n">p99</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">ms"</span><span class="p">)</span>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="c1"># Capacity math uses the mean (total time = mean x count); SLOs use the tail.</span>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="n">total_s</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">latency</span><span class="p">))</span> <span class="o">/</span> <span class="mi">1000</span>
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"total server time: </span><span class="si">{</span><span class="n">total_s</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">latency</span><span class="p">)</span><span class="si">}</span><span class="s2"> requests"</span><span class="p">)</span>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"requests slower than 1s: </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">latency</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1000</span><span class="p">))</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">latency</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1000</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%)"</span><span class="p">)</span>
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="c1"># At 1,000 RPS, that 1 percent tail is 10 slow users per second, 864,000 per day.</span>
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="n">tail_fraction</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">latency</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">))</span>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"projected slow users per day at 1000 RPS: </span><span class="si">{</span><span class="n">tail_fraction</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">86400</span><span class="si">:</span><span class="s2">,.0f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<p>This example builds a log-normal mix with a 1 percent slow tail, then prints mean against p50,
+p95, and p99. Expect the mean near 70 ms while p99 sits above a second: the mean averages the tail
+away, the percentile names it. The closing projection multiplies the tail fraction by daily volume,
+which is the one-line SLO argument that mean-only dashboards cannot make.</p>
+<p>Cosine ranking over toy document embeddings:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="c1"># Toy 3-dim embeddings standing in for real 768-dim model output.</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="c1"># Rows are documents; the query asks about flight refunds.</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="n">docs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>   <span class="c1"># refund policy page</span>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>   <span class="c1"># flight cancellation help</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>   <span class="c1"># in-flight meal menu</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span>   <span class="c1"># baggage allowance</span>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="p">])</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="n">query</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">])</span>
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="k">def</span><span class="w"> </span><span class="nf">cosine</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>    <span class="c1"># Cosine similarity: dot product divided by both lengths, range -1..1.</span>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>    <span class="c1"># Dividing out magnitudes means a long and short page on one topic score alike.</span>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">b</span><span class="p">)))</span>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="n">scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">cosine</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">])</span>
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a><span class="n">ranking</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">scores</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># O(n log n) sort over n documents.</span>
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a><span class="k">for</span> <span class="n">rank</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ranking</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">. doc </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> score </span><span class="si">{</span><span class="n">scores</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a><span class="c1"># Batch form of the same math: normalize once, then one matrix-vector product.</span>
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a><span class="n">normed</span> <span class="o">=</span> <span class="n">docs</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a><span class="n">q</span> <span class="o">=</span> <span class="n">query</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a><span class="n">batch</span> <span class="o">=</span> <span class="n">normed</span> <span class="o">@</span> <span class="n">q</span>  <span class="c1"># Each output is a row-dot-query vote, parallelized by BLAS.</span>
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"batch scores:"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</code></pre></div>
+<p>This example scores four documents against one query twice: once with an explicit per-document
+loop that shows the formula, once with a single normalized matrix-vector product that shows the
+production shape. Both print the same ordering with the refund pages on top. The loop is <code>O(n * d)</code>
+plus an <code>O(n log n)</code> sort; the batch form keeps the same complexity with a far smaller constant
+because one BLAS call replaces <code>n</code> Python iterations — the vectorization lesson from the CPU guide
+applied to ranking.</p>
+<h3 id="6-gotchas-and-numerical-pitfalls">6. Gotchas and Numerical Pitfalls</h3>
+<p>Math bugs rarely throw exceptions; they silently skew capacity plans, SLOs, and rankings. These
+six cover the majority of production incidents rooted in arithmetic rather than logic.</p>
+<ul>
+<li><strong>Integer overflow and ID exhaustion.</strong> 32-bit counters top out at ~4.29B unsigned and ~2.15B
+  signed; millisecond timestamps exceed 32 bits; auto-increment PKs and inode counters run out
+  faster than growth models assume. Symptoms: negative IDs, duplicate keys after wraparound, auth
+  failures at the boundary. Fixes: 64-bit IDs and counters everywhere, UUIDv7 or Snowflake-style
+  time-ordered IDs for distributed issuance, and an exhaustion forecast (current rate times headroom)
+  reviewed like disk capacity. Test the boundary: insert <code>2^31 - 1</code> and watch what breaks.</li>
+<li><strong>Float precision and money math.</strong> IEEE-754 doubles hold ~15-16 decimal digits; <code>0.1 + 0.2</code>
+  prints <code>0.30000000000000004</code> because neither decimal is exact in binary. Equality checks on floats
+  flake, accumulations drift, and float money rounds against the ledger. Fixes: integers for money
+  (cents, micros), <code>Decimal</code> for tax and FX with explicit rounding modes, epsilon comparisons
+  (<code>abs(a - b) &lt; 1e-9</code>) for geometry, and compensated summation for long accumulations. Never store
+  currency in <code>float</code> or <code>double</code>, even temporarily.</li>
+<li><strong>Percentile and average traps.</strong> Averaging p99 across hosts is invalid — percentiles compose via
+  histograms, not means. p99 over tiny windows is the max wearing a costume; require ~100x samples
+  per percentile digit. Bimodal mixes (cache hit plus miss, warm plus cold start) average into a
+  value nobody experiences — split by path first. And SLO compliance needs a window and a budget:
+  99.9 percent without over 30 days is a slogan, not a target.</li>
+<li><strong>Sampling and modulo bias.</strong> <code>rand() % n</code> favors low remainders whenever the generator range is
+  not a multiple of <code>n</code>, skewing shards and A/B buckets. <code>Math.random</code> or <code>random.random</code> is
+  deterministic and seed-guessable — fine for jitter and tests, fatal for tokens. Under-sampled
+  tail metrics miss the very spikes they should catch. Fixes: library <code>choice</code>/<code>randrange</code> with
+  rejection sampling, CSPRNG (<code>secrets</code>, <code>crypto/rand</code>) for anything adversarial, hashed sharding
+  (<code>sha256(key) % N</code>) for stability across restarts, and jittered exponential backoff (<code>sleep =
+  min(cap, base * 2^attempt) + uniform(0, base)</code>) so retries decorrelate instead of stampeding.</li>
+<li><strong>Stale statistics and skewed keys.</strong> Averages computed once and cached go stale as traffic shifts;
+  cardinality estimates from yesterday mis-size today's HyperLogLog; a Zipfian hot key melts the
+  shard that uniform hashing assumed was safe. Fixes: rolling or decayed aggregates (exponential
+  moving averages with published half-lives), periodic re-estimation of cardinality and key
+  distributions, hot-key detection with per-key counters plus replication or request coalescing, and
+  dashboards that plot the distribution (heatmap, CDF) instead of one line.</li>
+<li><strong>Complexity ambushes in innocent code.</strong> An <code>O(n^2)</code> nested loop hides inside ORM N+1 queries,
+  JSON serialization of deep graphs, string concatenation in a loop (<code>s +=</code> is quadratic in some
+  runtimes — use join or builders), unbounded <code>IN</code> clauses, and retry storms where each failure
+  spawns <code>n</code> more requests. Fixes: join or batch (<code>select_related</code>, <code>WHERE IN</code> with chunked bounds,
+  DataLoader), paginate and cursor, bound fan-out and retry budgets (deadlines, circuit breakers,
+  hedged requests with overall caps), and a load test at 10x asserting the predicted curve.</li>
+</ul>
+<h3 id="7-tools-and-ecosystem">7. Tools and Ecosystem</h3>
+<ul>
+<li><strong>NumPy and SciPy:</strong> <code>numpy</code> for vectors, percentiles, and histograms (<code>mean</code>, <code>percentile</code>,
+  <code>histogram</code>, <code>linalg.norm</code>); <code>scipy.stats</code> for distributions, confidence intervals, and
+  hypothesis tests (<code>ttest_ind</code>, <code>kstest</code>, <code>wilson</code>). Reach for pandas only when labeled joins and
+  group-bys earn the overhead; stay in NumPy for tight numeric loops.</li>
+<li><strong>Experiment and SLO tooling:</strong> Statsig, GrowthBook, and Eppo for randomized experiments with
+  fixed horizons and guardrails; Prometheus histograms plus Grafana heatmaps for tail-latency
+  visibility; HDRHistogram and DDSketch client libraries for mergeable quantile sketches that make
+  cross-host p99 math valid.</li>
+<li><strong>Embedding and vector search:</strong> <code>sentence-transformers</code> and provider embedding APIs to produce
+  vectors; FAISS, ScaNN, and pgvector (HNSW/IVF) for sublinear ANN retrieval; rerankers (cross-
+  encoders, Cohere Rerank) for the narrow top-K pass. Track recall-vs-latency curves per index, not
+  vibes, before choosing parameters.</li>
+<li><strong>Estimation and capacity:</strong> <code>hey</code>, <code>k6</code>, and <code>ghz</code> for load generation to verify Big-O predictions
+  against measured curves; Jupyter or Marimo notebooks for back-of-the-envelope models checked into
+  the design doc; cloud pricing calculators to convert RPS times bytes into dollars per month.</li>
+<li><strong>Correctness guards:</strong> property tests (Hypothesis) asserting sharding uniformity and percentile
+  monotonicity; <code>Decimal</code> and integer-cents lint rules for money paths; chaos and boundary tests at
+  <code>2^31 - 1</code>, empty inputs, and single-sample percentiles so edge math fails loudly in CI.</li>
+</ul>
+<h3 id="8-interview-questions-and-answers">8. Interview Questions and Answers</h3>
+<ol>
+<li>
+<p><strong>How do you estimate whether a design survives 10x growth?</strong>
+   Name <code>n</code>, name the dominant curve, and multiply. A B-tree lookup over 1B rows costs ~30 hops
+   (logarithmic), a full scan costs 1B reads (linear), and a nested-loop join over 1M rows costs
+   1T comparisons (quadratic, dead on arrival). Then convert to hardware: at 10 ms per query one
+   core handles ~100 QPS, so 5,000 QPS needs ~50 cores before replicas. Finish with the check you
+   would run: load-test at 10x and confirm measured cost tracks the predicted curve.</p>
+</li>
+<li>
+<p><strong>Why do SLOs use p99 instead of the average?</strong>
+   The mean averages the tail away while users experience it directly: 1 percent slow at 1,000 RPS
+   is 10 bad experiences per second. Percentiles name the tail — p99 says 99 percent of requests
+   beat the bound — and multi-hop paths compound them, since ten 99 percent hops yield ~90 percent
+   end-to-end. Add the validity rules: histogram at the source, never average percentiles across
+   hosts, and require ~1,000 samples before quoting p99.</p>
+</li>
+<li>
+<p><strong>Explain mean vs median vs mode with a latency example.</strong>
+   One hundred requests at 50 ms plus one 10-second timeout give a median of 50 ms (typical user),
+   a mean near 150 ms (dragged by the outlier, correct for total server time), and a mode of 50 ms
+   (most common bucket). Report the median for typical experience, the mean times count for capacity
+   cost, and both plus p99 for the SLO story. If the distribution is bimodal — cache hits at 5 ms,
+   misses at 300 ms — split by path because every aggregate lands in an uninhabited valley.</p>
+</li>
+<li>
+<p><strong>What distribution shapes should a backend engineer recognize?</strong>
+   Latency is log-normal (fast bulk, long right tail — plot log scale, SLO the tail); arrivals are
+   Poisson-ish (bursty short windows, provision for bursts with queues and autoscale); popularity is
+   Zipfian (top keys dominate — cache top-K, replicate hot shards). Normal suits benchmark noise,
+   uniform suits hashing and jitter, and bimodal means two mechanisms are mixed and must be split
+   before any averaging.</p>
+</li>
+<li>
+<p><strong>How do you read an A/B test without fooling yourself?</strong>
+   Fix the hypothesis, metric, minimum detectable effect, and sample size before launch; never peek
+   and stop early. Randomize by the right unit (user, not request, for user-level effects), report
+   Wilson or bootstrap confidence intervals instead of point lifts, and segment by platform or cohort
+   to catch Simpson's paradox. No winner is declared before the planned sample size, and novelty plus
+   seasonality get a full-cycle read.</p>
+</li>
+<li>
+<p><strong>What are vectors and cosine similarity in embedding search?</strong>
+   An embedding is a point in vector space where direction encodes meaning; cosine similarity is the
+   cosine of the angle between two vectors, <code>(a . b) / (|a| |b|)</code>, from -1 (opposite) to 1 (aligned).
+   Normalizing strips length so a long and short page on one topic score alike. The pipeline is
+   embed, normalize, ANN top-K by dot product, then rerank narrowly — cosine retrieval for recall,
+   a heavier grader for precision.</p>
+</li>
+<li>
+<p><strong>Why does dimensionality control vector-search cost?</strong>
+   Storage and scan cost scale with dimensions: 256 float32 dims are 1 KB per vector, so 10M vectors
+   need ~10 GB before HNSW graph overhead. Higher dims also dilute distance contrast (curse of
+   dimensionality), forcing larger indexes for equal recall. The standard answer is smallest dims
+   that hold accuracy, normalized stored vectors, ANN (HNSW/IVF) for sublinear lookup, and a recall-
+   vs-latency curve measured per workload rather than a default <code>efSearch</code> copied from docs.</p>
+</li>
+<li>
+<p><strong>How do overflow, float error, and modulo bias bite in production?</strong>
+   32-bit IDs wrap past ~2.1B signed, turning keys negative or duplicated — use 64-bit and forecast
+   exhaustion. Floats cannot represent <code>0.1</code> exactly, so money in float drifts — use integer cents or
+   <code>Decimal</code>. <code>rand() % n</code> favors low remainders when the range is not a multiple of <code>n</code>, skewing
+   shards — use library <code>choice</code> or rejection sampling, and a CSPRNG for anything adversarial. Each
+   gets a CI boundary test so the math fails loudly before it bills quietly.</p>
+</li>
+<li>
+<p><strong>Your p99 doubled but p50 is flat. How do you debug it?</strong>
+   Flat p50 with doubled p99 means the fast path is fine and a rare path regressed — treat it as a
+   tail hunt, not a capacity event. Split the histogram by route, AZ, host, and cold-vs-warm to find
+   the slow bucket, pull trace exemplars from it (GC pauses, cross-AZ hops, downstream timeouts,
+   lock contention), and check deploy correlation plus retry amplification. Fix the slow path or shed
+   it (timeouts, hedging, caching) rather than scaling the whole fleet for 1 percent of traffic.</p>
+</li>
+</ol>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      © 2025 <a href="https://github.com/abhishekghoshh" rel="noopener" target="_blank">Abhishek Ghosh</a>
+</div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+<div class="md-social">
+<a class="md-social__link" href="https://github.com/abhishekghoshh" rel="noopener" target="_blank" title="github.com">
+<svg viewbox="0 0 480 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"></path></svg>
+</a>
+<a class="md-social__link" href="https://x.com/abhishek_ghoshh" rel="noopener" target="_blank" title="x.com">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253"></path></svg>
+</a>
+<a class="md-social__link" href="https://www.linkedin.com/in/abhishek-ghosh-220679132/" rel="noopener" target="_blank" title="www.linkedin.com">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5m282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"></path></svg>
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+<script src="../../assets/javascripts/bundle.60a45f97.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+window.mermaidConfig = {default: {
+    startOnLoad: false
+}};</script></body>
+</html>

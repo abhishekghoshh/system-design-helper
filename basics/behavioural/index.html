@@ -1,0 +1,3038 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="https://abhishekghoshh.github.io/system-design-helper/basics/behavioural/" rel="canonical"/>
+<link href="../maths/" rel="prev"/>
+<link href="../developer-experiences/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.50" name="generator"/>
+<title>Behavioural - System Design Helper</title>
+<link href="../../assets/stylesheets/main.a40c8224.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+<meta content="website" property="og:type"/>
+<meta content="Behavioural - System Design Helper" property="og:title"/>
+<meta content="None" property="og:description"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/basics/behavioural.png" property="og:image"/>
+<meta content="image/png" property="og:image:type"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/basics/behavioural/" property="og:url"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Behavioural - System Design Helper" name="twitter:title"/>
+<meta content="None" name="twitter:description"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/basics/behavioural.png" name="twitter:image"/>
+</head>
+<body data-md-color-accent="purple" data-md-color-primary="teal" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#be-a-senior-developer">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="System Design Helper" class="md-header__button md-logo" data-md-component="logo" href="../.." title="System Design Helper">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            System Design Helper
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Behavioural
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="purple" data-md-color-media="" data-md-color-primary="teal" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="lime" data-md-color-media="" data-md-color-primary="teal" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+        
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../cpu/">
+          
+  
+  Basics
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ai/ai/">
+          
+  
+  AI
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../devops/">
+          
+  
+  DevOps
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../security/introduction/">
+          
+  
+  Security
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../system-design/books/">
+          
+  
+  System Design
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="System Design Helper" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="System Design Helper">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    System Design Helper
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    Home
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+<span class="md-ellipsis">
+    Basics
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            Basics
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cpu/">
+<span class="md-ellipsis">
+    CPU
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../pointers/">
+<span class="md-ellipsis">
+    Pointers
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../maths/">
+<span class="md-ellipsis">
+    Maths
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    Behavioural
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    Behavioural
+  </span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#medium">
+<span class="md-ellipsis">
+      Medium
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#theory">
+<span class="md-ellipsis">
+      Theory
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#theory-continues">
+<span class="md-ellipsis">
+      Theory continues
+    </span>
+</a>
+<nav aria-label="Theory continues" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-topics-covered">
+<span class="md-ellipsis">
+      1. Topics Covered
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-star-method-how-to-answer-in-four-beats">
+<span class="md-ellipsis">
+      2. STAR Method How to Answer in Four Beats
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-story-bank-six-stories-that-cover-everything">
+<span class="md-ellipsis">
+      3. Story Bank Six Stories That Cover Everything
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-senior-signals-what-interviewers-score">
+<span class="md-ellipsis">
+      4. Senior Signals What Interviewers Score
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-questions-to-ask-what-seniors-ask-back">
+<span class="md-ellipsis">
+      5. Questions to Ask What Seniors Ask Back
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-pitfalls-how-good-engineers-fail-behaviourals">
+<span class="md-ellipsis">
+      6. Pitfalls How Good Engineers Fail Behaviourals
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-interview-questions-and-answers">
+<span class="md-ellipsis">
+      7. Interview Questions and Answers
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../developer-experiences/">
+<span class="md-ellipsis">
+    Developer Experiences
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../open-source-tools/">
+<span class="md-ellipsis">
+    Open Source Tools
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../software-architect/">
+<span class="md-ellipsis">
+    Software Architect
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../wisdom/">
+<span class="md-ellipsis">
+    Wisdom
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+<span class="md-ellipsis">
+    AI
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            AI
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ai/ai/">
+<span class="md-ellipsis">
+    AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ai/ai-tools/">
+<span class="md-ellipsis">
+    AI Tools
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ai/agentic-ai/">
+<span class="md-ellipsis">
+    Agentic AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ai/gen-ai/">
+<span class="md-ellipsis">
+    Gen AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ai/langchain-and-langgraph/">
+<span class="md-ellipsis">
+    LangChain and LangGraph
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ai/MCP/">
+<span class="md-ellipsis">
+    MCP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ai/RAG/">
+<span class="md-ellipsis">
+    RAG
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ai/llm-wiki/">
+<span class="md-ellipsis">
+    LLM Wiki
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ai/vector-embeddings/">
+<span class="md-ellipsis">
+    Vector Embeddings
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ai/vibe-coding/">
+<span class="md-ellipsis">
+    Vibe Coding
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ai/courses/">
+<span class="md-ellipsis">
+    Courses
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    DevOps
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            DevOps
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../devops/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../devops/deployment-strategies/">
+<span class="md-ellipsis">
+    Deployment Strategies
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+<span class="md-ellipsis">
+    Security
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            Security
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/authentication-and-authorization/">
+<span class="md-ellipsis">
+    Authentication &amp; Authorization
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/oauth/">
+<span class="md-ellipsis">
+    OAuth
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/rbac/">
+<span class="md-ellipsis">
+    RBAC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/sso/">
+<span class="md-ellipsis">
+    SSO
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/ssl/">
+<span class="md-ellipsis">
+    SSL
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/ssh/">
+<span class="md-ellipsis">
+    SSH
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/jwt/">
+<span class="md-ellipsis">
+    JWT
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/encryption/">
+<span class="md-ellipsis">
+    Encryption
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/environment-variables/">
+<span class="md-ellipsis">
+    Environment Variables
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/devsecops/">
+<span class="md-ellipsis">
+    DevSecOps
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/firewall/">
+<span class="md-ellipsis">
+    Firewall
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+<span class="md-ellipsis">
+    Certificate
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_13_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_13">
+<span class="md-nav__icon md-icon"></span>
+            Certificate
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/certificate/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/certificate/certificate-authority/">
+<span class="md-ellipsis">
+    Certificate Authority
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/certificate/client-certificates/">
+<span class="md-ellipsis">
+    Client Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/certificate/server-certificates/">
+<span class="md-ellipsis">
+    Server Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/certificate/self-signed-certificates/">
+<span class="md-ellipsis">
+    Self-Signed Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/certificate/links/">
+<span class="md-ellipsis">
+    Links
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_14" id="__nav_5_14_label" tabindex="0">
+<span class="md-ellipsis">
+    Reverse Proxy
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_14_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_14">
+<span class="md-nav__icon md-icon"></span>
+            Reverse Proxy
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/reverse-proxy/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/reverse-proxy/haproxy/">
+<span class="md-ellipsis">
+    HAProxy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/reverse-proxy/nginx/">
+<span class="md-ellipsis">
+    Nginx
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+<span class="md-ellipsis">
+    System Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            System Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/books/">
+<span class="md-ellipsis">
+    Books
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/courses/">
+<span class="md-ellipsis">
+    Courses
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/interview/">
+<span class="md-ellipsis">
+    Interview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4" id="__nav_6_4_label" tabindex="0">
+<span class="md-ellipsis">
+    High Level Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_4">
+<span class="md-nav__icon md-icon"></span>
+            High Level Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1" id="__nav_6_4_1_label" tabindex="0">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_1_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_1">
+<span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_1_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1_2" id="__nav_6_4_1_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Basic
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_1_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_1_2">
+<span class="md-nav__icon md-icon"></span>
+            Basic
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/philosophy-of-system-design/">
+<span class="md-ellipsis">
+    Philosophy of System Design
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/client-server-architecture/">
+<span class="md-ellipsis">
+    Client-Server Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/separation-of-concerns/">
+<span class="md-ellipsis">
+    Separation of Concerns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/state-and-data-flow/">
+<span class="md-ellipsis">
+    State and Data Flow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/back-of-envelope-calculation/">
+<span class="md-ellipsis">
+    Back of Envelope Calculation
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/cloud-computing/">
+<span class="md-ellipsis">
+    Cloud Computing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/ip-addresses-and-ports/">
+<span class="md-ellipsis">
+    IP Addresses &amp; Ports
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/sockets/">
+<span class="md-ellipsis">
+    Sockets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/dns-server/">
+<span class="md-ellipsis">
+    DNS Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/networking/">
+<span class="md-ellipsis">
+    Networking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/tcp/">
+<span class="md-ellipsis">
+    TCP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/udp/">
+<span class="md-ellipsis">
+    UDP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/http/">
+<span class="md-ellipsis">
+    HTTP / HTTPS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/websockets/">
+<span class="md-ellipsis">
+    WebSockets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/smtp-server/">
+<span class="md-ellipsis">
+    SMTP Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/api/">
+<span class="md-ellipsis">
+    API
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/restfull-architecture/">
+<span class="md-ellipsis">
+    RESTful Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/data-serialization/">
+<span class="md-ellipsis">
+    Data Serialization
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/webhooks/">
+<span class="md-ellipsis">
+    Webhooks
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/load-balancer-and-proxy-server/">
+<span class="md-ellipsis">
+    Load Balancer &amp; Proxy Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/cdn/">
+<span class="md-ellipsis">
+    CDN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/hashing/">
+<span class="md-ellipsis">
+    Hashing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/storage/">
+<span class="md-ellipsis">
+    Storage
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/s3/">
+<span class="md-ellipsis">
+    S3
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/caching/">
+<span class="md-ellipsis">
+    Caching
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/scalability/">
+<span class="md-ellipsis">
+    Scalability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/browser-rendering-pipeline/">
+<span class="md-ellipsis">
+    Browser Rendering Pipeline
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/availability-and-reliability/">
+<span class="md-ellipsis">
+    Availability &amp; Reliability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/architecture-patterns/">
+<span class="md-ellipsis">
+    Architecture Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/security-basics/">
+<span class="md-ellipsis">
+    Security Basics
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/passwords/">
+<span class="md-ellipsis">
+    Passwords
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/environment-configuration-and-secrets/">
+<span class="md-ellipsis">
+    Environment Configuration &amp; Secrets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/process/">
+<span class="md-ellipsis">
+    Process
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/code-documentation/">
+<span class="md-ellipsis">
+    Code Documentation
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/additional-concepts/">
+<span class="md-ellipsis">
+    Additional Concepts
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_1_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1_3" id="__nav_6_4_1_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Advanced
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_1_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_1_3">
+<span class="md-nav__icon md-icon"></span>
+            Advanced
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/webrtc/">
+<span class="md-ellipsis">
+    WebRTC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/voice-over-internet-protocol/">
+<span class="md-ellipsis">
+    VoIP (Voice Over Internet Protocol)
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/graphql/">
+<span class="md-ellipsis">
+    GraphQL
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/grpc/">
+<span class="md-ellipsis">
+    gRPC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/asynchronus-communication/">
+<span class="md-ellipsis">
+    Asynchronous Communication
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/nats/">
+<span class="md-ellipsis">
+    NATS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/api-gateway/">
+<span class="md-ellipsis">
+    API Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/service-discovery/">
+<span class="md-ellipsis">
+    Service Discovery
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/service-mesh/">
+<span class="md-ellipsis">
+    Service Mesh
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/consistent-hashing/">
+<span class="md-ellipsis">
+    Consistent Hashing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/distributed-caches-and-caching-strategies/">
+<span class="md-ellipsis">
+    Distributed Caches &amp; Caching Strategies
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/scaling-to-one-million/">
+<span class="md-ellipsis">
+    Scaling to One Million
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/adaptive-bitrate-streaming/">
+<span class="md-ellipsis">
+    Adaptive Bitrate Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/consistency/">
+<span class="md-ellipsis">
+    Consistency
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/cap-theorm/">
+<span class="md-ellipsis">
+    CAP Theorem
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/fault-tolerance/">
+<span class="md-ellipsis">
+    Fault Tolerance
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/clean-architecture/">
+<span class="md-ellipsis">
+    Clean Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/microservices-patterns/">
+<span class="md-ellipsis">
+    Microservices Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/raft-consensus-algorithm/">
+<span class="md-ellipsis">
+    Raft Consensus Algorithm
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/gossip-protocol/">
+<span class="md-ellipsis">
+    Gossip Protocol
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/ditributed-transaction-and-concurrency-control/">
+<span class="md-ellipsis">
+    Distributed Transaction &amp; Concurrency Control
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/cdc/">
+<span class="md-ellipsis">
+    CDC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/resilience-patterns/">
+<span class="md-ellipsis">
+    Resilience Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/thundering-effect/">
+<span class="md-ellipsis">
+    Thundering Herd Effect
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/observability/">
+<span class="md-ellipsis">
+    Observability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/cqrs/">
+<span class="md-ellipsis">
+    CQRS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/event-sourcing/">
+<span class="md-ellipsis">
+    Event Sourcing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/saga-pattern/">
+<span class="md-ellipsis">
+    Saga Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/data-processing/">
+<span class="md-ellipsis">
+    Data Processing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/programming-language/">
+<span class="md-ellipsis">
+    Programming Language
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/github-server/">
+<span class="md-ellipsis">
+    GitHub Server
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2" id="__nav_6_4_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Designing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Designing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_2_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2_2" id="__nav_6_4_2_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Basic
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_2_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_2_2">
+<span class="md-nav__icon md-icon"></span>
+            Basic
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/url-shortner/">
+<span class="md-ellipsis">
+    URL Shortener
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/rate-limiter/">
+<span class="md-ellipsis">
+    Rate Limiter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/notification-system/">
+<span class="md-ellipsis">
+    Notification System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/webhook/">
+<span class="md-ellipsis">
+    Webhook
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/cdn/">
+<span class="md-ellipsis">
+    CDN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/autocomplete/">
+<span class="md-ellipsis">
+    Autocomplete
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/pastebin/">
+<span class="md-ellipsis">
+    Pastebin
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/leaderboard/">
+<span class="md-ellipsis">
+    Leaderboard
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/inventory-management-system/">
+<span class="md-ellipsis">
+    Inventory Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/library-management-system/">
+<span class="md-ellipsis">
+    Library Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/job-board/">
+<span class="md-ellipsis">
+    Job Board
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/bug-issue-tracker/">
+<span class="md-ellipsis">
+    Bug/Issue Tracker
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/todo-list-app/">
+<span class="md-ellipsis">
+    To-Do List App
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/attendance-tracking-system/">
+<span class="md-ellipsis">
+    Attendance Tracking System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/customer-support-ticketing-system/">
+<span class="md-ellipsis">
+    Customer Support Ticketing System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/digital-wallet/">
+<span class="md-ellipsis">
+    Digital Wallet
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/vending-machine/">
+<span class="md-ellipsis">
+    Vending Machine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/rate-and-review-system/">
+<span class="md-ellipsis">
+    Rate-and-Review System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/hotel-booking/">
+<span class="md-ellipsis">
+    Hotel Booking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/app-store/">
+<span class="md-ellipsis">
+    App Store
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/yelp/">
+<span class="md-ellipsis">
+    Yelp
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/carpooling-system/">
+<span class="md-ellipsis">
+    Carpooling System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/blogging-platform/">
+<span class="md-ellipsis">
+    Blogging Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/image-gallery-with-tagging/">
+<span class="md-ellipsis">
+    Image Gallery with Tagging
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/polling-voting-app/">
+<span class="md-ellipsis">
+    Polling/Voting App
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/online-voting-system/">
+<span class="md-ellipsis">
+    Online Voting System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/expense-splitting-app/">
+<span class="md-ellipsis">
+    Expense-Splitting App
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/vpn/">
+<span class="md-ellipsis">
+    VPN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/chess-game/">
+<span class="md-ellipsis">
+    Chess Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/how-to-host-your-own-x/">
+<span class="md-ellipsis">
+    How to Host Your Own X
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_2_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2_3" id="__nav_6_4_2_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Advanced
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_2_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_2_3">
+<span class="md-nav__icon md-icon"></span>
+            Advanced
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/key-value-store/">
+<span class="md-ellipsis">
+    Key Value Store
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/log-system/">
+<span class="md-ellipsis">
+    Log System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/search-engine/">
+<span class="md-ellipsis">
+    Search Engine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/authentication-system/">
+<span class="md-ellipsis">
+    Authentication System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-counter/">
+<span class="md-ellipsis">
+    Distributed Counter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-cache/">
+<span class="md-ellipsis">
+    Distributed Cache
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-locking-service/">
+<span class="md-ellipsis">
+    Distributed Locking Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-job-scheduler/">
+<span class="md-ellipsis">
+    Distributed Job Scheduler
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-rate-limiter/">
+<span class="md-ellipsis">
+    Distributed Rate Limiter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-rate-limited-api-gateway/">
+<span class="md-ellipsis">
+    Distributed Rate-Limited API Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-configuration-management-system/">
+<span class="md-ellipsis">
+    Distributed Configuration Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/multi-region-deployment-system/">
+<span class="md-ellipsis">
+    Multi-Region Deployment System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/feature-flag-experimentation-platform/">
+<span class="md-ellipsis">
+    Feature Flag and Experimentation Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/notification-fanout-service/">
+<span class="md-ellipsis">
+    Notification Fan-Out Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/chat-system/">
+<span class="md-ellipsis">
+    Chat System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/whatspp/">
+<span class="md-ellipsis">
+    WhatsApp
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/live-comments/">
+<span class="md-ellipsis">
+    Live Comments
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-messaging-queue/">
+<span class="md-ellipsis">
+    Distributed Messaging Queue
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/slack/">
+<span class="md-ellipsis">
+    Slack
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/fault-tolerant-order-processing-system/">
+<span class="md-ellipsis">
+    Fault-Tolerant Order Processing System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/video-streaming/">
+<span class="md-ellipsis">
+    Video Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/netflix/">
+<span class="md-ellipsis">
+    Netflix
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/spotify/">
+<span class="md-ellipsis">
+    Spotify
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/live-streaming/">
+<span class="md-ellipsis">
+    Live Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/Image-Optimisation-on-the-fly/">
+<span class="md-ellipsis">
+    Image Optimisation On The Fly
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/amazon-flipkart/">
+<span class="md-ellipsis">
+    Amazon/Flipkart
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/e-commerce/">
+<span class="md-ellipsis">
+    E-Commerce
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/ecommerce-checkout/">
+<span class="md-ellipsis">
+    E-Commerce Checkout
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/payment-gateway/">
+<span class="md-ellipsis">
+    Payment Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/stripe/">
+<span class="md-ellipsis">
+    Stripe
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/upi-payments/">
+<span class="md-ellipsis">
+    UPI Payments
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/settlement-reconciliation-system/">
+<span class="md-ellipsis">
+    Settlement and Reconciliation System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/fraud-detection-pipeline/">
+<span class="md-ellipsis">
+    Fraud Detection Pipeline
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/quick-commerce-inventory-system/">
+<span class="md-ellipsis">
+    Quick-Commerce Inventory System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/ecommerce-search-ranking-system/">
+<span class="md-ellipsis">
+    E-Commerce Search &amp; Ranking System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/twitter/">
+<span class="md-ellipsis">
+    Twitter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/social-media/">
+<span class="md-ellipsis">
+    Social Media
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/hashtag-service/">
+<span class="md-ellipsis">
+    Hashtag Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/recomendation-engine/">
+<span class="md-ellipsis">
+    Recommendation Engine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/facebook/">
+<span class="md-ellipsis">
+    Facebook
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/instagram/">
+<span class="md-ellipsis">
+    Instagram
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/tiktok/">
+<span class="md-ellipsis">
+    TikTok
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/bookmyshow/">
+<span class="md-ellipsis">
+    BookMyShow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/uber/">
+<span class="md-ellipsis">
+    Uber
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/food-delivery/">
+<span class="md-ellipsis">
+    Food Delivery
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/flight-booking/">
+<span class="md-ellipsis">
+    Flight Booking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/google-maps/">
+<span class="md-ellipsis">
+    Google Maps
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/google-drive/">
+<span class="md-ellipsis">
+    Google Drive
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/data-warehouse/">
+<span class="md-ellipsis">
+    Data Warehouse
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-geospatial-data-platform/">
+<span class="md-ellipsis">
+    Distributed Geospatial Data Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/redis/">
+<span class="md-ellipsis">
+    Redis
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/large-language-model/">
+<span class="md-ellipsis">
+    Large Language Model
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/leetcode/">
+<span class="md-ellipsis">
+    LeetCode
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/vercel/">
+<span class="md-ellipsis">
+    Vercel
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/email-automation-platform/">
+<span class="md-ellipsis">
+    Email Automation Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/google-docs/">
+<span class="md-ellipsis">
+    Google Docs
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/online-code-editor/">
+<span class="md-ellipsis">
+    Online Code Editor
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/stock-broker-system/">
+<span class="md-ellipsis">
+    Stock Broker System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-transaction-banking-system/">
+<span class="md-ellipsis">
+    Distributed Transaction Banking System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/real-time-bidding-auction-system/">
+<span class="md-ellipsis">
+    Real-Time Bidding/Auction System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/multiplayer-game/">
+<span class="md-ellipsis">
+    Multiplayer Game
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_3" id="__nav_6_4_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Links
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Links
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/links/udemy/">
+<span class="md-ellipsis">
+    Udemy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/links/websites/">
+<span class="md-ellipsis">
+    Websites
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/links/youtube/">
+<span class="md-ellipsis">
+    YouTube
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
+<span class="md-ellipsis">
+    Low Level Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_5">
+<span class="md-nav__icon md-icon"></span>
+            Low Level Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_2" id="__nav_6_5_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_2">
+<span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/concepts/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/concepts/hashmap/">
+<span class="md-ellipsis">
+    HashMap
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/concepts/mvc/">
+<span class="md-ellipsis">
+    MVC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/concepts/null-object-pattern/">
+<span class="md-ellipsis">
+    Null Object Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/concepts/solid-principles/">
+<span class="md-ellipsis">
+    SOLID Principles
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/concepts/technical-debt/">
+<span class="md-ellipsis">
+    Technical Debt
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3" id="__nav_6_5_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Design Patterns
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_3">
+<span class="md-nav__icon md-icon"></span>
+            Design Patterns
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/design-pattern/">
+<span class="md-ellipsis">
+    Design Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_2" id="__nav_6_5_3_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Creational
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_2">
+<span class="md-nav__icon md-icon"></span>
+            Creational
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/creational/creational/">
+<span class="md-ellipsis">
+    All Creational Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/creational/singleton/">
+<span class="md-ellipsis">
+    Singleton
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/creational/prototype/">
+<span class="md-ellipsis">
+    Prototype
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/creational/builder/">
+<span class="md-ellipsis">
+    Builder
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/creational/factory/">
+<span class="md-ellipsis">
+    Factory
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/creational/abstract-factory/">
+<span class="md-ellipsis">
+    Abstract Factory
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/creational/object-pool/">
+<span class="md-ellipsis">
+    Object Pool
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_3" id="__nav_6_5_3_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Structural
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_3">
+<span class="md-nav__icon md-icon"></span>
+            Structural
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/structural/">
+<span class="md-ellipsis">
+    All Structural Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/adapter/">
+<span class="md-ellipsis">
+    Adapter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/bridge/">
+<span class="md-ellipsis">
+    Bridge
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/composite/">
+<span class="md-ellipsis">
+    Composite
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/decorator/">
+<span class="md-ellipsis">
+    Decorator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/facade/">
+<span class="md-ellipsis">
+    Facade
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/flyweight/">
+<span class="md-ellipsis">
+    Flyweight
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/proxy/">
+<span class="md-ellipsis">
+    Proxy
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_4" id="__nav_6_5_3_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Behavioral
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_4_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_4">
+<span class="md-nav__icon md-icon"></span>
+            Behavioral
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/behavioral/">
+<span class="md-ellipsis">
+    All Behavioral Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/chain-of-responsibility/">
+<span class="md-ellipsis">
+    Chain of Responsibility
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/command/">
+<span class="md-ellipsis">
+    Command
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/interpreter/">
+<span class="md-ellipsis">
+    Interpreter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/iterator/">
+<span class="md-ellipsis">
+    Iterator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/mediator/">
+<span class="md-ellipsis">
+    Mediator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/memento/">
+<span class="md-ellipsis">
+    Memento
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/observer/">
+<span class="md-ellipsis">
+    Observer
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/state/">
+<span class="md-ellipsis">
+    State
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/strategy/">
+<span class="md-ellipsis">
+    Strategy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/template/">
+<span class="md-ellipsis">
+    Template
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/visitor/">
+<span class="md-ellipsis">
+    Visitor
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_4" id="__nav_6_5_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Designing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_4_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_4">
+<span class="md-nav__icon md-icon"></span>
+            Designing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/access-management-system/">
+<span class="md-ellipsis">
+    Access Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/account-balance-tracker/">
+<span class="md-ellipsis">
+    Account Balance Tracker
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/air-traffic-controller/">
+<span class="md-ellipsis">
+    Air Traffic Controller
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/apply-coupons-on-shopping-cart/">
+<span class="md-ellipsis">
+    Apply Coupons on Shopping Cart
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/atm/">
+<span class="md-ellipsis">
+    ATM
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/bookmyshow/">
+<span class="md-ellipsis">
+    BookMyShow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/cache-system/">
+<span class="md-ellipsis">
+    Cache System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/car-rental-service/">
+<span class="md-ellipsis">
+    Car Rental Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/chess-game/">
+<span class="md-ellipsis">
+    Chess Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/cricbuzz/">
+<span class="md-ellipsis">
+    Cricbuzz
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/elevator-system/">
+<span class="md-ellipsis">
+    Elevator System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/inventory-management-system/">
+<span class="md-ellipsis">
+    Inventory Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/locker-allocation-system/">
+<span class="md-ellipsis">
+    Locker Allocation System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/logging-system/">
+<span class="md-ellipsis">
+    Logging System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/meeting-scheduler/">
+<span class="md-ellipsis">
+    Meeting Scheduler
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/parking-lot/">
+<span class="md-ellipsis">
+    Parking Lot
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/payment-gateway/">
+<span class="md-ellipsis">
+    Payment Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/snake-and-ladder/">
+<span class="md-ellipsis">
+    Snake and Ladder
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/splitwise/">
+<span class="md-ellipsis">
+    Splitwise
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/stock-exchange-book/">
+<span class="md-ellipsis">
+    Stock Exchange Book
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/tic-tac-toe/">
+<span class="md-ellipsis">
+    Tic Tac Toe
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/vending-machine/">
+<span class="md-ellipsis">
+    Vending Machine
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<p>Star Method</p>
+<h1 id="be-a-senior-developer">Be a senior developer</h1>
+<h2 id="medium">Medium</h2>
+<ul>
+<li><a href="https://medium.com/@MediumStaff/list/stories-to-help-you-grow-as-a-software-developer-b1d913188c20">Stories to Help You Grow as a Software Developer</a></li>
+<li><a href="https://eddiebarth.medium.com/list/leadership-0cc0d07e2706">Leadership</a></li>
+<li><a href="https://medium.com/beyond-the-code-by-typo/top-10-best-practices-for-code-review-a05a7d1ce480">Top 10 best practices for code review</a></li>
+<li><a href="https://medium.com/@techworldwithmilan/what-i-learned-from-the-software-architecture-the-hard-parts-0498c9eae88e">What I learned from the book Software Architecture: The Hard Parts</a></li>
+<li><a href="https://medium.com/career-paths/how-to-accumulate-domain-knowledge-like-a-senior-engineer-8dd3924e2c70">How to Accumulate Domain Knowledge Like a Senior Engineer</a></li>
+<li><a href="https://blog.devgenius.io/low-code-for-large-projects-its-time-aecd1f2ac2a7">Low-code for large projects. It's time.</a></li>
+<li><a href="https://medium.com/@breanamjones/list/good-product-thinking-25dfb3a0bd21">Good Product Thinking</a></li>
+<li><a href="https://blog.stackademic.com/i-failed-as-a-lead-developer-what-ive-learned-7bf66cb0d075">I Failed as a Lead Developer. What I've Learned?</a></li>
+<li><a href="https://azeynalli1990.medium.com/clean-code-cheat-sheet-for-senior-developers-in-daily-pr-reviews-6b77ee413469">Clean Code Cheat Sheet for Senior Developers in Daily PR Reviews</a></li>
+<li><a href="https://azeynalli1990.medium.com/12-must-have-books-for-senior-software-engineers-e433d8ba77fa">12 Must-Have Books for Senior Software Engineers</a></li>
+<li><a href="https://medium.com/@skillcombo/best-30-solution-architect-interview-questions-and-answers-2024-a8b91a076a77">Best 30 Solution Architect Interview Questions and Answers (2024)</a></li>
+<li><a href="https://medium.com/mjukvare/10-lead-software-developer-principles-7e056d0e9c9c">10 Lead Software Developer Principles</a></li>
+<li><a href="https://medium.com/@mike.s.chambers/good-developer-great-developer-exceptional-developer-ec4213565938">Good Developer / Great Developer / Exceptional Developer</a></li>
+<li><a href="https://medium.com/@mrahmedkhan019/12-microservices-design-patterns-every-software-engineer-needs-to-know-f2daae212647">12 Microservices Design Patterns every Software Engineer needs to know</a></li>
+<li><a href="https://medium.com/skillstuff/7-coding-patterns-i-stole-from-senior-engineers-c95f757e52a6">7 Coding Patterns I Stole From Senior Engineers</a></li>
+</ul>
+<h2 id="theory">Theory</h2>
+<p>This page covers behavioural interviews and growing toward senior developer level.
+It spans answering with the STAR method (Situation, Task, Action, Result), leadership and ownership stories, code-review habits, and accumulating domain knowledge.
+Key subtopics: senior vs exceptional developer traits, product thinking, microservices awareness, and learning from lead-developer failures.</p>
+<h2 id="theory-continues">Theory continues</h2>
+<p>This page turns the collections above into a complete operating manual for
+behavioural interviews at mid to senior level. The links give you what to
+believe about leadership, ownership, code review, and domain knowledge. What
+remains is how to prove it under interview pressure: which stories to prepare,
+how to tell each one in ninety seconds with the STAR method, which senior
+signals interviewers actually score, which questions to ask back, and which
+traps turn strong engineers into vague storytellers.</p>
+<p>Think of behavioural interviews as decision throughput for hiring, the same way
+the architect guide treats architecture as decision throughput for teams.
+Coding rounds test what you can build, behavioural rounds test what teams get
+when they hire you: judgment under ambiguity, ownership without authority,
+conflict handled directly, failure owned publicly, and growth that compounds.
+Seniors ship systems, exceptional developers multiply the people around them,
+and every story below must show movement from the first altitude to the second.</p>
+<h3 id="1-topics-covered">1. Topics Covered</h3>
+<ol>
+<li><a href="#2-star-method-how-to-answer-in-four-beats">STAR Method How to Answer in Four Beats</a></li>
+<li><a href="#3-story-bank-six-stories-that-cover-everything">Story Bank Six Stories That Cover Everything</a></li>
+<li><a href="#4-senior-signals-what-interviewers-score">Senior Signals What Interviewers Score</a></li>
+<li><a href="#5-questions-to-ask-what-seniors-ask-back">Questions to Ask What Seniors Ask Back</a></li>
+<li><a href="#6-pitfalls-how-good-engineers-fail-behaviourals">Pitfalls How Good Engineers Fail Behaviourals</a></li>
+<li><a href="#7-interview-questions-and-answers">Interview Questions and Answers</a></li>
+</ol>
+<p>Each numbered item links to the matching section below. Headings use plain words so every anchor resolves on GitHub preview.</p>
+<h3 id="2-star-method-how-to-answer-in-four-beats">2. STAR Method How to Answer in Four Beats</h3>
+<p>STAR is Situation, Task, Action, Result. It works because interviewers score
+recall under stress, and stress makes engineers either ramble for five minutes
+or answer in abstractions with no scene. STAR forces a scene, a choice, and a
+receipt. Situation and Task take twenty seconds together, Action takes fifty
+seconds, Result takes twenty seconds. Ninety seconds total, then stop and let
+the interviewer probe.</p>
+<p>How a strong answer actually flows:</p>
+<pre class="mermaid"><code>flowchart TD
+    S["Situation: one project, one constraint"] --&gt; T["Task: what you owned"]
+    T --&gt; A["Action: 3 steps you took"]
+    A --&gt; R["Result: metric plus lesson"]
+    R --&gt; P{"Probe follow-up?"}
+    P -- Yes --&gt; D["Deepen: trade-off, conflict, redo"]
+    P -- No --&gt; N["Next question"]
+</code></pre>
+<p>The flow above keeps every answer inside the same rails. Situation grounds the
+story in a real team and date, Task names your ownership slice so credit is
+clear, Action shows judgment in sequence rather than a list of technologies,
+and Result closes with a number plus a changed habit. Probes then deepen one
+beat instead of reopening the whole story.</p>
+<ul>
+<li><strong>Situation in two sentences:</strong> name the team, the system, and the pressure.
+  Good is serving checkout latency spiking to two seconds during Diwali sale
+  with five engineers on call. Bad is we had some performance issues. One
+  concrete scene beats three vague contexts because the interviewer can picture
+  the stakes and test your choices against them.</li>
+<li><strong>Task in one sentence:</strong> state what you personally owned, not what the team
+  owned. I owned cutting p99 under eight hundred milliseconds without new
+  infrastructure spend. Ownership language uses I for decisions and we for
+  execution, never hiding behind a collective we for the hard call you made.</li>
+<li><strong>Action in three steps:</strong> narrate decisions in order, each with a rejected
+  alternative. Profiled traces before guessing, killed two N-plus-one queries
+  instead of adding cache first, then added Redis for the hot seller path only.
+  Three steps fit in fifty seconds and prove method: measure, fix the root
+  cause, then optimize the remainder with a reversible lever.</li>
+<li><strong>Result with a number and a lesson:</strong> close with p99 from two seconds to six
+  hundred milliseconds for three weeks, zero extra hosts, plus the dashboard
+  alert we left behind. Numbers prove impact, the leftover guardrail proves
+  seniority. End with what you would repeat and what you would skip next time.</li>
+</ul>
+<p>Worked example, full ninety-second shape:</p>
+<blockquote>
+<p>Situation: In late 2023 I was backend lead on a six-person marketplace team,
+and seller-page p99 hit two seconds the week before the festive sale.
+Task: I owned bringing p99 under eight hundred milliseconds with no new
+infrastructure budget. Action: First I traced one hundred slow requests and
+found two N-plus-one loads in the seller resolver, so I batched them and cut
+nine hundred milliseconds before touching any cache. Second I added Redis only
+for the top two hundred sellers with a five-minute TTL and a stale-while
+revalidate fallback instead of caching everything. Third I put the p99 panel
+on the team wall and gated deploys on it for sale week. Result: p99 settled at
+six hundred milliseconds through the sale, conversion on seller pages rose
+eleven percent week over week, and the trace-and-gate checklist became our
+default performance runbook.</p>
+</blockquote>
+<p>Why this passes: twenty seconds of scene, one owned target, three ordered
+actions with a named trade-off, and a result with two numbers plus a durable
+habit. The interviewer can now probe caching invalidation, the batching query
+shape, or the deploy gate, and every probe lands on ground you prepared.</p>
+<p>STAR timing drills that follow:</p>
+<ul>
+<li>Write each story as four bullets with strict budgets: two lines, one line,
+  three lines, two lines.</li>
+<li>Rehearse out loud with a timer: ninety seconds for the story, sixty for probes.</li>
+<li>Record one take and count I versus we: decisions need I, help needs names.</li>
+<li>End every story with a metric and a leftover: dashboard, runbook, template.</li>
+</ul>
+<p>Practical rules that follow:</p>
+<ul>
+<li>Never start with Action; no scene means no score for judgment.</li>
+<li>Name one rejected option per story so trade-offs are visible.</li>
+<li>Stop at ninety seconds and invite the probe instead of filling silence.</li>
+</ul>
+<h3 id="3-story-bank-six-stories-that-cover-everything">3. Story Bank Six Stories That Cover Everything</h3>
+<p>Six stories cover ninety percent of behavioural prompts because prompts repeat
+the same six judgments: ownership, conflict, failure, ambiguity, influence
+without authority, and growth. Prepare one polished story per row, each with a
+metric and a leftover habit, and you can remap any question in five seconds by
+naming which story you are telling and why it fits.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Story slot</th>
+<th>Prompt it answers</th>
+<th>One-line shape</th>
+<th>Metric plus leftover</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Ownership under pressure</td>
+<td>Tell me about a time you owned something end to end</td>
+<td>Seller p99 from two seconds to six hundred milliseconds before sale week</td>
+<td>Eleven percent conversion lift, performance runbook adopted by team</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Conflict and directness</td>
+<td>Describe a disagreement with a teammate or manager</td>
+<td>Pushed back on shipping without migration guardrail, wrote risk note same day</td>
+<td>Zero data-loss incidents, risk-note template reused for later migrations</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Failure owned publicly</td>
+<td>Tell me about a mistake and what changed</td>
+<td>Shipped a red merge that paged checkout at midnight, owned the retro</td>
+<td>MTTR from forty to twelve minutes, daily-merge rule plus deploy gate</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Ambiguity and product thinking</td>
+<td>Tell me about vague requirements you clarified</td>
+<td>Turned build a dashboard into three seller questions, cut half the scope</td>
+<td>Shipped in two weeks not five, discovery-question checklist in wiki</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Influence without authority</td>
+<td>Tell me about unblocking someone outside your team</td>
+<td>Convinced payments squad to version their webhook with traces not slides</td>
+<td>Integration time from three weeks to four days, contract-testing guide</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Growth and mentorship</td>
+<td>Tell me about helping someone grow or growing yourself</td>
+<td>Mentored an intern from first PR fear to owning notification retry</td>
+<td>Intern converted to full time, code-review cheat sheet still in use</td>
+</tr>
+</tbody>
+</table>
+<p>Building each story without inventing experience:</p>
+<ul>
+<li><strong>Slot one, ownership:</strong> pick the incident, migration, or launch where you
+  were the name on the page. Write the date, the constraint such as no budget
+  or frozen headcount, and the single number that moved. Ownership stories fail
+  when the hero is the team; keep we for help received and I for the call that
+  could have gone wrong. The leftover must be a file, a gate, or a checklist
+  someone else still uses, because durable proof beats claimed impact.</li>
+<li><strong>Slot two, conflict:</strong> choose a real disagreement about scope, estimate, or
+  design, not a personality clash. Name what you said plainly, to whom, and the
+  same day rather than in hallway chat. Show the written follow-up with owner
+  and date, the short-term awkwardness, and the avoided slip or outage. Hiring
+  managers score candor with care: hard news early, respect throughout, record
+  after. Never pick a story where the other person looks foolish.</li>
+<li><strong>Slot three, failure:</strong> choose a miss that cost real time or money, ideally
+  the lead-developer failure the links above warn about. State what you owned,
+  what you missed, the fix with a date, and the guardrail added such as daily
+  merges, buffer rules, or review checklists. Own it without self-flagellation;
+  accountability plus a systemic fix is the hire signal, excuses or a vague we
+  is the fail. Rehearse this one most, because shame makes people ramble.</li>
+<li><strong>Slot four, ambiguity:</strong> pick the ticket that said something useless like
+  improve the dashboard or scale the service. Show the three questions you asked
+  before coding: who waits on this, what breaks if it fails, what simpler path
+  removes the need. Product thinking means deleting scope on purpose and saying
+  which half you cut and why users never missed it. Domain knowledge compounds
+  fastest here, at the edge where code meets money, so name the stakeholder you
+  shadowed for an hour.</li>
+<li><strong>Slot five, influence:</strong> find the week you needed something from a team that
+  owed you nothing: an API version, a schema change, a review slot. Influence
+  stories run on evidence and generosity, not escalation. Bring the trace, the
+  reproduction, or the draft PR instead of a complaint, offer to do the boring
+  half yourself, and write the guide afterward so the next team inherits a path.
+  Exceptional-developer signal lives here: you multiplied another squad.</li>
+<li><strong>Slot six, growth:</strong> pair one mentorship story with one learning story and
+  keep the sharper of the two. Mentorship means a named person, a starting
+  struggle, two specific interventions such as review walkthroughs and scoped
+  starter tasks, and an outcome with a date. Learning means a named gap such as
+  microservices patterns or review habits, the thin book or rotation that closed
+  it, and the project where the new skill shipped. Growth stories prove the
+  trajectory arrow points up.</li>
+</ul>
+<p>Remapping drills that follow:</p>
+<ul>
+<li>Read ten prompts aloud and answer each with a slot number in under five seconds.</li>
+<li>Keep each story on one index card: scene, owned target, three actions, metric.</li>
+<li>Rotate the opener so no two answers in one loop start with the same slot.</li>
+</ul>
+<p>Practical rules that follow:</p>
+<ul>
+<li>Six finished stories beat twenty half-remembered anecdotes every loop.</li>
+<li>Every story ends with a number and a leftover artifact with a location.</li>
+<li>Never reuse the same story twice in one interview day without saying so.</li>
+</ul>
+<h3 id="4-senior-signals-what-interviewers-score">4. Senior Signals What Interviewers Score</h3>
+<p>Interviewers rarely score charisma; they score six signals that predict cheap
+to manage and easy to trust. Junior answers describe tasks completed, senior
+answers describe decisions made under constraint with people affected and
+systems left better. Map every story to at least two signals before the loop,
+because the panel compares notes on signals, not on stories.</p>
+<ul>
+<li><strong>Ownership without being asked:</strong> seniors see the gap, name it, and take the
+  pager for it before anyone assigns it. Signal phrases include I noticed the
+  alert had no owner so I took it, I timeboxed two days and reported daily, I
+  stayed through the boring ten percent of docs and monitors. Anti-signal is
+  waiting for the ticket or leaving the last mile to someone else. Prove it with
+  the incident you volunteered for and the maintenance months after launch.</li>
+<li><strong>Judgment with trade-offs stated:</strong> seniors choose in the open and price the
+  rejected path. Batching before caching because writes were the root cause,
+  Postgres over a new queue because team fluency beat novelty, delaying a
+  feature to pay down the flaky suite with a dated payback. Say what you gave up
+  and what would flip the call. Engineers who list tools without rejected
+  options read as mid-level regardless of years.</li>
+<li><strong>Direct conflict handled kindly:</strong> seniors raise risk the same day in plain
+  words, then write the agreed next step with an owner and date. They disagree
+  about scope, estimates, and design, never about worth. The story shape is
+  private candor first, shared record second, follow-through third. Hallway
+  complaints, silent absorption of impossible dates, and surprise escalations
+  are the three fails this signal screens for.</li>
+<li><strong>Accountability with systemic repair:</strong> seniors own misses by name and change
+  the system so the miss cannot recur on their watch. What I owned, what I
+  missed, the fix with a date, the guardrail with a location. Retros, deploy
+  gates, buffer rules, and review checklists are the receipts. Blame memos,
+  lesson-free apologies, and fixes that live only in memory score against.</li>
+<li><strong>Multiplicative habits:</strong> exceptional developers leave people and repos
+  better: the intern who now owns a service, the review cheat sheet the team
+  still links, the runbook that cut onboarding from weeks to days, the lunch
+  and learn that spread one microservices pattern to three squads. Hiring bars
+  for senior and above ask who got faster because of you. Bring names, dates,
+  and artifacts, not adjectives about being a team player.</li>
+<li><strong>Domain and product gravity:</strong> seniors accumulate context beyond tickets:
+  seller economics, refund policy edge cases, on-call cost of a clever design.
+  They shadow support for a shift, join one customer call a quarter, and can say
+  which half of a vague ask they deleted and why revenue never noticed. This is
+  the how-to-accumulate-domain-knowledge link made interview-legible: one
+  rotation, one deleted scope, one stakeholder quoted by name.</li>
+</ul>
+<p>What a scored answer looks like in notes:</p>
+<table>
+<thead>
+<tr>
+<th>Signal</th>
+<th>Strong note example</th>
+<th>Weak note example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ownership</td>
+<td>Took unowned migration, timeboxed, shipped with gate</td>
+<td>Did assigned tickets well</td>
+</tr>
+<tr>
+<td>Judgment</td>
+<td>Chose batching over cache, named cost of each</td>
+<td>Used Redis because it is fast</td>
+</tr>
+<tr>
+<td>Conflict</td>
+<td>Raised risk same day, wrote owner plus date</td>
+<td>Avoided discussion, absorbed slip</td>
+</tr>
+<tr>
+<td>Accountability</td>
+<td>Owned red deploy, added gate, MTTR down</td>
+<td>Team had an outage, lessons learned</td>
+</tr>
+<tr>
+<td>Multiplier</td>
+<td>Intern converted, cheat sheet reused</td>
+<td>Helped teammates sometimes</td>
+</tr>
+<tr>
+<td>Product sense</td>
+<td>Cut half scope after seller interviews</td>
+<td>Built everything requested</td>
+</tr>
+</tbody>
+</table>
+<p>Practical rules that follow:</p>
+<ul>
+<li>Tag each story card with its two primary signals before the loop.</li>
+<li>State trade-offs and rejected options out loud; interviewers cannot score silence.</li>
+<li>Bring the artifact location: wiki link, dashboard name, template file path.</li>
+</ul>
+<h3 id="5-questions-to-ask-what-seniors-ask-back">5. Questions to Ask What Seniors Ask Back</h3>
+<p>The last ten minutes test whether you audit teams the way seniors audit
+systems. Juniors ask about perks and tech lists, seniors ask about on-call
+load, review culture, promotion proof, and how conflict actually resolves.
+Ask four questions total: one about the work, one about the people, one about
+growth, and one about risk. Fewer, deeper questions beat a rapid-fire list.</p>
+<ul>
+<li><strong>What does on-call look like for this team this quarter:</strong> pages per week,
+  who carries the pager, what the last two incidents taught. Follow with how
+  toil is budgeted against features, because the ratio reveals whether
+  reliability is a value or a slogan. Strong answer names numbers and a recent
+  fix; vague comfort about rarely getting paged is a warning light.</li>
+<li><strong>How do code reviews and design reviews actually run:</strong> turnaround time,
+  who must approve, what a recent rejected design looked like. Ask for the
+  review cheat sheet or the principles list the team links in PRs, echoing the
+  clean-code review link above. Teams with kind, fast, specific reviews grow
+  people; teams with silent approvals or week-long queues do not.</li>
+<li><strong>What did the last two promotions from this level require:</strong> concrete scope,
+  artifacts, and time in seat, not just impact and visibility. Ask what the
+  interviewer's own path to senior looked like and which story proved it.
+  Promotion proof separates ladders from lotteries, and the question signals
+  you plan to grow rather than coast.</li>
+<li><strong>How does disagreement resolve here, with an example:</strong> ask for a recent
+  scope or architecture dispute, who decided, and what the dissenter got in
+  writing. Healthy teams describe a decision log with an owner and a revisit
+  date; unhealthy teams describe hallway consensus or manager fiat. You are
+  screening for the direct-conflict culture your stories assume.</li>
+<li><strong>What is the gnarliest ambiguity on the roadmap right now:</strong> which
+  requirement is vaguest, which stakeholder disagrees, what a thirty-day win
+  looks like. The answer previews your first story slot and shows whether
+  product thinking is welcome or merely tolerated. Bonus probe: which half of
+  the scope would they delete first.</li>
+<li><strong>How is domain knowledge transferred, not just documented:</strong> rotations,
+  support shadows, customer-call invites, lunch and learns that actually run.
+  Seniors grow through edges where code meets users, so ask where those edges
+  are scheduled rather than improvised. A wiki nobody reads is not transfer.</li>
+</ul>
+<p>Asking them well matters as much as asking them:</p>
+<ul>
+<li>Ask one, then listen and probe once before moving on; interrogation lists read as anxiety.</li>
+<li>Connect the answer to a story: that on-call ratio is why I built the deploy gate I mentioned.</li>
+<li>Write answers down after the loop; patterns across four interviewers reveal the truth.</li>
+</ul>
+<p>Practical rules that follow:</p>
+<ul>
+<li>Never ask anything the careers page answers; spend the slot on lived reality.</li>
+<li>End with what would make you successful in ninety days, then stop on time.</li>
+<li>Send one thank-you note with a specific callback to something they said.</li>
+</ul>
+<h3 id="6-pitfalls-how-good-engineers-fail-behaviourals">6. Pitfalls How Good Engineers Fail Behaviourals</h3>
+<p>Most behavioural failures are not character failures; they are storytelling
+failures with the same six shapes. Each pitfall below reads as a scope
+overload in the wisdom guide: the fix is subtraction, one habit removed and
+one guardrail added before the next loop.</p>
+<ul>
+<li><strong>The five-minute ramble:</strong> no scene, no target, a tour of every ticket
+  touched that quarter. Fix with the ninety-second budget: twenty for scene
+  plus task, fifty for three actions, twenty for metric plus lesson. Practice
+  the hard stop: state the result, pause, and ask what they would like deeper.
+  Interviewers forgive thin stories; they penalize stories with no edge.</li>
+<li><strong>The abstraction answer:</strong> I improved scalability and collaboration with
+  zero nouns. Fix by naming the service, the date, the constraint, and the
+  number in the first three sentences. If a sentence works for any company, it
+  scores for none. Concrete nouns are the cheapest senior signal available.</li>
+<li><strong>The we-only story:</strong> every decision belongs to the team, so ownership is
+  unscorable. Fix with I for calls and trade-offs, we plus names for help and
+  execution. I chose batching over caching against Rahul's cache-first
+  suggestion, and we shipped the gate together. Credit shared, judgment owned.</li>
+<li><strong>The hero-villain conflict:</strong> the teammate looks foolish so you look wise.
+  Fix by making the disagreement about scope or design, showing your own
+  contribution to the confusion, and closing with respect intact. Panels
+  imagine you telling this story about them next; generosity is the screen.</li>
+<li><strong>The lesson-free failure:</strong> a mistake polished into a humblebrag with no
+  cost and no guardrail. Fix with real money, real pages, or real weeks lost,
+  then the dated fix and the artifact location. Shame rehearsed becomes
+  composure; shame avoided becomes rambling the moment they probe.</li>
+<li><strong>The perk-only close:</strong> final questions about free food and laptop models
+  while promotion proof and on-call load go unasked. Fix with the four-question
+  set above, asked slowly with one probe each. The close is a story too, and
+  seniors end it on craft, people, and growth.</li>
+</ul>
+<p>Pre-loop checklist that follows:</p>
+<ul>
+<li>Six story cards tagged with signals, metrics, and artifact locations.</li>
+<li>One failure story rehearsed twice, because it carries the most shame load.</li>
+<li>Four questions chosen and ordered; notebook open for answers.</li>
+</ul>
+<h3 id="7-interview-questions-and-answers">7. Interview Questions and Answers</h3>
+<ol>
+<li><strong>Tell me about a time you owned a critical delivery end to end.</strong>
+   Use slot one. Set the seller-page scene in two sentences, name the owned
+   target of p99 under eight hundred milliseconds with no new spend, then three
+   actions: traced and batched the N-plus-one loads, cached only the hot seller
+   path, gated deploys on the p99 panel. Close with six hundred milliseconds
+   through sale week, eleven percent conversion lift, and the runbook the team
+   still uses. Signal appetite plus method plus a leftover.</li>
+<li><strong>Describe a disagreement with a teammate or manager. How did it resolve?</strong>
+   Use slot two. Pick the migration guardrail dispute: you asked for a
+   backfill dry run, the lead wanted to ship Friday, you wrote the risk note
+   the same afternoon with owner and date. Show the short-term friction, the
+   Monday dry run catching two thousand orphan rows, and the template reused
+   since. Emphasize candor with care: hard news early, respect throughout,
+   record after, never a villain in the telling.</li>
+<li><strong>Tell me about a mistake that cost the team real time or money.</strong>
+   Use slot three. Name the red merge shipped before leaving for dinner that
+   paged checkout at midnight. State what you owned, what you missed in the
+   review checklist, the twelve-minute rollback, and the next-day retro. Then
+   the systemic repair: daily merges from main, deploy gate on p99, MTTR from
+   forty to twelve minutes over the quarter. Accountability plus guardrail is
+   the pass; excuses or a vague we is the fail.</li>
+<li><strong>Tell me about ambiguous requirements you turned into a shipped scope.</strong>
+   Use slot four. Open with the build a seller dashboard ticket that meant
+   everything and nothing. Ask the three questions: which sellers wait, what
+   breaks without it, what half can be deleted. Describe shadowing one seller
+   call, cutting exports and custom ranges, shipping three answered questions
+   in two weeks instead of five. Close with the discovery checklist now in the
+   wiki. Product gravity proven by deletion.</li>
+<li><strong>Tell me about influencing a team you had no authority over.</strong>
+   Use slot five. The payments squad owned the webhook you depended on, with
+   no versioning and silent field changes. Instead of escalating, bring traces
+   of three silent breaks, a draft versioning PR, and an offer to write the
+   contract tests yourself. Integration time fell from three weeks to four
+   days, and the testing guide you left became their onboarding page.
+   Evidence plus generosity is the exceptional-developer receipt.</li>
+<li><strong>Tell me about helping someone grow or closing a gap in yourself.</strong>
+   Use slot six. Name the intern, the starting fear of first PRs, and two
+   interventions: twice-weekly review walkthroughs using the clean-code cheat
+   sheet, then scoped starter tasks ending in owning notification retry.
+   Outcome with a date: converted to full time that half, cheat sheet still
+   linked in reviews. Or pair with your own depth bet: one thin book on
+   microservices patterns finished with pen and paper, applied in the next
+   project. Trajectory arrow up, with names.</li>
+<li><strong>How do you handle pressure, tight deadlines, and on-call pain?</strong>
+   Remap to slots one and three. Walk the sale-week rhythm: top three outcomes
+   each morning, deep block defended, easiest tasks at day end for clean
+   shutdown, buffer named inside every estimate. Tell how the first buffer burn
+   was reported early instead of at the deadline, and how the retro turned pain
+   into the deploy gate and the health SLO of sleep defended. Calm triage with
+   visible trade-offs beats silent overload every time.</li>
+<li><strong>Why should we hire you at senior level? What will be different in a year?</strong>
+   Close across all six signals. Summarize in thirty seconds: owns gaps before
+   assignment, decides with priced trade-offs, raises conflict the same day
+   with a written record, repairs misses systemically, multiplies one squad
+   mate and one repo habit per half, and accumulates the domain that lets scope
+   be deleted safely. Then name the ninety-day version: runbook for the
+   noisiest alert, review turnaround under a day, one mentee with a scoped
+   service slice. Loyalty with open eyes and a learning posture is the message.</li>
+</ol>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      © 2025 <a href="https://github.com/abhishekghoshh" rel="noopener" target="_blank">Abhishek Ghosh</a>
+</div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+<div class="md-social">
+<a class="md-social__link" href="https://github.com/abhishekghoshh" rel="noopener" target="_blank" title="github.com">
+<svg viewbox="0 0 480 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"></path></svg>
+</a>
+<a class="md-social__link" href="https://x.com/abhishek_ghoshh" rel="noopener" target="_blank" title="x.com">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253"></path></svg>
+</a>
+<a class="md-social__link" href="https://www.linkedin.com/in/abhishek-ghosh-220679132/" rel="noopener" target="_blank" title="www.linkedin.com">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5m282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"></path></svg>
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+<script src="../../assets/javascripts/bundle.60a45f97.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+window.mermaidConfig = {default: {
+    startOnLoad: false
+}};</script></body>
+</html>

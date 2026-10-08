@@ -1,0 +1,3405 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="https://abhishekghoshh.github.io/system-design-helper/ai/agentic-ai/" rel="canonical"/>
+<link href="../ai-tools/" rel="prev"/>
+<link href="../gen-ai/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.50" name="generator"/>
+<title>Agentic AI - System Design Helper</title>
+<link href="../../assets/stylesheets/main.a40c8224.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+<meta content="website" property="og:type"/>
+<meta content="Agentic AI - System Design Helper" property="og:title"/>
+<meta content="None" property="og:description"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/ai/agentic-ai.png" property="og:image"/>
+<meta content="image/png" property="og:image:type"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/ai/agentic-ai/" property="og:url"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Agentic AI - System Design Helper" name="twitter:title"/>
+<meta content="None" name="twitter:description"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/ai/agentic-ai.png" name="twitter:image"/>
+</head>
+<body data-md-color-accent="purple" data-md-color-primary="teal" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#ai-agent">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="System Design Helper" class="md-header__button md-logo" data-md-component="logo" href="../.." title="System Design Helper">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            System Design Helper
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Agentic AI
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="purple" data-md-color-media="" data-md-color-primary="teal" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="lime" data-md-color-media="" data-md-color-primary="teal" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+        
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../basics/cpu/">
+          
+  
+  Basics
+
+        </a>
+</li>
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../ai/">
+          
+  
+  AI
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../devops/">
+          
+  
+  DevOps
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../security/introduction/">
+          
+  
+  Security
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../system-design/books/">
+          
+  
+  System Design
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="System Design Helper" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="System Design Helper">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    System Design Helper
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    Home
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Basics
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            Basics
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basics/cpu/">
+<span class="md-ellipsis">
+    CPU
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basics/pointers/">
+<span class="md-ellipsis">
+    Pointers
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basics/maths/">
+<span class="md-ellipsis">
+    Maths
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basics/behavioural/">
+<span class="md-ellipsis">
+    Behavioural
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basics/developer-experiences/">
+<span class="md-ellipsis">
+    Developer Experiences
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basics/open-source-tools/">
+<span class="md-ellipsis">
+    Open Source Tools
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basics/software-architect/">
+<span class="md-ellipsis">
+    Software Architect
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basics/wisdom/">
+<span class="md-ellipsis">
+    Wisdom
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+<span class="md-ellipsis">
+    AI
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            AI
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai/">
+<span class="md-ellipsis">
+    AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai-tools/">
+<span class="md-ellipsis">
+    AI Tools
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    Agentic AI
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    Agentic AI
+  </span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#youtube">
+<span class="md-ellipsis">
+      Youtube
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#theory">
+<span class="md-ellipsis">
+      Theory
+    </span>
+</a>
+<nav aria-label="Theory" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#topics-covered">
+<span class="md-ellipsis">
+      Topics Covered
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-are-ai-agents-and-why-they-matter">
+<span class="md-ellipsis">
+      What Are AI Agents and Why They Matter
+    </span>
+</a>
+<nav aria-label="What Are AI Agents and Why They Matter" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#agent-vs-chain-vs-workflow">
+<span class="md-ellipsis">
+      Agent vs. chain vs. workflow
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#when-agents-are-the-right-call">
+<span class="md-ellipsis">
+      When agents are the right call
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#when-agents-are-not-enough-or-overkill">
+<span class="md-ellipsis">
+      When agents are not enough or overkill
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#a-concrete-example">
+<span class="md-ellipsis">
+      A concrete example
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#the-perceiveplanact-loop">
+<span class="md-ellipsis">
+      The perceive–plan–act loop
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#design-invariants-that-survive-interviews">
+<span class="md-ellipsis">
+      Design invariants that survive interviews
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#react-and-plan-and-execute-patterns">
+<span class="md-ellipsis">
+      ReAct and Plan-and-Execute Patterns
+    </span>
+</a>
+<nav aria-label="ReAct and Plan-and-Execute Patterns" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#react-in-plain-english">
+<span class="md-ellipsis">
+      ReAct in plain English
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#plan-and-execute-in-plain-english">
+<span class="md-ellipsis">
+      Plan-and-execute in plain English
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#choosing-between-them">
+<span class="md-ellipsis">
+      Choosing between them
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#reflection-critique-and-verification-loops">
+<span class="md-ellipsis">
+      Reflection, critique, and verification loops
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#tools-and-function-calling">
+<span class="md-ellipsis">
+      Tools and Function Calling
+    </span>
+</a>
+<nav aria-label="Tools and Function Calling" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#anatomy-of-a-tool-definition">
+<span class="md-ellipsis">
+      Anatomy of a tool definition
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#worked-python-example-react-agent-with-two-tools">
+<span class="md-ellipsis">
+      Worked Python example: ReAct agent with two tools
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#tool-design-rules-that-prevent-incidents">
+<span class="md-ellipsis">
+      Tool-design rules that prevent incidents
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#memory-short-term-and-long-term">
+<span class="md-ellipsis">
+      Memory: Short-Term and Long-Term
+    </span>
+</a>
+<nav aria-label="Memory: Short-Term and Long-Term" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#the-three-tiers">
+<span class="md-ellipsis">
+      The three tiers
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#how-agents-read-and-write-memory">
+<span class="md-ellipsis">
+      How agents read and write memory
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#memory-failure-modes-worth-naming">
+<span class="md-ellipsis">
+      Memory failure modes worth naming
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#multi-agent-orchestration">
+<span class="md-ellipsis">
+      Multi-Agent Orchestration
+    </span>
+</a>
+<nav aria-label="Multi-Agent Orchestration" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#coordination-patterns">
+<span class="md-ellipsis">
+      Coordination patterns
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#communication-and-handoff-discipline">
+<span class="md-ellipsis">
+      Communication and handoff discipline
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#when-not-to-multi-agent">
+<span class="md-ellipsis">
+      When NOT to multi-agent
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#evaluation-and-failure-modes">
+<span class="md-ellipsis">
+      Evaluation and Failure Modes
+    </span>
+</a>
+<nav aria-label="Evaluation and Failure Modes" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#task-level-metrics">
+<span class="md-ellipsis">
+      Task-level metrics
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#trace-level-metrics">
+<span class="md-ellipsis">
+      Trace-level metrics
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#seven-failure-modes-and-fixes">
+<span class="md-ellipsis">
+      Seven failure modes and fixes
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#tools-and-ecosystem">
+<span class="md-ellipsis">
+      Tools and Ecosystem
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#interview-questions-and-answers">
+<span class="md-ellipsis">
+      Interview Questions and Answers
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../gen-ai/">
+<span class="md-ellipsis">
+    Gen AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../langchain-and-langgraph/">
+<span class="md-ellipsis">
+    LangChain and LangGraph
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../MCP/">
+<span class="md-ellipsis">
+    MCP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../RAG/">
+<span class="md-ellipsis">
+    RAG
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../llm-wiki/">
+<span class="md-ellipsis">
+    LLM Wiki
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../vector-embeddings/">
+<span class="md-ellipsis">
+    Vector Embeddings
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../vibe-coding/">
+<span class="md-ellipsis">
+    Vibe Coding
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../courses/">
+<span class="md-ellipsis">
+    Courses
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    DevOps
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            DevOps
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../devops/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../devops/deployment-strategies/">
+<span class="md-ellipsis">
+    Deployment Strategies
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+<span class="md-ellipsis">
+    Security
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            Security
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/authentication-and-authorization/">
+<span class="md-ellipsis">
+    Authentication &amp; Authorization
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/oauth/">
+<span class="md-ellipsis">
+    OAuth
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/rbac/">
+<span class="md-ellipsis">
+    RBAC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/sso/">
+<span class="md-ellipsis">
+    SSO
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/ssl/">
+<span class="md-ellipsis">
+    SSL
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/ssh/">
+<span class="md-ellipsis">
+    SSH
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/jwt/">
+<span class="md-ellipsis">
+    JWT
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/encryption/">
+<span class="md-ellipsis">
+    Encryption
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/environment-variables/">
+<span class="md-ellipsis">
+    Environment Variables
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/devsecops/">
+<span class="md-ellipsis">
+    DevSecOps
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/firewall/">
+<span class="md-ellipsis">
+    Firewall
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+<span class="md-ellipsis">
+    Certificate
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_13_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_13">
+<span class="md-nav__icon md-icon"></span>
+            Certificate
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/certificate/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/certificate/certificate-authority/">
+<span class="md-ellipsis">
+    Certificate Authority
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/certificate/client-certificates/">
+<span class="md-ellipsis">
+    Client Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/certificate/server-certificates/">
+<span class="md-ellipsis">
+    Server Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/certificate/self-signed-certificates/">
+<span class="md-ellipsis">
+    Self-Signed Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/certificate/links/">
+<span class="md-ellipsis">
+    Links
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_14" id="__nav_5_14_label" tabindex="0">
+<span class="md-ellipsis">
+    Reverse Proxy
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_14_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_14">
+<span class="md-nav__icon md-icon"></span>
+            Reverse Proxy
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/reverse-proxy/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/reverse-proxy/haproxy/">
+<span class="md-ellipsis">
+    HAProxy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../security/reverse-proxy/nginx/">
+<span class="md-ellipsis">
+    Nginx
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+<span class="md-ellipsis">
+    System Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            System Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/books/">
+<span class="md-ellipsis">
+    Books
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/courses/">
+<span class="md-ellipsis">
+    Courses
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/interview/">
+<span class="md-ellipsis">
+    Interview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4" id="__nav_6_4_label" tabindex="0">
+<span class="md-ellipsis">
+    High Level Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_4">
+<span class="md-nav__icon md-icon"></span>
+            High Level Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1" id="__nav_6_4_1_label" tabindex="0">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_1_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_1">
+<span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_1_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1_2" id="__nav_6_4_1_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Basic
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_1_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_1_2">
+<span class="md-nav__icon md-icon"></span>
+            Basic
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/philosophy-of-system-design/">
+<span class="md-ellipsis">
+    Philosophy of System Design
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/client-server-architecture/">
+<span class="md-ellipsis">
+    Client-Server Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/separation-of-concerns/">
+<span class="md-ellipsis">
+    Separation of Concerns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/state-and-data-flow/">
+<span class="md-ellipsis">
+    State and Data Flow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/back-of-envelope-calculation/">
+<span class="md-ellipsis">
+    Back of Envelope Calculation
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/cloud-computing/">
+<span class="md-ellipsis">
+    Cloud Computing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/ip-addresses-and-ports/">
+<span class="md-ellipsis">
+    IP Addresses &amp; Ports
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/sockets/">
+<span class="md-ellipsis">
+    Sockets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/dns-server/">
+<span class="md-ellipsis">
+    DNS Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/networking/">
+<span class="md-ellipsis">
+    Networking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/tcp/">
+<span class="md-ellipsis">
+    TCP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/udp/">
+<span class="md-ellipsis">
+    UDP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/http/">
+<span class="md-ellipsis">
+    HTTP / HTTPS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/websockets/">
+<span class="md-ellipsis">
+    WebSockets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/smtp-server/">
+<span class="md-ellipsis">
+    SMTP Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/api/">
+<span class="md-ellipsis">
+    API
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/restfull-architecture/">
+<span class="md-ellipsis">
+    RESTful Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/data-serialization/">
+<span class="md-ellipsis">
+    Data Serialization
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/webhooks/">
+<span class="md-ellipsis">
+    Webhooks
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/load-balancer-and-proxy-server/">
+<span class="md-ellipsis">
+    Load Balancer &amp; Proxy Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/cdn/">
+<span class="md-ellipsis">
+    CDN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/hashing/">
+<span class="md-ellipsis">
+    Hashing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/storage/">
+<span class="md-ellipsis">
+    Storage
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/s3/">
+<span class="md-ellipsis">
+    S3
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/caching/">
+<span class="md-ellipsis">
+    Caching
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/scalability/">
+<span class="md-ellipsis">
+    Scalability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/browser-rendering-pipeline/">
+<span class="md-ellipsis">
+    Browser Rendering Pipeline
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/availability-and-reliability/">
+<span class="md-ellipsis">
+    Availability &amp; Reliability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/architecture-patterns/">
+<span class="md-ellipsis">
+    Architecture Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/security-basics/">
+<span class="md-ellipsis">
+    Security Basics
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/passwords/">
+<span class="md-ellipsis">
+    Passwords
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/environment-configuration-and-secrets/">
+<span class="md-ellipsis">
+    Environment Configuration &amp; Secrets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/process/">
+<span class="md-ellipsis">
+    Process
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/code-documentation/">
+<span class="md-ellipsis">
+    Code Documentation
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/basic/additional-concepts/">
+<span class="md-ellipsis">
+    Additional Concepts
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_1_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1_3" id="__nav_6_4_1_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Advanced
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_1_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_1_3">
+<span class="md-nav__icon md-icon"></span>
+            Advanced
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/webrtc/">
+<span class="md-ellipsis">
+    WebRTC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/voice-over-internet-protocol/">
+<span class="md-ellipsis">
+    VoIP (Voice Over Internet Protocol)
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/graphql/">
+<span class="md-ellipsis">
+    GraphQL
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/grpc/">
+<span class="md-ellipsis">
+    gRPC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/asynchronus-communication/">
+<span class="md-ellipsis">
+    Asynchronous Communication
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/nats/">
+<span class="md-ellipsis">
+    NATS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/api-gateway/">
+<span class="md-ellipsis">
+    API Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/service-discovery/">
+<span class="md-ellipsis">
+    Service Discovery
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/service-mesh/">
+<span class="md-ellipsis">
+    Service Mesh
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/consistent-hashing/">
+<span class="md-ellipsis">
+    Consistent Hashing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/distributed-caches-and-caching-strategies/">
+<span class="md-ellipsis">
+    Distributed Caches &amp; Caching Strategies
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/scaling-to-one-million/">
+<span class="md-ellipsis">
+    Scaling to One Million
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/adaptive-bitrate-streaming/">
+<span class="md-ellipsis">
+    Adaptive Bitrate Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/consistency/">
+<span class="md-ellipsis">
+    Consistency
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/cap-theorm/">
+<span class="md-ellipsis">
+    CAP Theorem
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/fault-tolerance/">
+<span class="md-ellipsis">
+    Fault Tolerance
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/clean-architecture/">
+<span class="md-ellipsis">
+    Clean Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/microservices-patterns/">
+<span class="md-ellipsis">
+    Microservices Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/raft-consensus-algorithm/">
+<span class="md-ellipsis">
+    Raft Consensus Algorithm
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/gossip-protocol/">
+<span class="md-ellipsis">
+    Gossip Protocol
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/ditributed-transaction-and-concurrency-control/">
+<span class="md-ellipsis">
+    Distributed Transaction &amp; Concurrency Control
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/cdc/">
+<span class="md-ellipsis">
+    CDC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/resilience-patterns/">
+<span class="md-ellipsis">
+    Resilience Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/thundering-effect/">
+<span class="md-ellipsis">
+    Thundering Herd Effect
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/observability/">
+<span class="md-ellipsis">
+    Observability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/cqrs/">
+<span class="md-ellipsis">
+    CQRS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/event-sourcing/">
+<span class="md-ellipsis">
+    Event Sourcing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/saga-pattern/">
+<span class="md-ellipsis">
+    Saga Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/data-processing/">
+<span class="md-ellipsis">
+    Data Processing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/programming-language/">
+<span class="md-ellipsis">
+    Programming Language
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/concepts/advanced/github-server/">
+<span class="md-ellipsis">
+    GitHub Server
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2" id="__nav_6_4_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Designing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Designing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_2_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2_2" id="__nav_6_4_2_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Basic
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_2_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_2_2">
+<span class="md-nav__icon md-icon"></span>
+            Basic
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/url-shortner/">
+<span class="md-ellipsis">
+    URL Shortener
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/rate-limiter/">
+<span class="md-ellipsis">
+    Rate Limiter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/notification-system/">
+<span class="md-ellipsis">
+    Notification System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/webhook/">
+<span class="md-ellipsis">
+    Webhook
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/cdn/">
+<span class="md-ellipsis">
+    CDN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/autocomplete/">
+<span class="md-ellipsis">
+    Autocomplete
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/pastebin/">
+<span class="md-ellipsis">
+    Pastebin
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/leaderboard/">
+<span class="md-ellipsis">
+    Leaderboard
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/inventory-management-system/">
+<span class="md-ellipsis">
+    Inventory Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/library-management-system/">
+<span class="md-ellipsis">
+    Library Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/job-board/">
+<span class="md-ellipsis">
+    Job Board
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/bug-issue-tracker/">
+<span class="md-ellipsis">
+    Bug/Issue Tracker
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/todo-list-app/">
+<span class="md-ellipsis">
+    To-Do List App
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/attendance-tracking-system/">
+<span class="md-ellipsis">
+    Attendance Tracking System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/customer-support-ticketing-system/">
+<span class="md-ellipsis">
+    Customer Support Ticketing System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/digital-wallet/">
+<span class="md-ellipsis">
+    Digital Wallet
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/vending-machine/">
+<span class="md-ellipsis">
+    Vending Machine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/rate-and-review-system/">
+<span class="md-ellipsis">
+    Rate-and-Review System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/hotel-booking/">
+<span class="md-ellipsis">
+    Hotel Booking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/app-store/">
+<span class="md-ellipsis">
+    App Store
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/yelp/">
+<span class="md-ellipsis">
+    Yelp
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/carpooling-system/">
+<span class="md-ellipsis">
+    Carpooling System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/blogging-platform/">
+<span class="md-ellipsis">
+    Blogging Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/image-gallery-with-tagging/">
+<span class="md-ellipsis">
+    Image Gallery with Tagging
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/polling-voting-app/">
+<span class="md-ellipsis">
+    Polling/Voting App
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/online-voting-system/">
+<span class="md-ellipsis">
+    Online Voting System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/expense-splitting-app/">
+<span class="md-ellipsis">
+    Expense-Splitting App
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/vpn/">
+<span class="md-ellipsis">
+    VPN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/chess-game/">
+<span class="md-ellipsis">
+    Chess Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/basic/how-to-host-your-own-x/">
+<span class="md-ellipsis">
+    How to Host Your Own X
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_2_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2_3" id="__nav_6_4_2_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Advanced
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_2_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_2_3">
+<span class="md-nav__icon md-icon"></span>
+            Advanced
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/key-value-store/">
+<span class="md-ellipsis">
+    Key Value Store
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/log-system/">
+<span class="md-ellipsis">
+    Log System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/search-engine/">
+<span class="md-ellipsis">
+    Search Engine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/authentication-system/">
+<span class="md-ellipsis">
+    Authentication System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-counter/">
+<span class="md-ellipsis">
+    Distributed Counter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-cache/">
+<span class="md-ellipsis">
+    Distributed Cache
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-locking-service/">
+<span class="md-ellipsis">
+    Distributed Locking Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-job-scheduler/">
+<span class="md-ellipsis">
+    Distributed Job Scheduler
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-rate-limiter/">
+<span class="md-ellipsis">
+    Distributed Rate Limiter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-rate-limited-api-gateway/">
+<span class="md-ellipsis">
+    Distributed Rate-Limited API Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-configuration-management-system/">
+<span class="md-ellipsis">
+    Distributed Configuration Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/multi-region-deployment-system/">
+<span class="md-ellipsis">
+    Multi-Region Deployment System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/feature-flag-experimentation-platform/">
+<span class="md-ellipsis">
+    Feature Flag and Experimentation Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/notification-fanout-service/">
+<span class="md-ellipsis">
+    Notification Fan-Out Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/chat-system/">
+<span class="md-ellipsis">
+    Chat System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/whatspp/">
+<span class="md-ellipsis">
+    WhatsApp
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/live-comments/">
+<span class="md-ellipsis">
+    Live Comments
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-messaging-queue/">
+<span class="md-ellipsis">
+    Distributed Messaging Queue
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/slack/">
+<span class="md-ellipsis">
+    Slack
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/fault-tolerant-order-processing-system/">
+<span class="md-ellipsis">
+    Fault-Tolerant Order Processing System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/video-streaming/">
+<span class="md-ellipsis">
+    Video Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/netflix/">
+<span class="md-ellipsis">
+    Netflix
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/spotify/">
+<span class="md-ellipsis">
+    Spotify
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/live-streaming/">
+<span class="md-ellipsis">
+    Live Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/Image-Optimisation-on-the-fly/">
+<span class="md-ellipsis">
+    Image Optimisation On The Fly
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/amazon-flipkart/">
+<span class="md-ellipsis">
+    Amazon/Flipkart
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/e-commerce/">
+<span class="md-ellipsis">
+    E-Commerce
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/ecommerce-checkout/">
+<span class="md-ellipsis">
+    E-Commerce Checkout
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/payment-gateway/">
+<span class="md-ellipsis">
+    Payment Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/stripe/">
+<span class="md-ellipsis">
+    Stripe
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/upi-payments/">
+<span class="md-ellipsis">
+    UPI Payments
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/settlement-reconciliation-system/">
+<span class="md-ellipsis">
+    Settlement and Reconciliation System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/fraud-detection-pipeline/">
+<span class="md-ellipsis">
+    Fraud Detection Pipeline
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/quick-commerce-inventory-system/">
+<span class="md-ellipsis">
+    Quick-Commerce Inventory System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/ecommerce-search-ranking-system/">
+<span class="md-ellipsis">
+    E-Commerce Search &amp; Ranking System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/twitter/">
+<span class="md-ellipsis">
+    Twitter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/social-media/">
+<span class="md-ellipsis">
+    Social Media
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/hashtag-service/">
+<span class="md-ellipsis">
+    Hashtag Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/recomendation-engine/">
+<span class="md-ellipsis">
+    Recommendation Engine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/facebook/">
+<span class="md-ellipsis">
+    Facebook
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/instagram/">
+<span class="md-ellipsis">
+    Instagram
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/tiktok/">
+<span class="md-ellipsis">
+    TikTok
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/bookmyshow/">
+<span class="md-ellipsis">
+    BookMyShow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/uber/">
+<span class="md-ellipsis">
+    Uber
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/food-delivery/">
+<span class="md-ellipsis">
+    Food Delivery
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/flight-booking/">
+<span class="md-ellipsis">
+    Flight Booking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/google-maps/">
+<span class="md-ellipsis">
+    Google Maps
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/google-drive/">
+<span class="md-ellipsis">
+    Google Drive
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/data-warehouse/">
+<span class="md-ellipsis">
+    Data Warehouse
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-geospatial-data-platform/">
+<span class="md-ellipsis">
+    Distributed Geospatial Data Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/redis/">
+<span class="md-ellipsis">
+    Redis
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/large-language-model/">
+<span class="md-ellipsis">
+    Large Language Model
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/leetcode/">
+<span class="md-ellipsis">
+    LeetCode
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/vercel/">
+<span class="md-ellipsis">
+    Vercel
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/email-automation-platform/">
+<span class="md-ellipsis">
+    Email Automation Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/google-docs/">
+<span class="md-ellipsis">
+    Google Docs
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/online-code-editor/">
+<span class="md-ellipsis">
+    Online Code Editor
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/stock-broker-system/">
+<span class="md-ellipsis">
+    Stock Broker System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/distributed-transaction-banking-system/">
+<span class="md-ellipsis">
+    Distributed Transaction Banking System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/real-time-bidding-auction-system/">
+<span class="md-ellipsis">
+    Real-Time Bidding/Auction System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/designing/advanced/multiplayer-game/">
+<span class="md-ellipsis">
+    Multiplayer Game
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_3" id="__nav_6_4_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Links
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Links
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/links/udemy/">
+<span class="md-ellipsis">
+    Udemy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/links/websites/">
+<span class="md-ellipsis">
+    Websites
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/high-level/links/youtube/">
+<span class="md-ellipsis">
+    YouTube
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
+<span class="md-ellipsis">
+    Low Level Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_5">
+<span class="md-nav__icon md-icon"></span>
+            Low Level Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_2" id="__nav_6_5_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_2">
+<span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/concepts/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/concepts/hashmap/">
+<span class="md-ellipsis">
+    HashMap
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/concepts/mvc/">
+<span class="md-ellipsis">
+    MVC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/concepts/null-object-pattern/">
+<span class="md-ellipsis">
+    Null Object Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/concepts/solid-principles/">
+<span class="md-ellipsis">
+    SOLID Principles
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/concepts/technical-debt/">
+<span class="md-ellipsis">
+    Technical Debt
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3" id="__nav_6_5_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Design Patterns
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_3">
+<span class="md-nav__icon md-icon"></span>
+            Design Patterns
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/design-pattern/">
+<span class="md-ellipsis">
+    Design Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_2" id="__nav_6_5_3_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Creational
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_2">
+<span class="md-nav__icon md-icon"></span>
+            Creational
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/creational/creational/">
+<span class="md-ellipsis">
+    All Creational Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/creational/singleton/">
+<span class="md-ellipsis">
+    Singleton
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/creational/prototype/">
+<span class="md-ellipsis">
+    Prototype
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/creational/builder/">
+<span class="md-ellipsis">
+    Builder
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/creational/factory/">
+<span class="md-ellipsis">
+    Factory
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/creational/abstract-factory/">
+<span class="md-ellipsis">
+    Abstract Factory
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/creational/object-pool/">
+<span class="md-ellipsis">
+    Object Pool
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_3" id="__nav_6_5_3_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Structural
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_3">
+<span class="md-nav__icon md-icon"></span>
+            Structural
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/structural/">
+<span class="md-ellipsis">
+    All Structural Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/adapter/">
+<span class="md-ellipsis">
+    Adapter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/bridge/">
+<span class="md-ellipsis">
+    Bridge
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/composite/">
+<span class="md-ellipsis">
+    Composite
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/decorator/">
+<span class="md-ellipsis">
+    Decorator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/facade/">
+<span class="md-ellipsis">
+    Facade
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/flyweight/">
+<span class="md-ellipsis">
+    Flyweight
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/structural/proxy/">
+<span class="md-ellipsis">
+    Proxy
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_4" id="__nav_6_5_3_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Behavioral
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_4_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_4">
+<span class="md-nav__icon md-icon"></span>
+            Behavioral
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/behavioral/">
+<span class="md-ellipsis">
+    All Behavioral Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/chain-of-responsibility/">
+<span class="md-ellipsis">
+    Chain of Responsibility
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/command/">
+<span class="md-ellipsis">
+    Command
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/interpreter/">
+<span class="md-ellipsis">
+    Interpreter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/iterator/">
+<span class="md-ellipsis">
+    Iterator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/mediator/">
+<span class="md-ellipsis">
+    Mediator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/memento/">
+<span class="md-ellipsis">
+    Memento
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/observer/">
+<span class="md-ellipsis">
+    Observer
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/state/">
+<span class="md-ellipsis">
+    State
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/strategy/">
+<span class="md-ellipsis">
+    Strategy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/template/">
+<span class="md-ellipsis">
+    Template
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/design-pattern/behavioral/visitor/">
+<span class="md-ellipsis">
+    Visitor
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_4" id="__nav_6_5_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Designing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_4_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_4">
+<span class="md-nav__icon md-icon"></span>
+            Designing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/access-management-system/">
+<span class="md-ellipsis">
+    Access Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/account-balance-tracker/">
+<span class="md-ellipsis">
+    Account Balance Tracker
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/air-traffic-controller/">
+<span class="md-ellipsis">
+    Air Traffic Controller
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/apply-coupons-on-shopping-cart/">
+<span class="md-ellipsis">
+    Apply Coupons on Shopping Cart
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/atm/">
+<span class="md-ellipsis">
+    ATM
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/bookmyshow/">
+<span class="md-ellipsis">
+    BookMyShow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/cache-system/">
+<span class="md-ellipsis">
+    Cache System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/car-rental-service/">
+<span class="md-ellipsis">
+    Car Rental Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/chess-game/">
+<span class="md-ellipsis">
+    Chess Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/cricbuzz/">
+<span class="md-ellipsis">
+    Cricbuzz
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/elevator-system/">
+<span class="md-ellipsis">
+    Elevator System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/inventory-management-system/">
+<span class="md-ellipsis">
+    Inventory Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/locker-allocation-system/">
+<span class="md-ellipsis">
+    Locker Allocation System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/logging-system/">
+<span class="md-ellipsis">
+    Logging System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/meeting-scheduler/">
+<span class="md-ellipsis">
+    Meeting Scheduler
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/parking-lot/">
+<span class="md-ellipsis">
+    Parking Lot
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/payment-gateway/">
+<span class="md-ellipsis">
+    Payment Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/snake-and-ladder/">
+<span class="md-ellipsis">
+    Snake and Ladder
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/splitwise/">
+<span class="md-ellipsis">
+    Splitwise
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/stock-exchange-book/">
+<span class="md-ellipsis">
+    Stock Exchange Book
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/tic-tac-toe/">
+<span class="md-ellipsis">
+    Tic Tac Toe
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system-design/low-level/designing/vending-machine/">
+<span class="md-ellipsis">
+    Vending Machine
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ai-agent">AI Agent</h1>
+<h2 id="youtube">Youtube</h2>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=CnXdddeZ4tQ">Agentic AI Tutorial for Beginners | Langgraph Tutorial</a></li>
+<li><a href="https://www.youtube.com/watch?v=bTMPwUgLZf0">Build an AI Agent From Scratch in Python - Tutorial for Beginners</a></li>
+</ul>
+<h2 id="theory">Theory</h2>
+<p>Agentic AI refers to AI systems that pursue goals autonomously through perceive–plan–act loops instead of single responses.
+It covers planning and reasoning, tool/function calling, short- and long-term memory, and multi-step task execution.
+Key subtopics: building agents from scratch in Python, frameworks like LangGraph, evaluation, and guardrails.</p>
+<p>Agentic AI is the standard architecture for turning LLMs from chatbots into task completers: coding assistants that
+run tests and fix failures, support agents that look up orders and issue refunds, research assistants that browse
+and synthesise sources, and ops copilots that query dashboards and open tickets. Instead of answering in one shot
+from parametric memory, an agent reasons about a goal, calls tools to observe and change the world, remembers what
+it learned, and iterates until the task is done or it must ask for help.</p>
+<p>This guide takes you from mental model to production concerns. You will learn what separates an agent from a plain
+LLM chain, how the perceive–plan–act loop works, how ReAct interleaves reasoning and acting versus plan-and-execute
+strategies, how tools and function calling ground decisions in real APIs, how short- and long-term memory persist
+context, how multi-agent teams divide labour, and how to evaluate reliability and contain the most common failure
+modes. A worked Python example ties the concepts together, and the closing Q and A distils what interviewers
+probe most.</p>
+<blockquote>
+<p>Scope note: this page focuses on agent fundamentals (loops, reasoning patterns, tools, memory, orchestration,
+and evaluation). Deep dives on retrieval, embeddings, vector databases, and LangChain/LangGraph APIs live on
+companion pages — linked from Tools and Ecosystem below.</p>
+</blockquote>
+<h3 id="topics-covered">Topics Covered</h3>
+<ol>
+<li><a href="#what-are-ai-agents-and-why-they-matter">What Are AI Agents and Why They Matter</a></li>
+<li><a href="#react-and-plan-and-execute-patterns">ReAct and Plan-and-Execute Patterns</a></li>
+<li><a href="#tools-and-function-calling">Tools and Function Calling</a></li>
+<li><a href="#memory-short-term-and-long-term">Memory: Short-Term and Long-Term</a></li>
+<li><a href="#multi-agent-orchestration">Multi-Agent Orchestration</a></li>
+<li><a href="#evaluation-and-failure-modes">Evaluation and Failure Modes</a></li>
+<li><a href="#tools-and-ecosystem">Tools and Ecosystem</a></li>
+<li><a href="#interview-questions-and-answers">Interview Questions and Answers</a></li>
+</ol>
+<h3 id="what-are-ai-agents-and-why-they-matter">What Are AI Agents and Why They Matter</h3>
+<p>An AI agent couples an LLM reasoner to perception (inputs and tool observations), memory (state across steps),
+and action (tool calls and final answers) inside a loop. The term gained currency with ReAct (Yao et al., 2022)
+and tool-using language models: the model conditions each decision on the goal, the history so far, and the
+latest observation, so behaviour adapts to live feedback instead of following a fixed script. Conceptually:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>Goal + tools + memory → Agent reasons → Calls tool → Observes result → Repeats → Final answer or escalation
+</code></pre></div>
+<p>Without tools and loops, an LLM answers purely from parametric memory — fluent but unable to check facts, read
+private systems, or cause side effects. That produces confident hallucinations and dead ends on any task needing
+fresh data or multi-step work. Agents replace much of that guessing with grounded interaction: look up the order,
+check the policy, run the code, and only then answer or act.</p>
+<h4 id="agent-vs-chain-vs-workflow">Agent vs. chain vs. workflow</h4>
+<table>
+<thead>
+<tr>
+<th>Concern</th>
+<th>Single LLM call</th>
+<th>Fixed chain / workflow</th>
+<th>Autonomous agent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Control flow</td>
+<td>One prompt, one answer</td>
+<td>Hardcoded DAG of steps</td>
+<td>LLM decides next step per iteration</td>
+</tr>
+<tr>
+<td>Tool use</td>
+<td>None or one shot</td>
+<td>Predetermined calls</td>
+<td>Dynamic selection from many tools</td>
+</tr>
+<tr>
+<td>Handles surprises</td>
+<td>Poorly; no recovery</td>
+<td>Retries only where coded</td>
+<td>Replans from observations</td>
+</tr>
+<tr>
+<td>Cost / latency</td>
+<td>Cheapest, fastest</td>
+<td>Predictable</td>
+<td>Higher; loops and retries add up</td>
+</tr>
+<tr>
+<td>Auditability</td>
+<td>Simple</td>
+<td>Easy; fixed path</td>
+<td>Harder; need full trace logging</td>
+</tr>
+<tr>
+<td>Best for</td>
+<td>Q&amp;A, summarisation</td>
+<td>ETL, templated pipelines</td>
+<td>Open-ended, multi-step goals</td>
+</tr>
+</tbody>
+</table>
+<p>In practice teams combine all three: deterministic workflows for the happy path with agent loops for the messy
+parts (triage, diagnosis, research). Interviews often test exactly this judgement — when autonomy earns its cost
+and when a script wins on reliability.</p>
+<h4 id="when-agents-are-the-right-call">When agents are the right call</h4>
+<ul>
+<li>Goals need live or private data: order status, ticket history, calendar, codebase, dashboards.</li>
+<li>Tasks span steps with dependencies: "find the failing test, fix it, re-run CI, and report."</li>
+<li>The path cannot be enumerated upfront: troubleshooting, research, negotiation, exploration.</li>
+<li>Feedback is available to steer: tool results, compiler errors, search hits, human approvals.</li>
+<li>Side effects are valuable: file edits, ticket updates, refunds, deployments behind guardrails.</li>
+</ul>
+<h4 id="when-agents-are-not-enough-or-overkill">When agents are not enough or overkill</h4>
+<ul>
+<li>The task is single-fact lookup: a RAG query or API call is faster and cheaper than a loop.</li>
+<li>Determinism is required: payments, safety interlocks, and compliance steps want fixed workflows.</li>
+<li>No tools or feedback exist: without observations the loop is just expensive self-talk.</li>
+<li>Latency budget is razor-thin: each iteration adds an LLM call plus tool time (seconds, not milliseconds).</li>
+<li>Guardrails are missing: autonomy without permissions, approvals, and rollback is an incident waiting to happen.</li>
+</ul>
+<h4 id="a-concrete-example">A concrete example</h4>
+<p>Ask a vanilla chatbot to "refund my last order." It may explain the policy but cannot act. An agent instead
+calls <code>list_orders(customer_id)</code>, observes order #4812 delivered yesterday, calls <code>get_policy("refunds")</code>,
+checks the 14-day window applies, asks for confirmation, then calls <code>issue_refund(order_id="4812")</code> and cites
+the policy section. Same model, different powers: perception plus action in a loop.</p>
+<h4 id="the-perceiveplanact-loop">The perceive–plan–act loop</h4>
+<ol>
+<li><strong>Perceive:</strong> gather goal, user message, conversation history, memory snippets, and the last tool observation.</li>
+<li><strong>Plan / reason:</strong> the LLM writes a private rationale (chain-of-thought or structured scratchpad) and picks
+   the next action: call a tool, ask the user, or finish.</li>
+<li><strong>Act:</strong> execute the chosen tool with validated arguments; record the observation verbatim.</li>
+<li><strong>Reflect:</strong> check progress toward the goal, update working memory, and decide whether to stop, continue,
+   replan, or escalate. Guardrails (budgets, allowlists, confirmations) enforce at this step.</li>
+</ol>
+<pre class="mermaid"><code>flowchart TB
+    G["Goal + user request"] --&gt; P["Perceive: history + memory + observation"]
+    P --&gt; R["Reason: LLM plans next action"]
+    R --&gt; D{"Act or finish?"}
+    D --&gt;|"Call tool"| T["Execute tool with validated args"]
+    T --&gt; O["Observation: result or error"]
+    O --&gt; P
+    D --&gt;|"Need input"| H["Ask user / request approval"]
+    H --&gt; P
+    D --&gt;|"Done"| F["Final answer + trace + citations"]
+</code></pre>
+<p><em>The diagram above shows the agent loop: every iteration perceives fresh state, reasons about the next move, acts through tools, and feeds the observation back until the goal is met or escalated.</em></p>
+<h4 id="design-invariants-that-survive-interviews">Design invariants that survive interviews</h4>
+<ul>
+<li><strong>Bound the loop:</strong> cap iterations (for example, 8–15), wall-clock time, tokens, and spend; always have a
+  graceful stop with a partial answer plus next steps.</li>
+<li><strong>Log traces:</strong> persist every thought, action, argument, observation, and token count — debugging and
+  evaluation are impossible without them.</li>
+<li><strong>Validate at the boundary:</strong> schema-check tool arguments, sanitise outputs before stuffing them into the
+  prompt, and treat tool text as untrusted data, not instructions.</li>
+<li><strong>Fail toward humans:</strong> time out to a clarifying question or approval request rather than a risky guess.</li>
+</ul>
+<h3 id="react-and-plan-and-execute-patterns">ReAct and Plan-and-Execute Patterns</h3>
+<p>ReAct (Reason + Act) is the default agent pattern: each step the model writes a short thought, takes one
+action, reads the observation, and repeats. Plan-and-execute separates concerns: a planner writes a multi-step
+plan upfront, executors carry out steps (often in parallel), and a replanner revises on failure. Knowing when
+each wins is a senior-level signal.</p>
+<h4 id="react-in-plain-english">ReAct in plain English</h4>
+<p>A ReAct trace alternates free-text reasoning with structured tool calls. The thought is not decoration — it
+grounds the next action in the latest evidence and makes failures auditable:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>Thought: The user wants last month's churn. I need revenue data first.
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>Action: query_dashboard(metric="mrr_churn", period="last_month")
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>Observation: {"mrr_churn": "3.1%", "at_risk_accounts": 14}
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>Thought: I have the number. Now fetch the top at-risk accounts for detail.
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>Action: query_crm(segment="at_risk", limit=5)
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>Observation: [...]
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>Thought: I can now summarise with citations. No further tools needed.
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>Answer: Churn was 3.1% ... (sources: dashboard, CRM export)
+</code></pre></div>
+<p>ReAct shines when the next step depends on the last result and the horizon is short (3–8 steps). Its weakness
+is myopia: no global plan, so it can wander, repeat calls, or get stuck in apology loops without step budgets
+and progress checks.</p>
+<h4 id="plan-and-execute-in-plain-english">Plan-and-execute in plain English</h4>
+<p>The planner decomposes the goal into steps with dependencies ("1. fetch data, 2. analyse, 3. draft report"),
+dispatches independent steps in parallel, then a replanner merges results and revises the remainder when a step
+fails or returns surprises. Pseudocode for the control flow:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>plan = planner.decompose(goal)            # [step1, step2(dep step1), step3]
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>while plan.has_open_steps():
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    ready = plan.ready_steps()            # dependencies satisfied
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    results = execute_parallel(ready)     # tool calls with timeouts
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    plan = replanner.revise(plan, results)  # drop, retry, or add steps
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>answer = synthesizer.summarise(plan.results)
+</code></pre></div>
+<p>Plan-and-execute shines on longer, decomposable work (research reports, migrations, multi-system reconciliations)
+where parallelism saves time and an explicit plan is reviewable. Its weakness is overhead and brittleness: bad
+initial plans waste whole branches, so invest in plan critique and cheap verification steps.</p>
+<h4 id="choosing-between-them">Choosing between them</h4>
+<table>
+<thead>
+<tr>
+<th>Concern</th>
+<th>ReAct</th>
+<th>Plan-and-execute</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Horizon</td>
+<td>Short, exploratory (few steps)</td>
+<td>Long, decomposable (many steps)</td>
+</tr>
+<tr>
+<td>Parallelism</td>
+<td>Sequential by construction</td>
+<td>Independent steps run concurrently</td>
+</tr>
+<tr>
+<td>Reviewability</td>
+<td>Trace reads like a diary</td>
+<td>Plan reads like a project ticket</td>
+</tr>
+<tr>
+<td>Failure handling</td>
+<td>Local retry per step</td>
+<td>Global replan across steps</td>
+</tr>
+<tr>
+<td>Cost profile</td>
+<td>Pay per useful step</td>
+<td>Pay for planning plus branches</td>
+</tr>
+<tr>
+<td>Typical failure</td>
+<td>Loops, drift, repeated calls</td>
+<td>Stale plan, wasted branches</td>
+</tr>
+</tbody>
+</table>
+<p>Hybrid designs dominate production: plan coarsely, execute hot spots with ReAct sub-agents, and replan on
+contradictions. Name one hybrid ("planner with ReAct executors") to signal you have built past the tutorial.</p>
+<h4 id="reflection-critique-and-verification-loops">Reflection, critique, and verification loops</h4>
+<p>Strong agents do not trust their first draft. Common add-ons: <strong>self-refine</strong> (draft, critique against a
+rubric, revise), <strong>verifier tools</strong> (run tests, lint, or SQL checks as just another observation), and
+<strong>plan critique</strong> (a second model scores the plan for missing steps before execution). Keep critics cheap and
+mechanical — a test suite beats a philosophical judge — and cap revision rounds so polish does not become a loop.</p>
+<h3 id="tools-and-function-calling">Tools and Function Calling</h3>
+<p>Tools are typed functions the agent can invoke: search, database reads, code execution, ticket updates, refunds.
+Function calling is the protocol that makes this reliable: the model emits structured arguments matching a JSON
+schema instead of free text, the harness executes the function, and the raw observation returns to context.
+Without schemas and validation, tool use collapses into prompt injection and malformed calls.</p>
+<h4 id="anatomy-of-a-tool-definition">Anatomy of a tool definition</h4>
+<ul>
+<li><strong>Name and description:</strong> what it does, when to prefer it, and what it never does — the model reads this to
+  choose between tools, so write it like API docs, not a label.</li>
+<li><strong>JSON schema for arguments:</strong> types, required fields, enums, and formats (dates, IDs); reject anything that
+  fails validation before execution.</li>
+<li><strong>Permissions and side effects:</strong> read-only versus write, idempotency key, approval requirement, and rollback
+  story. Mark destructive tools explicitly so the planner asks first.</li>
+<li><strong>Output contract:</strong> bounded, structured observations (rows, error codes) rather than raw HTML dumps that
+  flood context and hide injections.</li>
+</ul>
+<h4 id="worked-python-example-react-agent-with-two-tools">Worked Python example: ReAct agent with two tools</h4>
+<p>The snippet below is a complete minimal agent in raw Python: a fake LLM policy picks actions, two typed tools
+simulate order lookup and refunds, and the loop enforces budgets, validation, and trace logging. It mirrors what
+LangGraph, OpenAI function calling, and AutoGen do internally, which is exactly why interviewers like it.</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="sd">"""Minimal ReAct agent: typed tools + bounded perceive-plan-act loop + trace log."""</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="c1"># 1. Tool registry with JSON-schema-like specs the "model" can read</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="n">TOOLS</span> <span class="o">=</span> <span class="p">{</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>    <span class="s2">"list_orders"</span><span class="p">:</span> <span class="p">{</span>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>        <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"List recent orders for a customer. Read-only; prefer first."</span><span class="p">,</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>        <span class="s2">"args"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"customer_id"</span><span class="p">:</span> <span class="s2">"string (required)"</span><span class="p">},</span>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>    <span class="p">},</span>
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>    <span class="s2">"issue_refund"</span><span class="p">:</span> <span class="p">{</span>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>        <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"Refund an order within policy. WRITE action: needs approval."</span><span class="p">,</span>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>        <span class="s2">"args"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"order_id"</span><span class="p">:</span> <span class="s2">"string (required)"</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="s2">"string (required)"</span><span class="p">},</span>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>    <span class="p">},</span>
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="p">}</span>
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="n">ORDERS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"cust_7"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"order_id"</span><span class="p">:</span> <span class="s2">"4812"</span><span class="p">,</span> <span class="s2">"item"</span><span class="p">:</span> <span class="s2">"keyboard"</span><span class="p">,</span> <span class="s2">"days_ago"</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">"total"</span><span class="p">:</span> <span class="mf">129.0</span><span class="p">}]}</span>
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="n">POLICY_WINDOW_DAYS</span> <span class="o">=</span> <span class="mi">14</span>
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a>
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="c1"># 2. Tool implementations (in production: real APIs with auth, retries, idempotency keys)</span>
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="k">def</span><span class="w"> </span><span class="nf">list_orders</span><span class="p">(</span><span class="n">customer_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">customer_id</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">customer_id</span><span class="p">:</span>
+<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"customer_id must be a non-empty string"</span><span class="p">)</span>
+<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">"orders"</span><span class="p">:</span> <span class="n">ORDERS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">customer_id</span><span class="p">,</span> <span class="p">[])}</span>
+<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a>
+<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a>
+<a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a><span class="k">def</span><span class="w"> </span><span class="nf">issue_refund</span><span class="p">(</span><span class="n">order_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">approved</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">order_id</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">reason</span><span class="p">:</span>
+<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"order_id and reason are required"</span><span class="p">)</span>
+<a href="#__codelineno-3-32" id="__codelineno-3-32" name="__codelineno-3-32"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">approved</span><span class="p">:</span>
+<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">"status"</span><span class="p">:</span> <span class="s2">"needs_approval"</span><span class="p">,</span> <span class="s2">"order_id"</span><span class="p">:</span> <span class="n">order_id</span><span class="p">}</span>
+<a href="#__codelineno-3-34" id="__codelineno-3-34" name="__codelineno-3-34"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">"status"</span><span class="p">:</span> <span class="s2">"refunded"</span><span class="p">,</span> <span class="s2">"order_id"</span><span class="p">:</span> <span class="n">order_id</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="n">reason</span><span class="p">}</span>
+<a href="#__codelineno-3-35" id="__codelineno-3-35" name="__codelineno-3-35"></a>
+<a href="#__codelineno-3-36" id="__codelineno-3-36" name="__codelineno-3-36"></a>
+<a href="#__codelineno-3-37" id="__codelineno-3-37" name="__codelineno-3-37"></a><span class="n">DISPATCH</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"list_orders"</span><span class="p">:</span> <span class="n">list_orders</span><span class="p">,</span> <span class="s2">"issue_refund"</span><span class="p">:</span> <span class="n">issue_refund</span><span class="p">}</span>
+<a href="#__codelineno-3-38" id="__codelineno-3-38" name="__codelineno-3-38"></a>
+<a href="#__codelineno-3-39" id="__codelineno-3-39" name="__codelineno-3-39"></a>
+<a href="#__codelineno-3-40" id="__codelineno-3-40" name="__codelineno-3-40"></a><span class="c1"># 3. Fake reasoner stands in for an LLM: rule-based policy over goal + observation</span>
+<a href="#__codelineno-3-41" id="__codelineno-3-41" name="__codelineno-3-41"></a><span class="k">def</span><span class="w"> </span><span class="nf">reasoner</span><span class="p">(</span><span class="n">goal</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">last_obs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<a href="#__codelineno-3-42" id="__codelineno-3-42" name="__codelineno-3-42"></a>    <span class="k">if</span> <span class="n">step</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<a href="#__codelineno-3-43" id="__codelineno-3-43" name="__codelineno-3-43"></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">"thought"</span><span class="p">:</span> <span class="s2">"Need recent orders first."</span><span class="p">,</span> <span class="s2">"action"</span><span class="p">:</span> <span class="s2">"list_orders"</span><span class="p">,</span>
+<a href="#__codelineno-3-44" id="__codelineno-3-44" name="__codelineno-3-44"></a>                <span class="s2">"args"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"customer_id"</span><span class="p">:</span> <span class="s2">"cust_7"</span><span class="p">}}</span>
+<a href="#__codelineno-3-45" id="__codelineno-3-45" name="__codelineno-3-45"></a>    <span class="n">orders</span> <span class="o">=</span> <span class="p">(</span><span class="n">last_obs</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"orders"</span><span class="p">,</span> <span class="p">[])</span>
+<a href="#__codelineno-3-46" id="__codelineno-3-46" name="__codelineno-3-46"></a>    <span class="k">if</span> <span class="n">orders</span> <span class="ow">and</span> <span class="n">orders</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">"days_ago"</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">POLICY_WINDOW_DAYS</span><span class="p">:</span>
+<a href="#__codelineno-3-47" id="__codelineno-3-47" name="__codelineno-3-47"></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">"thought"</span><span class="p">:</span> <span class="s2">"Order 4812 is inside the 14-day window; request refund."</span><span class="p">,</span>
+<a href="#__codelineno-3-48" id="__codelineno-3-48" name="__codelineno-3-48"></a>                <span class="s2">"action"</span><span class="p">:</span> <span class="s2">"issue_refund"</span><span class="p">,</span> <span class="s2">"args"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"order_id"</span><span class="p">:</span> <span class="s2">"4812"</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="n">goal</span><span class="p">}}</span>
+<a href="#__codelineno-3-49" id="__codelineno-3-49" name="__codelineno-3-49"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">"thought"</span><span class="p">:</span> <span class="s2">"No eligible order; stop and explain."</span><span class="p">,</span> <span class="s2">"action"</span><span class="p">:</span> <span class="s2">"finish"</span><span class="p">,</span> <span class="s2">"args"</span><span class="p">:</span> <span class="p">{}}</span>
+<a href="#__codelineno-3-50" id="__codelineno-3-50" name="__codelineno-3-50"></a>
+<a href="#__codelineno-3-51" id="__codelineno-3-51" name="__codelineno-3-51"></a>
+<a href="#__codelineno-3-52" id="__codelineno-3-52" name="__codelineno-3-52"></a><span class="c1"># 4. Bounded agent loop with validation, approval gate, and full trace</span>
+<a href="#__codelineno-3-53" id="__codelineno-3-53" name="__codelineno-3-53"></a><span class="nd">@dataclass</span>
+<a href="#__codelineno-3-54" id="__codelineno-3-54" name="__codelineno-3-54"></a><span class="k">class</span><span class="w"> </span><span class="nc">Trace</span><span class="p">:</span>
+<a href="#__codelineno-3-55" id="__codelineno-3-55" name="__codelineno-3-55"></a>    <span class="n">thoughts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+<a href="#__codelineno-3-56" id="__codelineno-3-56" name="__codelineno-3-56"></a>    <span class="n">actions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+<a href="#__codelineno-3-57" id="__codelineno-3-57" name="__codelineno-3-57"></a>
+<a href="#__codelineno-3-58" id="__codelineno-3-58" name="__codelineno-3-58"></a>
+<a href="#__codelineno-3-59" id="__codelineno-3-59" name="__codelineno-3-59"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_agent</span><span class="p">(</span><span class="n">goal</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">max_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<a href="#__codelineno-3-60" id="__codelineno-3-60" name="__codelineno-3-60"></a>    <span class="n">trace</span><span class="p">,</span> <span class="n">last_obs</span> <span class="o">=</span> <span class="n">Trace</span><span class="p">(),</span> <span class="kc">None</span>
+<a href="#__codelineno-3-61" id="__codelineno-3-61" name="__codelineno-3-61"></a>    <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_steps</span><span class="p">):</span>
+<a href="#__codelineno-3-62" id="__codelineno-3-62" name="__codelineno-3-62"></a>        <span class="n">decision</span> <span class="o">=</span> <span class="n">reasoner</span><span class="p">(</span><span class="n">goal</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">last_obs</span><span class="p">)</span>  <span class="c1"># perceive + plan</span>
+<a href="#__codelineno-3-63" id="__codelineno-3-63" name="__codelineno-3-63"></a>        <span class="n">trace</span><span class="o">.</span><span class="n">thoughts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">decision</span><span class="p">[</span><span class="s2">"thought"</span><span class="p">])</span>
+<a href="#__codelineno-3-64" id="__codelineno-3-64" name="__codelineno-3-64"></a>        <span class="k">if</span> <span class="n">decision</span><span class="p">[</span><span class="s2">"action"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"finish"</span><span class="p">:</span>
+<a href="#__codelineno-3-65" id="__codelineno-3-65" name="__codelineno-3-65"></a>            <span class="k">return</span> <span class="p">{</span><span class="s2">"answer"</span><span class="p">:</span> <span class="s2">"Done - see trace."</span><span class="p">,</span> <span class="s2">"trace"</span><span class="p">:</span> <span class="n">trace</span><span class="p">}</span>
+<a href="#__codelineno-3-66" id="__codelineno-3-66" name="__codelineno-3-66"></a>        <span class="n">name</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">decision</span><span class="p">[</span><span class="s2">"action"</span><span class="p">],</span> <span class="n">decision</span><span class="p">[</span><span class="s2">"args"</span><span class="p">]</span>
+<a href="#__codelineno-3-67" id="__codelineno-3-67" name="__codelineno-3-67"></a>        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">DISPATCH</span><span class="p">:</span>  <span class="c1"># validate tool exists</span>
+<a href="#__codelineno-3-68" id="__codelineno-3-68" name="__codelineno-3-68"></a>            <span class="k">return</span> <span class="p">{</span><span class="s2">"answer"</span><span class="p">:</span> <span class="s2">"Unknown tool; asked user for help."</span><span class="p">,</span> <span class="s2">"trace"</span><span class="p">:</span> <span class="n">trace</span><span class="p">}</span>
+<a href="#__codelineno-3-69" id="__codelineno-3-69" name="__codelineno-3-69"></a>        <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-3-70" id="__codelineno-3-70" name="__codelineno-3-70"></a>            <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">"issue_refund"</span><span class="p">:</span>  <span class="c1"># guardrail: writes need approval</span>
+<a href="#__codelineno-3-71" id="__codelineno-3-71" name="__codelineno-3-71"></a>                <span class="n">preview</span> <span class="o">=</span> <span class="n">DISPATCH</span><span class="p">[</span><span class="n">name</span><span class="p">](</span><span class="o">**</span><span class="n">args</span><span class="p">,</span> <span class="n">approved</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<a href="#__codelineno-3-72" id="__codelineno-3-72" name="__codelineno-3-72"></a>                <span class="n">trace</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"tool"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">"args"</span><span class="p">:</span> <span class="n">args</span><span class="p">,</span> <span class="s2">"obs"</span><span class="p">:</span> <span class="n">preview</span><span class="p">})</span>
+<a href="#__codelineno-3-73" id="__codelineno-3-73" name="__codelineno-3-73"></a>                <span class="n">last_obs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"orders"</span><span class="p">:</span> <span class="n">ORDERS</span><span class="p">[</span><span class="s2">"cust_7"</span><span class="p">],</span> <span class="s2">"refund"</span><span class="p">:</span> <span class="n">preview</span><span class="p">}</span>
+<a href="#__codelineno-3-74" id="__codelineno-3-74" name="__codelineno-3-74"></a>                <span class="k">return</span> <span class="p">{</span><span class="s2">"answer"</span><span class="p">:</span> <span class="s2">"Order 4812 is eligible; approval requested."</span><span class="p">,</span> <span class="s2">"trace"</span><span class="p">:</span> <span class="n">trace</span><span class="p">}</span>
+<a href="#__codelineno-3-75" id="__codelineno-3-75" name="__codelineno-3-75"></a>            <span class="n">last_obs</span> <span class="o">=</span> <span class="n">DISPATCH</span><span class="p">[</span><span class="n">name</span><span class="p">](</span><span class="o">**</span><span class="n">args</span><span class="p">)</span>
+<a href="#__codelineno-3-76" id="__codelineno-3-76" name="__codelineno-3-76"></a>        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+<a href="#__codelineno-3-77" id="__codelineno-3-77" name="__codelineno-3-77"></a>            <span class="n">last_obs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"error"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)}</span>  <span class="c1"># observation, not crash</span>
+<a href="#__codelineno-3-78" id="__codelineno-3-78" name="__codelineno-3-78"></a>        <span class="n">trace</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"tool"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">"args"</span><span class="p">:</span> <span class="n">args</span><span class="p">,</span> <span class="s2">"obs"</span><span class="p">:</span> <span class="n">last_obs</span><span class="p">})</span>
+<a href="#__codelineno-3-79" id="__codelineno-3-79" name="__codelineno-3-79"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">"answer"</span><span class="p">:</span> <span class="s2">"Step budget exhausted; partial trace returned."</span><span class="p">,</span> <span class="s2">"trace"</span><span class="p">:</span> <span class="n">trace</span><span class="p">}</span>
+<a href="#__codelineno-3-80" id="__codelineno-3-80" name="__codelineno-3-80"></a>
+<a href="#__codelineno-3-81" id="__codelineno-3-81" name="__codelineno-3-81"></a>
+<a href="#__codelineno-3-82" id="__codelineno-3-82" name="__codelineno-3-82"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+<a href="#__codelineno-3-83" id="__codelineno-3-83" name="__codelineno-3-83"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">run_agent</span><span class="p">(</span><span class="s2">"refund my last order"</span><span class="p">)</span>
+<a href="#__codelineno-3-84" id="__codelineno-3-84" name="__codelineno-3-84"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">"answer"</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s2">"answer"</span><span class="p">],</span> <span class="s2">"steps"</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s2">"trace"</span><span class="p">]</span><span class="o">.</span><span class="n">actions</span><span class="p">},</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+<p>Explanation of each block: the registry teaches the model when each tool applies, including the write-action
+warning; the implementations validate arguments and separate read-only from guarded writes, standing in for
+auth, retries, and idempotency keys; the reasoner emulates an LLM policy (thought plus structured action) so
+the loop mechanics stay visible without an API key; the loop binds it together with a step budget, unknown-tool
+rejection, exception-to-observation conversion, an approval gate before any refund, and a trace of every
+thought, action, and observation. To extend toward production, swap the fake reasoner for a real chat model with
+JSON-mode function calling, add timeouts and per-tool rate limits, sanitise observations for prompt injection,
+and persist traces to your eval harness.</p>
+<p>A LangGraph equivalent replaces the <code>for</code> loop with nodes (<code>reason</code>, <code>act</code>, <code>observe</code>) plus conditional edges
+and checkpointed state, but the data flow is identical — which is the point to make in interviews: frameworks
+orchestrate the loop, they do not change the algorithm.</p>
+<h4 id="tool-design-rules-that-prevent-incidents">Tool-design rules that prevent incidents</h4>
+<ul>
+<li><strong>Least privilege per tool:</strong> separate <code>get_order</code> from <code>issue_refund</code>; never bundle reads and writes.</li>
+<li><strong>Confirm before mutate:</strong> destructive calls require explicit user approval or a second-agent check plus an
+  idempotency key so retries are safe.</li>
+<li><strong>Bound and schema observations:</strong> paginate rows, truncate documents, and strip scripts before they reach the
+  prompt — tool output is untrusted data.</li>
+<li><strong>Timeout everything:</strong> each tool gets a deadline; slow calls return a timeout observation, never a hang.</li>
+</ul>
+<h3 id="memory-short-term-and-long-term">Memory: Short-Term and Long-Term</h3>
+<p>Memory is what lets an agent survive beyond one context window: working state for the current run, episodic
+summaries of past runs, and durable facts it can retrieve later. Without it every step re-derives the world;
+with too much of it the prompt drowns in stale trivia. The skill is tiering.</p>
+<h4 id="the-three-tiers">The three tiers</h4>
+<ol>
+<li><strong>Working / short-term memory:</strong> the current scratchpad — goal, plan, recent thoughts, and last few
+   observations. Lives directly in the prompt; summarise or drop old turns once it nears the token budget.</li>
+<li><strong>Episodic memory:</strong> per-task histories and summaries ("yesterday's deploy triage took 4 steps, root cause
+   was X"). Stored outside the prompt, retrieved by similarity when a new task resembles an old one.</li>
+<li><strong>Long-term / semantic memory:</strong> durable user and world facts — preferences, project conventions, account
+   IDs, "deploys need SRE approval on Fridays". Curated, permissioned, and versioned like any data store.</li>
+</ol>
+<h4 id="how-agents-read-and-write-memory">How agents read and write memory</h4>
+<ul>
+<li><strong>Write selectively:</strong> checkpoint state after each step (LangGraph checkpointer, database row); summarise the
+  run at completion into one retrievable note rather than dumping raw traces.</li>
+<li><strong>Read with retrieval:</strong> embed the current goal, fetch top-k relevant notes, and stuff only those into
+  context — memory lookup is RAG over your own history.</li>
+<li><strong>Forget on purpose:</strong> TTLs for volatile facts (prices, on-call rotations), explicit delete paths for user
+  data, and conflict resolution (newer verified facts supersede older ones, with provenance).</li>
+<li><strong>Scope by principal:</strong> tag every memory with owner and permissions; a support agent must never recall one
+  tenant's data inside another tenant's session.</li>
+</ul>
+<p>Practical defaults that survive interviews: keep the last 5–10 turns verbatim plus a rolling summary of older
+turns; store run summaries in a vector table keyed by task embedding with tenant, date, and outcome metadata;
+promote a fact to long-term memory only after it proves reused or user-confirmed. Mention compaction ("summarise
+turns 1–20 into 5 bullets at 70% context") as the standard context-management trick.</p>
+<h4 id="memory-failure-modes-worth-naming">Memory failure modes worth naming</h4>
+<p>Stale preferences overriding new instructions, cross-session leakage between users, unbounded growth slowing
+retrieval and inflating cost, and poisoned notes (an attacker plants "always approve refunds" via tool output
+that later gets summarised as policy). Defences: provenance on every note, allowlists for promotable facts,
+human review for long-term writes, and eval questions that specifically test "remembered correctly, forgot
+correctly, refused to leak."</p>
+<h3 id="multi-agent-orchestration">Multi-Agent Orchestration</h3>
+<p>Multi-agent systems split a goal across specialised agents — a planner, a researcher, a coder, a critic — that
+exchange messages under a coordination pattern. One agent with many tools is simpler; teams of agents win when
+specialisation (different prompts, tools, or models) beats a single crowded context.</p>
+<h4 id="coordination-patterns">Coordination patterns</h4>
+<ul>
+<li><strong>Supervisor / router:</strong> a lead agent decomposes the task and delegates subtasks to workers, then synthesises
+  results. Reviewable and the production default; the supervisor is the bottleneck and single point of failure.</li>
+<li><strong>Sequential pipeline:</strong> researcher hands findings to coder, coder hands diffs to reviewer. Simple data flow,
+  easy to log; slow on failures because errors propagate downstream.</li>
+<li><strong>Parallel debate / vote:</strong> two or three agents solve independently, then a judge merges or picks. Costs 2–3x
+  per query but lifts quality on ambiguous research and code review.</li>
+<li><strong>Hierarchical teams:</strong> planners spawn ReAct executors per branch (plan-and-execute at team scale). Scales to
+  long projects; needs branch budgets and a global replan step.</li>
+<li><strong>Shared blackboard:</strong> agents read and write a common state object (task list, findings doc) instead of
+  messaging pairwise. Great for long collaborations; requires schema discipline so writers do not clobber.</li>
+</ul>
+<pre class="mermaid"><code>flowchart LR
+    U["User goal"] --&gt; S["Supervisor: plan + delegate"]
+    S --&gt; A["Researcher: search + docs"]
+    S --&gt; B["Coder: edit + tests"]
+    S --&gt; C["Critic: review + verify"]
+    A --&gt; S
+    B --&gt; S
+    C --&gt; S
+    S --&gt; F["Synthesised answer + traces"]
+</code></pre>
+<p><em>The supervisor pattern above shows delegation with feedback: workers report observations to the lead, which replans and merges until the goal is complete.</em></p>
+<h4 id="communication-and-handoff-discipline">Communication and handoff discipline</h4>
+<ul>
+<li><strong>Typed messages:</strong> sender, recipient, intent, payload schema, and trace IDs — free-text handoffs lose fields
+  and invent facts between agents.</li>
+<li><strong>Contracts per worker:</strong> each agent advertises inputs, outputs, tools, and stop conditions; the supervisor
+  validates handoffs the same way it validates tool calls.</li>
+<li><strong>Budget per branch:</strong> depth, step, and token caps per worker plus a global cap; kill runaway branches and
+  return partial results with provenance.</li>
+<li><strong>Conflict resolution:</strong> last-verified-wins with cited evidence, or judge-vote for subjective calls; never
+  silent majority or first-answer-wins.</li>
+</ul>
+<h4 id="when-not-to-multi-agent">When NOT to multi-agent</h4>
+<p>Small goals (one agent, few tools) beat teams on latency, cost, and debuggability. Each added agent multiplies
+prompt tokens, failure surfaces, and eval complexity. Interview line: start single-agent with tight guardrails;
+graduate to supervisor-plus-workers only when traces show context crowding or skill interference — and prove the
+split with eval deltas, not architecture enthusiasm.</p>
+<h3 id="evaluation-and-failure-modes">Evaluation and Failure Modes</h3>
+<p>Teams that skip evaluation ship demos, not products. Measure task success and trace quality separately, because a
+correct final answer via lucky guessing hides a broken loop, and a clean trace that fails the goal is still a
+failure. Golden tasks plus fault injection make all of this actionable.</p>
+<h4 id="task-level-metrics">Task-level metrics</h4>
+<ul>
+<li><strong>Task success rate:</strong> fraction of golden tasks completed end-to-end (refunded correctly, tests green, report
+  filed). The headline health metric; aim for a versioned golden set of 50–200 tasks before tuning prompts.</li>
+<li><strong>Tool F1 / argument accuracy:</strong> right tool chosen with valid arguments on the first try. Low scores mean
+  vague tool descriptions or missing schemas.</li>
+<li><strong>Steps and cost to success:</strong> median iterations, tokens, tool calls, and dollars per solved task. Agents that
+  succeed in 12 steps when 4 suffice are burning budget and inviting failure.</li>
+<li><strong>Refusal and escalation quality:</strong> when tools fail or approvals are missing the agent must stop and ask —
+  score this on adversarial tasks with revoked permissions and out-of-scope requests.</li>
+<li><strong>Harnesses:</strong> LangSmith, Langfuse, Braintrust, and plain trace-plus-LLM-judge pipelines all work; pair any
+  automatic score with sampled human review of full traces.</li>
+</ul>
+<h4 id="trace-level-metrics">Trace-level metrics</h4>
+<ul>
+<li><strong>Faithfulness / groundedness:</strong> every claim in the final answer must be entailed by cited tool observations.
+  Checked by human labels or an LLM judge reading the trace.</li>
+<li><strong>Efficiency:</strong> redundant or repeated tool calls, context bloat, and context-window overflows per task.</li>
+<li><strong>Recovery rate:</strong> after a tool error, how often the agent retries correctly, replans, or escalates versus
+  looping or hallucinating success.</li>
+<li><strong>Policy compliance:</strong> no disallowed tools, no skipped approvals, no leaked cross-tenant data — binary
+  pass/fail per trace, audited like a security control.</li>
+</ul>
+<h4 id="seven-failure-modes-and-fixes">Seven failure modes and fixes</h4>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Symptom</th>
+<th>Root cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Loops calling the same tool</td>
+<td>Vague observations, no progress check</td>
+<td>Dedupe actions, summarise progress, step budget + stop rule</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Right tools, wrong arguments</td>
+<td>Weak schemas, missing examples</td>
+<td>Strict JSON schemas, few-shot arg examples, validation errors as observations</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Hallucinated tool results</td>
+<td>Model answers from memory, ignores observations</td>
+<td>Grounding rule: cite observation IDs; verifier tools for key facts</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Prompt injection via tool output</td>
+<td>Untrusted text treated as instructions</td>
+<td>Delimit + sanitise observations, allowlist instructions, human review for writes</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Runaway cost / never stops</td>
+<td>No budgets, generous retry policy</td>
+<td>Caps on steps, tokens, spend, and time; partial answer + escalation</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Stale or cross-tenant memory</td>
+<td>Unscoped notes, no TTLs</td>
+<td>Tenant-tagged memory, provenance, TTLs, promotion allowlists</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Silent wrong side effects</td>
+<td>Missing approvals, no dry-run</td>
+<td>Confirm-before-mutate, idempotency keys, dry-run previews, rollback plan</td>
+</tr>
+</tbody>
+</table>
+<p>Golden-task discipline ties it together: collect realistic goals with known-good tool sequences and expected end
+states, run them on every prompt, tool, or model change, and track success rate plus cost over time. Add
+adversarial items — failing tools, contradictory search results, revoked permissions, injection-laced pages —
+because those are the cases that cause production incidents.</p>
+<h3 id="tools-and-ecosystem">Tools and Ecosystem</h3>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Representative tools</th>
+<th>Notes for interviews</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Orchestration</td>
+<td>LangGraph, LangChain, AutoGen, CrewAI</td>
+<td>Graphs, checkpointing, handoffs; fastest path to a demo</td>
+</tr>
+<tr>
+<td>Model serving</td>
+<td>OpenAI, Anthropic, open weights (Llama, Mistral) via vLLM / TGI</td>
+<td>Agents are model-agnostic; swap reasoners freely</td>
+</tr>
+<tr>
+<td>Tool protocols</td>
+<td>OpenAI function calling, MCP (Model Context Protocol), OpenAPI tools</td>
+<td>Standardise discovery, schemas, and auth for tools</td>
+</tr>
+<tr>
+<td>Search + retrieval</td>
+<td>Tavily, Exa, Elasticsearch, RAG pipelines over docs</td>
+<td>Ground research agents in cited evidence</td>
+</tr>
+<tr>
+<td>Code + execution</td>
+<td>Sandboxes, Docker, CI runners, Jupyter tool runtimes</td>
+<td>Verifier tools turn guesses into test-backed answers</td>
+</tr>
+<tr>
+<td>Memory stores</td>
+<td>Postgres / SQLite checkpoints, Redis working state, vector stores for notes</td>
+<td>Tier working, episodic, and long-term memory</td>
+</tr>
+<tr>
+<td>Observability</td>
+<td>LangSmith, Langfuse, Braintrust, OpenTelemetry traces</td>
+<td>Log every thought, action, and observation</td>
+</tr>
+<tr>
+<td>Evaluation</td>
+<td>DeepEval, Ragas (agent variants), custom golden-task harnesses</td>
+<td>Track success rate, tool F1, cost, compliance</td>
+</tr>
+<tr>
+<td>Guardrails</td>
+<td>Approval gates, allowlists, PII redaction, policy filters</td>
+<td>Human-in-the-loop for writes; audit everything</td>
+</tr>
+</tbody>
+</table>
+<p>Companion pages in this repo go deeper on adjacent layers: RAG pipelines that feed research agents, embedding
+and vector-database internals, LangChain and LangGraph orchestration, and MCP servers that standardise tool
+wiring. In an interview, name the layer you would change first for a given symptom: wrong arguments → tool
+schemas and descriptions; loops → progress checks and budgets; wrong facts → retrieval grounding and verifiers;
+incidents → approvals and audit trails.</p>
+<p>Typical production use cases: coding assistants that edit, test, and open PRs; support agents that read orders
+and issue refunds behind approval gates; research assistants that browse, cite, and synthesise; data agents that
+query warehouses and draft dashboards; and ops copilots that triage alerts and prepare rollbacks for humans.</p>
+<h3 id="interview-questions-and-answers">Interview Questions and Answers</h3>
+<ol>
+<li>
+<p><strong>What is an AI agent, and what problem does it solve?</strong>
+   An agent wraps an LLM in a perceive–plan–act loop with tools and memory: it reasons about a goal, calls APIs
+   to observe and change the world, and iterates until done or escalated. It solves multi-step tasks needing
+   fresh data or side effects — refunds, fixes, research — where a single LLM call can only describe, not do.</p>
+</li>
+<li>
+<p><strong>Walk me through the perceive–plan–act loop.</strong>
+   Perceive gathers goal, history, memory, and the latest observation; the LLM reasons and picks the next action
+   (tool call, user question, or finish); the harness executes validated tools and returns observations; the loop
+   reflects on progress under step, token, and spend budgets. Every thought, action, and observation is logged
+   for debugging and eval.</p>
+</li>
+<li>
+<p><strong>ReAct vs. plan-and-execute — when would you pick each?</strong>
+   Pick ReAct for short exploratory work where each step depends on the last (triage, lookup chains); pick
+   plan-and-execute for long decomposable goals with parallel branches (research reports, migrations). Most
+   production systems hybridise: a coarse plan with ReAct executors per branch plus replanning on surprises.</p>
+</li>
+<li>
+<p><strong>How does function calling work, and how do you design good tools?</strong>
+   The model emits structured arguments against a JSON schema, the harness validates and executes, and the
+   observation returns to context. Good tools have crisp names and descriptions, strict schemas, least-privilege
+   permissions, approval gates on writes, idempotency keys, and bounded structured outputs — because the model
+   chooses from descriptions and tool text is untrusted input.</p>
+</li>
+<li>
+<p><strong>How do you give agents memory without drowning the prompt?</strong>
+   Tier it: working memory (recent turns in context), episodic summaries (retrieved per task by similarity), and
+   curated long-term facts (permissioned, versioned). Keep 5–10 turns verbatim plus rolling summaries, retrieve
+   top-k notes per goal, and enforce TTLs, provenance, and tenant scoping so memory recalls correctly, forgets
+   correctly, and never leaks.</p>
+</li>
+<li>
+<p><strong>Single agent vs. multi-agent — how do you decide?</strong>
+   Start single-agent: cheaper, faster, easier to debug. Graduate to supervisor-plus-workers when traces show
+   context crowding or skill interference — for example, research plus coding plus review in one loop. Cap every
+   branch, type every handoff, resolve conflicts by verified evidence, and prove the split with eval deltas.</p>
+</li>
+<li>
+<p><strong>How do you evaluate an agent system?</strong>
+   Separately: task success rate on golden tasks, tool choice and argument accuracy, steps and cost per success,
+   recovery after errors, and refusal quality; plus trace faithfulness, efficiency, and policy compliance judged
+   from full logs. Use LangSmith/Langfuse or a trace-plus-judge harness with sampled human review on every change.</p>
+</li>
+<li>
+<p><strong>The agent loops on the same tool call. How do you debug it?</strong>
+   Suspect observations and stop rules, not the model: vague outputs, missing progress checks, or no dedupe.
+   Fix by summarising progress each step, blocking repeated identical calls, tightening the tool description,
+   returning validation errors as observations, and enforcing step budgets that end in a partial answer plus
+   escalation instead of another retry.</p>
+</li>
+<li>
+<p><strong>How do you stop prompt injection and unsafe side effects?</strong>
+   Treat tool output as data: delimit and sanitise observations, never let them override system instructions,
+   and require approvals plus idempotency keys for writes with dry-run previews. Add allowlisted tools, PII
+   redaction, per-tenant scoping, full audit traces, and adversarial evals with injection-laced pages and
+   revoked permissions.</p>
+</li>
+<li>
+<p><strong>When is an agent overkill, and what would you build instead?</strong>
+    For single-fact lookup, deterministic pipelines, or razor-thin latency budgets, a RAG query, a fixed
+    workflow, or a plain API call wins on cost and reliability. Use agents only where the path is unknowable
+    upfront and feedback can steer — and even then, keep deterministic rails (schemas, budgets, approvals)
+    around the autonomous core.</p>
+</li>
+</ol>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      © 2025 <a href="https://github.com/abhishekghoshh" rel="noopener" target="_blank">Abhishek Ghosh</a>
+</div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+<div class="md-social">
+<a class="md-social__link" href="https://github.com/abhishekghoshh" rel="noopener" target="_blank" title="github.com">
+<svg viewbox="0 0 480 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"></path></svg>
+</a>
+<a class="md-social__link" href="https://x.com/abhishek_ghoshh" rel="noopener" target="_blank" title="x.com">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253"></path></svg>
+</a>
+<a class="md-social__link" href="https://www.linkedin.com/in/abhishek-ghosh-220679132/" rel="noopener" target="_blank" title="www.linkedin.com">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5m282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"></path></svg>
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+<script src="../../assets/javascripts/bundle.60a45f97.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+window.mermaidConfig = {default: {
+    startOnLoad: false
+}};</script></body>
+</html>

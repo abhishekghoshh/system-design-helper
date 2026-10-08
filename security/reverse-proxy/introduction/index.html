@@ -1,0 +1,3073 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="https://abhishekghoshh.github.io/system-design-helper/security/reverse-proxy/introduction/" rel="canonical"/>
+<link href="../../certificate/links/" rel="prev"/>
+<link href="../haproxy/" rel="next"/>
+<link href="../../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.50" name="generator"/>
+<title>Introduction - System Design Helper</title>
+<link href="../../../assets/stylesheets/main.a40c8224.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+<meta content="website" property="og:type"/>
+<meta content="Introduction - System Design Helper" property="og:title"/>
+<meta content="None" property="og:description"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/security/reverse-proxy/introduction.png" property="og:image"/>
+<meta content="image/png" property="og:image:type"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/security/reverse-proxy/introduction/" property="og:url"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Introduction - System Design Helper" name="twitter:title"/>
+<meta content="None" name="twitter:description"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/security/reverse-proxy/introduction.png" name="twitter:image"/>
+</head>
+<body data-md-color-accent="purple" data-md-color-primary="teal" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#reverse-proxy">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="System Design Helper" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="System Design Helper">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            System Design Helper
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Introduction
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="purple" data-md-color-media="" data-md-color-primary="teal" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="lime" data-md-color-media="" data-md-color-primary="teal" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../basics/cpu/">
+          
+  
+  Basics
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../ai/ai/">
+          
+  
+  AI
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../devops/">
+          
+  
+  DevOps
+
+        </a>
+</li>
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../../introduction/">
+          
+  
+  Security
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../system-design/books/">
+          
+  
+  System Design
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="System Design Helper" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="System Design Helper">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    System Design Helper
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    Home
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Basics
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            Basics
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../basics/cpu/">
+<span class="md-ellipsis">
+    CPU
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../basics/pointers/">
+<span class="md-ellipsis">
+    Pointers
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../basics/maths/">
+<span class="md-ellipsis">
+    Maths
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../basics/behavioural/">
+<span class="md-ellipsis">
+    Behavioural
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../basics/developer-experiences/">
+<span class="md-ellipsis">
+    Developer Experiences
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../basics/open-source-tools/">
+<span class="md-ellipsis">
+    Open Source Tools
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../basics/software-architect/">
+<span class="md-ellipsis">
+    Software Architect
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../basics/wisdom/">
+<span class="md-ellipsis">
+    Wisdom
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+<span class="md-ellipsis">
+    AI
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            AI
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ai/ai/">
+<span class="md-ellipsis">
+    AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ai/ai-tools/">
+<span class="md-ellipsis">
+    AI Tools
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ai/agentic-ai/">
+<span class="md-ellipsis">
+    Agentic AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ai/gen-ai/">
+<span class="md-ellipsis">
+    Gen AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ai/langchain-and-langgraph/">
+<span class="md-ellipsis">
+    LangChain and LangGraph
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ai/MCP/">
+<span class="md-ellipsis">
+    MCP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ai/RAG/">
+<span class="md-ellipsis">
+    RAG
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ai/llm-wiki/">
+<span class="md-ellipsis">
+    LLM Wiki
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ai/vector-embeddings/">
+<span class="md-ellipsis">
+    Vector Embeddings
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ai/vibe-coding/">
+<span class="md-ellipsis">
+    Vibe Coding
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ai/courses/">
+<span class="md-ellipsis">
+    Courses
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    DevOps
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            DevOps
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../devops/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../devops/deployment-strategies/">
+<span class="md-ellipsis">
+    Deployment Strategies
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<span class="md-ellipsis">
+    Security
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            Security
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../authentication-and-authorization/">
+<span class="md-ellipsis">
+    Authentication &amp; Authorization
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oauth/">
+<span class="md-ellipsis">
+    OAuth
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../rbac/">
+<span class="md-ellipsis">
+    RBAC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../sso/">
+<span class="md-ellipsis">
+    SSO
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ssl/">
+<span class="md-ellipsis">
+    SSL
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ssh/">
+<span class="md-ellipsis">
+    SSH
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../jwt/">
+<span class="md-ellipsis">
+    JWT
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../encryption/">
+<span class="md-ellipsis">
+    Encryption
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../environment-variables/">
+<span class="md-ellipsis">
+    Environment Variables
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../devsecops/">
+<span class="md-ellipsis">
+    DevSecOps
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../firewall/">
+<span class="md-ellipsis">
+    Firewall
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="">
+<span class="md-ellipsis">
+    Certificate
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_13_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_13">
+<span class="md-nav__icon md-icon"></span>
+            Certificate
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../certificate/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../certificate/certificate-authority/">
+<span class="md-ellipsis">
+    Certificate Authority
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../certificate/client-certificates/">
+<span class="md-ellipsis">
+    Client Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../certificate/server-certificates/">
+<span class="md-ellipsis">
+    Server Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../certificate/self-signed-certificates/">
+<span class="md-ellipsis">
+    Self-Signed Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../certificate/links/">
+<span class="md-ellipsis">
+    Links
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_5_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_14" id="__nav_5_14_label" tabindex="">
+<span class="md-ellipsis">
+    Reverse Proxy
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_5_14_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_14">
+<span class="md-nav__icon md-icon"></span>
+            Reverse Proxy
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#theory">
+<span class="md-ellipsis">
+      Theory
+    </span>
+</a>
+<nav aria-label="Theory" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#topics-covered">
+<span class="md-ellipsis">
+      Topics Covered
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-forward-vs-reverse-proxy">
+<span class="md-ellipsis">
+      1. Forward vs Reverse Proxy
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-routing-tls-termination-and-mtls">
+<span class="md-ellipsis">
+      2. Routing, TLS Termination, and mTLS
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#introduction">
+<span class="md-ellipsis">
+      introduction
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-nginx-vs-haproxy-vs-envoy">
+<span class="md-ellipsis">
+      3. Nginx vs HAProxy vs Envoy
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-caching-rate-limiting-and-waf-at-the-proxy">
+<span class="md-ellipsis">
+      4. Caching, Rate Limiting, and WAF at the Proxy
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-basic-nginx-config-explained">
+<span class="md-ellipsis">
+      5. Basic Nginx Config — Explained
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-threats-and-mitigations">
+<span class="md-ellipsis">
+      6. Threats and Mitigations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-best-practices">
+<span class="md-ellipsis">
+      7. Best Practices
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-interview-questions-and-answers">
+<span class="md-ellipsis">
+      8. Interview Questions and Answers
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../haproxy/">
+<span class="md-ellipsis">
+    HAProxy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../nginx/">
+<span class="md-ellipsis">
+    Nginx
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+<span class="md-ellipsis">
+    System Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            System Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/books/">
+<span class="md-ellipsis">
+    Books
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/courses/">
+<span class="md-ellipsis">
+    Courses
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/interview/">
+<span class="md-ellipsis">
+    Interview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4" id="__nav_6_4_label" tabindex="0">
+<span class="md-ellipsis">
+    High Level Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_4">
+<span class="md-nav__icon md-icon"></span>
+            High Level Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1" id="__nav_6_4_1_label" tabindex="0">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_1_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_1">
+<span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_1_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1_2" id="__nav_6_4_1_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Basic
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_1_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_1_2">
+<span class="md-nav__icon md-icon"></span>
+            Basic
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/philosophy-of-system-design/">
+<span class="md-ellipsis">
+    Philosophy of System Design
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/client-server-architecture/">
+<span class="md-ellipsis">
+    Client-Server Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/separation-of-concerns/">
+<span class="md-ellipsis">
+    Separation of Concerns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/state-and-data-flow/">
+<span class="md-ellipsis">
+    State and Data Flow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/back-of-envelope-calculation/">
+<span class="md-ellipsis">
+    Back of Envelope Calculation
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/cloud-computing/">
+<span class="md-ellipsis">
+    Cloud Computing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/ip-addresses-and-ports/">
+<span class="md-ellipsis">
+    IP Addresses &amp; Ports
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/sockets/">
+<span class="md-ellipsis">
+    Sockets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/dns-server/">
+<span class="md-ellipsis">
+    DNS Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/networking/">
+<span class="md-ellipsis">
+    Networking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/tcp/">
+<span class="md-ellipsis">
+    TCP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/udp/">
+<span class="md-ellipsis">
+    UDP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/http/">
+<span class="md-ellipsis">
+    HTTP / HTTPS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/websockets/">
+<span class="md-ellipsis">
+    WebSockets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/smtp-server/">
+<span class="md-ellipsis">
+    SMTP Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/api/">
+<span class="md-ellipsis">
+    API
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/restfull-architecture/">
+<span class="md-ellipsis">
+    RESTful Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/data-serialization/">
+<span class="md-ellipsis">
+    Data Serialization
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/webhooks/">
+<span class="md-ellipsis">
+    Webhooks
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/load-balancer-and-proxy-server/">
+<span class="md-ellipsis">
+    Load Balancer &amp; Proxy Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/cdn/">
+<span class="md-ellipsis">
+    CDN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/hashing/">
+<span class="md-ellipsis">
+    Hashing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/storage/">
+<span class="md-ellipsis">
+    Storage
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/s3/">
+<span class="md-ellipsis">
+    S3
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/caching/">
+<span class="md-ellipsis">
+    Caching
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/scalability/">
+<span class="md-ellipsis">
+    Scalability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/browser-rendering-pipeline/">
+<span class="md-ellipsis">
+    Browser Rendering Pipeline
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/availability-and-reliability/">
+<span class="md-ellipsis">
+    Availability &amp; Reliability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/architecture-patterns/">
+<span class="md-ellipsis">
+    Architecture Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/security-basics/">
+<span class="md-ellipsis">
+    Security Basics
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/passwords/">
+<span class="md-ellipsis">
+    Passwords
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/environment-configuration-and-secrets/">
+<span class="md-ellipsis">
+    Environment Configuration &amp; Secrets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/process/">
+<span class="md-ellipsis">
+    Process
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/code-documentation/">
+<span class="md-ellipsis">
+    Code Documentation
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/basic/additional-concepts/">
+<span class="md-ellipsis">
+    Additional Concepts
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_1_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1_3" id="__nav_6_4_1_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Advanced
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_1_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_1_3">
+<span class="md-nav__icon md-icon"></span>
+            Advanced
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/webrtc/">
+<span class="md-ellipsis">
+    WebRTC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/voice-over-internet-protocol/">
+<span class="md-ellipsis">
+    VoIP (Voice Over Internet Protocol)
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/graphql/">
+<span class="md-ellipsis">
+    GraphQL
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/grpc/">
+<span class="md-ellipsis">
+    gRPC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/asynchronus-communication/">
+<span class="md-ellipsis">
+    Asynchronous Communication
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/nats/">
+<span class="md-ellipsis">
+    NATS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/api-gateway/">
+<span class="md-ellipsis">
+    API Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/service-discovery/">
+<span class="md-ellipsis">
+    Service Discovery
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/service-mesh/">
+<span class="md-ellipsis">
+    Service Mesh
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/consistent-hashing/">
+<span class="md-ellipsis">
+    Consistent Hashing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/distributed-caches-and-caching-strategies/">
+<span class="md-ellipsis">
+    Distributed Caches &amp; Caching Strategies
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/scaling-to-one-million/">
+<span class="md-ellipsis">
+    Scaling to One Million
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/adaptive-bitrate-streaming/">
+<span class="md-ellipsis">
+    Adaptive Bitrate Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/consistency/">
+<span class="md-ellipsis">
+    Consistency
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/cap-theorm/">
+<span class="md-ellipsis">
+    CAP Theorem
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/fault-tolerance/">
+<span class="md-ellipsis">
+    Fault Tolerance
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/clean-architecture/">
+<span class="md-ellipsis">
+    Clean Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/microservices-patterns/">
+<span class="md-ellipsis">
+    Microservices Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/raft-consensus-algorithm/">
+<span class="md-ellipsis">
+    Raft Consensus Algorithm
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/gossip-protocol/">
+<span class="md-ellipsis">
+    Gossip Protocol
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/ditributed-transaction-and-concurrency-control/">
+<span class="md-ellipsis">
+    Distributed Transaction &amp; Concurrency Control
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/cdc/">
+<span class="md-ellipsis">
+    CDC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/resilience-patterns/">
+<span class="md-ellipsis">
+    Resilience Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/thundering-effect/">
+<span class="md-ellipsis">
+    Thundering Herd Effect
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/observability/">
+<span class="md-ellipsis">
+    Observability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/cqrs/">
+<span class="md-ellipsis">
+    CQRS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/event-sourcing/">
+<span class="md-ellipsis">
+    Event Sourcing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/saga-pattern/">
+<span class="md-ellipsis">
+    Saga Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/data-processing/">
+<span class="md-ellipsis">
+    Data Processing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/programming-language/">
+<span class="md-ellipsis">
+    Programming Language
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/concepts/advanced/github-server/">
+<span class="md-ellipsis">
+    GitHub Server
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2" id="__nav_6_4_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Designing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Designing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_2_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2_2" id="__nav_6_4_2_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Basic
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_2_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_2_2">
+<span class="md-nav__icon md-icon"></span>
+            Basic
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/url-shortner/">
+<span class="md-ellipsis">
+    URL Shortener
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/rate-limiter/">
+<span class="md-ellipsis">
+    Rate Limiter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/notification-system/">
+<span class="md-ellipsis">
+    Notification System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/webhook/">
+<span class="md-ellipsis">
+    Webhook
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/cdn/">
+<span class="md-ellipsis">
+    CDN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/autocomplete/">
+<span class="md-ellipsis">
+    Autocomplete
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/pastebin/">
+<span class="md-ellipsis">
+    Pastebin
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/leaderboard/">
+<span class="md-ellipsis">
+    Leaderboard
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/inventory-management-system/">
+<span class="md-ellipsis">
+    Inventory Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/library-management-system/">
+<span class="md-ellipsis">
+    Library Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/job-board/">
+<span class="md-ellipsis">
+    Job Board
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/bug-issue-tracker/">
+<span class="md-ellipsis">
+    Bug/Issue Tracker
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/todo-list-app/">
+<span class="md-ellipsis">
+    To-Do List App
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/attendance-tracking-system/">
+<span class="md-ellipsis">
+    Attendance Tracking System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/customer-support-ticketing-system/">
+<span class="md-ellipsis">
+    Customer Support Ticketing System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/digital-wallet/">
+<span class="md-ellipsis">
+    Digital Wallet
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/vending-machine/">
+<span class="md-ellipsis">
+    Vending Machine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/rate-and-review-system/">
+<span class="md-ellipsis">
+    Rate-and-Review System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/hotel-booking/">
+<span class="md-ellipsis">
+    Hotel Booking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/app-store/">
+<span class="md-ellipsis">
+    App Store
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/yelp/">
+<span class="md-ellipsis">
+    Yelp
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/carpooling-system/">
+<span class="md-ellipsis">
+    Carpooling System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/blogging-platform/">
+<span class="md-ellipsis">
+    Blogging Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/image-gallery-with-tagging/">
+<span class="md-ellipsis">
+    Image Gallery with Tagging
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/polling-voting-app/">
+<span class="md-ellipsis">
+    Polling/Voting App
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/online-voting-system/">
+<span class="md-ellipsis">
+    Online Voting System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/expense-splitting-app/">
+<span class="md-ellipsis">
+    Expense-Splitting App
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/vpn/">
+<span class="md-ellipsis">
+    VPN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/chess-game/">
+<span class="md-ellipsis">
+    Chess Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/basic/how-to-host-your-own-x/">
+<span class="md-ellipsis">
+    How to Host Your Own X
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_2_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2_3" id="__nav_6_4_2_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Advanced
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_2_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_2_3">
+<span class="md-nav__icon md-icon"></span>
+            Advanced
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/key-value-store/">
+<span class="md-ellipsis">
+    Key Value Store
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/log-system/">
+<span class="md-ellipsis">
+    Log System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/search-engine/">
+<span class="md-ellipsis">
+    Search Engine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/authentication-system/">
+<span class="md-ellipsis">
+    Authentication System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/distributed-counter/">
+<span class="md-ellipsis">
+    Distributed Counter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/distributed-cache/">
+<span class="md-ellipsis">
+    Distributed Cache
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/distributed-locking-service/">
+<span class="md-ellipsis">
+    Distributed Locking Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/distributed-job-scheduler/">
+<span class="md-ellipsis">
+    Distributed Job Scheduler
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/distributed-rate-limiter/">
+<span class="md-ellipsis">
+    Distributed Rate Limiter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/distributed-rate-limited-api-gateway/">
+<span class="md-ellipsis">
+    Distributed Rate-Limited API Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/distributed-configuration-management-system/">
+<span class="md-ellipsis">
+    Distributed Configuration Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/multi-region-deployment-system/">
+<span class="md-ellipsis">
+    Multi-Region Deployment System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/feature-flag-experimentation-platform/">
+<span class="md-ellipsis">
+    Feature Flag and Experimentation Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/notification-fanout-service/">
+<span class="md-ellipsis">
+    Notification Fan-Out Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/chat-system/">
+<span class="md-ellipsis">
+    Chat System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/whatspp/">
+<span class="md-ellipsis">
+    WhatsApp
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/live-comments/">
+<span class="md-ellipsis">
+    Live Comments
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/distributed-messaging-queue/">
+<span class="md-ellipsis">
+    Distributed Messaging Queue
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/slack/">
+<span class="md-ellipsis">
+    Slack
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/fault-tolerant-order-processing-system/">
+<span class="md-ellipsis">
+    Fault-Tolerant Order Processing System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/video-streaming/">
+<span class="md-ellipsis">
+    Video Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/netflix/">
+<span class="md-ellipsis">
+    Netflix
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/spotify/">
+<span class="md-ellipsis">
+    Spotify
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/live-streaming/">
+<span class="md-ellipsis">
+    Live Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/Image-Optimisation-on-the-fly/">
+<span class="md-ellipsis">
+    Image Optimisation On The Fly
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/amazon-flipkart/">
+<span class="md-ellipsis">
+    Amazon/Flipkart
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/e-commerce/">
+<span class="md-ellipsis">
+    E-Commerce
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/ecommerce-checkout/">
+<span class="md-ellipsis">
+    E-Commerce Checkout
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/payment-gateway/">
+<span class="md-ellipsis">
+    Payment Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/stripe/">
+<span class="md-ellipsis">
+    Stripe
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/upi-payments/">
+<span class="md-ellipsis">
+    UPI Payments
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/settlement-reconciliation-system/">
+<span class="md-ellipsis">
+    Settlement and Reconciliation System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/fraud-detection-pipeline/">
+<span class="md-ellipsis">
+    Fraud Detection Pipeline
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/quick-commerce-inventory-system/">
+<span class="md-ellipsis">
+    Quick-Commerce Inventory System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/ecommerce-search-ranking-system/">
+<span class="md-ellipsis">
+    E-Commerce Search &amp; Ranking System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/twitter/">
+<span class="md-ellipsis">
+    Twitter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/social-media/">
+<span class="md-ellipsis">
+    Social Media
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/hashtag-service/">
+<span class="md-ellipsis">
+    Hashtag Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/recomendation-engine/">
+<span class="md-ellipsis">
+    Recommendation Engine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/facebook/">
+<span class="md-ellipsis">
+    Facebook
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/instagram/">
+<span class="md-ellipsis">
+    Instagram
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/tiktok/">
+<span class="md-ellipsis">
+    TikTok
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/bookmyshow/">
+<span class="md-ellipsis">
+    BookMyShow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/uber/">
+<span class="md-ellipsis">
+    Uber
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/food-delivery/">
+<span class="md-ellipsis">
+    Food Delivery
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/flight-booking/">
+<span class="md-ellipsis">
+    Flight Booking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/google-maps/">
+<span class="md-ellipsis">
+    Google Maps
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/google-drive/">
+<span class="md-ellipsis">
+    Google Drive
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/data-warehouse/">
+<span class="md-ellipsis">
+    Data Warehouse
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/distributed-geospatial-data-platform/">
+<span class="md-ellipsis">
+    Distributed Geospatial Data Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/redis/">
+<span class="md-ellipsis">
+    Redis
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/large-language-model/">
+<span class="md-ellipsis">
+    Large Language Model
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/leetcode/">
+<span class="md-ellipsis">
+    LeetCode
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/vercel/">
+<span class="md-ellipsis">
+    Vercel
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/email-automation-platform/">
+<span class="md-ellipsis">
+    Email Automation Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/google-docs/">
+<span class="md-ellipsis">
+    Google Docs
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/online-code-editor/">
+<span class="md-ellipsis">
+    Online Code Editor
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/stock-broker-system/">
+<span class="md-ellipsis">
+    Stock Broker System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/distributed-transaction-banking-system/">
+<span class="md-ellipsis">
+    Distributed Transaction Banking System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/real-time-bidding-auction-system/">
+<span class="md-ellipsis">
+    Real-Time Bidding/Auction System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/designing/advanced/multiplayer-game/">
+<span class="md-ellipsis">
+    Multiplayer Game
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_3" id="__nav_6_4_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Links
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Links
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/links/udemy/">
+<span class="md-ellipsis">
+    Udemy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/links/websites/">
+<span class="md-ellipsis">
+    Websites
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/high-level/links/youtube/">
+<span class="md-ellipsis">
+    YouTube
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
+<span class="md-ellipsis">
+    Low Level Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_5">
+<span class="md-nav__icon md-icon"></span>
+            Low Level Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_2" id="__nav_6_5_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_2">
+<span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/concepts/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/concepts/hashmap/">
+<span class="md-ellipsis">
+    HashMap
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/concepts/mvc/">
+<span class="md-ellipsis">
+    MVC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/concepts/null-object-pattern/">
+<span class="md-ellipsis">
+    Null Object Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/concepts/solid-principles/">
+<span class="md-ellipsis">
+    SOLID Principles
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/concepts/technical-debt/">
+<span class="md-ellipsis">
+    Technical Debt
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3" id="__nav_6_5_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Design Patterns
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_3">
+<span class="md-nav__icon md-icon"></span>
+            Design Patterns
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/design-pattern/">
+<span class="md-ellipsis">
+    Design Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_2" id="__nav_6_5_3_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Creational
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_2">
+<span class="md-nav__icon md-icon"></span>
+            Creational
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/creational/creational/">
+<span class="md-ellipsis">
+    All Creational Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/creational/singleton/">
+<span class="md-ellipsis">
+    Singleton
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/creational/prototype/">
+<span class="md-ellipsis">
+    Prototype
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/creational/builder/">
+<span class="md-ellipsis">
+    Builder
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/creational/factory/">
+<span class="md-ellipsis">
+    Factory
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/creational/abstract-factory/">
+<span class="md-ellipsis">
+    Abstract Factory
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/creational/object-pool/">
+<span class="md-ellipsis">
+    Object Pool
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_3" id="__nav_6_5_3_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Structural
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_3">
+<span class="md-nav__icon md-icon"></span>
+            Structural
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/structural/structural/">
+<span class="md-ellipsis">
+    All Structural Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/structural/adapter/">
+<span class="md-ellipsis">
+    Adapter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/structural/bridge/">
+<span class="md-ellipsis">
+    Bridge
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/structural/composite/">
+<span class="md-ellipsis">
+    Composite
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/structural/decorator/">
+<span class="md-ellipsis">
+    Decorator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/structural/facade/">
+<span class="md-ellipsis">
+    Facade
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/structural/flyweight/">
+<span class="md-ellipsis">
+    Flyweight
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/structural/proxy/">
+<span class="md-ellipsis">
+    Proxy
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_4" id="__nav_6_5_3_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Behavioral
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_4_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_4">
+<span class="md-nav__icon md-icon"></span>
+            Behavioral
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/behavioral/behavioral/">
+<span class="md-ellipsis">
+    All Behavioral Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/behavioral/chain-of-responsibility/">
+<span class="md-ellipsis">
+    Chain of Responsibility
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/behavioral/command/">
+<span class="md-ellipsis">
+    Command
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/behavioral/interpreter/">
+<span class="md-ellipsis">
+    Interpreter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/behavioral/iterator/">
+<span class="md-ellipsis">
+    Iterator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/behavioral/mediator/">
+<span class="md-ellipsis">
+    Mediator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/behavioral/memento/">
+<span class="md-ellipsis">
+    Memento
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/behavioral/observer/">
+<span class="md-ellipsis">
+    Observer
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/behavioral/state/">
+<span class="md-ellipsis">
+    State
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/behavioral/strategy/">
+<span class="md-ellipsis">
+    Strategy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/behavioral/template/">
+<span class="md-ellipsis">
+    Template
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/design-pattern/behavioral/visitor/">
+<span class="md-ellipsis">
+    Visitor
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_4" id="__nav_6_5_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Designing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_4_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_4">
+<span class="md-nav__icon md-icon"></span>
+            Designing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/access-management-system/">
+<span class="md-ellipsis">
+    Access Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/account-balance-tracker/">
+<span class="md-ellipsis">
+    Account Balance Tracker
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/air-traffic-controller/">
+<span class="md-ellipsis">
+    Air Traffic Controller
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/apply-coupons-on-shopping-cart/">
+<span class="md-ellipsis">
+    Apply Coupons on Shopping Cart
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/atm/">
+<span class="md-ellipsis">
+    ATM
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/bookmyshow/">
+<span class="md-ellipsis">
+    BookMyShow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/cache-system/">
+<span class="md-ellipsis">
+    Cache System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/car-rental-service/">
+<span class="md-ellipsis">
+    Car Rental Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/chess-game/">
+<span class="md-ellipsis">
+    Chess Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/cricbuzz/">
+<span class="md-ellipsis">
+    Cricbuzz
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/elevator-system/">
+<span class="md-ellipsis">
+    Elevator System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/inventory-management-system/">
+<span class="md-ellipsis">
+    Inventory Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/locker-allocation-system/">
+<span class="md-ellipsis">
+    Locker Allocation System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/logging-system/">
+<span class="md-ellipsis">
+    Logging System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/meeting-scheduler/">
+<span class="md-ellipsis">
+    Meeting Scheduler
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/parking-lot/">
+<span class="md-ellipsis">
+    Parking Lot
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/payment-gateway/">
+<span class="md-ellipsis">
+    Payment Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/snake-and-ladder/">
+<span class="md-ellipsis">
+    Snake and Ladder
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/splitwise/">
+<span class="md-ellipsis">
+    Splitwise
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/stock-exchange-book/">
+<span class="md-ellipsis">
+    Stock Exchange Book
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/tic-tac-toe/">
+<span class="md-ellipsis">
+    Tic Tac Toe
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system-design/low-level/designing/vending-machine/">
+<span class="md-ellipsis">
+    Vending Machine
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="reverse-proxy">Reverse proxy</h1>
+<h2 id="theory">Theory</h2>
+<p>A reverse proxy sits in front of backend services and handles incoming client traffic — routing, TLS termination, caching, and load balancing.
+It matters because it centralizes cross-cutting concerns (certs, rate limits, auth headers) so backends stay simple.
+Key subtopics: forward vs reverse proxies, TLS termination and mTLS (see HAProxy/Nginx), path- and host-based routing, and common choices (Nginx, HAProxy, Envoy).</p>
+<p>A reverse proxy is the front door of most production web architectures: clients never dial application servers directly, they dial the proxy, and the proxy decides — based on host, path, headers, and policy — which upstream pool, cache entry, or error page answers. It replaced the early pattern of exposing every app server with its own TLS certificate and ad-hoc access control by centralizing the concerns that are identical across services: terminating TLS once, enforcing rate limits and WAF rules once, caching hot responses once, and emitting uniform access logs once. Backends behind it stay small, speak plain HTTP on private networks, and scale horizontally without clients noticing.</p>
+<p>This guide takes you from mental model to production operations. You will learn how forward and reverse proxies differ and why the direction of trust flips between them, how path-based, host-based, and header-based routing compose with load balancing, how TLS termination and mutual TLS work and where private keys should live, how Nginx, HAProxy, and Envoy compare and when to pick each, how caching, rate limiting, and WAF enforcement behave when they run at the proxy layer, and how to read and write a minimal Nginx config with confidence. It closes with threats, best practices, and interview Q&amp;A.</p>
+<blockquote>
+<p>Scope note: this page covers reverse-proxy architecture and operations for HTTP services — routing, TLS/mTLS termination, Nginx vs HAProxy vs Envoy selection, proxy-layer caching, rate limiting, WAF integration, and a minimal Nginx config — not forward-proxy fleet management or full service-mesh control planes. It assumes basic HTTP and TLS (requests, hosts, certificates) and focuses on the decisions interviewers probe: where termination happens, how routing composes, and what the proxy guarantees.</p>
+</blockquote>
+<h3 id="topics-covered">Topics Covered</h3>
+<ol>
+<li><a href="#1-forward-vs-reverse-proxy">Forward vs Reverse Proxy</a></li>
+<li><a href="#2-routing-tls-termination-and-mtls">Routing, TLS Termination, and mTLS</a></li>
+<li><a href="#3-nginx-vs-haproxy-vs-envoy">Nginx vs HAProxy vs Envoy</a></li>
+<li><a href="#4-caching-rate-limiting-and-waf-at-the-proxy">Caching, Rate Limiting, and WAF at the Proxy</a></li>
+<li><a href="#5-basic-nginx-config--explained">Basic Nginx Config — Explained</a></li>
+<li><a href="#6-threats-and-mitigations">Threats and Mitigations</a></li>
+<li><a href="#7-best-practices">Best Practices</a></li>
+<li><a href="#8-interview-questions-and-answers">Interview Questions and Answers</a></li>
+</ol>
+<h3 id="1-forward-vs-reverse-proxy">1. Forward vs Reverse Proxy</h3>
+<p>A forward proxy serves the client; a reverse proxy serves the server. A forward proxy sits near users and fetches the internet on their behalf — hiding client IPs, enforcing egress policy, and caching shared downloads — so the destination server sees the proxy, not the user. A reverse proxy sits near servers and receives the internet on their behalf — hiding backend topology, enforcing ingress policy, and caching hot responses — so the client sees the proxy, not the fleet. The direction of the arrow determines who configures it, who trusts it, and what it is allowed to see.</p>
+<p>Consider the same <code>GET https://shop.example.com/products</code> through each. With a forward proxy (corporate egress, school filter), the browser is explicitly configured to send all requests to <code>proxy.corp:3128</code>, the proxy checks "is Alice allowed to visit shop.example.com," fetches it, optionally scans the response, and returns it; <code>shop.example.com</code> logs the corporate NAT IP. With a reverse proxy, the browser dials <code>shop.example.com</code> normally, DNS resolves to the proxy (Nginx/CloudFront/ALB), the proxy checks "is this request allowed into the fleet," picks an upstream (<code>app-3:8080</code>), adds <code>X-Forwarded-For</code> and <code>X-Request-ID</code>, and returns the response; the browser never learns <code>app-3</code> exists.</p>
+<p>The trust relationship inverts, which is the point interviewers want. A forward proxy is trusted by the client: the enterprise installs a corporate CA on laptops so the proxy can MITM TLS for DLP, and users accept that the proxy sees cleartext because their employer owns both endpoints. A reverse proxy is trusted by the server: the service gives it the private TLS key (or ACM-managed cert) so it can terminate TLS, and clients trust it because it presents the service's public certificate. Swap them and the security story breaks — a reverse proxy must never hold a client's private identity, and a forward proxy must never hold a server's private key beyond its own inspection scope.</p>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Forward proxy</th>
+<th>Reverse proxy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sits near</td>
+<td>Clients (egress)</td>
+<td>Servers (ingress)</td>
+</tr>
+<tr>
+<td>Configured by</td>
+<td>Client / IT admin (browser PAC, env vars)</td>
+<td>Service owner (DNS points at it)</td>
+</tr>
+<tr>
+<td>Hides</td>
+<td>Client identity and network from origin</td>
+<td>Backend topology and count from client</td>
+</tr>
+<tr>
+<td>Core jobs</td>
+<td>Egress allowlisting, auth, DLP scan, shared cache</td>
+<td>Routing, TLS termination, load balancing, ingress WAF</td>
+</tr>
+<tr>
+<td>TLS role</td>
+<td>Optionally intercepts with corporate CA (client consented)</td>
+<td>Terminates service TLS with service cert (client expected)</td>
+</tr>
+<tr>
+<td>Sees</td>
+<td>All client destinations (privacy-sensitive)</td>
+<td>All service traffic (availability-sensitive)</td>
+</tr>
+<tr>
+<td>Examples</td>
+<td>Squid, corporate Zscaler, <code>HTTP_PROXY</code> dev proxies</td>
+<td>Nginx, HAProxy, Envoy, ALB, Cloudflare, CloudFront</td>
+</tr>
+</tbody>
+</table>
+<p>Use each where its position gives leverage. Forward proxies govern what users and workloads may reach: block malware domains, require SSO before browsing, cache OS updates once for a thousand laptops, log egress for audit. Reverse proxies govern what the world may reach: expose one anycast IP while hundreds of pods churn behind it, absorb slowloris and SYN floods at the edge, retry idempotent GETs on another upstream when one fails, and emit one access-log format every team can query. Most companies run both — Zscaler out, CloudFront/ALB in — and the two never substitute for each other.</p>
+<pre class="mermaid"><code>flowchart LR
+    C1["Laptop<br/>browser"] --&gt;|"explicit proxy<br/>corp policy"| F["Forward proxy<br/>egress: DLP + allowlist"]
+    F --&gt;|"sees client IP<br/>hides it from origin"| O["Internet origin<br/>logs proxy IP"]
+    I["Internet client<br/>any browser"] --&gt;|"DNS to proxy IP<br/>service cert"| R["Reverse proxy<br/>ingress: route + TLS + WAF"]
+    R --&gt;|"adds X-Forwarded-For<br/>picks upstream"| B["Backend pool<br/>app-1 / app-2 / app-3"]
+</code></pre>
+<p><em>The diagram above shows the mirror symmetry: the forward proxy stands with the client and faces outward, while the reverse proxy stands with the servers and faces inward.</em></p>
+<p>Placement cements the difference. A forward proxy lives on the client network (office, VPC egress, sidecar for outbound calls) and scales with user count; its failure mode is "nobody can browse," and its bypass risk is a user unsetting <code>HTTP_PROXY</code>. A reverse proxy lives on the server network (edge PoP, public subnet, sidecar for inbound calls) and scales with request rate; its failure mode is "nobody can reach the service," and its bypass risk is an attacker dialing an origin IP directly (see Section 6). When an interviewer asks "proxy or reverse proxy," answer with position, principal, and key custody — that triple never misleads.</p>
+<p>Operationally the two share tooling but not policy. Both log who asked for what and what the verdict was, both cache (egress caches shared artifacts like package registries; ingress caches hot product pages), and both can inject headers — forward proxies add user identity (<code>X-Authenticated-User</code>), reverse proxies add routing context (<code>X-Forwarded-Proto</code>, <code>X-Request-ID</code>). Keep the configs in separate repos with separate owners: egress policy belongs to IT/security, ingress routing belongs to the service team, and mixing them is how a "temporary debug allow" opens the wrong door.</p>
+<h3 id="2-routing-tls-termination-and-mtls">2. Routing, TLS Termination, and mTLS</h3>
+<p>Routing is the reverse proxy's core promise: inspect each request's host, path, headers, and sometimes body, then deliver it to the right upstream pool with the right rewrite. Path-based routing splits one domain across services — <code>/api/*</code> to the API fleet, <code>/static/*</code> to object storage, <code>/</code> to the storefront — so a single public hostname composes many backends. Host-based (virtual-host) routing splits many domains across one proxy — <code>api.example.com</code> to API, <code>admin.example.com</code> to the internal console with IP allowlisting, <code>*.tenants.example.com</code> to per-tenant pools — so one edge serves a whole portfolio. Header and method rules refine both: mobile <code>User-Agent</code> to a lighter backend, <code>POST /checkout</code> with stricter timeouts than <code>GET /images</code>, canary cookie to the new version for 1% of traffic.</p>
+<p>A production routing story usually layers all three. DNS points <code>shop.example.com</code> at the proxy; the proxy matches <code>Host: shop.example.com</code> to the shop server block, then longest-prefix path rules (<code>/api/v2/</code> beats <code>/api/</code>) select the upstream, then a header condition (<code>X-Canary: 1</code> or a weighted <code>split_clients</code> hash) steers a slice to canary, and finally query or method guards reject absurd requests early (<code>GET</code> with a 10 MB body never reaches the app). Rewrites normalize before proxying: strip the <code>/api</code> prefix the app does not expect, preserve the original URI in <code>X-Original-URI</code> for logs, and always set <code>Host</code>, <code>X-Forwarded-Proto</code>, and <code>X-Request-ID</code> so upstreams can build correct redirects and trace requests end to end.</p>
+<p>Load balancing rides on top of routing: once a rule selects a pool, the algorithm picks a member. Round-robin spreads evenly and suits stateless APIs; least-connections favors uneven latencies and suits mixed workloads; IP-hash (or consistent hashing) pins sessions and caches and suits sticky carts and sharded state. Health checks make the set dynamic — passive (count failures, eject for N seconds) plus active (probe <code>/healthz</code> every 5 s, require 2 successes to rejoin) — so deploys drain gracefully: mark unhealthy, wait for in-flight requests to finish, then terminate. Timeouts bound every hop (<code>connect 2s</code>, <code>read 10s</code> for APIs, longer for uploads on a separate location) because an unbounded upstream hold is an edge-queueing outage.</p>
+<pre class="mermaid"><code>flowchart TD
+    R["Request arrives<br/>Host + path + headers"] --&gt; H{"Host match?<br/>api / admin / tenant"}
+    H --&gt;|"No"| D1["444 / 421 reject<br/>unknown host, log + metric"]
+    H --&gt;|"Yes"| P{"Longest path prefix?<br/>/api/v2 &gt; /api &gt; /"}
+    P --&gt; C{"Canary / header rule?<br/>cookie, weight, method"}
+    C --&gt; U["Pick upstream pool<br/>api / static / storefront"]
+    U --&gt; L{"LB + health?<br/>least-conn, draining?"}
+    L --&gt;|"Unhealthy / timeout"| RET["Retry idempotent<br/>next peer or 502"]
+    L --&gt;|"Healthy"| F["Proxy with headers<br/>X-Forwarded-* + trace ID"]
+</code></pre>
+<p><em>The diagram above shows the routing pipeline: host selects the tenant, path selects the service, headers select the slice, and only healthy members receive traffic.</em></p>
+<p>TLS termination is the second core job: the proxy holds the service certificate, completes the TLS handshake with the client, and forwards cleartext (or re-encrypted) HTTP to backends. Clients get one strong, centrally managed endpoint — TLS 1.2+, modern ciphers, HSTS, OCSP stapling, session resumption — while apps avoid per-instance key distribution and expensive handshakes. Inside the VPC the proxy opens plain HTTP to upstreams over a private subnet (fast, debuggable) or re-encrypts (TLS to upstream with an internal CA) where compliance demands encryption in transit everywhere. Never terminate and then trust blindly: the proxy must still validate that the upstream certificate matches the expected SAN when re-encrypting, or a compromised subnet can impersonate backends.</p>
+<p>Keys and certificates deserve operational respect. Issue via ACM/Let's Encrypt with auto-renewal (alert at 21 and 7 days to expiry), store private keys in the platform's secret store (ACM, Vault, Kubernetes Secrets with encryption at rest — never in git), and prefer ECDSA (P-256) for speed with RSA-2048 where client compatibility demands it. Enable HTTP/2 and keep-alive to both sides (multiplexed clients, reused upstream connections), set <code>ssl_prefer_server_ciphers</code> with a vetted Mozilla-intermediate list, and staple OCSP so clients skip a blocking revocation fetch. Rotate without downtime by loading the new cert alongside the old and reloading (Nginx <code>reload</code>, Envoy xDS) rather than restarting.</p>
+<p>mTLS extends termination to client authentication: the proxy requests a client certificate during the handshake and verifies it against a trusted CA before routing. Service-to-service calls use it so <code>payments</code> proves to <code>ledger</code> that it really is <code>payments</code> (SPIFFE/SPIRE or an internal CA issues short-lived certs, Envoy validates SAN <code>spiffe://prod/payments</code>), and privileged human endpoints use it so only laptops with issued certs reach <code>/admin</code>. Verification must check expiry, chain, revocation (CRL/OCSP or short TTLs that make revocation moot), and — critically — map the verified SAN to an authorization decision; authentication without an allowlist is just expensive logging. Fail closed: no cert or untrusted cert gets 403, never a downgrade to passwords alone, and log the fingerprint for incident correlation.</p>
+<h3 id="introduction">introduction</h3>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=AuINJdBPf8I">Forward proxy vs reverse proxy</a></li>
+<li><a href="https://www.youtube.com/watch?v=MiqrArNSxSM">Proxy vs reverse proxy vs load balancer (2023) | Explained with real life examples</a></li>
+</ul>
+<h3 id="3-nginx-vs-haproxy-vs-envoy">3. Nginx vs HAProxy vs Envoy</h3>
+<p>All three answer "what sits in front of the app," but they were born for different bottlenecks. Nginx grew up as a high-concurrency web server that learned to proxy: it serves static files, terminates TLS, and routes HTTP with a declarative config every backend engineer can read. HAProxy grew up as a pure load balancer: it moves TCP and HTTP bytes with ruthless efficiency, health-check precision, and failover semantics honed on bare metal. Envoy grew up inside microservices: it assumes config changes every second, every hop needs telemetry, and every call may need retries, circuit breaking, and mTLS without restarts.</p>
+<p>Choose by control-plane needs first, data-plane speed second. A single team with a dozen upstreams, Let's Encrypt certs, and mostly static routing wants Nginx: one <code>nginx.conf</code>, <code>reload</code> on deploy, pages of Stack Overflow for every error. A payments edge pushing 100k TPS with zero-dropped-connection failover and surgical ACLs wants HAProxy: its stick-tables, queue management, and Layer 4 fidelity are still the benchmark for raw TCP balancing. A platform with fifty services, canary by header, per-route retries, and SPIFFE mTLS rotated hourly wants Envoy: its xDS API, filter chain, and native observability (stats, tracing, access logs per route) assume a control plane like Istio or a custom gateway controller drives it.</p>
+<p>Performance folklore needs grounding. All three saturate 10 Gbps on modest hardware when tuned (keepalive, epoll, TLS session reuse); the bottleneck is almost always upstream latency, TLS handshake rate, or logging, not proxy choice. Nginx event-driven workers handle tens of thousands of keepalive connections with low memory; HAProxy's single-process event loop squeezes the most requests per core for L4/L7 passthrough; Envoy pays a small per-request tax for its filter richness but repays it with fewer hops — retries, hedging, and load-aware balancing done once at the edge instead of in every SDK. Benchmark your shape (TLS 1.3 handshake storm versus large-file proxying versus chatty gRPC) before trusting generic charts.</p>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Nginx</th>
+<th>HAProxy</th>
+<th>Envoy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Primary identity</td>
+<td>Web server + reverse proxy</td>
+<td>TCP/HTTP load balancer</td>
+<td>Service-mesh edge + sidecar proxy</td>
+</tr>
+<tr>
+<td>L4 / L7</td>
+<td>Strong L7 HTTP, good stream TCP/UDP</td>
+<td>Best L4 fidelity, excellent L7 HTTP</td>
+<td>Full L7 (HTTP/1, HTTP/2, gRPC), good L4</td>
+</tr>
+<tr>
+<td>Config model</td>
+<td>Static file, <code>reload</code> on change</td>
+<td>Static file, hitless reload via master-worker</td>
+<td>Dynamic xDS API, hot update with no reload</td>
+</tr>
+<tr>
+<td>Routing expressiveness</td>
+<td><code>server</code> + <code>location</code> prefix/regex, maps</td>
+<td>ACLs + backends, precise but verbose</td>
+<td>Routes, virtual hosts, header/query match, traffic shifting</td>
+</tr>
+<tr>
+<td>Load balancing</td>
+<td>Round-robin, least-conn, ip-hash, random</td>
+<td>Round-robin, leastconn, source, uri, consistent hash</td>
+<td>Round-robin, least-request, ring hash, Maglev, locality-aware</td>
+</tr>
+<tr>
+<td>Health checking</td>
+<td>Passive + basic active (Plus for full)</td>
+<td>Rich active TCP/HTTP checks, rise/fall, agent checks</td>
+<td>Active + passive, outlier detection, panic mode</td>
+</tr>
+<tr>
+<td>TLS / mTLS</td>
+<td>Mature termination, stapling, session cache</td>
+<td>Mature termination, SNI routing, cert storage</td>
+<td>Termination + origination, SDS cert rotation, SPIFFE native</td>
+</tr>
+<tr>
+<td>Observability</td>
+<td>Access/error logs, stub_status, Prometheus exporter</td>
+<td>Stats socket/page, detailed counters, Prometheus exporter</td>
+<td>Native stats, tracing, access-log filters, admin <code>/stats</code></td>
+</tr>
+<tr>
+<td>Caching / WAF</td>
+<td><code>proxy_cache</code>, <code>limit_req</code>, ModSecurity/NGINX App Protect</td>
+<td>Stick-tables + rate counters, no cache, WAF via SPOA</td>
+<td>Local rate limit, RBAC filter, WASM, WAF via external service</td>
+</tr>
+<tr>
+<td>Ecosystem</td>
+<td>Biggest tutorials, OpenResty/Lua, CDN default</td>
+<td>Hardware-appliance lineage, ALB heritage</td>
+<td>CNCF, Istio/Contour/Gateway API default</td>
+</tr>
+<tr>
+<td>Pick when</td>
+<td>One edge, static routes, serve + proxy together</td>
+<td>Max connections, TCP failover, queue control</td>
+<td>Dynamic services, canary/mirroring, mesh + edge unified</td>
+</tr>
+</tbody>
+</table>
+<pre class="mermaid"><code>flowchart TD
+    Q["How dynamic is routing?<br/>services, versions, certs"] --&gt; S{"Changes per minute?"}
+    S --&gt;|"Rare, deploys only"| N["Nginx<br/>file + reload, serve static"]
+    S --&gt;|"Config stable, traffic extreme"| H["HAProxy<br/>L4 precision + queues"]
+    S --&gt;|"Constant, canary + mesh"| E["Envoy<br/>xDS + filters + telemetry"]
+    N --&gt; T["Add: proxy_cache<br/>limit_req + WAF module"]
+    H --&gt; T2["Add: stick-tables<br/>SPOA to WAF service"]
+    E --&gt; T3["Add: rate-limit service<br/>ext-authz + WASM WAF"]
+</code></pre>
+<p><em>The diagram above shows the selection rule: change velocity picks the proxy, and caching, rate limiting, and WAF attach differently to each.</em></p>
+<p>Operationally they converge more than marketing suggests. All three must set <code>X-Forwarded-For</code>, <code>X-Forwarded-Proto</code>, and request IDs consistently, drain on deploy (stop accepting, finish in flight, then exit), and emit one JSON access-log schema your SIEM can parse. All three need the same upstream contract: <code>/healthz</code> that reflects real readiness, keepalive-enabled backends, and timeouts that bound slow peers. Migrating is common — Nginx at the edge for TLS and static, HAProxy behind it for TCP queueing, Envoy as sidecars for mesh policy — and the interview-winning answer names which tier does what instead of declaring one global winner.</p>
+<p>A concrete migration story clarifies trade-offs. A monolith starts with Nginx: <code>shop.example.com/</code> to Rails, <code>/api/</code> to Node, static from disk, certbot renewing monthly. Traffic grows 10x with long-lived WebSockets; the team adds HAProxy in front for <code>balance source</code> stickiness and queue-aware failover while Nginx keeps routing. Microservices arrive with twenty deploys a day and header-based canary; the platform swaps edge routing to Envoy managed by Gateway API, keeps HAProxy for legacy TCP, and leaves Nginx serving <code>/static</code> where <code>sendfile</code> still wins. Each layer kept its strength; no rewrite was ideological.</p>
+<h3 id="4-caching-rate-limiting-and-waf-at-the-proxy">4. Caching, Rate Limiting, and WAF at the Proxy</h3>
+<p>The proxy earns its keep by answering without waking backends, rejecting without spending compute, and blocking known-bad shapes before they become incidents. Caching, rate limiting, and WAF are the same idea at three time scales: reuse yesterday's work, budget today's arrivals, and refuse tomorrow's exploit. Running all three at the edge compounds: a cached product page never touches the app, a throttled scraper never reaches login, and a blocked SQLi probe never appears in app logs.</p>
+<p>Caching at the proxy is an HTTP contract, not a hack. The proxy keys on method plus host plus URI (plus <code>Accept-Encoding</code> and selected headers), honors <code>Cache-Control</code> from upstreams (<code>max-age</code>, <code>s-maxage</code>, <code>no-store</code> for personalized bodies), and serves <code>HIT</code> in microseconds while <code>MISS</code> populates once with <code>proxy_lock</code> so ten concurrent misses do not stampede the DB. Hot, public, versioned objects cache longest — product pages for 60 s, images for hours with fingerprinted filenames, <code>/api/v1/config</code> for 30 s — while authenticated or cart responses bypass by default (<code>Cookie</code>, <code>Authorization</code> present means do not serve shared entries). Stale policies decide failure behavior: <code>proxy_cache_use_stale</code> serves last-good during upstream deploys, <code>stale-while-revalidate</code> hides refresh latency, and explicit <code>PURGE</code> or short TTLs handle invalidation; never cache on URL alone when <code>Vary: Cookie</code> changes the bytes.</p>
+<p>Rate limiting at the proxy is budgeting before business logic. The algorithm is usually leaky-bucket or fixed-window per key: <code>10r/s</code> per IP for APIs, <code>5r/m</code> per IP for <code>/login</code>, <code>100r/m</code> per API key for partners, with <code>burst</code> absorbing human clicks and <code>nodelay</code> versus delayed choice deciding queue versus 429. Keys matter more than rates: IP alone fails behind carrier NAT (one limit throttles a campus), so combine IP plus path plus method, or prefer authenticated identity (<code>sub</code> claim, API key) once past login. Responses must be uniform and cheap — <code>429</code> with <code>Retry-After</code>, counted in metrics, logged without bodies — and global breakers (edge queue depth, upstream latency) shed lowest-priority traffic first (<code>GET /search</code> before <code>POST /checkout</code>) when the fleet saturates.</p>
+<p>WAF at the proxy is pattern enforcement before parsing. Managed rule sets (OWASP CRS, vendor sets on CloudFront/Cloudflare/ALB) score requests for SQLi, XSS, traversal, RCE, and protocol abuse; anomaly scoring blocks when the sum exceeds threshold rather than on any single regex, which cuts false positives. Deploy in count/log mode first, sample blocks for a week, then carve exclusions narrowly — this rule id, this field, this path — instead of disabling the rule globally because checkout legitimately posts <code>&lt;</code> in an address field. The proxy WAF cannot fix broken auth or IDOR (it sees shapes, not ownership), so pair it with app-layer checks; its job is to delete the noise class — scanners, script-kiddie payloads, known CVEs — so app CPU and analyst attention spend on real logic.</p>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>What it keys on</th>
+<th>Good defaults</th>
+<th>Failure smell</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cache</td>
+<td><code>GET</code> + host + URI + encoding + vary headers</td>
+<td>Public 30–60 s, static hours, <code>use_stale</code> on error</td>
+<td>Private bodies cached, no <code>Vary</code>, stampede on miss</td>
+</tr>
+<tr>
+<td>Rate limit</td>
+<td>IP + path + method, then identity/key</td>
+<td>API 10r/s, login 5r/m, burst 2x, <code>Retry-After</code></td>
+<td>IP-only behind NAT, no burst, 429 without metric</td>
+</tr>
+<tr>
+<td>WAF</td>
+<td>Signatures + anomaly score + reputation</td>
+<td>Count first, narrow exclusions, block on score</td>
+<td>Global disable, unreviewed exclusions, app relies on WAF for authz</td>
+</tr>
+<tr>
+<td>Headers/size</td>
+<td>Type, length, content-type</td>
+<td><code>2–10m</code> body cap, <code>nosniff</code>, <code>DENY</code> framing</td>
+<td>Unbounded uploads, sniffable MIME, framed checkout</td>
+</tr>
+</tbody>
+</table>
+<pre class="mermaid"><code>flowchart LR
+    R["Request hits edge<br/>IP + method + path"] --&gt; W{"WAF score?<br/>signatures + reputation"}
+    W --&gt;|"Block"| B["403 + metric<br/>log rule id, no body"]
+    W --&gt;|"Allow"| L{"Rate budget?<br/>per key + burst"}
+    L --&gt;|"Exhausted"| Q["429 + Retry-After<br/>count by endpoint"]
+    L --&gt;|"Budget left"| C{"Cacheable GET<br/>fresh entry?"}
+    C --&gt;|"HIT"| H["Serve from edge<br/>HIT in µs"]
+    C --&gt;|"MISS / bypass"| U["Proxy to upstream<br/>lock + revalidate"]
+</code></pre>
+<p><em>The diagram above shows the edge order that minimizes cost: block known-bad first, budget abusers second, serve cached third, and proxy only the remainder.</em></p>
+<p>Together they define edge SLOs you can alert on. Cache hit ratio per location (drop means deploy cleared keys or personalization leaked into shared entries), 429 rate per endpoint (spike means stuffing or a too-tight limit), WAF block rate per rule (spike means new scanner or false positive), and origin offload (bytes not fetched because the edge answered) tell one story: is the edge absorbing load or passing it through. Tune weekly from these four graphs, not from anecdotes, and every tuning change ships as a reviewed config diff with a rollback window.</p>
+<h3 id="5-basic-nginx-config-explained">5. Basic Nginx Config — Explained</h3>
+<p>Reading Nginx is reading three nested contexts: <code>events</code> and <code>http</code> set global behavior, <code>upstream</code> names backend pools, and <code>server</code> plus <code>location</code> route and enforce per path. The minimal production edge below terminates TLS, routes shop versus API, caches public GETs, budgets login, and proxies everything else with safe headers and bounded timeouts.</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># Minimal production edge: TLS once, route by host+path, cache public, budget login.</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="k">worker_processes</span><span class="w"> </span><span class="s">auto</span><span class="p">;</span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="k">events</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kn">worker_connections</span><span class="w"> </span><span class="mi">4096</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="k">http</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w">  </span><span class="c1"># Upstream pools: names the proxy can balance across with keepalive reuse.</span>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">  </span><span class="kn">upstream</span><span class="w"> </span><span class="s">shop_api</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">    </span><span class="kn">least_conn</span><span class="p">;</span><span class="w">                    </span><span class="c1"># uneven latencies: send to least-loaded member</span>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w">    </span><span class="kn">server</span><span class="w"> </span><span class="n">app-1</span><span class="p">:</span><span class="mi">8080</span><span class="w"> </span><span class="s">max_fails=3</span><span class="w"> </span><span class="s">fail_timeout=30s</span><span class="p">;</span>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">    </span><span class="kn">server</span><span class="w"> </span><span class="n">app-2</span><span class="p">:</span><span class="mi">8080</span><span class="w"> </span><span class="s">max_fails=3</span><span class="w"> </span><span class="s">fail_timeout=30s</span><span class="p">;</span>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w">    </span><span class="kn">keepalive</span><span class="w"> </span><span class="mi">64</span><span class="p">;</span><span class="w">                  </span><span class="c1"># reused upstream connections cut handshake cost</span>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">  </span><span class="p">}</span>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="w">  </span><span class="kn">upstream</span><span class="w"> </span><span class="s">storefront</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="w">    </span><span class="kn">server</span><span class="w"> </span><span class="n">web-1</span><span class="p">:</span><span class="mi">3000</span><span class="w"> </span><span class="s">max_fails=2</span><span class="w"> </span><span class="s">fail_timeout=15s</span><span class="p">;</span>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="w">    </span><span class="kn">server</span><span class="w"> </span><span class="n">web-2</span><span class="p">:</span><span class="mi">3000</span><span class="w"> </span><span class="s">max_fails=2</span><span class="w"> </span><span class="s">fail_timeout=15s</span><span class="p">;</span>
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">    </span><span class="kn">keepalive</span><span class="w"> </span><span class="mi">32</span><span class="p">;</span>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w">  </span><span class="p">}</span>
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="w">  </span><span class="c1"># Shared memory zones: cache for GETs, budgets for rate limits.</span>
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="w">  </span><span class="kn">proxy_cache_path</span><span class="w"> </span><span class="s">/var/cache/nginx</span><span class="w"> </span><span class="s">levels=1:2</span><span class="w"> </span><span class="s">keys_zone=edge_cache:50m</span>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="w">                   </span><span class="s">max_size=5g</span><span class="w"> </span><span class="s">inactive=60m</span><span class="w"> </span><span class="s">use_temp_path=off</span><span class="p">;</span>
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="w">  </span><span class="kn">limit_req_zone</span><span class="w"> </span><span class="nv">$binary_remote_addr</span><span class="w"> </span><span class="s">zone=login:10m</span><span class="w"> </span><span class="s">rate=5r/m</span><span class="p">;</span>
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="w">  </span><span class="kn">limit_req_zone</span><span class="w"> </span><span class="nv">$binary_remote_addr</span><span class="w"> </span><span class="s">zone=api:10m</span><span class="w"> </span><span class="s">rate=10r/s</span><span class="p">;</span>
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="w">  </span><span class="c1"># Global hardening: hide version, cap bodies, log in JSON with trace IDs.</span>
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="w">  </span><span class="kn">server_tokens</span><span class="w"> </span><span class="no">off</span><span class="p">;</span>
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="w">  </span><span class="kn">log_format</span><span class="w"> </span><span class="s">edge_json</span><span class="w"> </span><span class="s">escape=json</span>
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="w">    </span><span class="s">'</span><span class="p">{</span><span class="w"> </span><span class="kn">"time":</span><span class="w"> </span><span class="s">"</span><span class="nv">$time_iso8601",</span><span class="w"> </span><span class="s">"req_id":</span><span class="w"> </span><span class="s">"</span><span class="nv">$request_id",</span><span class="w"> </span><span class="s">"ip":</span><span class="w"> </span><span class="s">"</span><span class="nv">$remote_addr",'</span>
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="w">    </span><span class="s">'</span><span class="w"> </span><span class="s">"host":</span><span class="w"> </span><span class="s">"</span><span class="nv">$host",</span><span class="w"> </span><span class="s">"method":</span><span class="w"> </span><span class="s">"</span><span class="nv">$request_method",</span><span class="w"> </span><span class="s">"uri":</span><span class="w"> </span><span class="s">"</span><span class="nv">$request_uri",'</span>
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="w">    </span><span class="s">'</span><span class="w"> </span><span class="s">"status":</span><span class="w"> </span><span class="nv">$status,</span><span class="w"> </span><span class="s">"upstream":</span><span class="w"> </span><span class="s">"</span><span class="nv">$upstream_addr",</span><span class="w"> </span><span class="s">"cache":</span><span class="w"> </span><span class="s">"</span><span class="nv">$upstream_cache_status"</span><span class="w"> </span><span class="err">}</span><span class="s">'</span><span class="p">;</span>
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="w">  </span><span class="c1"># HTTP only redirects: never serve content on port 80.</span>
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="w">  </span><span class="kn">server</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="w">    </span><span class="kn">listen</span><span class="w"> </span><span class="mi">80</span><span class="p">;</span>
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="w">    </span><span class="kn">server_name</span><span class="w"> </span><span class="s">shop.example.com</span><span class="w"> </span><span class="s">api.example.com</span><span class="p">;</span>
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="w">    </span><span class="kn">return</span><span class="w"> </span><span class="mi">301</span><span class="w"> </span><span class="s">https://</span><span class="nv">$host$request_uri</span><span class="p">;</span>
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="w">  </span><span class="p">}</span>
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>
+<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="w">  </span><span class="c1"># Main TLS edge for the shop hostname.</span>
+<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a><span class="w">  </span><span class="kn">server</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="w">    </span><span class="kn">listen</span><span class="w"> </span><span class="mi">443</span><span class="w"> </span><span class="s">ssl</span><span class="w"> </span><span class="s">http2</span><span class="p">;</span>
+<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a><span class="w">    </span><span class="kn">server_name</span><span class="w"> </span><span class="s">shop.example.com</span><span class="p">;</span>
+<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a><span class="w">    </span><span class="kn">access_log</span><span class="w"> </span><span class="s">/var/log/nginx/shop.access.log</span><span class="w"> </span><span class="s">edge_json</span><span class="p">;</span>
+<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>
+<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a><span class="w">    </span><span class="kn">ssl_certificate</span><span class="w">     </span><span class="s">/etc/nginx/certs/shop.example.com.fullchain.pem</span><span class="p">;</span>
+<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a><span class="w">    </span><span class="kn">ssl_certificate_key</span><span class="w"> </span><span class="s">/etc/nginx/certs/shop.example.com.key</span><span class="p">;</span>
+<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a><span class="w">    </span><span class="kn">ssl_protocols</span><span class="w"> </span><span class="s">TLSv1.2</span><span class="w"> </span><span class="s">TLSv1.3</span><span class="p">;</span>
+<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a><span class="w">    </span><span class="kn">ssl_prefer_server_ciphers</span><span class="w"> </span><span class="no">on</span><span class="p">;</span>
+<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a><span class="w">    </span><span class="kn">ssl_session_cache</span><span class="w"> </span><span class="s">shared:SSL:20m</span><span class="p">;</span>
+<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a><span class="w">    </span><span class="kn">ssl_session_timeout</span><span class="w"> </span><span class="s">1d</span><span class="p">;</span>
+<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="w">    </span><span class="kn">add_header</span><span class="w"> </span><span class="s">Strict-Transport-Security</span><span class="w"> </span><span class="s">"max-age=31536000</span><span class="p">;</span><span class="w"> </span><span class="kn">includeSubDomains"</span><span class="w"> </span><span class="s">always</span><span class="p">;</span>
+<a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a>
+<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="w">    </span><span class="kn">client_max_body_size</span><span class="w"> </span><span class="mi">2m</span><span class="p">;</span><span class="w">       </span><span class="c1"># reject oversized bodies before parsing</span>
+<a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="w">    </span><span class="kn">add_header</span><span class="w"> </span><span class="s">X-Content-Type-Options</span><span class="w"> </span><span class="s">nosniff</span><span class="w"> </span><span class="s">always</span><span class="p">;</span>
+<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="w">    </span><span class="kn">add_header</span><span class="w"> </span><span class="s">X-Frame-Options</span><span class="w"> </span><span class="s">DENY</span><span class="w"> </span><span class="s">always</span><span class="p">;</span>
+<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a>
+<a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a><span class="w">    </span><span class="c1"># Public product pages: cached 60s, stale served when upstreams deploy.</span>
+<a href="#__codelineno-0-58" id="__codelineno-0-58" name="__codelineno-0-58"></a><span class="w">    </span><span class="kn">location</span><span class="w"> </span><span class="s">/products/</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-0-59" id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="w">      </span><span class="kn">proxy_cache</span><span class="w"> </span><span class="s">edge_cache</span><span class="p">;</span>
+<a href="#__codelineno-0-60" id="__codelineno-0-60" name="__codelineno-0-60"></a><span class="w">      </span><span class="kn">proxy_cache_valid</span><span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="s">60s</span><span class="p">;</span>
+<a href="#__codelineno-0-61" id="__codelineno-0-61" name="__codelineno-0-61"></a><span class="w">      </span><span class="kn">proxy_cache_use_stale</span><span class="w"> </span><span class="s">error</span><span class="w"> </span><span class="s">timeout</span><span class="w"> </span><span class="s">updating</span><span class="p">;</span>
+<a href="#__codelineno-0-62" id="__codelineno-0-62" name="__codelineno-0-62"></a><span class="w">      </span><span class="kn">proxy_cache_lock</span><span class="w"> </span><span class="no">on</span><span class="p">;</span><span class="w">         </span><span class="c1"># one miss populates, rest wait (no stampede)</span>
+<a href="#__codelineno-0-63" id="__codelineno-0-63" name="__codelineno-0-63"></a><span class="w">      </span><span class="kn">add_header</span><span class="w"> </span><span class="s">X-Cache-Status</span><span class="w"> </span><span class="nv">$upstream_cache_status</span><span class="w"> </span><span class="s">always</span><span class="p">;</span>
+<a href="#__codelineno-0-64" id="__codelineno-0-64" name="__codelineno-0-64"></a><span class="w">      </span><span class="kn">proxy_pass</span><span class="w"> </span><span class="s">http://storefront</span><span class="p">;</span>
+<a href="#__codelineno-0-65" id="__codelineno-0-65" name="__codelineno-0-65"></a><span class="w">      </span><span class="kn">include</span><span class="w"> </span><span class="s">proxy_headers.conf</span><span class="p">;</span><span class="w">  </span><span class="c1"># Host, X-Forwarded-*, X-Request-ID</span>
+<a href="#__codelineno-0-66" id="__codelineno-0-66" name="__codelineno-0-66"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-0-67" id="__codelineno-0-67" name="__codelineno-0-67"></a>
+<a href="#__codelineno-0-68" id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="w">    </span><span class="c1"># Login: tight budget before the app spends anything on password hashes.</span>
+<a href="#__codelineno-0-69" id="__codelineno-0-69" name="__codelineno-0-69"></a><span class="w">    </span><span class="kn">location</span><span class="w"> </span><span class="s">/login</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-0-70" id="__codelineno-0-70" name="__codelineno-0-70"></a><span class="w">      </span><span class="kn">limit_req</span><span class="w"> </span><span class="s">zone=login</span><span class="w"> </span><span class="s">burst=5</span><span class="w"> </span><span class="s">nodelay</span><span class="p">;</span>
+<a href="#__codelineno-0-71" id="__codelineno-0-71" name="__codelineno-0-71"></a><span class="w">      </span><span class="kn">proxy_connect_timeout</span><span class="w"> </span><span class="s">2s</span><span class="p">;</span>
+<a href="#__codelineno-0-72" id="__codelineno-0-72" name="__codelineno-0-72"></a><span class="w">      </span><span class="kn">proxy_read_timeout</span><span class="w"> </span><span class="s">10s</span><span class="p">;</span>
+<a href="#__codelineno-0-73" id="__codelineno-0-73" name="__codelineno-0-73"></a><span class="w">      </span><span class="kn">proxy_pass</span><span class="w"> </span><span class="s">http://shop_api</span><span class="p">;</span>
+<a href="#__codelineno-0-74" id="__codelineno-0-74" name="__codelineno-0-74"></a><span class="w">      </span><span class="kn">include</span><span class="w"> </span><span class="s">proxy_headers.conf</span><span class="p">;</span>
+<a href="#__codelineno-0-75" id="__codelineno-0-75" name="__codelineno-0-75"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-0-76" id="__codelineno-0-76" name="__codelineno-0-76"></a>
+<a href="#__codelineno-0-77" id="__codelineno-0-77" name="__codelineno-0-77"></a><span class="w">    </span><span class="c1"># Default: longest-prefix fallback to the storefront pool.</span>
+<a href="#__codelineno-0-78" id="__codelineno-0-78" name="__codelineno-0-78"></a><span class="w">    </span><span class="kn">location</span><span class="w"> </span><span class="s">/</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-0-79" id="__codelineno-0-79" name="__codelineno-0-79"></a><span class="w">      </span><span class="kn">proxy_connect_timeout</span><span class="w"> </span><span class="s">2s</span><span class="p">;</span>
+<a href="#__codelineno-0-80" id="__codelineno-0-80" name="__codelineno-0-80"></a><span class="w">      </span><span class="kn">proxy_read_timeout</span><span class="w"> </span><span class="s">10s</span><span class="p">;</span>
+<a href="#__codelineno-0-81" id="__codelineno-0-81" name="__codelineno-0-81"></a><span class="w">      </span><span class="kn">proxy_next_upstream</span><span class="w"> </span><span class="s">error</span><span class="w"> </span><span class="s">timeout</span><span class="w"> </span><span class="s">http_502</span><span class="p">;</span><span class="w">  </span><span class="c1"># retry idempotent misses once</span>
+<a href="#__codelineno-0-82" id="__codelineno-0-82" name="__codelineno-0-82"></a><span class="w">      </span><span class="kn">proxy_pass</span><span class="w"> </span><span class="s">http://storefront</span><span class="p">;</span>
+<a href="#__codelineno-0-83" id="__codelineno-0-83" name="__codelineno-0-83"></a><span class="w">      </span><span class="kn">include</span><span class="w"> </span><span class="s">proxy_headers.conf</span><span class="p">;</span>
+<a href="#__codelineno-0-84" id="__codelineno-0-84" name="__codelineno-0-84"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-0-85" id="__codelineno-0-85" name="__codelineno-0-85"></a><span class="w">  </span><span class="p">}</span>
+<a href="#__codelineno-0-86" id="__codelineno-0-86" name="__codelineno-0-86"></a>
+<a href="#__codelineno-0-87" id="__codelineno-0-87" name="__codelineno-0-87"></a><span class="w">  </span><span class="c1"># API hostname: stricter timeouts, higher rate budget, no cache by default.</span>
+<a href="#__codelineno-0-88" id="__codelineno-0-88" name="__codelineno-0-88"></a><span class="w">  </span><span class="kn">server</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-0-89" id="__codelineno-0-89" name="__codelineno-0-89"></a><span class="w">    </span><span class="kn">listen</span><span class="w"> </span><span class="mi">443</span><span class="w"> </span><span class="s">ssl</span><span class="w"> </span><span class="s">http2</span><span class="p">;</span>
+<a href="#__codelineno-0-90" id="__codelineno-0-90" name="__codelineno-0-90"></a><span class="w">    </span><span class="kn">server_name</span><span class="w"> </span><span class="s">api.example.com</span><span class="p">;</span>
+<a href="#__codelineno-0-91" id="__codelineno-0-91" name="__codelineno-0-91"></a><span class="w">    </span><span class="kn">access_log</span><span class="w"> </span><span class="s">/var/log/nginx/api.access.log</span><span class="w"> </span><span class="s">edge_json</span><span class="p">;</span>
+<a href="#__codelineno-0-92" id="__codelineno-0-92" name="__codelineno-0-92"></a>
+<a href="#__codelineno-0-93" id="__codelineno-0-93" name="__codelineno-0-93"></a><span class="w">    </span><span class="kn">ssl_certificate</span><span class="w">     </span><span class="s">/etc/nginx/certs/api.example.com.fullchain.pem</span><span class="p">;</span>
+<a href="#__codelineno-0-94" id="__codelineno-0-94" name="__codelineno-0-94"></a><span class="w">    </span><span class="kn">ssl_certificate_key</span><span class="w"> </span><span class="s">/etc/nginx/certs/api.example.com.key</span><span class="p">;</span>
+<a href="#__codelineno-0-95" id="__codelineno-0-95" name="__codelineno-0-95"></a><span class="w">    </span><span class="kn">ssl_protocols</span><span class="w"> </span><span class="s">TLSv1.2</span><span class="w"> </span><span class="s">TLSv1.3</span><span class="p">;</span>
+<a href="#__codelineno-0-96" id="__codelineno-0-96" name="__codelineno-0-96"></a><span class="w">    </span><span class="kn">ssl_prefer_server_ciphers</span><span class="w"> </span><span class="no">on</span><span class="p">;</span>
+<a href="#__codelineno-0-97" id="__codelineno-0-97" name="__codelineno-0-97"></a>
+<a href="#__codelineno-0-98" id="__codelineno-0-98" name="__codelineno-0-98"></a><span class="w">    </span><span class="kn">client_max_body_size</span><span class="w"> </span><span class="mi">1m</span><span class="p">;</span>
+<a href="#__codelineno-0-99" id="__codelineno-0-99" name="__codelineno-0-99"></a>
+<a href="#__codelineno-0-100" id="__codelineno-0-100" name="__codelineno-0-100"></a><span class="w">    </span><span class="kn">location</span><span class="w"> </span><span class="s">/v2/</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-0-101" id="__codelineno-0-101" name="__codelineno-0-101"></a><span class="w">      </span><span class="kn">limit_req</span><span class="w"> </span><span class="s">zone=api</span><span class="w"> </span><span class="s">burst=20</span><span class="w"> </span><span class="s">nodelay</span><span class="p">;</span>
+<a href="#__codelineno-0-102" id="__codelineno-0-102" name="__codelineno-0-102"></a><span class="w">      </span><span class="kn">proxy_connect_timeout</span><span class="w"> </span><span class="s">2s</span><span class="p">;</span>
+<a href="#__codelineno-0-103" id="__codelineno-0-103" name="__codelineno-0-103"></a><span class="w">      </span><span class="kn">proxy_read_timeout</span><span class="w"> </span><span class="s">10s</span><span class="p">;</span>
+<a href="#__codelineno-0-104" id="__codelineno-0-104" name="__codelineno-0-104"></a><span class="w">      </span><span class="kn">proxy_pass</span><span class="w"> </span><span class="s">http://shop_api</span><span class="p">;</span>
+<a href="#__codelineno-0-105" id="__codelineno-0-105" name="__codelineno-0-105"></a><span class="w">      </span><span class="kn">include</span><span class="w"> </span><span class="s">proxy_headers.conf</span><span class="p">;</span>
+<a href="#__codelineno-0-106" id="__codelineno-0-106" name="__codelineno-0-106"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-0-107" id="__codelineno-0-107" name="__codelineno-0-107"></a><span class="w">  </span><span class="p">}</span>
+<a href="#__codelineno-0-108" id="__codelineno-0-108" name="__codelineno-0-108"></a><span class="p">}</span>
+</code></pre></div>
+<p>The snippet above is explained block by block. The <code>upstream</code> blocks decouple names from IPs so deploys change members without touching routing: <code>least_conn</code> suits mixed-latency APIs, <code>max_fails</code> plus <code>fail_timeout</code> passively ejects sick peers, and <code>keepalive</code> reuses upstream TCP and TLS sessions instead of paying a handshake per request. Shared zones size the edge state explicitly — 50 MB of cache keys with a 5 GB body cap, 10 MB per rate-limit zone for roughly 160k tracked IPs — so memory is budgeted, not accidental. Global directives set the posture every server inherits: no version banner, JSON logs with request ID and cache status for tracing, and a port-80 server whose only job is upgrading to HTTPS.</p>
+<p>The <code>proxy_headers.conf</code> include referenced above is small but load-bearing, so treat it as required rather than optional:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># proxy_headers.conf: identity and trace context every upstream can rely on.</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="k">proxy_http_version</span><span class="w"> </span><span class="mi">1</span><span class="s">.1</span><span class="p">;</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="k">proxy_set_header</span><span class="w"> </span><span class="s">Connection</span><span class="w"> </span><span class="s">""</span><span class="p">;</span><span class="w">              </span><span class="c1"># allow upstream keepalive</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="k">proxy_set_header</span><span class="w"> </span><span class="s">Host</span><span class="w"> </span><span class="nv">$host</span><span class="p">;</span><span class="w">                 </span><span class="c1"># preserve original host for redirects</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="k">proxy_set_header</span><span class="w"> </span><span class="s">X-Real-IP</span><span class="w"> </span><span class="nv">$remote_addr</span><span class="p">;</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="k">proxy_set_header</span><span class="w"> </span><span class="s">X-Forwarded-For</span><span class="w"> </span><span class="nv">$proxy_add_x_forwarded_for</span><span class="p">;</span>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="k">proxy_set_header</span><span class="w"> </span><span class="s">X-Forwarded-Proto</span><span class="w"> </span><span class="nv">$scheme</span><span class="p">;</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="k">proxy_set_header</span><span class="w"> </span><span class="s">X-Request-ID</span><span class="w"> </span><span class="nv">$request_id</span><span class="p">;</span><span class="w">   </span><span class="c1"># trace ID generated once at edge</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="k">proxy_set_header</span><span class="w"> </span><span class="s">X-Original-URI</span><span class="w"> </span><span class="nv">$request_uri</span><span class="p">;</span>
+</code></pre></div>
+<p>The headers include is explained as the contract with backends. Upstreams never trust socket IPs directly because only the proxy sees the client; they read <code>X-Forwarded-For</code> for the client chain and <code>X-Forwarded-Proto</code> to build <code>https://</code> redirects behind TLS termination. <code>X-Request-ID</code> generated once at the edge joins proxy, app, and DB logs for one trace, while <code>X-Original-URI</code> preserves the pre-rewrite path for audit. Backends must be configured to trust these headers only from the proxy's security group, never from arbitrary clients, or header spoofing bypasses IP logic.</p>
+<p>Timeouts and retries deserve a final note because they decide outage shape. <code>proxy_connect_timeout 2s</code> bounds dead-peer waits, <code>proxy_read_timeout 10s</code> bounds slow-app holds, and <code>proxy_next_upstream</code> retries only safe outcomes (errors, timeouts, 502s) so <code>POST /charge</code> is never double-submitted by default; mark non-idempotent locations with <code>proxy_next_upstream off</code> or <code>non_idempotent</code> explicitly. Validate with <code>nginx -t</code> before every <code>reload</code>, roll the config as a reviewed diff, and canary the reload on one edge node while watching 5xx and p99 before fleet-wide rollout.</p>
+<pre class="mermaid"><code>flowchart TD
+    E["Edge request<br/>Host + path"] --&gt; TLS["TLS + HSTS<br/>cert, ciphers, resume"]
+    TLS --&gt; LOC{"location match?<br/>/products, /login, /v2, /"}
+    LOC --&gt; POL["Location policy<br/>cache / limit_req / timeout"]
+    POL --&gt; HDR["Attach headers<br/>Forwarded-* + Request-ID"]
+    HDR --&gt; UP["Upstream pool<br/>least-conn + health"]
+    UP --&gt;|"Fail / timeout"| RET["Retry safe methods<br/>next peer or 502"]
+    UP --&gt;|"Success"| RESP["Response + hardening headers<br/>HSTS, nosniff, DENY"]
+</code></pre>
+<p><em>The diagram above shows one request through the sample config: terminate, match location, apply that path's policy, attach identity headers, and balance across healthy upstreams.</em></p>
+<h3 id="6-threats-and-mitigations">6. Threats and Mitigations</h3>
+<p>The proxy is the most exposed component you operate: it parses hostile bytes first, holds private keys, and decides what reaches the app. Threat-model it as an attacker would — direct origin bypass, header lies, cache poisoning, budget exhaustion, and config mistakes — and answer each with an edge control plus an inward layer, because the edge narrows but never decides identity alone.</p>
+<table>
+<thead>
+<tr>
+<th>Threat</th>
+<th>How it works</th>
+<th>Proxy mitigation</th>
+<th>Inward layer that still holds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Origin bypass (direct-to-IP)</td>
+<td>Attacker resolves origin IP and dials app, skipping WAF and limits</td>
+<td>Security group allows only proxy to app; app validates expected <code>Host</code>, drops unknown hosts with 444</td>
+<td>App-layer auth on every route regardless of source network</td>
+</tr>
+<tr>
+<td>TLS downgrade / weak ciphers</td>
+<td>Attacker forces TLS 1.0 or export cipher, then decrypts or injects</td>
+<td>TLS 1.2+ only, vetted cipher list, HSTS with preload, no port-80 content</td>
+<td>Certificate Transparency monitoring plus expiry and config alerts</td>
+</tr>
+<tr>
+<td>Stolen or expired cert / leaked key</td>
+<td>Key in git or image, renewal missed, outage or impersonation</td>
+<td>ACM or certbot auto-renewal, keys in secret store, alert at 21 and 7 days, reload not restart</td>
+<td>Rotation runbook rehearsed; revoke and reissue on any suspected leak</td>
+</tr>
+<tr>
+<td>Header spoofing (<code>X-Forwarded-For</code>)</td>
+<td>Client sends fake forwarded headers to fake IP or proto</td>
+<td>Proxy overwrites (never appends blindly) these headers; backends trust them only from proxy SG</td>
+<td>App reads IP from socket or verified header chain, never raw client input</td>
+</tr>
+<tr>
+<td>Cache poisoning / deception</td>
+<td>Attacker crafts <code>Host</code> or <code>X-Forwarded-Host</code> variant that caches evil bytes for victims</td>
+<td>Normalize and allowlist <code>Host</code>, cache key includes host plus encoding, never cache with <code>Authorization</code> or <code>Cookie</code> present</td>
+<td>Upstream emits correct <code>Cache-Control</code> and <code>Vary</code>; purge path authenticated</td>
+</tr>
+<tr>
+<td>Rate-limit bypass (NAT, rotation)</td>
+<td>Botnet spreads guesses across IPs, or one campus shares one IP unfairly</td>
+<td>Key on identity plus path once logged in, per-endpoint zones, global queue-depth breaker, CAPTCHA or proof-of-work on login burst</td>
+<td>App-level per-account throttling and lockout survive any edge miss</td>
+</tr>
+<tr>
+<td>Slowloris / slow-read drain</td>
+<td>Many slow connections hold workers with partial requests</td>
+<td><code>client_header_timeout</code>, <code>client_body_timeout</code>, connection caps, edge absorbs before app</td>
+<td>Autoscale plus LB queue limits; app never holds unbounded uploads in memory</td>
+</tr>
+<tr>
+<td>Request smuggling / desync</td>
+<td>Ambiguous <code>Content-Length</code> versus <code>Transfer-Encoding</code> splits chained proxies</td>
+<td>Reject ambiguous framing, normalize at one tier, keep proxy and app parser versions aligned</td>
+<td>App framework with strict parser; integration test for smuggle vectors on upgrade</td>
+</tr>
+<tr>
+<td>WAF bypass via encoding</td>
+<td>Double-encoding, unicode, or chunked tricks slip past one regex</td>
+<td>Anomaly scoring over single signatures, canonicalize before inspect, update CRS sets monthly</td>
+<td>Parameterized queries and output encoding make bypass payloads inert anyway</td>
+</tr>
+<tr>
+<td>SSRF via open proxy / rewrite</td>
+<td>Crafted path or redirect makes the proxy fetch metadata or intranet</td>
+<td>No user-controlled upstream host, egress deny to <code>169.254.169.254</code>, allowlisted fetch domains, short fetch timeouts</td>
+<td>Instance metadata IMDSv2 with hop limit 1; app URL validation independent of proxy</td>
+</tr>
+<tr>
+<td>mTLS misconfig (fail-open)</td>
+<td>Missing client cert falls through to password-only or anonymous path</td>
+<td><code>ssl_verify_client on</code> with <code>fail closed</code>, SAN-to-role allowlist map, 403 on unverified with fingerprint log</td>
+<td>Service allowlist re-checked at app; short-lived SPIFFE certs limit replay window</td>
+</tr>
+<tr>
+<td>Config drift / overly broad location</td>
+<td>Regex location shadows auth, debug endpoint left public, <code>autoindex</code> on</td>
+<td>Least-privilege locations first,deny unknown hosts, <code>server_tokens off</code>, review every diff, <code>nginx -T</code> audited</td>
+<td>Firewall default-deny plus staging WAF count mode catches exposure before prod</td>
+</tr>
+</tbody>
+</table>
+<p>Two scenarios show how to narrate the table in interviews. First, origin bypass with cache poisoning chained: the attacker finds the ALB origin via certificate transparency, dials it directly with a poisoned <code>X-Forwarded-Host</code>, and the app builds password-reset links from that header while the direct path skips WAF. Answer in one breath — lock the security group to the proxy, reject unknown hosts at the edge with logging, build absolute URLs from configured canonical hosts, and key cache on normalized host — plus detection: alert on direct-origin connection attempts and on <code>Host</code> mismatches. Second, login stuffing through rotation: 100k IPs try two passwords each, staying under per-IP limits. Answer with layered budgets — per-IP edge limit plus per-account app throttle plus global login queue with CAPTCHA challenge — and detection on 401 bursts per account and 429 geography shifts, not on any single IP.</p>
+<h3 id="7-best-practices">7. Best Practices</h3>
+<ol>
+<li><strong>Terminate once, at the edge, and re-encrypt only where compliance demands.</strong> One managed certificate, TLS 1.2+ with vetted ciphers, HSTS, stapling, and session reuse at the proxy; plain HTTP to upstreams over private subnets by default, or internal-CA TLS with SAN verification where regulators require encryption in transit everywhere. Never terminate and forward to an unauthenticated upstream hostname an attacker can claim.</li>
+<li><strong>Lock origins so the proxy is the only door.</strong> Security groups, firewall rules, and app <code>Host</code> allowlists accept traffic solely from proxy subnets or security-group IDs; everything else gets connection-refused or 444 with a metric. Probe this monthly by dialing origin IPs directly from outside and confirming rejection, because every bypass finding starts with "we assumed nobody knew the IP."</li>
+<li><strong>Route explicit, rewrite minimal, headers consistent.</strong> Longest-prefix locations with documented precedence, rewrites that preserve <code>X-Original-URI</code>, and the same <code>X-Forwarded-*</code> plus <code>X-Request-ID</code> set on every location. Backends code against that contract (proto for redirects, trace ID for logs) instead of sniffing sockets, and new routes inherit it via include rather than copy-paste.</li>
+<li><strong>Budget before business logic on every expensive path.</strong> Per-IP edge limits on login, signup, search, and export; per-identity or per-key limits once authenticated; global breakers that shed low-priority GETs before checkout. Every 429 carries <code>Retry-After</code>, a counter, and a dashboard, and every limit change ships with a before/after graph of 429 rate and p99.</li>
+<li><strong>Cache public, bypass private, purge deliberately.</strong> Cache keys include host plus URI plus encoding plus <code>Vary</code> dimensions; <code>Cookie</code> or <code>Authorization</code> bypasses shared entries; <code>proxy_cache_lock</code> prevents stampedes and <code>use_stale</code> covers deploys. TTLs live in upstream <code>Cache-Control</code> (30–60 s for pages, hours for fingerprinted static), and purge is authenticated, logged, and rate-limited — never a public <code>PURGE</code> method.</li>
+<li><strong>Run WAF in count first, exclude narrow, never disable broad.</strong> Ship new managed rules in log mode, sample a week of verdicts, then block with exclusions scoped to rule id plus field plus path. Record each exclusion with owner and expiry, re-test checkout and webhook suites after every change, and alert on block-rate spikes per rule so false positives page before customers report them.</li>
+<li><strong>Verify upstreams both ways: health out, identity back.</strong> Active <code>/healthz</code> probes with rise/fall thresholds plus passive ejection, graceful drain on deploy (unhealthy, finish in flight, terminate), and — where re-encrypting — proxy-side verification of upstream SAN against an expected name. For service-to-service, terminate mTLS at the sidecar or edge with SAN-to-role mapping, short-lived certs, and fingerprint logs, failing closed on missing or untrusted certs.</li>
+<li><strong>Make edge config reviewable, testable, and observable.</strong> Every change is a diff with <code>nginx -t</code> plus staging replay (checkout, login burst, cache HIT/MISS, WAF sample) before fleet reload; JSON access logs carry trace ID, upstream, and cache status into one SIEM schema; dashboards track hit ratio, 429 rate, WAF blocks, cert expiry, and origin 5xx together. Roll back by reverting one diff and reloading — measured in seconds, not postmortems.</li>
+</ol>
+<h3 id="8-interview-questions-and-answers">8. Interview Questions and Answers</h3>
+<p><strong>Q1 (Beginner): Forward proxy versus reverse proxy — who configures each, and who trusts it?</strong>
+The client configures the forward proxy (browser PAC, <code>HTTP_PROXY</code>) and trusts it with destinations, while the service owner configures the reverse proxy (DNS points at it) and trusts it with the private key. Forward hides clients from origins for egress policy; reverse hides backends from clients for ingress routing, TLS, and load balancing. Name position, principal, and key custody and the answer is complete.</p>
+<p><strong>Q2 (Beginner): Where should TLS terminate, and what travels behind it?</strong>
+Terminate once at the reverse proxy so certs, ciphers, HSTS, and stapling are managed in one place with auto-renewal. Behind it, plain HTTP over a private subnet is the default for speed and debuggability, or re-encrypted TLS to upstreams with SAN verification where compliance requires encryption everywhere. Either way the proxy sets <code>X-Forwarded-Proto</code> so apps build correct redirects, and origins accept only proxy traffic.</p>
+<p><strong>Q3 (Beginner): Path-based versus host-based routing — when is each right?</strong>
+Path-based splits one hostname across services (<code>/api/*</code> to API, <code>/static/*</code> to storage) and suits a single product composed of many backends. Host-based splits many hostnames across one edge (<code>api.</code> to API, <code>admin.</code> with IP allowlisting, <code>*.tenants.</code> per tenant) and suits platforms and multi-tenancy. Production uses both — host selects the tenant, longest path prefix selects the service, headers select the slice — with rewrites that preserve the original URI for logs.</p>
+<p><strong>Q4 (Intermediate): Nginx versus HAProxy versus Envoy — how do you pick?</strong>
+Pick by change velocity and tier: Nginx for a stable edge that also serves static with a readable file plus reload, HAProxy for extreme-connection TCP/HTTP balancing with precise health and queue control, Envoy for constantly changing microservice routing with xDS, per-route retries, and native mTLS plus telemetry. All three saturate links when tuned, so benchmark your shape and consider stacking them — Nginx or Envoy at the edge, HAProxy for legacy TCP, Envoy sidecars for mesh — instead of declaring one winner.</p>
+<p><strong>Q5 (Intermediate): How do caching, rate limiting, and WAF compose at the edge, and in what order?</strong>
+WAF first to drop known-bad shapes before they cost compute, rate limiting second to budget abusers with 429 plus <code>Retry-After</code>, caching third to serve public GETs in microseconds, proxying only the remainder. Cache keys on host plus URI plus encoding with private bypass and stampede lock; limits key on IP plus path then identity with burst; WAF scores anomalies with narrow exclusions. Dashboards on hit ratio, 429 rate, and block rate prove the edge is absorbing load.</p>
+<p><strong>Q6 (Intermediate): Walk me through this Nginx config's request path for <code>GET shop.example.com/products/42</code>.</strong>
+Port 80 upgrades to 443, the <code>shop.example.com</code> server block terminates TLS with HSTS, the <code>/products/</code> location applies cache-plus-timeout policy, headers (<code>Host</code>, <code>X-Forwarded-*</code>, <code>X-Request-ID</code>) attach from the shared include, and <code>least_conn</code> picks a healthy <code>storefront</code> member with keepalive reuse. On HIT the edge answers directly with <code>X-Cache-Status: HIT</code>; on MISS one request populates under <code>proxy_cache_lock</code> while upstreams stay bounded by 2 s connect and 10 s read timeouts, retrying only safe errors.</p>
+<p><strong>Q7 (Intermediate): How do you stop attackers from bypassing the proxy and hitting origins directly?</strong>
+Layer three controls: network (security groups allow only proxy subnets to app ports), edge (unknown <code>Host</code> gets 444 with logging), and app (auth runs on every route regardless of source). Verify by dialing origin IPs externally each month and alerting on direct-hit attempts. The same lockdown plus header-overwrite discipline (proxy sets forwarded headers, backends trust them only from the proxy) also defeats <code>X-Forwarded-For</code> spoofing.</p>
+<p><strong>Q8 (Senior): Design mTLS for service-to-service calls behind the proxy.</strong>
+Issue short-lived SPIFFE or internal-CA certs per workload, terminate and verify at Envoy sidecars or the edge with SDS rotation, and check expiry, chain, revocation (or short TTLs), then map the verified SAN to a role allowlist — authentication alone never authorizes. Fail closed with 403 plus fingerprint logging, keep human <code>/admin</code> on client-certs plus SSO rather than certs alone, and rehearse rotation so reissue is a reload, not an outage.</p>
+<p><strong>Q9 (Senior): Cache hit ratio collapsed after a deploy and origins are melting — what do you do?</strong>
+Check what changed the key space first: new query strings, missing <code>Cache-Control</code>, or personalization leaking <code>Cookie</code> into shared entries. Serve <code>stale</code> while diagnosing (<code>proxy_cache_use_stale updating</code>), confirm <code>proxy_cache_lock</code> is on to stop stampedes, and roll back the header or key change behind the flag. Longer term, version static filenames with fingerprints, set <code>s-maxage</code> from the app, and alert on hit-ratio drop per location so the next deploy pages before origins saturate.</p>
+<p><strong>Q10 (Senior): Login stuffing is spread across 100k IPs, each under the per-IP limit — how does the edge still help?</strong>
+Per-IP limits alone cannot see the campaign, so add per-account throttling at the app (N failures per account per hour with lockout or challenge), a global login-queue breaker at the edge that CAPTCHAs or proof-of-works bursts, and anomaly detection on 401 bursts per account plus 429 geography shifts. Keep the edge login budget tight (5r/m with burst 5) and forward only surviving attempts with trace IDs, so the app's account-level control and audit log finish what the edge started.</p>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      © 2025 <a href="https://github.com/abhishekghoshh" rel="noopener" target="_blank">Abhishek Ghosh</a>
+</div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+<div class="md-social">
+<a class="md-social__link" href="https://github.com/abhishekghoshh" rel="noopener" target="_blank" title="github.com">
+<svg viewbox="0 0 480 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"></path></svg>
+</a>
+<a class="md-social__link" href="https://x.com/abhishek_ghoshh" rel="noopener" target="_blank" title="x.com">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253"></path></svg>
+</a>
+<a class="md-social__link" href="https://www.linkedin.com/in/abhishek-ghosh-220679132/" rel="noopener" target="_blank" title="www.linkedin.com">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5m282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"></path></svg>
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+<script src="../../../assets/javascripts/bundle.60a45f97.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+window.mermaidConfig = {default: {
+    startOnLoad: false
+}};</script></body>
+</html>

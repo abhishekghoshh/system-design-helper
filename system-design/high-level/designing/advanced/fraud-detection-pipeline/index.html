@@ -1,0 +1,3902 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="https://abhishekghoshh.github.io/system-design-helper/system-design/high-level/designing/advanced/fraud-detection-pipeline/" rel="canonical"/>
+<link href="../settlement-reconciliation-system/" rel="prev"/>
+<link href="../quick-commerce-inventory-system/" rel="next"/>
+<link href="../../../../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.50" name="generator"/>
+<title>Fraud Detection Pipeline - System Design Helper</title>
+<link href="../../../../../assets/stylesheets/main.a40c8224.min.css" rel="stylesheet"/>
+<link href="../../../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+<meta content="website" property="og:type"/>
+<meta content="Fraud Detection Pipeline - System Design Helper" property="og:title"/>
+<meta content="None" property="og:description"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/system-design/high-level/designing/advanced/fraud-detection-pipeline.png" property="og:image"/>
+<meta content="image/png" property="og:image:type"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/system-design/high-level/designing/advanced/fraud-detection-pipeline/" property="og:url"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Fraud Detection Pipeline - System Design Helper" name="twitter:title"/>
+<meta content="None" name="twitter:description"/>
+<meta content="https://abhishekghoshh.github.io/system-design-helper/assets/images/social/system-design/high-level/designing/advanced/fraud-detection-pipeline.png" name="twitter:image"/>
+</head>
+<body data-md-color-accent="purple" data-md-color-primary="teal" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#design-a-fraud-detection-pipeline-for-financial-transactions">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="System Design Helper" class="md-header__button md-logo" data-md-component="logo" href="../../../../.." title="System Design Helper">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            System Design Helper
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Fraud Detection Pipeline
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="purple" data-md-color-media="" data-md-color-primary="teal" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="lime" data-md-color-media="" data-md-color-primary="teal" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../..">
+        
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../../basics/cpu/">
+          
+  
+  Basics
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../../ai/ai/">
+          
+  
+  AI
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../../devops/">
+          
+  
+  DevOps
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../../../security/introduction/">
+          
+  
+  Security
+
+        </a>
+</li>
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../../../../books/">
+          
+  
+  System Design
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="System Design Helper" class="md-nav__button md-logo" data-md-component="logo" href="../../../../.." title="System Design Helper">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    System Design Helper
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../..">
+<span class="md-ellipsis">
+    Home
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Basics
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            Basics
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/cpu/">
+<span class="md-ellipsis">
+    CPU
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/pointers/">
+<span class="md-ellipsis">
+    Pointers
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/maths/">
+<span class="md-ellipsis">
+    Maths
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/behavioural/">
+<span class="md-ellipsis">
+    Behavioural
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/developer-experiences/">
+<span class="md-ellipsis">
+    Developer Experiences
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/open-source-tools/">
+<span class="md-ellipsis">
+    Open Source Tools
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/software-architect/">
+<span class="md-ellipsis">
+    Software Architect
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../basics/wisdom/">
+<span class="md-ellipsis">
+    Wisdom
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+<span class="md-ellipsis">
+    AI
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            AI
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/ai/">
+<span class="md-ellipsis">
+    AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/ai-tools/">
+<span class="md-ellipsis">
+    AI Tools
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/agentic-ai/">
+<span class="md-ellipsis">
+    Agentic AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/gen-ai/">
+<span class="md-ellipsis">
+    Gen AI
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/langchain-and-langgraph/">
+<span class="md-ellipsis">
+    LangChain and LangGraph
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/MCP/">
+<span class="md-ellipsis">
+    MCP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/RAG/">
+<span class="md-ellipsis">
+    RAG
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/llm-wiki/">
+<span class="md-ellipsis">
+    LLM Wiki
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/vector-embeddings/">
+<span class="md-ellipsis">
+    Vector Embeddings
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/vibe-coding/">
+<span class="md-ellipsis">
+    Vibe Coding
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ai/courses/">
+<span class="md-ellipsis">
+    Courses
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    DevOps
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            DevOps
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../devops/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../devops/deployment-strategies/">
+<span class="md-ellipsis">
+    Deployment Strategies
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+<span class="md-ellipsis">
+    Security
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            Security
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/authentication-and-authorization/">
+<span class="md-ellipsis">
+    Authentication &amp; Authorization
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/oauth/">
+<span class="md-ellipsis">
+    OAuth
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/rbac/">
+<span class="md-ellipsis">
+    RBAC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/sso/">
+<span class="md-ellipsis">
+    SSO
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/ssl/">
+<span class="md-ellipsis">
+    SSL
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/ssh/">
+<span class="md-ellipsis">
+    SSH
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/jwt/">
+<span class="md-ellipsis">
+    JWT
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/encryption/">
+<span class="md-ellipsis">
+    Encryption
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/environment-variables/">
+<span class="md-ellipsis">
+    Environment Variables
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/devsecops/">
+<span class="md-ellipsis">
+    DevSecOps
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/firewall/">
+<span class="md-ellipsis">
+    Firewall
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+<span class="md-ellipsis">
+    Certificate
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_13_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_13">
+<span class="md-nav__icon md-icon"></span>
+            Certificate
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/certificate/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/certificate/certificate-authority/">
+<span class="md-ellipsis">
+    Certificate Authority
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/certificate/client-certificates/">
+<span class="md-ellipsis">
+    Client Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/certificate/server-certificates/">
+<span class="md-ellipsis">
+    Server Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/certificate/self-signed-certificates/">
+<span class="md-ellipsis">
+    Self-Signed Certificates
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/certificate/links/">
+<span class="md-ellipsis">
+    Links
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_14" id="__nav_5_14_label" tabindex="0">
+<span class="md-ellipsis">
+    Reverse Proxy
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_14_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_14">
+<span class="md-nav__icon md-icon"></span>
+            Reverse Proxy
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/reverse-proxy/introduction/">
+<span class="md-ellipsis">
+    Introduction
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/reverse-proxy/haproxy/">
+<span class="md-ellipsis">
+    HAProxy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../security/reverse-proxy/nginx/">
+<span class="md-ellipsis">
+    Nginx
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    System Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            System Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../books/">
+<span class="md-ellipsis">
+    Books
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../courses/">
+<span class="md-ellipsis">
+    Courses
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../interview/">
+<span class="md-ellipsis">
+    Interview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4" id="__nav_6_4_label" tabindex="">
+<span class="md-ellipsis">
+    High Level Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_6_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_4">
+<span class="md-nav__icon md-icon"></span>
+            High Level Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1" id="__nav_6_4_1_label" tabindex="0">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_1_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_1">
+<span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_1_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1_2" id="__nav_6_4_1_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Basic
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_1_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_1_2">
+<span class="md-nav__icon md-icon"></span>
+            Basic
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/philosophy-of-system-design/">
+<span class="md-ellipsis">
+    Philosophy of System Design
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/client-server-architecture/">
+<span class="md-ellipsis">
+    Client-Server Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/separation-of-concerns/">
+<span class="md-ellipsis">
+    Separation of Concerns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/state-and-data-flow/">
+<span class="md-ellipsis">
+    State and Data Flow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/back-of-envelope-calculation/">
+<span class="md-ellipsis">
+    Back of Envelope Calculation
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/cloud-computing/">
+<span class="md-ellipsis">
+    Cloud Computing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/ip-addresses-and-ports/">
+<span class="md-ellipsis">
+    IP Addresses &amp; Ports
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/sockets/">
+<span class="md-ellipsis">
+    Sockets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/dns-server/">
+<span class="md-ellipsis">
+    DNS Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/networking/">
+<span class="md-ellipsis">
+    Networking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/tcp/">
+<span class="md-ellipsis">
+    TCP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/udp/">
+<span class="md-ellipsis">
+    UDP
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/http/">
+<span class="md-ellipsis">
+    HTTP / HTTPS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/websockets/">
+<span class="md-ellipsis">
+    WebSockets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/smtp-server/">
+<span class="md-ellipsis">
+    SMTP Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/api/">
+<span class="md-ellipsis">
+    API
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/restfull-architecture/">
+<span class="md-ellipsis">
+    RESTful Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/data-serialization/">
+<span class="md-ellipsis">
+    Data Serialization
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/webhooks/">
+<span class="md-ellipsis">
+    Webhooks
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/load-balancer-and-proxy-server/">
+<span class="md-ellipsis">
+    Load Balancer &amp; Proxy Server
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/cdn/">
+<span class="md-ellipsis">
+    CDN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/hashing/">
+<span class="md-ellipsis">
+    Hashing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/storage/">
+<span class="md-ellipsis">
+    Storage
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/s3/">
+<span class="md-ellipsis">
+    S3
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/caching/">
+<span class="md-ellipsis">
+    Caching
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/scalability/">
+<span class="md-ellipsis">
+    Scalability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/browser-rendering-pipeline/">
+<span class="md-ellipsis">
+    Browser Rendering Pipeline
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/availability-and-reliability/">
+<span class="md-ellipsis">
+    Availability &amp; Reliability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/architecture-patterns/">
+<span class="md-ellipsis">
+    Architecture Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/security-basics/">
+<span class="md-ellipsis">
+    Security Basics
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/passwords/">
+<span class="md-ellipsis">
+    Passwords
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/environment-configuration-and-secrets/">
+<span class="md-ellipsis">
+    Environment Configuration &amp; Secrets
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/process/">
+<span class="md-ellipsis">
+    Process
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/code-documentation/">
+<span class="md-ellipsis">
+    Code Documentation
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/basic/additional-concepts/">
+<span class="md-ellipsis">
+    Additional Concepts
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_1_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_1_3" id="__nav_6_4_1_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Advanced
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_1_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_1_3">
+<span class="md-nav__icon md-icon"></span>
+            Advanced
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/webrtc/">
+<span class="md-ellipsis">
+    WebRTC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/voice-over-internet-protocol/">
+<span class="md-ellipsis">
+    VoIP (Voice Over Internet Protocol)
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/graphql/">
+<span class="md-ellipsis">
+    GraphQL
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/grpc/">
+<span class="md-ellipsis">
+    gRPC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/asynchronus-communication/">
+<span class="md-ellipsis">
+    Asynchronous Communication
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/nats/">
+<span class="md-ellipsis">
+    NATS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/api-gateway/">
+<span class="md-ellipsis">
+    API Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/service-discovery/">
+<span class="md-ellipsis">
+    Service Discovery
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/service-mesh/">
+<span class="md-ellipsis">
+    Service Mesh
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/consistent-hashing/">
+<span class="md-ellipsis">
+    Consistent Hashing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/distributed-caches-and-caching-strategies/">
+<span class="md-ellipsis">
+    Distributed Caches &amp; Caching Strategies
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/scaling-to-one-million/">
+<span class="md-ellipsis">
+    Scaling to One Million
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/adaptive-bitrate-streaming/">
+<span class="md-ellipsis">
+    Adaptive Bitrate Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/consistency/">
+<span class="md-ellipsis">
+    Consistency
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/cap-theorm/">
+<span class="md-ellipsis">
+    CAP Theorem
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/fault-tolerance/">
+<span class="md-ellipsis">
+    Fault Tolerance
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/clean-architecture/">
+<span class="md-ellipsis">
+    Clean Architecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/microservices-patterns/">
+<span class="md-ellipsis">
+    Microservices Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/raft-consensus-algorithm/">
+<span class="md-ellipsis">
+    Raft Consensus Algorithm
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/gossip-protocol/">
+<span class="md-ellipsis">
+    Gossip Protocol
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/ditributed-transaction-and-concurrency-control/">
+<span class="md-ellipsis">
+    Distributed Transaction &amp; Concurrency Control
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/cdc/">
+<span class="md-ellipsis">
+    CDC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/resilience-patterns/">
+<span class="md-ellipsis">
+    Resilience Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/thundering-effect/">
+<span class="md-ellipsis">
+    Thundering Herd Effect
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/observability/">
+<span class="md-ellipsis">
+    Observability
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/cqrs/">
+<span class="md-ellipsis">
+    CQRS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/event-sourcing/">
+<span class="md-ellipsis">
+    Event Sourcing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/saga-pattern/">
+<span class="md-ellipsis">
+    Saga Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/data-processing/">
+<span class="md-ellipsis">
+    Data Processing
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/programming-language/">
+<span class="md-ellipsis">
+    Programming Language
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../concepts/advanced/github-server/">
+<span class="md-ellipsis">
+    GitHub Server
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2" id="__nav_6_4_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Designing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_6_4_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_2">
+<span class="md-nav__icon md-icon"></span>
+            Designing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_2_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2_2" id="__nav_6_4_2_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Basic
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_2_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_2_2">
+<span class="md-nav__icon md-icon"></span>
+            Basic
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/url-shortner/">
+<span class="md-ellipsis">
+    URL Shortener
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/rate-limiter/">
+<span class="md-ellipsis">
+    Rate Limiter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/notification-system/">
+<span class="md-ellipsis">
+    Notification System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/webhook/">
+<span class="md-ellipsis">
+    Webhook
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/cdn/">
+<span class="md-ellipsis">
+    CDN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/autocomplete/">
+<span class="md-ellipsis">
+    Autocomplete
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/pastebin/">
+<span class="md-ellipsis">
+    Pastebin
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/leaderboard/">
+<span class="md-ellipsis">
+    Leaderboard
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/inventory-management-system/">
+<span class="md-ellipsis">
+    Inventory Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/library-management-system/">
+<span class="md-ellipsis">
+    Library Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/job-board/">
+<span class="md-ellipsis">
+    Job Board
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/bug-issue-tracker/">
+<span class="md-ellipsis">
+    Bug/Issue Tracker
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/todo-list-app/">
+<span class="md-ellipsis">
+    To-Do List App
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/attendance-tracking-system/">
+<span class="md-ellipsis">
+    Attendance Tracking System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/customer-support-ticketing-system/">
+<span class="md-ellipsis">
+    Customer Support Ticketing System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/digital-wallet/">
+<span class="md-ellipsis">
+    Digital Wallet
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/vending-machine/">
+<span class="md-ellipsis">
+    Vending Machine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/rate-and-review-system/">
+<span class="md-ellipsis">
+    Rate-and-Review System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/hotel-booking/">
+<span class="md-ellipsis">
+    Hotel Booking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/app-store/">
+<span class="md-ellipsis">
+    App Store
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/yelp/">
+<span class="md-ellipsis">
+    Yelp
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/carpooling-system/">
+<span class="md-ellipsis">
+    Carpooling System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/blogging-platform/">
+<span class="md-ellipsis">
+    Blogging Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/image-gallery-with-tagging/">
+<span class="md-ellipsis">
+    Image Gallery with Tagging
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/polling-voting-app/">
+<span class="md-ellipsis">
+    Polling/Voting App
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/online-voting-system/">
+<span class="md-ellipsis">
+    Online Voting System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/expense-splitting-app/">
+<span class="md-ellipsis">
+    Expense-Splitting App
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/vpn/">
+<span class="md-ellipsis">
+    VPN
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/chess-game/">
+<span class="md-ellipsis">
+    Chess Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../basic/how-to-host-your-own-x/">
+<span class="md-ellipsis">
+    How to Host Your Own X
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_6_4_2_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_2_3" id="__nav_6_4_2_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Advanced
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_6_4_2_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_4_2_3">
+<span class="md-nav__icon md-icon"></span>
+            Advanced
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../key-value-store/">
+<span class="md-ellipsis">
+    Key Value Store
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../log-system/">
+<span class="md-ellipsis">
+    Log System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../search-engine/">
+<span class="md-ellipsis">
+    Search Engine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../authentication-system/">
+<span class="md-ellipsis">
+    Authentication System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-counter/">
+<span class="md-ellipsis">
+    Distributed Counter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-cache/">
+<span class="md-ellipsis">
+    Distributed Cache
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-locking-service/">
+<span class="md-ellipsis">
+    Distributed Locking Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-job-scheduler/">
+<span class="md-ellipsis">
+    Distributed Job Scheduler
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-rate-limiter/">
+<span class="md-ellipsis">
+    Distributed Rate Limiter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-rate-limited-api-gateway/">
+<span class="md-ellipsis">
+    Distributed Rate-Limited API Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-configuration-management-system/">
+<span class="md-ellipsis">
+    Distributed Configuration Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../multi-region-deployment-system/">
+<span class="md-ellipsis">
+    Multi-Region Deployment System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../feature-flag-experimentation-platform/">
+<span class="md-ellipsis">
+    Feature Flag and Experimentation Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../notification-fanout-service/">
+<span class="md-ellipsis">
+    Notification Fan-Out Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../chat-system/">
+<span class="md-ellipsis">
+    Chat System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../whatspp/">
+<span class="md-ellipsis">
+    WhatsApp
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../live-comments/">
+<span class="md-ellipsis">
+    Live Comments
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-messaging-queue/">
+<span class="md-ellipsis">
+    Distributed Messaging Queue
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../slack/">
+<span class="md-ellipsis">
+    Slack
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../fault-tolerant-order-processing-system/">
+<span class="md-ellipsis">
+    Fault-Tolerant Order Processing System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../video-streaming/">
+<span class="md-ellipsis">
+    Video Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../netflix/">
+<span class="md-ellipsis">
+    Netflix
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../spotify/">
+<span class="md-ellipsis">
+    Spotify
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../live-streaming/">
+<span class="md-ellipsis">
+    Live Streaming
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../Image-Optimisation-on-the-fly/">
+<span class="md-ellipsis">
+    Image Optimisation On The Fly
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../amazon-flipkart/">
+<span class="md-ellipsis">
+    Amazon/Flipkart
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../e-commerce/">
+<span class="md-ellipsis">
+    E-Commerce
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ecommerce-checkout/">
+<span class="md-ellipsis">
+    E-Commerce Checkout
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../payment-gateway/">
+<span class="md-ellipsis">
+    Payment Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../stripe/">
+<span class="md-ellipsis">
+    Stripe
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../upi-payments/">
+<span class="md-ellipsis">
+    UPI Payments
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../settlement-reconciliation-system/">
+<span class="md-ellipsis">
+    Settlement and Reconciliation System
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    Fraud Detection Pipeline
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    Fraud Detection Pipeline
+  </span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#blogs-and-websites">
+<span class="md-ellipsis">
+      Blogs and websites
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#medium">
+<span class="md-ellipsis">
+      Medium
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#youtube">
+<span class="md-ellipsis">
+      Youtube
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#theory">
+<span class="md-ellipsis">
+      Theory
+    </span>
+</a>
+<nav aria-label="Theory" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#topics-covered">
+<span class="md-ellipsis">
+      Topics Covered
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#introduction-problem-statement">
+<span class="md-ellipsis">
+      Introduction / Problem Statement
+    </span>
+</a>
+<nav aria-label="Introduction / Problem Statement" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-is-it">
+<span class="md-ellipsis">
+      What Is It?
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#why-does-it-exist">
+<span class="md-ellipsis">
+      Why Does It Exist?
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-problem-does-it-solve">
+<span class="md-ellipsis">
+      What Problem Does It Solve?
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#problem-statement">
+<span class="md-ellipsis">
+      Problem Statement
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#functional-requirements">
+<span class="md-ellipsis">
+      Functional Requirements
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#non-functional-requirements">
+<span class="md-ellipsis">
+      Non-Functional Requirements
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#high-level-architecture">
+<span class="md-ellipsis">
+      High-Level Architecture
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-design-points">
+<span class="md-ellipsis">
+      Key Design Points
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#trade-offs">
+<span class="md-ellipsis">
+      Trade-offs
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#characteristics">
+<span class="md-ellipsis">
+      Characteristics
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pros">
+<span class="md-ellipsis">
+      Pros
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cons">
+<span class="md-ellipsis">
+      Cons
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#use-cases">
+<span class="md-ellipsis">
+      Use Cases
+    </span>
+</a>
+<nav aria-label="Use Cases" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#payment-gateway-fraud-detection-striperazorpay-style">
+<span class="md-ellipsis">
+      Payment Gateway Fraud Detection (Stripe/Razorpay style)
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#components">
+<span class="md-ellipsis">
+      Components
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#architectural-patterns">
+<span class="md-ellipsis">
+      Architectural Patterns
+    </span>
+</a>
+<nav aria-label="Architectural Patterns" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#hybrid-rules-ml-parallel-scoring">
+<span class="md-ellipsis">
+      Hybrid Rules + ML (Parallel Scoring)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#real-time-feature-store">
+<span class="md-ellipsis">
+      Real-Time Feature Store
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#challenges">
+<span class="md-ellipsis">
+      Challenges
+    </span>
+</a>
+<nav aria-label="Challenges" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#technical-challenges">
+<span class="md-ellipsis">
+      Technical Challenges
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#scalability-challenges">
+<span class="md-ellipsis">
+      Scalability Challenges
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-challenges">
+<span class="md-ellipsis">
+      Performance Challenges
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#reliability-challenges">
+<span class="md-ellipsis">
+      Reliability Challenges
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#maintainability-challenges">
+<span class="md-ellipsis">
+      Maintainability Challenges
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#security-concerns">
+<span class="md-ellipsis">
+      Security Concerns
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#best-practices">
+<span class="md-ellipsis">
+      Best Practices
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#when-to-use-when-not-to-use">
+<span class="md-ellipsis">
+      When to Use / When Not to Use
+    </span>
+</a>
+<nav aria-label="When to Use / When Not to Use" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#appropriate">
+<span class="md-ellipsis">
+      Appropriate
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#not-appropriate">
+<span class="md-ellipsis">
+      Not Appropriate
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#decision-factors">
+<span class="md-ellipsis">
+      Decision Factors
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-model-and-api">
+<span class="md-ellipsis">
+      Data Model and API
+    </span>
+</a>
+<nav aria-label="Data Model and API" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#api-contract">
+<span class="md-ellipsis">
+      API Contract
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-modeling">
+<span class="md-ellipsis">
+      Data Modeling
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#benefits">
+<span class="md-ellipsis">
+      Benefits
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fraud-detection-pipeline-deep-dive">
+<span class="md-ellipsis">
+      Fraud Detection Pipeline Deep Dive
+    </span>
+</a>
+<nav aria-label="Fraud Detection Pipeline Deep Dive" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#latency-budgeted-scoring-path">
+<span class="md-ellipsis">
+      Latency Budgeted Scoring Path
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#decision-aggregation">
+<span class="md-ellipsis">
+      Decision Aggregation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#real-time-feature-store_1">
+<span class="md-ellipsis">
+      Real-Time Feature Store
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#shadow-mode-evaluation">
+<span class="md-ellipsis">
+      Shadow Mode Evaluation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#feedback-loop">
+<span class="md-ellipsis">
+      Feedback Loop
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#replication-strategies">
+<span class="md-ellipsis">
+      Replication Strategies
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#failure-detection-and-membership">
+<span class="md-ellipsis">
+      Failure Detection and Membership
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#high-availability-and-scalability">
+<span class="md-ellipsis">
+      High Availability and Scalability
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-and-optimization">
+<span class="md-ellipsis">
+      Performance and Optimization
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cap-theorem-and-consistency-trade-offs">
+<span class="md-ellipsis">
+      CAP Theorem and Consistency Trade-offs
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#encryption-and-key-management">
+<span class="md-ellipsis">
+      Encryption and Key Management
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#authentication-and-authorization">
+<span class="md-ellipsis">
+      Authentication and Authorization
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#security-threats-and-mitigations">
+<span class="md-ellipsis">
+      Security Threats and Mitigations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#observability-and-logging">
+<span class="md-ellipsis">
+      Observability and Logging
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#real-world-implementations">
+<span class="md-ellipsis">
+      Real-World Implementations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#java-and-spring-boot-implementation-guide">
+<span class="md-ellipsis">
+      Java and Spring Boot Implementation Guide
+    </span>
+</a>
+<nav aria-label="Java and Spring Boot Implementation Guide" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dto-record-definitions">
+<span class="md-ellipsis">
+      DTO / Record Definitions
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#feature-service">
+<span class="md-ellipsis">
+      Feature Service
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#rules-engine">
+<span class="md-ellipsis">
+      Rules Engine
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ml-scoring-service">
+<span class="md-ellipsis">
+      ML Scoring Service
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#decision-aggregator-controller">
+<span class="md-ellipsis">
+      Decision Aggregator + Controller
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#interview-questions-and-answers">
+<span class="md-ellipsis">
+      Interview Questions and Answers
+    </span>
+</a>
+<nav aria-label="Interview Questions and Answers" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#beginner">
+<span class="md-ellipsis">
+      Beginner
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#intermediate">
+<span class="md-ellipsis">
+      Intermediate
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#advanced">
+<span class="md-ellipsis">
+      Advanced
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#senior-system-design">
+<span class="md-ellipsis">
+      Senior / System Design
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../quick-commerce-inventory-system/">
+<span class="md-ellipsis">
+    Quick-Commerce Inventory System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ecommerce-search-ranking-system/">
+<span class="md-ellipsis">
+    E-Commerce Search &amp; Ranking System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../twitter/">
+<span class="md-ellipsis">
+    Twitter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../social-media/">
+<span class="md-ellipsis">
+    Social Media
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hashtag-service/">
+<span class="md-ellipsis">
+    Hashtag Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../recomendation-engine/">
+<span class="md-ellipsis">
+    Recommendation Engine
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../facebook/">
+<span class="md-ellipsis">
+    Facebook
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../instagram/">
+<span class="md-ellipsis">
+    Instagram
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tiktok/">
+<span class="md-ellipsis">
+    TikTok
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../bookmyshow/">
+<span class="md-ellipsis">
+    BookMyShow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../uber/">
+<span class="md-ellipsis">
+    Uber
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../food-delivery/">
+<span class="md-ellipsis">
+    Food Delivery
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../flight-booking/">
+<span class="md-ellipsis">
+    Flight Booking
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../google-maps/">
+<span class="md-ellipsis">
+    Google Maps
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../google-drive/">
+<span class="md-ellipsis">
+    Google Drive
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../data-warehouse/">
+<span class="md-ellipsis">
+    Data Warehouse
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-geospatial-data-platform/">
+<span class="md-ellipsis">
+    Distributed Geospatial Data Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../redis/">
+<span class="md-ellipsis">
+    Redis
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../large-language-model/">
+<span class="md-ellipsis">
+    Large Language Model
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../leetcode/">
+<span class="md-ellipsis">
+    LeetCode
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../vercel/">
+<span class="md-ellipsis">
+    Vercel
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../email-automation-platform/">
+<span class="md-ellipsis">
+    Email Automation Platform
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../google-docs/">
+<span class="md-ellipsis">
+    Google Docs
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../online-code-editor/">
+<span class="md-ellipsis">
+    Online Code Editor
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../stock-broker-system/">
+<span class="md-ellipsis">
+    Stock Broker System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../distributed-transaction-banking-system/">
+<span class="md-ellipsis">
+    Distributed Transaction Banking System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../real-time-bidding-auction-system/">
+<span class="md-ellipsis">
+    Real-Time Bidding/Auction System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../multiplayer-game/">
+<span class="md-ellipsis">
+    Multiplayer Game
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_4_3" id="__nav_6_4_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Links
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_4_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_4_3">
+<span class="md-nav__icon md-icon"></span>
+            Links
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../links/udemy/">
+<span class="md-ellipsis">
+    Udemy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../links/websites/">
+<span class="md-ellipsis">
+    Websites
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../links/youtube/">
+<span class="md-ellipsis">
+    YouTube
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="">
+<span class="md-ellipsis">
+    Low Level Design
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_5">
+<span class="md-nav__icon md-icon"></span>
+            Low Level Design
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_2" id="__nav_6_5_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Concepts
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_2">
+<span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/concepts/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/concepts/hashmap/">
+<span class="md-ellipsis">
+    HashMap
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/concepts/mvc/">
+<span class="md-ellipsis">
+    MVC
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/concepts/null-object-pattern/">
+<span class="md-ellipsis">
+    Null Object Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/concepts/solid-principles/">
+<span class="md-ellipsis">
+    SOLID Principles
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/concepts/technical-debt/">
+<span class="md-ellipsis">
+    Technical Debt
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3" id="__nav_6_5_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Design Patterns
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_3">
+<span class="md-nav__icon md-icon"></span>
+            Design Patterns
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/design-pattern/">
+<span class="md-ellipsis">
+    Design Pattern
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_2" id="__nav_6_5_3_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Creational
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_2">
+<span class="md-nav__icon md-icon"></span>
+            Creational
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/creational/creational/">
+<span class="md-ellipsis">
+    All Creational Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/creational/singleton/">
+<span class="md-ellipsis">
+    Singleton
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/creational/prototype/">
+<span class="md-ellipsis">
+    Prototype
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/creational/builder/">
+<span class="md-ellipsis">
+    Builder
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/creational/factory/">
+<span class="md-ellipsis">
+    Factory
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/creational/abstract-factory/">
+<span class="md-ellipsis">
+    Abstract Factory
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/creational/object-pool/">
+<span class="md-ellipsis">
+    Object Pool
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_3" id="__nav_6_5_3_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Structural
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_3_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_3">
+<span class="md-nav__icon md-icon"></span>
+            Structural
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/structural/">
+<span class="md-ellipsis">
+    All Structural Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/adapter/">
+<span class="md-ellipsis">
+    Adapter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/bridge/">
+<span class="md-ellipsis">
+    Bridge
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/composite/">
+<span class="md-ellipsis">
+    Composite
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/decorator/">
+<span class="md-ellipsis">
+    Decorator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/facade/">
+<span class="md-ellipsis">
+    Facade
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/flyweight/">
+<span class="md-ellipsis">
+    Flyweight
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/structural/proxy/">
+<span class="md-ellipsis">
+    Proxy
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_3_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_3_4" id="__nav_6_5_3_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Behavioral
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_3_4_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_6_5_3_4">
+<span class="md-nav__icon md-icon"></span>
+            Behavioral
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/behavioral/">
+<span class="md-ellipsis">
+    All Behavioral Patterns
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/chain-of-responsibility/">
+<span class="md-ellipsis">
+    Chain of Responsibility
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/command/">
+<span class="md-ellipsis">
+    Command
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/interpreter/">
+<span class="md-ellipsis">
+    Interpreter
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/iterator/">
+<span class="md-ellipsis">
+    Iterator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/mediator/">
+<span class="md-ellipsis">
+    Mediator
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/memento/">
+<span class="md-ellipsis">
+    Memento
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/observer/">
+<span class="md-ellipsis">
+    Observer
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/state/">
+<span class="md-ellipsis">
+    State
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/strategy/">
+<span class="md-ellipsis">
+    Strategy
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/template/">
+<span class="md-ellipsis">
+    Template
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/design-pattern/behavioral/visitor/">
+<span class="md-ellipsis">
+    Visitor
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_5_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_5_4" id="__nav_6_5_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Designing
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_5_4_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_6_5_4">
+<span class="md-nav__icon md-icon"></span>
+            Designing
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/0-introduction/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/access-management-system/">
+<span class="md-ellipsis">
+    Access Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/account-balance-tracker/">
+<span class="md-ellipsis">
+    Account Balance Tracker
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/air-traffic-controller/">
+<span class="md-ellipsis">
+    Air Traffic Controller
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/apply-coupons-on-shopping-cart/">
+<span class="md-ellipsis">
+    Apply Coupons on Shopping Cart
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/atm/">
+<span class="md-ellipsis">
+    ATM
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/bookmyshow/">
+<span class="md-ellipsis">
+    BookMyShow
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/cache-system/">
+<span class="md-ellipsis">
+    Cache System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/car-rental-service/">
+<span class="md-ellipsis">
+    Car Rental Service
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/chess-game/">
+<span class="md-ellipsis">
+    Chess Game
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/cricbuzz/">
+<span class="md-ellipsis">
+    Cricbuzz
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/elevator-system/">
+<span class="md-ellipsis">
+    Elevator System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/inventory-management-system/">
+<span class="md-ellipsis">
+    Inventory Management System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/locker-allocation-system/">
+<span class="md-ellipsis">
+    Locker Allocation System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/logging-system/">
+<span class="md-ellipsis">
+    Logging System
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/meeting-scheduler/">
+<span class="md-ellipsis">
+    Meeting Scheduler
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/parking-lot/">
+<span class="md-ellipsis">
+    Parking Lot
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/payment-gateway/">
+<span class="md-ellipsis">
+    Payment Gateway
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/snake-and-ladder/">
+<span class="md-ellipsis">
+    Snake and Ladder
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/splitwise/">
+<span class="md-ellipsis">
+    Splitwise
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/stock-exchange-book/">
+<span class="md-ellipsis">
+    Stock Exchange Book
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/tic-tac-toe/">
+<span class="md-ellipsis">
+    Tic Tac Toe
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../low-level/designing/vending-machine/">
+<span class="md-ellipsis">
+    Vending Machine
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="design-a-fraud-detection-pipeline-for-financial-transactions">Design a Fraud Detection Pipeline for Financial Transactions</h1>
+<h2 id="blogs-and-websites">Blogs and websites</h2>
+<ul>
+<li><a href="https://stripe.com/blog/detect-fraud">Building Real-Time Fraud Detection Systems — Stripe Engineering</a> — Stripe's approach to real-time fraud detection with Rules and ML (Radar).</li>
+<li><a href="https://medium.com/paypal-tech">Fraud Detection at PayPal Scale — PayPal Engineering</a> — PayPal's two-tiered fraud detection architecture serving 500M+ transactions/day.</li>
+<li><a href="https://dataintensive.net/">Designing Data-Intensive Applications, Martin Kleppmann</a> — Chapter 9 covers stream processing and consistency models for real-time feature stores.</li>
+<li><a href="https://www.oreilly.com/radar/building-ml-pipelines-fraud/">Building Machine Learning Pipelines for Real-Time Fraud Detection (O'Reilly)</a> — Practical guidance on feature stores, model serving, and feedback loops.</li>
+<li><a href="https://docs.feast.dev/">Real-Time Feature Stores for ML — Feast Documentation</a> — Open-source feature store design patterns and best practices.</li>
+</ul>
+<h2 id="medium">Medium</h2>
+<ul>
+<li><a href="https://medium.com/swlh/real-time-fraud-detection-system-design-3e0d8b3e3b68">Real-Time Fraud Detection System Design</a> — System design walkthrough of a real-time fraud detection pipeline.</li>
+<li><a href="https://medium.com/@datarush/building-a-real-time-fraud-detection-pipeline-with-kafka-and-flink">Building a Real-Time Fraud Detection Pipeline with Kafka and Flink</a> — Stream processing architecture for fraud features and velocity checks.</li>
+<li><a href="https://medium.com/@feastdev/feature-stores-real-time-ml">Feature Stores for Real-Time ML: Why They Matter</a> — Explanation of online feature stores and their role in low-latency ML scoring.</li>
+<li><a href="https://medium.com/@ml-engineering/hybrid-rules-ml-fraud-7c9d2e4a9b15">Hybrid Rules + ML for Fraud Detection</a> — Combining deterministic rules with statistical models for optimal coverage.</li>
+</ul>
+<h2 id="youtube">Youtube</h2>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=4G2ODo6rB9U">Fraud Detection System Design | Low Level Design</a> — Low-level design walkthrough of a fraud detection pipeline.</li>
+<li><a href="https://www.youtube.com/watch?v=7Z3n8Y4vQ5w">Real-Time Fraud Detection Pipeline Architecture</a> — System design interview question deep dive.</li>
+<li><a href="https://www.youtube.com/watch?v=X7rK5wZ9LqM">Payment Fraud Detection using Machine Learning</a> — ML approach to fraud detection in payment systems.</li>
+</ul>
+<hr/>
+<h2 id="theory">Theory</h2>
+<h3 id="topics-covered">Topics Covered</h3>
+<ol>
+<li>Introduction / Problem Statement</li>
+<li>Characteristics</li>
+<li>Pros</li>
+<li>Cons</li>
+<li>Use Cases</li>
+<li>Components</li>
+<li>Architectural Patterns</li>
+<li>Benefits</li>
+<li>Challenges</li>
+<li>Best Practices</li>
+<li>When to Use / When Not to Use</li>
+<li>Data Model and API</li>
+<li>Fraud Detection Pipeline Deep Dive</li>
+<li>Replication Strategies</li>
+<li>Failure Detection and Membership</li>
+<li>High Availability and Scalability</li>
+<li>Performance and Optimization</li>
+<li>CAP Theorem and Consistency Trade-offs</li>
+<li>Encryption and Key Management</li>
+<li>Authentication and Authorization</li>
+<li>Security Threats and Mitigations</li>
+<li>Observability and Logging</li>
+<li>Real-World Implementations</li>
+<li>Java and Spring Boot Implementation Guide</li>
+<li>Interview Questions and Answers</li>
+</ol>
+<hr/>
+<h3 id="introduction-problem-statement">Introduction / Problem Statement</h3>
+<h4 id="what-is-it">What Is It?</h4>
+<p>A fraud detection pipeline evaluates every financial transaction (payment, transfer, withdrawal) against rules and ML models in real time, deciding to allow, flag for review, or block it — all within the latency budget of the payment flow (tens of milliseconds).</p>
+<h4 id="why-does-it-exist">Why Does It Exist?</h4>
+<p>Financial platforms lose billions to fraud annually. Every transaction must be screened before approval. Doing this synchronously (within the payment flow) prevents fraudulent transactions from being authorized, but the screening must be fast enough to not degrade checkout experience.</p>
+<h4 id="what-problem-does-it-solve">What Problem Does It Solve?</h4>
+<ul>
+<li><strong>Real-time scoring</strong>: Score transactions within tens of ms using rules + ML models.</li>
+<li><strong>Rule-based blocking</strong>: Hard rules (blocklist, velocity caps) that must always apply.</li>
+<li><strong>ML risk scoring</strong>: Statistical models for novel fraud patterns.</li>
+<li><strong>Feedback loop</strong>: Confirmed fraud/legit labels → retrain models periodically.</li>
+<li><strong>Audit trail</strong>: Every decision must be explainable and traceable.</li>
+<li><strong>Feature freshness</strong>: Velocity/aggregate features (card usage in last 5 min) must be sub-second fresh.</li>
+</ul>
+<h4 id="problem-statement">Problem Statement</h4>
+<p>Design a real-time fraud detection pipeline that evaluates every financial transaction (payment, transfer, withdrawal) against rules and ML models, and decides to allow, flag for review, or block it, within the latency budget of the payment flow.</p>
+<h4 id="functional-requirements">Functional Requirements</h4>
+<ul>
+<li>Score every transaction in real time using rules (velocity checks, blocklists, geo-mismatch) and an ML risk model</li>
+<li>Allow / challenge (step-up auth) / block a transaction based on the risk score</li>
+<li>Feed labeled outcomes (confirmed fraud / confirmed legitimate) back into model retraining</li>
+<li>Provide an audit trail and a case-review queue for flagged transactions</li>
+</ul>
+<h4 id="non-functional-requirements">Non-Functional Requirements</h4>
+<ul>
+<li><strong>Scale</strong>: Thousands of transactions/sec at peak</li>
+<li><strong>Latency</strong>: Real-time scoring must complete within tens of milliseconds so it doesn't add noticeable delay to checkout/transfer</li>
+<li><strong>Consistency</strong>: Velocity/aggregate features (e.g., "transactions from this card in the last 5 minutes") must reflect very recent activity</li>
+<li><strong>Auditability</strong>: Every decision must be explainable and traceable for compliance</li>
+</ul>
+<h4 id="high-level-architecture">High-Level Architecture</h4>
+<pre class="mermaid"><code>flowchart LR
+    Txn[Incoming Transaction] --&gt; Gateway[Payment/Transaction Gateway]
+    Gateway --&gt; FeatureService[Real-Time Feature Service]
+    FeatureService --&gt; FeatureStore[(Online Feature Store - Redis)]
+    Gateway --&gt; RulesEngine[Rules Engine]
+    Gateway --&gt; MLScoring[ML Model Scoring Service]
+    RulesEngine --&gt; Decision[Decision Aggregator]
+    MLScoring --&gt; Decision
+    Decision --&gt; Gateway
+    Decision --&gt; EventLog[(Audit/Event Log)]
+    EventLog --&gt; StreamProcessor[Stream Processor - Kafka/Flink]
+    StreamProcessor --&gt; FeatureStore
+    EventLog --&gt; ReviewQueue[Case Review Queue]
+    ReviewQueue --&gt; Retraining[Model Retraining Pipeline]
+</code></pre>
+<p><em>The high-level architecture shows the synchronous scoring path (Transaction → Gateway → parallel Rules Engine + Feature Service + ML Scoring → Decision Aggregator) and the asynchronous pipeline branching off the Event Log: a stream processor updates the online feature store with fresh velocity aggregates, while confirmed outcomes flow from the case-review queue into periodic model retraining.</em></p>
+<h4 id="key-design-points">Key Design Points</h4>
+<ul>
+<li>Maintain an online feature store (Redis or similar) updated by a stream processor consuming the transaction event log, so velocity/aggregate features (counts, sums over rolling windows) are available with sub-second freshness at scoring time.</li>
+<li>Run cheap deterministic rules (blocklist, hard velocity caps) synchronously and in parallel with ML model inference, then combine both into a final decision — rules can short-circuit to an instant block without waiting on the model.</li>
+<li>Keep the synchronous scoring path minimal (feature lookup + model inference) and push everything else (persisting full audit detail, notifying review queues, retraining data collection) to an asynchronous pipeline off the critical path.</li>
+<li>Close the loop: analyst decisions and confirmed chargebacks become labeled training data, feeding a periodic (not real-time) model retraining pipeline.</li>
+</ul>
+<h4 id="trade-offs">Trade-offs</h4>
+<ul>
+<li>A hybrid rules + ML approach is more operationally complex than rules-only, but rules alone can't catch novel fraud patterns and ML-only can't guarantee hard business constraints (e.g., "always block known stolen cards") — combining both covers both weaknesses.</li>
+<li>Keeping feature computation online (pre-aggregated) instead of computing it at query time from raw transaction history trades storage/streaming complexity for the low latency required at the point of sale.</li>
+<li>Synchronous scoring (within the payment flow) blocks authorization on the result — fail-fast but blocks legit users if the pipeline is down. Asynchronous scoring (post-authorization) avoids blocking but can't prevent fraudulent authorizations.</li>
+<li>Rules are interpretable and fast but require manual maintenance and can't adapt to new patterns. ML models adapt automatically but introduce model drift, training/serving skew, and explainability challenges.</li>
+<li>The feedback loop (periodic retraining) means the model is always slightly stale relative to the latest fraud tactics. Continuous online learning would adapt faster but adds operational complexity and risk of data contamination.</li>
+</ul>
+<hr/>
+<h3 id="characteristics">Characteristics</h3>
+<table>
+<thead>
+<tr>
+<th>Characteristic</th>
+<th>What it means</th>
+<th>Why it matters</th>
+<th>How it works</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Real-time scoring</strong></td>
+<td>Score within payment flow (~30ms)</td>
+<td>Don't block checkout; block fraud</td>
+<td>Rules + ML in single request cycle</td>
+</tr>
+<tr>
+<td><strong>Sealed decisions</strong></td>
+<td>Other bidders can't see risk scores mid-auction</td>
+<td>Fairness</td>
+<td>Internal decision only</td>
+</tr>
+<tr>
+<td><strong>Hybrid rules + ML</strong></td>
+<td>Rules for hard constraints + ML for novel patterns</td>
+<td>Coverage + accuracy</td>
+<td>Parallel execution + aggregation</td>
+</tr>
+<tr>
+<td><strong>Feature freshness</strong></td>
+<td>Recent behavior (last 5 min) available</td>
+<td>Catch velocity attacks</td>
+<td>Stream processing → feature store</td>
+</tr>
+<tr>
+<td><strong>Explainability</strong></td>
+<td>Decision reasons traceable</td>
+<td>Compliance + debugging</td>
+<td>Rule hit + ML feature attribution</td>
+</tr>
+<tr>
+<td><strong>Feedback loop</strong></td>
+<td>Confirmed outcomes → retrain models</td>
+<td>Adapt to new fraud</td>
+<td>Batch retraining pipeline</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pros">Pros</h3>
+<ul>
+<li><strong>Multi-signal</strong>: Rules + ML → higher coverage than either alone.</li>
+<li><strong>Real-time</strong>: Velocity + behavioral features for immediate threat detection.</li>
+<li><strong>Scalable</strong>: Stream processing + parallel scoring.</li>
+<li><strong>Feedback</strong>: Closed loop (confirmed fraud → retrain).</li>
+<li><strong>Graceful degradation</strong>: If ML slow → rules-only path.</li>
+</ul>
+<h3 id="cons">Cons</h3>
+<ul>
+<li><strong>False positives</strong>: Blocking legitimate customers → revenue loss + poor UX.</li>
+<li><strong>False negatives</strong>: Missing fraud → chargebacks + losses.</li>
+<li><strong>Feature freshness</strong>: Streaming pipeline complexity; stale features.</li>
+<li><strong>ML model drift</strong>: Fraud patterns evolve → model degrades → retraining needed.</li>
+<li><strong>Explainability gap</strong>: ML models (neural nets) hard to explain → regulatory risk.</li>
+</ul>
+<h3 id="use-cases">Use Cases</h3>
+<h4 id="payment-gateway-fraud-detection-striperazorpay-style">Payment Gateway Fraud Detection (Stripe/Razorpay style)</h4>
+<ul>
+<li><strong>Problem</strong>: Screen 1M transactions/day at checkout → allow legit, block fraud, within 30ms — without false positives blocking good customers.</li>
+<li><strong>Solution</strong>: Transaction → Rules Engine (blocklist, velocity: card usage in last 5min) + ML Scoring (risk model using 30 features: card age, IP geolocation, device fingerprint, velocity, behavioral). Decision Aggregator → allow/challenge/block.</li>
+<li><strong>Why suitable</strong>: Hybrid rules + ML; real-time feature store (Redis); sub-30ms; feedback loop (confirmed chargebacks → retrain).</li>
+<li><strong>How it works</strong>: (1) Card charge → Gateway → Rules Engine (blocked card? velocity &gt; 5 in 5min?) + ML (risk_score). (2) If rules block → BLOCK instantly; if ML &gt; 0.9 → CHALLENGE (step-up auth); if ML &lt; 0.3 → ALLOW; else → manual review. (3) Event Log → Kafka → Stream Processor (Flink) → updates velocity features in Redis. (4) Confirmed fraud/chargeback → Review Queue → labeled data → nightly retraining Spark job. (5) Monitor: false positive rate &lt; 0.1%, false negative &lt; 0.01%, scoring latency &lt; 30ms.</li>
+<li><strong>Trade-offs</strong>: Model staleness vs. latency; false positives vs. fraud; feature freshness vs. serving cost; rules maintenance overhead.</li>
+</ul>
+<h3 id="components">Components</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Purpose</th>
+<th>Responsibilities</th>
+<th>Relationship</th>
+<th>Real-world Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Transaction Gateway</strong></td>
+<td>Ingest transactions</td>
+<td>Accept, validate, route</td>
+<td>Payment system</td>
+<td>API gateway</td>
+</tr>
+<tr>
+<td><strong>Feature Service</strong></td>
+<td>Compute real-time features</td>
+<td>Aggregate transaction counts, velocities</td>
+<td>Gateway ↔ Feature Store</td>
+<td>Redis + Flink</td>
+</tr>
+<tr>
+<td><strong>Online Feature Store</strong></td>
+<td>Serve features sub-second</td>
+<td>Store + serve features</td>
+<td>Feature Service ↔ ML Scoring</td>
+<td>Redis/Flink state</td>
+</tr>
+<tr>
+<td><strong>Rules Engine</strong></td>
+<td>Hard business rules</td>
+<td>Blocklists, velocity caps, geo-mismatch</td>
+<td>Gateway</td>
+<td>Drools/Engarde</td>
+</tr>
+<tr>
+<td><strong>ML Scoring</strong></td>
+<td>Risk score (0.0–1.0)</td>
+<td>Statistical fraud detection</td>
+<td>Gateway</td>
+<td>TensorFlow Serving</td>
+</tr>
+<tr>
+<td><strong>Decision Aggregator</strong></td>
+<td>Combine rules + ML → final decision</td>
+<td>Apply thresholds + policies</td>
+<td>Rules + ML → Decision</td>
+<td>Decision engine</td>
+</tr>
+<tr>
+<td><strong>Event Log</strong></td>
+<td>Audit trail</td>
+<td>Log every decision + features</td>
+<td>All components</td>
+<td>Kafka/S3</td>
+</tr>
+<tr>
+<td><strong>Review Queue</strong></td>
+<td>Manual case management</td>
+<td>Investigator review + feedback</td>
+<td>Decision → Human</td>
+<td>Case management</td>
+</tr>
+<tr>
+<td><strong>Stream Processor</strong></td>
+<td>Update features</td>
+<td>Windowed aggregations from event log</td>
+<td>Event Log → Feature Store</td>
+<td>Kafka Streams/Flink</td>
+</tr>
+<tr>
+<td><strong>Retraining Pipeline</strong></td>
+<td>Train ML models offline</td>
+<td>Labeled data → model retraining</td>
+<td>Review Queue → Model</td>
+<td>Batch (Spark/Airflow)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="architectural-patterns">Architectural Patterns</h3>
+<h4 id="hybrid-rules-ml-parallel-scoring">Hybrid Rules + ML (Parallel Scoring)</h4>
+<ul>
+<li><strong>What</strong>: Run deterministic rules and ML scoring in parallel; combine results into a final decision. Rules can short-circuit (instant block) without waiting for ML.</li>
+<li><strong>Problem solved</strong>: Rules (blocklist, velocity) are fast + cover known patterns. ML catches novel patterns. Running in parallel (not sequence) avoids ML latency for obvious blocks.</li>
+<li><strong>How it works</strong>: (1) Transaction → Gateway. (2) Rules Engine: check blocklist + velocity caps (Redis) → instant block if flagged. (3) ML Scoring: compute risk score (0–1) using online features → parallel with rules. (4) Decision Aggregator: if rule block → BLOCK; if ML score &gt; threshold → CHALLENGE; else → ALLOW. (5) If ML is slow (&gt; 30ms) → fall back to rules-only.</li>
+<li><strong>When to use</strong>: Fraud detection, content moderation, risk scoring.</li>
+<li><strong>When not to use</strong>: Simple validation (rules-only is sufficient).</li>
+<li><strong>Pros</strong>: Fast response for known fraud; catches novel patterns; graceful degradation.</li>
+<li><strong>Cons</strong>: Operational complexity (two systems); feature pipeline for ML + rule engine.</li>
+</ul>
+<h4 id="real-time-feature-store">Real-Time Feature Store</h4>
+<ul>
+<li><strong>What</strong>: Pre-aggregated features (velocity, rolling counts, behavioral stats) computed by stream processing and served from an in-memory store for sub-second lookup at scoring time.</li>
+<li><strong>Problem solved</strong>: Computing "transactions from this card in last 5 minutes" from raw transaction history takes too long (&gt; 1s) — violates latency budget.</li>
+<li><strong>How it works</strong>: (1) Transaction → Kafka → Stream Processor (Flink/Kafka Streams). (2) Tumbling/sliding windows → aggregate (count, sum, avg per card/user/device). (3) Write to Feature Store (Redis or Flink state). (4) At scoring time → Feature Service reads from Redis (sub-ms). (5) Stale features acceptable (few seconds delay).</li>
+<li><strong>When to use</strong>: Real-time ML scoring with velocity/behavioral features.</li>
+<li><strong>When not to use</strong>: Static models (no real-time features needed).</li>
+<li><strong>Pros</strong>: Sub-second feature serving; handles 10K+ QPS; decouples feature computation from scoring.</li>
+<li><strong>Cons</strong>: Storage/streaming infrastructure complexity; eventual consistency (features lag behind transactions).</li>
+</ul>
+<pre class="mermaid"><code>sequenceDiagram
+    participant GW as Gateway
+    participant FS as Feature Service
+    participant RS as Rules Engine
+    participant ML as ML Scoring
+    participant DA as Decision Aggregator
+    participant KV as Redis (Feature Store)
+
+    GW-&gt;&gt;GW: Receive transaction
+    par Parallel Scoring
+        GW-&gt;&gt;FS: Lookup features
+        FS-&gt;&gt;KV: Redis GET (sub-ms)
+        KV--&gt;&gt;FS: Feature values
+        FS--&gt;&gt;GW: FeatureMap
+        GW-&gt;&gt;RS: Evaluate rules
+        RS-&gt;&gt;KV: Blocklist + velocity check
+        KV--&gt;&gt;RS: Rule results
+        RS--&gt;&gt;GW: RulesResult
+        GW-&gt;&gt;ML: Score with features
+        ML-&gt;&gt;ML: Run risk model
+        ML--&gt;&gt;GW: MLResult (risk_score)
+    end
+    GW-&gt;&gt;DA: Aggregate rules + ML
+    DA--&gt;&gt;GW: Final decision
+    Note over GW,DA: Total latency &lt; 30ms
+</code></pre>
+<p><em>Parallel scoring flow: the Gateway receives a transaction and launches three parallel operations — the Feature Service reads precomputed velocity features from Redis (sub-millisecond), the Rules Engine checks blocklists and velocity caps against the same Redis store, and the ML Scoring service runs the risk model using the fetched features. All three complete within the 30ms latency budget; the Decision Aggregator combines the rule verdict and ML risk score into a final allow/challenge/block response.</em></p>
+<hr/>
+<h3 id="challenges">Challenges</h3>
+<h4 id="technical-challenges">Technical Challenges</h4>
+<ul>
+<li><strong>Feature engineering</strong>: Real-time + batch feature consistency (training/serving skew).</li>
+<li><strong>Model serving</strong>: Low-latency inference; A/B testing models.</li>
+<li><strong>Rules engine</strong>: Complex rule DSL; versioning + testing.</li>
+<li><strong>Feature lineage</strong>: Tracking which features contributed to each decision for explainability and debugging.</li>
+<li><strong>Model serialization</strong>: Serving models trained in different frameworks (XGBoost, LightGBM, TensorFlow) with low-latency deserialization.</li>
+<li><strong>Cold starts</strong>: New cards, users, or devices with no historical features — the system must degrade gracefully and rely more heavily on rules.</li>
+</ul>
+<h4 id="scalability-challenges">Scalability Challenges</h4>
+<ul>
+<li><strong>Transactions</strong>: Millions of transactions/sec at peak → parallel feature lookup (Redis cluster).</li>
+<li><strong>Feature stores</strong>: Per-card/per-user counters → 100M+ counters in Redis.</li>
+<li><strong>Stream processing</strong>: Kafka Streams/Flink → 1M events/sec.</li>
+<li><strong>Rule complexity</strong>: Thousands of rules evaluated per transaction — the rule engine must evaluate only relevant rules (indexing + partitioning by entity type).</li>
+<li><strong>Feature explosion</strong>: Each new feature added to the model increases feature-store storage and update throughput; managing feature lifecycle and deprecating unused features is critical.</li>
+</ul>
+<h4 id="performance-challenges">Performance Challenges</h4>
+<ul>
+<li><strong>Latency budget</strong>: Scoring &lt; 30ms → rules (sub-ms) + ML (&lt; 20ms) → async audit log.</li>
+<li><strong>Feature staleness</strong>: Trade speed vs. freshness; acceptable lag = feature TTL.</li>
+<li><strong>Model cold start</strong>: Loading a 100MB model into memory takes time; pre-warming is needed.</li>
+<li><strong>P99 latency</strong>: Even if average scoring is 15ms, p99 can spike to 50ms+ due to Redis latency or GC pauses — requires tail-latency optimization.</li>
+<li><strong>Memory pressure</strong>: Feature store caching, model loading, and rule evaluation all compete for the same memory — JVM tuning and off-heap storage are critical.</li>
+</ul>
+<h4 id="reliability-challenges">Reliability Challenges</h4>
+<ul>
+<li><strong>ML downtime</strong>: If ML service down → rules-only fallback (higher false negatives); alert.</li>
+<li><strong>Feature store failure</strong>: If Redis down → compute features from raw DB (slower).</li>
+<li><strong>Training/serving skew</strong>: Feature computation differs between training + production → monitor + alert.</li>
+<li><strong>Event log durability</strong>: If Kafka is unavailable, feature updates may be lost — requires replication and replay capability.</li>
+<li><strong>Model rollback</strong>: Rolling back a bad model deployment must be fast (sub-minute) to minimize false positive/negative exposure.</li>
+</ul>
+<h4 id="maintainability-challenges">Maintainability Challenges</h4>
+<ul>
+<li><strong>Model versioning</strong>: Deploy new ML model without disrupting scoring.</li>
+<li><strong>Rule management</strong>: Business rules change → versioning + testing.</li>
+<li><strong>Feature lifecycle</strong>: Retire unused features; track importance.</li>
+<li><strong>Configuration drift</strong>: Rules thresholds, ML thresholds, and feature TTLs are configured in multiple places — a centralized config service is needed.</li>
+<li><strong>Cross-team ownership</strong>: The fraud team owns rules + ML; the payments team owns the gateway; the data platform team owns Kafka + Flink — coordination overhead is significant.</li>
+</ul>
+<h4 id="security-concerns">Security Concerns</h4>
+<ul>
+<li><strong>Data leakage</strong>: Transaction data → encrypted at rest; access logs.</li>
+<li><strong>Model poisoning</strong>: Training data → label validation + data-lineage.</li>
+<li><strong>Adversarial ML</strong>: Fraudsters game ML model → adversarial training + monitoring.</li>
+<li><strong>Feature store tampering</strong>: An attacker with write access to Redis could manipulate velocity features to evade detection.</li>
+<li><strong>Replay attacks</strong>: An attacker replays a previously approved transaction to bypass fraud checks — requires nonce + idempotency.</li>
+</ul>
+<hr/>
+<h3 id="best-practices">Best Practices</h3>
+<ul>
+<li><strong>Rules for hard constraints</strong>: Always block known bad actors (blocklists) → fast, deterministic.</li>
+<li><strong>ML for novelty</strong>: Statistical patterns → catches what rules miss.</li>
+<li><strong>Parallel execution</strong>: Rules + ML in parallel → no ML latency when rules block.</li>
+<li><strong>Feature store</strong>: Pre-aggregate velocity features in Redis → sub-ms lookup.</li>
+<li><strong>Explainability</strong>: Log feature values + model decision → debug + compliance.</li>
+<li><strong>Feedback loop</strong>: Analyst decisions → labeled training data → nightly retrain.</li>
+<li><strong>Latency budget</strong>: Scoring &lt; 30ms → async audit log; rules-only fallback if ML &gt; 50ms.</li>
+<li><strong>Monitor</strong>: False positive rate, false negative rate, feature staleness, model accuracy drift.</li>
+<li><strong>Shadow mode</strong>: Run new models in parallel without affecting decisions → validate before rollout.</li>
+<li><strong>Threshold calibration</strong>: Calibrate decision thresholds per segment (high-value vs. low-value, by country, by channel) rather than using a single global threshold.</li>
+<li><strong>Fail-open vs. fail-closed</strong>: Configure per merchant risk profile — low-risk merchants fail-open (allow on system error); high-risk merchants fail-closed (block on system error).</li>
+<li><strong>Data quality checks</strong>: Validate feature values at scoring time (no nulls, no out-of-range values) — bad data silently degrades model quality.</li>
+</ul>
+<hr/>
+<h3 id="when-to-use-when-not-to-use">When to Use / When Not to Use</h3>
+<h4 id="appropriate">Appropriate</h4>
+<ul>
+<li>Payment processing (card, UPI, wallet).</li>
+<li>Marketplace (buyer/seller protection).</li>
+<li>Gaming (cheat detection).</li>
+<li>Insurance (claims fraud).</li>
+<li>Advertising (click fraud).</li>
+</ul>
+<h4 id="not-appropriate">Not Appropriate</h4>
+<ul>
+<li>Low-risk applications (signup forms).</li>
+<li>Systems where false positives are more costly than fraud.</li>
+<li>Non-financial systems with no monetary value to protect.</li>
+</ul>
+<h4 id="decision-factors">Decision Factors</h4>
+<ul>
+<li>Transaction volume; fraud loss rate; false positive tolerance; latency budget; regulatory requirements.</li>
+</ul>
+<hr/>
+<h3 id="data-model-and-api">Data Model and API</h3>
+<h4 id="api-contract">API Contract</h4>
+<ul>
+<li><strong>API purpose</strong>: Score a transaction for fraud risk; retrieve decision history.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/fraud/v1/score</code></td>
+<td>Score a transaction (synchronous)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/fraud/v1/decisions/{transaction_id}</code></td>
+<td>Get past decision for transaction</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/fraud/v1/cases/review</code></td>
+<td>Manual review decision + feedback</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/fraud/v1/models/metrics</code></td>
+<td>Model performance metrics</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Score request (POST /score)</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="p">{</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span><span class="nt">"transaction_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"txn_abc123"</span><span class="p">,</span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">  </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">1200</span><span class="p">,</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">  </span><span class="nt">"currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"USD"</span><span class="p">,</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w">  </span><span class="nt">"card_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"card_xyz"</span><span class="p">,</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w">  </span><span class="nt">"user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user_456"</span><span class="p">,</span>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">  </span><span class="nt">"ip"</span><span class="p">:</span><span class="w"> </span><span class="s2">"192.0.2.1"</span><span class="p">,</span>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">  </span><span class="nt">"device_fingerprint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a1b2c3"</span><span class="p">,</span>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w">  </span><span class="nt">"merchant_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"merch_789"</span>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Score response</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="p">{</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">  </span><span class="nt">"transaction_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"txn_abc123"</span><span class="p">,</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">  </span><span class="nt">"decision"</span><span class="p">:</span><span class="w"> </span><span class="s2">"allow"</span><span class="p">,</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">  </span><span class="nt">"risk_score"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.18</span><span class="p">,</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">  </span><span class="nt">"rules_triggered"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">  </span><span class="nt">"features_used"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"card_velocity_5min"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nt">"ip_risk"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.03</span><span class="p">},</span>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="w">  </span><span class="nt">"model_version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fraud-v3-2025"</span><span class="p">,</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="w">  </span><span class="nt">"latency_ms"</span><span class="p">:</span><span class="w"> </span><span class="mi">14</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Authentication</strong>: Service-to-service (mTLS + JWT).
+<strong>Rate limiting</strong>: 1000 req/sec per client.</p>
+<p><strong>Error responses</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="p">{</span><span class="nt">"error"</span><span class="p">:</span><span class="w"> </span><span class="s2">"timeout"</span><span class="p">,</span><span class="w"> </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ML scoring timeout, rules-only fallback"</span><span class="p">,</span><span class="w"> </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="mi">206</span><span class="p">}</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="p">{</span><span class="nt">"error"</span><span class="p">:</span><span class="w"> </span><span class="s2">"invalid_request"</span><span class="p">,</span><span class="w"> </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Missing required fields"</span><span class="p">,</span><span class="w"> </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="p">}</span>
+</code></pre></div></p>
+<h4 id="data-modeling">Data Modeling</h4>
+<pre class="mermaid"><code>erDiagram
+    TRANSACTION ||--o{ FRAUD_DECISION : "scored by"
+    TRANSACTION ||--o{ FEATURE_VALUE : "has features"
+    FRAUD_DECISION ||--o{ CASE_REVIEW : "reviewed as"
+    MODEL_VERSION ||--o{ FRAUD_DECISION : "used"
+
+    TRANSACTION {
+      string transaction_id PK
+      string card_id FK
+      string user_id
+      string merchant_id
+      decimal amount
+      string currency
+      datetime created_at
+      string ip_address
+    }
+    FRAUD_DECISION {
+      string decision_id PK
+      string transaction_id FK
+      string model_version FK
+      enum decision allow_challenge_block_review
+      decimal risk_score
+      json rules_triggered
+      datetime created_at
+    }
+    FEATURE_VALUE {
+      string feature_id PK
+      string entity_id
+      string feature_name
+      decimal value
+      datetime updated_at
+    }
+    CASE_REVIEW {
+      string case_id PK
+      string decision_id FK
+      enum analyst_decision fraud_legitimate
+      string notes
+      datetime reviewed_at
+    }
+</code></pre>
+<p><strong>Entity descriptions:</strong></p>
+<ul>
+<li>
+<p><strong>TRANSACTION:</strong> Core fact entity. <code>transaction_id</code> (UUID), <code>card_id</code> (FK to card vault), <code>user_id</code>, <code>merchant_id</code>, <code>amount</code>, <code>currency</code>, <code>created_at</code>, <code>ip_address</code>. Stored in a durable OLTP database (PostgreSQL) for replay and in Kafka for streaming. Partitioned by <code>card_id</code> hash for fan-out of velocity feature updates.</p>
+</li>
+<li>
+<p><strong>FRAUD_DECISION:</strong> The output of the scoring pipeline. <code>decision_id</code> (UUID), <code>transaction_id</code> (FK), <code>model_version</code> (FK to track which model produced the score), <code>decision</code> (enum: allow, challenge, block, review), <code>risk_score</code> (decimal 0.0–1.0), <code>rules_triggered</code> (JSON array of rule names + descriptions for explainability), <code>created_at</code>. Stored in both a durable store (for audit) and the event log (for streaming).</p>
+</li>
+<li>
+<p><strong>FEATURE_VALUE:</strong> Real-time aggregated features stored in the online feature store. <code>feature_id</code> (composite: entity_id + feature_name), <code>entity_id</code> (card_id, user_id, device_id, or IP), <code>feature_name</code> (e.g., <code>velocity_5min</code>, <code>geo_distance_from_home</code>, <code>hourly_amount_sum</code>), <code>value</code> (decimal), <code>updated_at</code> (timestamp of last stream-processed update). Served from Redis at scoring time with sub-second TTL.</p>
+</li>
+<li>
+<p><strong>CASE_REVIEW:</strong> Analyst-labeled outcomes used for the feedback loop. <code>case_id</code> (UUID), <code>decision_id</code> (FK to FRAUD_DECISION), <code>analyst_decision</code> (enum: fraud, legitimate), <code>notes</code> (free-text explanation), <code>reviewed_at</code>. Stored in a relational DB (PostgreSQL) for auditability; exported to the training data pipeline.</p>
+</li>
+<li>
+<p><strong>MODEL_VERSION:</strong> Metadata about trained ML models. <code>model_version</code> (string, e.g., "fraud-v3-2025-01-15"), <code>training_run_id</code>, <code>created_at</code>, <code>features_used</code> (JSON list of feature names), <code>metrics_json</code> (precision, recall, AUC, FPR, FNR), <code>is_active</code> (boolean). Stored in a model registry (MLflow or a simple PostgreSQL table).</p>
+</li>
+</ul>
+<p><strong>Indexes and Constraints:</strong></p>
+<ul>
+<li><code>TRANSACTION.transaction_id</code> — PRIMARY KEY (UUID for even distribution).</li>
+<li><code>TRANSACTION.card_id</code> — INDEX (for velocity feature computation via stream processor).</li>
+<li><code>TRANSACTION.user_id</code> — INDEX (for user-level aggregation).</li>
+<li><code>FRAUD_DECISION.transaction_id</code> — INDEX (for audit lookup by transaction).</li>
+<li><code>FRAUD_DECISION.decision</code> — INDEX (for filtering flagged transactions).</li>
+<li><code>FEATURE_VALUE.feature_id</code> — PRIMARY KEY (composite of entity_id + feature_name).</li>
+<li><code>CASE_REVIEW.decision_id</code> — INDEX (for joining reviews to decisions).</li>
+<li><code>MODEL_VERSION.model_version</code> — PRIMARY KEY.</li>
+</ul>
+<p><strong>Partitioning / Sharding:</strong></p>
+<ul>
+<li><strong>TRANSACTION:</strong> Sharded by <code>transaction_id</code> hash; secondary index on <code>card_id</code> hash for time-windowed aggregations.</li>
+<li><strong>FRAUD_DECISION:</strong> Sharded by <code>transaction_id</code> hash; co-located with TRANSACTION for join queries.</li>
+<li><strong>FEATURE_VALUE:</strong> Stored in Redis, sharded by <code>entity_id</code> hash across Redis cluster nodes. TTL-based expiration for velocity features (e.g., 5-minute counters expire after 10 minutes).</li>
+<li><strong>CASE_REVIEW:</strong> Sharded by <code>decision_id</code> hash; read-heavy queries from the retraining pipeline.</li>
+<li><strong>MODEL_VERSION:</strong> Small table, not sharded (few active models).</li>
+</ul>
+<p><strong>Feature store partitioning:</strong> By entity_id (card_id/user_id hash); TTL for velocity features.</p>
+<hr/>
+<h3 id="benefits">Benefits</h3>
+<ul>
+<li><strong>Fraud loss prevention</strong>: Real-time blocking stops fraudulent transactions before authorization, saving the full transaction value.</li>
+<li><strong>Chargeback reduction</strong>: Catching fraud at the scoring stage means fewer chargebacks filed, avoiding fees and representment work.</li>
+<li><strong>Customer trust</strong>: Blocking fraudulent use of stolen cards protects legitimate customers' accounts.</li>
+<li><strong>Regulatory compliance</strong>: PCI-DSS, PSD2, and other frameworks require fraud monitoring for financial institutions.</li>
+<li><strong>False-positive cost containment</strong>: A well-tuned hybrid system minimizes false blocks, preserving legitimate conversion revenue.</li>
+</ul>
+<hr/>
+<h3 id="fraud-detection-pipeline-deep-dive">Fraud Detection Pipeline Deep Dive</h3>
+<p>This deep dive covers the real-time scoring path, the hybrid rules + ML decision aggregation, the real-time feature store architecture, the shadow-mode evaluation framework, the feedback loop from analyst decisions to model retraining, and the explainability layer that makes every decision auditable.</p>
+<h4 id="latency-budgeted-scoring-path">Latency Budgeted Scoring Path</h4>
+<p>A typical fraud scoring flow with target budgets:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>1. Extract transaction context       ~1 ms   (cached lookup)
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>2. Fetch real-time velocity features  ~3 ms   (Redis read)
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>3. Evaluate hard rules                ~1 ms   (blocklist, velocity caps)
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>4. ML model inference                  ~15 ms  (ONNX Runtime / TensorFlow Lite)
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>5. Aggregate decision                  ~2 ms   (rule result + ML score + policy)
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>6. Log decision + event                ~3 ms   (async Kafka produce)
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>────────────────
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>Total (p95)                           &lt; 30 ms
+</code></pre></div>
+<p>The ML inference dominates; everything else is sub-millisecond and runs synchronously, while logging and audit events are emitted asynchronously.</p>
+<h4 id="decision-aggregation">Decision Aggregation</h4>
+<p>Rules and ML are evaluated <strong>in parallel</strong>, then combined by the Decision Aggregator:</p>
+<ul>
+<li><strong>Rules result</strong>: <code>BLOCK</code> (hard block, instant), <code>WARN</code> (elevated risk), or <code>PASS</code> (no rule matched).</li>
+<li><strong>ML risk score</strong>: a float in [0.0, 1.0] produced by the current model version.</li>
+<li><strong>Decision policy</strong>:</li>
+<li>Rule <code>BLOCK</code> → <code>BLOCK</code> instantly (ML skipped).</li>
+<li>ML score ≥ 0.9 → <code>CHALLENGE</code> (step-up auth required).</li>
+<li>ML score ≤ 0.3 → <code>ALLOW</code>.</li>
+<li>Otherwise → <code>REVIEW</code> (manual queue) or <code>CHALLENGE</code> based on business policy.</li>
+</ul>
+<pre class="mermaid"><code>flowchart TD
+    Txn[Transaction] --&gt; Split{Split}
+    Split --&gt; Rules[Rules Engine]
+    Split --&gt; ML[ML Scoring Service]
+    Rules --&gt; Dec[Decision Aggregator]
+    ML --&gt; Dec
+    Dec --&gt; |BLOCK| Out1[Block]
+    Dec --&gt; |CHALLENGE| Out2[Challenge]
+    Dec --&gt; |ALLOW| Out3[Allow]
+    Dec --&gt; |REVIEW| Out4[Review Queue]
+    Out4 --&gt; RL[Retraining Pipeline]
+    Out4 --&gt; FB[Feedback Loop]
+</code></pre>
+<p><em>Decision aggregation: rules and ML scoring run in parallel against the same transaction. The Decision Aggregator applies the policy matrix. CHALLENGE may trigger step-up authentication or additional verification. REVIEW sends the transaction to a manual case queue, whose resolutions feed back into retraining.</em></p>
+<h4 id="real-time-feature-store_1">Real-Time Feature Store</h4>
+<p>Velocity features (e.g., "transactions from this card in the last 5 minutes") require sub-second freshness. The architecture keeps these pre-aggregated:</p>
+<pre class="mermaid"><code>flowchart LR
+    TxnStream[Transaction Stream - Kafka] --&gt; SP[Stream Processor - Flink]
+    SP --&gt; RF[Rolling Feature Aggregates]
+    RF --&gt; RS[Online Feature Store - Redis]
+    ScoringService --&gt; RS
+    RS --&gt; |get features| ScoringService
+    RS --&gt; |ttl| TTL[Expiring counters]
+</code></pre>
+<p><em>A Flink stream processor consumes the transaction event log, computes rolling-window aggregates (counts, sums, averages per entity), and writes them to an online feature store (Redis). At scoring time, the Feature Service reads pre-aggregated features with sub-millisecond latency.</em></p>
+<h4 id="shadow-mode-evaluation">Shadow Mode Evaluation</h4>
+<p>New models are evaluated alongside production in <strong>shadow mode</strong> — the model produces a score and prediction, but the production decision is unchanged. Shadow metrics (precision, recall, AUC) are compared against production for weeks before any cutover:</p>
+<pre class="mermaid"><code>flowchart LR
+    Txn[Transaction] --&gt; Scoring[Scoring Pipeline]
+    Scoring --&gt; Prod[Production Model]
+    Scoring --&gt; Shadow[Shadow Model]
+    Prod --&gt; Decision[Production Decision]
+    Shadow --&gt; ShadowMetrics[Shadow Metrics Store]
+    Decision --&gt; AuditLog[Audit Store]
+    ShadowMetrics --&gt; Compare[Compare vs Prod]
+</code></pre>
+<p><em>In shadow mode, the new model runs alongside production — its score and prediction are computed and stored, but the live decision follows the production model. Shadow metrics (precision, recall, AUC) are accumulated and compared against production over weeks before any cutover.</em></p>
+<h4 id="feedback-loop">Feedback Loop</h4>
+<p>Confirmed fraud/legit labels flow from analyst decisions → case review → labeled dataset → nightly retraining:</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant GW as Gateway
+    participant RS as Rules Engine
+    participant ML as ML Scoring
+    participant DA as Decision Aggregator
+    participant KV as Feature Store
+    participant EL as Event Log
+
+    GW-&gt;&gt;GW: Receive transaction
+    par Parallel Scoring
+        GW-&gt;&gt;RS: Evaluate rules
+        RS-&gt;&gt;KV: Blocklist + velocity check
+        KV--&gt;&gt;RS: Rule results
+        RS--&gt;&gt;GW: RulesResult
+        GW-&gt;&gt;ML: Score with features
+        ML-&gt;&gt;ML: Run risk model
+        ML--&gt;&gt;GW: MLResult (risk_score)
+    end
+    GW-&gt;&gt;DA: Aggregate rules + ML
+    DA--&gt;&gt;GW: Final decision (allow/challenge/block/review)
+    Note over GW,DA: Total latency &lt; 30ms
+</code></pre>
+<hr/>
+<h3 id="replication-strategies">Replication Strategies</h3>
+<ul>
+<li><strong>Event log (Kafka)</strong>: Replication factor 3+ across AZs; mirror to secondary region for cross-region DR.</li>
+<li><strong>Feature store (Redis)</strong>: Redis Cluster with replicas per AZ; reads are locally consistent (few-second staleness acceptable for velocity features).</li>
+<li><strong>Decision/audit log (PostgreSQL)</strong>: Synchronous replication for strong consistency; required for dispute resolution.</li>
+<li><strong>Model registry</strong>: Small config table — async-replicated; model binaries stored in S3 with cross-region replication.</li>
+<li><strong>Review queue (PostgreSQL)</strong>: Async replication; eventual consistency acceptable for case visibility.</li>
+</ul>
+<hr/>
+<h3 id="failure-detection-and-membership">Failure Detection and Membership</h3>
+<ul>
+<li><strong>Feature service health check</strong>: If the online feature store is unavailable, fall back to stale-cached features (last-known aggregates for up to 5 minutes) or compute features from raw transaction DB (slower, &lt; 200ms penalty).</li>
+<li><strong>ML scoring degradation</strong>: If ML service exceeds 30ms threshold, fall back to <strong>rules-only mode</strong> (higher false negatives accepted as graceful degradation). Alert immediately.</li>
+<li><strong>Stream processor lag</strong>: Monitor consumer lag via Kafka; if &gt; 10s, alert — velocity features become stale, degrading ML quality.</li>
+<li><strong>Event log durability</strong>: Kafka replication factor ≥ 3; mirror to cold storage (S3) hourly for recovery.</li>
+<li><strong>Decision log HA</strong>: PostgreSQL with synchronous replication; WAL shipping to standby.</li>
+</ul>
+<hr/>
+<h3 id="high-availability-and-scalability">High Availability and Scalability</h3>
+<ul>
+<li><strong>Multi-AZ deployment</strong>: Rule engine, feature service, and ML scoring deployed across 3 AZs behind a load balancer.</li>
+<li><strong>Rate-based autoscaling</strong>: Horizontal pod autoscaler on transaction QPS; predict peak via historical patterns.</li>
+<li><strong>Circuit breakers</strong>: If ML scoring error rate &gt; 5%, open circuit → rules-only mode (preserve availability over precision).</li>
+<li><strong>Feature store sharding</strong>: Redis sharded by <code>entity_id</code> hash; local reads per AZ minimize cross-AZ latency.</li>
+<li><strong>Rule partitioning</strong>: Rules indexed by entity type (card-level, user-level, IP-level) so only relevant rules are evaluated per transaction.</li>
+</ul>
+<hr/>
+<h3 id="performance-and-optimization">Performance and Optimization</h3>
+<ul>
+<li><strong>Latency budget</strong>: Total scoring &lt; 30ms — rules (&lt; 2ms), feature lookup (&lt; 5ms), ML inference (&lt; 20ms). Audit logging is async.</li>
+<li><strong>Model optimization</strong>: Quantization (FP32 → INT8) for inference; ONNX Runtime for CPU-efficient serving; GPU inference for peak loads.</li>
+<li><strong>Feature caching</strong>: Pre-aggregated velocity features in Redis (sub-ms); model features pre-computed during browsing phase.</li>
+<li><strong>Rules short-circuit</strong>: Hard blocks (blocklist, velocity caps) return instantly without invoking ML — saves the 20ms inference for obvious fraud.</li>
+<li><strong>P99 tail latency</strong>: Monitor Redis P99 latency, JVM GC pauses, connection-pool exhaustion — these cause spikes from p95 (15ms) to p99 (50ms+).</li>
+</ul>
+<hr/>
+<h3 id="cap-theorem-and-consistency-trade-offs">CAP Theorem and Consistency Trade-offs</h3>
+<ul>
+<li><strong>Decision log (CP)</strong>: Fraud decisions must be strongly consistent for audit trails and dispute resolution. Use PostgreSQL with synchronous replication.</li>
+<li><strong>Feature store (AP)</strong>: Velocity features can be eventually consistent — a few seconds of staleness is acceptable. Use Redis with async replication.</li>
+<li><strong>Rule updates (CP)</strong>: Blocklists and rule thresholds must propagate globally within seconds. Use strongly consistent config store (etcd/ZooKeeper).</li>
+<li><strong>Review queue (AP)</strong>: Case reviews can be eventually consistent — analysts work from the latest available view. Async replication acceptable.</li>
+<li><strong>Event log (A)</strong>: Kafka provides partitioned ordering — transactions for the same card are processed in order, but global ordering is not guaranteed (acceptable).</li>
+</ul>
+<hr/>
+<h3 id="encryption-and-key-management">Encryption and Key Management</h3>
+<ul>
+<li><strong>PII encryption at rest</strong>: Customer name, email, device fingerprint — encrypted at the application layer with AES-256 (envelope encryption via Vault), not just DB-level.</li>
+<li><strong>Transaction data encryption</strong>: Transaction details (amount, card_id, merchant) encrypted at rest; feature values tokenized in Redis.</li>
+<li><strong>mTLS everywhere</strong>: All inter-service traffic mutually authenticated; SPIFFE/SPIRE for certificate rotation.</li>
+<li><strong>Key rotation</strong>: Master keys rotated annually; data keys rotated quarterly; automated via HashiCorp Vault or AWS KMS.</li>
+<li><strong>Vault integration</strong>: Centralized key management with full audit logging; keys never embedded in application code or config repos.</li>
+</ul>
+<hr/>
+<h3 id="authentication-and-authorization">Authentication and Authorization</h3>
+<ul>
+<li><strong>Service-to-service</strong>: mTLS + JWT (service accounts with least-privilege scopes) for inter-service authentication.</li>
+<li><strong>Admin access</strong>: OAuth 2.0 / OIDC with SSO; RBAC roles — Fraud Analyst (read decisions, resolve cases), Admin (rule/model config), Auditor (read-only audit).</li>
+<li><strong>API authentication</strong>: PSP and partner integrations use signed API keys with per-client rate limits and IP allow-lists.</li>
+<li><strong>Feature access control</strong>: Model version deployment and rule threshold changes require dual-control approval (two-party review).</li>
+<li><strong>Decision immutability</strong>: Once a fraud decision is written, it is append-only; updates create new rows (no mutation) for audit integrity.</li>
+</ul>
+<hr/>
+<h3 id="security-threats-and-mitigations">Security Threats and Mitigations</h3>
+<ul>
+<li><strong>Model poisoning</strong>: Training data validated via schema + outlier detection; full data lineage tracked; adversarial example detection at inference time.</li>
+<li><strong>Feature store tampering</strong>: Redis ACLs + encryption at rest + immutable audit log on writes; anomaly detection on feature values.</li>
+<li><strong>Replay attacks</strong>: Nonce + idempotency on transaction scoring; timestamp bounds enforced (reject transactions older than 5 min).</li>
+<li><strong>Data exfiltration</strong>: PII encrypted at rest; DLP on egress; query allow-lists on feature store (no arbitrary key scans).</li>
+<li><strong>Adversarial ML</strong>: Continuous monitoring for distributional shift; adversarial training; model rejects inputs far from training distribution.</li>
+<li><strong>Insider threat</strong>: Analyst and admin actions fully logged; dual-control for high-risk overrides; role-based separation of duties.</li>
+</ul>
+<hr/>
+<h3 id="observability-and-logging">Observability and Logging</h3>
+<ul>
+<li><strong>Scoring latency</strong>: Per-stage histograms (feature lookup, rule eval, ML inference) in Prometheus; p95 &lt; 30 ms; p99 &lt; 100 ms.</li>
+<li><strong>Decision distribution</strong>: Counters for allow/challenge/block/review, sliced by model version, region, and customer segment.</li>
+<li><strong>False positive/negative rate</strong>: Monitors per segment; alert if FP rate exceeds 0.1% or FN rate exceeds 0.01%.</li>
+<li><strong>Feature freshness</strong>: End-to-end lag between transaction event and feature store update (target &lt; 5 s); alert if &gt; 30 s.</li>
+<li><strong>Model accuracy drift</strong>: AUC, precision, recall tracked per model version; shadow-mode comparison before any cutover.</li>
+<li><strong>Rule trigger rates</strong>: Which rules fire most often (indicates tuning needed or ongoing attack).</li>
+<li><strong>Audit log</strong>: Every decision — input features, model version, rule hits, analyst overrides — logged to durable storage (S3 + Elasticsearch) for compliance and debugging.</li>
+</ul>
+<hr/>
+<h3 id="real-world-implementations">Real-World Implementations</h3>
+<ul>
+<li><strong>Stripe Radar</strong>: Rules engine + supervised ML scoring embedded in Stripe's payment API; trained on historical chargeback and dispute data. Serves Stripe's 200M+ API requests/day.</li>
+<li><strong>PayPal Risk</strong>: Two-tiered system (deterministic rules + neural networks) processing 500M+ transactions/day; deep feature engineering from behavioral signals and historical patterns.</li>
+<li><strong>Square (Block)</strong>: Real-time risk engine scoring every transaction; device fingerprinting, behavioral signals, and chargeback feedback.</li>
+<li><strong>Kount</strong>: Enterprise fraud prevention via digital identity, network intelligence, and adaptive AI; 200+ enterprise clients.</li>
+<li><strong>Sift</strong>: ML-first platform analyzing 16,000+ signals per event; real-time REST API decisions; strong focus on account-takeover detection.</li>
+<li><strong>Feedzai</strong>: Real-time ML platform for financial risk; big-data feature computation; ensemble models for ultra-low-latency scoring.</li>
+<li><strong>Adyen RevenueProtect</strong>: Combines rules, ML models, and manual review for global enterprise merchants; integrated into Adyen's payment orchestration.</li>
+</ul>
+<hr/>
+<h3 id="java-and-spring-boot-implementation-guide">Java and Spring Boot Implementation Guide</h3>
+<h4 id="dto-record-definitions">DTO / Record Definitions</h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">TransactionDto</span><span class="p">(</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">transactionId</span><span class="p">,</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">cardId</span><span class="p">,</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">userId</span><span class="p">,</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">merchantId</span><span class="p">,</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w">    </span><span class="n">BigDecimal</span><span class="w"> </span><span class="n">amount</span><span class="p">,</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">currency</span><span class="p">,</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">ip</span><span class="p">,</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">deviceFingerprint</span>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">FraudDecision</span><span class="p">(</span>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">transactionId</span><span class="p">,</span>
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a><span class="w">    </span><span class="n">DecisionType</span><span class="w"> </span><span class="n">decision</span><span class="p">,</span><span class="w"> </span><span class="c1">// ALLOW, CHALLENGE, BLOCK, REVIEW</span>
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a><span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">riskScore</span><span class="p">,</span>
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a><span class="w">    </span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">rulesTriggered</span><span class="p">,</span>
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">modelVersion</span><span class="p">,</span>
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a><span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="n">latencyMs</span>
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
+</code></pre></div>
+<h4 id="feature-service">Feature Service</h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="nd">@Service</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="nd">@RequiredArgsConstructor</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">FeatureService</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">RedisTemplate</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">redis</span><span class="p">;</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">FeatureMap</span><span class="w"> </span><span class="nf">getFeatures</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">cardId</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">userId</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">ip</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">velocityKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"velocity:5min:"</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">cardId</span><span class="p">;</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">geoKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"geo_distance:"</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">cardId</span><span class="p">;</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">userVelocityKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"velocity:user:"</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">userId</span><span class="p">;</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">FeatureMap</span><span class="p">(</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w">            </span><span class="n">redis</span><span class="p">.</span><span class="na">opsForValue</span><span class="p">().</span><span class="na">get</span><span class="p">(</span><span class="n">velocityKey</span><span class="p">),</span>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w">            </span><span class="n">redis</span><span class="p">.</span><span class="na">opsForValue</span><span class="p">().</span><span class="na">get</span><span class="p">(</span><span class="n">geoKey</span><span class="p">),</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w">            </span><span class="n">redis</span><span class="p">.</span><span class="na">opsForValue</span><span class="p">().</span><span class="na">get</span><span class="p">(</span><span class="n">userVelocityKey</span><span class="p">)</span>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="w">        </span><span class="p">);</span>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="p">}</span>
+</code></pre></div>
+<h4 id="rules-engine">Rules Engine</h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="nd">@Service</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="nd">@RequiredArgsConstructor</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">RulesEngine</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">RedisTemplate</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">redis</span><span class="p">;</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">BlocklistRepository</span><span class="w"> </span><span class="n">blocklist</span><span class="p">;</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">RuleResult</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="n">TransactionDto</span><span class="w"> </span><span class="n">txn</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">RuleResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">();</span>
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="w">        </span><span class="c1">// Hard block: known stolen card</span>
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">blocklist</span><span class="p">.</span><span class="na">exists</span><span class="p">(</span><span class="n">txn</span><span class="p">.</span><span class="na">cardId</span><span class="p">()))</span><span class="w"> </span><span class="n">results</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">RuleResult</span><span class="p">(</span><span class="s">"STOLEN_CARD"</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">));</span>
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="w">        </span><span class="c1">// Velocity cap: &gt; 5 transactions in 5 minutes</span>
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"velocity:5min:"</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">txn</span><span class="p">.</span><span class="na">cardId</span><span class="p">();</span>
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="w">        </span><span class="n">Long</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">redis</span><span class="p">.</span><span class="na">opsForValue</span><span class="p">().</span><span class="na">increment</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="w">        </span><span class="n">redis</span><span class="p">.</span><span class="na">expire</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">Duration</span><span class="p">.</span><span class="na">ofMinutes</span><span class="p">(</span><span class="mi">5</span><span class="p">));</span>
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">count</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="n">results</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">RuleResult</span><span class="p">(</span><span class="s">"VELOCITY_CAP"</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">));</span>
+<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">results</span><span class="p">;</span>
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a><span class="p">}</span>
+</code></pre></div>
+<h4 id="ml-scoring-service">ML Scoring Service</h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="nd">@Service</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="nd">@RequiredArgsConstructor</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MlScoringService</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">HttpClient</span><span class="w"> </span><span class="n">httpClient</span><span class="p">;</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">MeterRegistry</span><span class="w"> </span><span class="n">meterRegistry</span><span class="p">;</span>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">MlScore</span><span class="w"> </span><span class="nf">score</span><span class="p">(</span><span class="n">FeatureMap</span><span class="w"> </span><span class="n">features</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">timer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Timer</span><span class="p">.</span><span class="na">Sample</span><span class="p">.</span><span class="na">start</span><span class="p">(</span><span class="n">meterRegistry</span><span class="p">);</span>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">httpClient</span><span class="p">.</span><span class="na">post</span><span class="p">()</span>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="w">                </span><span class="p">.</span><span class="na">uri</span><span class="p">(</span><span class="s">"http://ml-inference:8080/score"</span><span class="p">)</span>
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="w">                </span><span class="p">.</span><span class="na">bodyValue</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="w">                </span><span class="p">.</span><span class="na">retrieve</span><span class="p">()</span>
+<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a><span class="w">                </span><span class="p">.</span><span class="na">bodyToMono</span><span class="p">(</span><span class="n">MlScore</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a><span class="w">                </span><span class="p">.</span><span class="na">block</span><span class="p">(</span><span class="n">Duration</span><span class="p">.</span><span class="na">ofMillis</span><span class="p">(</span><span class="mi">25</span><span class="p">));</span>
+<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a><span class="w">            </span><span class="n">timer</span><span class="p">.</span><span class="na">stop</span><span class="p">(</span><span class="n">Timer</span><span class="p">.</span><span class="na">builder</span><span class="p">(</span><span class="s">"ml.inference.latency"</span><span class="p">).</span><span class="na">register</span><span class="p">(</span><span class="n">meterRegistry</span><span class="p">));</span>
+<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">MlScore</span><span class="p">.</span><span class="na">degraded</span><span class="p">();</span>
+<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">TimeoutException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a><span class="w">            </span><span class="n">meterRegistry</span><span class="p">.</span><span class="na">counter</span><span class="p">(</span><span class="s">"ml.inference.timeout"</span><span class="p">).</span><span class="na">increment</span><span class="p">();</span>
+<a href="#__codelineno-7-20" id="__codelineno-7-20" name="__codelineno-7-20"></a><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">MlScore</span><span class="p">.</span><span class="na">degraded</span><span class="p">();</span>
+<a href="#__codelineno-7-21" id="__codelineno-7-21" name="__codelineno-7-21"></a><span class="w">        </span><span class="p">}</span>
+<a href="#__codelineno-7-22" id="__codelineno-7-22" name="__codelineno-7-22"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-7-23" id="__codelineno-7-23" name="__codelineno-7-23"></a><span class="p">}</span>
+</code></pre></div>
+<h4 id="decision-aggregator-controller">Decision Aggregator + Controller</h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="nd">@RestController</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="nd">@RequiredArgsConstructor</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="nd">@RequestMapping</span><span class="p">(</span><span class="s">"/fraud/v1"</span><span class="p">)</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">FraudScoreController</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">RulesEngine</span><span class="w"> </span><span class="n">rules</span><span class="p">;</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">MlScoringService</span><span class="w"> </span><span class="n">ml</span><span class="p">;</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">FeatureService</span><span class="w"> </span><span class="n">features</span><span class="p">;</span>
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">AuditLogger</span><span class="w"> </span><span class="n">audit</span><span class="p">;</span>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a><span class="w">    </span><span class="nd">@PostMapping</span><span class="p">(</span><span class="s">"/score"</span><span class="p">)</span>
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">ResponseEntity</span><span class="o">&lt;</span><span class="n">FraudDecision</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">score</span><span class="p">(</span><span class="nd">@RequestBody</span><span class="w"> </span><span class="n">TransactionDto</span><span class="w"> </span><span class="n">txn</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">System</span><span class="p">.</span><span class="na">nanoTime</span><span class="p">();</span>
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">feats</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">features</span><span class="p">.</span><span class="na">getFeatures</span><span class="p">(</span><span class="n">txn</span><span class="p">.</span><span class="na">cardId</span><span class="p">(),</span><span class="w"> </span><span class="n">txn</span><span class="p">.</span><span class="na">userId</span><span class="p">(),</span><span class="w"> </span><span class="n">txn</span><span class="p">.</span><span class="na">ip</span><span class="p">());</span>
+<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">ruleResults</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rules</span><span class="p">.</span><span class="na">evaluate</span><span class="p">(</span><span class="n">txn</span><span class="p">);</span>
+<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ruleResults</span><span class="p">.</span><span class="na">stream</span><span class="p">().</span><span class="na">anyMatch</span><span class="p">(</span><span class="n">r</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="na">block</span><span class="p">()))</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">ResponseEntity</span><span class="p">.</span><span class="na">ok</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">FraudDecision</span><span class="p">(</span><span class="n">txn</span><span class="p">.</span><span class="na">transactionId</span><span class="p">(),</span><span class="w"> </span><span class="n">DecisionType</span><span class="p">.</span><span class="na">BLOCK</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a><span class="w">                </span><span class="n">ruleResults</span><span class="p">.</span><span class="na">stream</span><span class="p">().</span><span class="na">map</span><span class="p">(</span><span class="n">RuleResult</span><span class="p">::</span><span class="n">name</span><span class="p">).</span><span class="na">toList</span><span class="p">(),</span><span class="w"> </span><span class="s">"rules-only"</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">));</span>
+<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a><span class="w">        </span><span class="p">}</span>
+<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">mlScore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ml</span><span class="p">.</span><span class="na">score</span><span class="p">(</span><span class="n">feats</span><span class="p">);</span>
+<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">decision</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aggregate</span><span class="p">(</span><span class="n">mlScore</span><span class="p">,</span><span class="w"> </span><span class="n">ruleResults</span><span class="p">);</span>
+<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a><span class="w">        </span><span class="n">audit</span><span class="p">.</span><span class="na">log</span><span class="p">(</span><span class="n">Decision</span><span class="p">.</span><span class="na">builder</span><span class="p">()</span>
+<a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a><span class="w">            </span><span class="p">.</span><span class="na">transactionId</span><span class="p">(</span><span class="n">txn</span><span class="p">.</span><span class="na">transactionId</span><span class="p">())</span>
+<a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a><span class="w">            </span><span class="p">.</span><span class="na">decision</span><span class="p">(</span><span class="n">decision</span><span class="p">)</span>
+<a href="#__codelineno-8-24" id="__codelineno-8-24" name="__codelineno-8-24"></a><span class="w">            </span><span class="p">.</span><span class="na">features</span><span class="p">(</span><span class="n">feats</span><span class="p">)</span>
+<a href="#__codelineno-8-25" id="__codelineno-8-25" name="__codelineno-8-25"></a><span class="w">            </span><span class="p">.</span><span class="na">latencyMs</span><span class="p">((</span><span class="n">System</span><span class="p">.</span><span class="na">nanoTime</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1_000_000</span><span class="p">)</span>
+<a href="#__codelineno-8-26" id="__codelineno-8-26" name="__codelineno-8-26"></a><span class="w">            </span><span class="p">.</span><span class="na">build</span><span class="p">());</span>
+<a href="#__codelineno-8-27" id="__codelineno-8-27" name="__codelineno-8-27"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ResponseEntity</span><span class="p">.</span><span class="na">ok</span><span class="p">(</span><span class="n">decision</span><span class="p">);</span>
+<a href="#__codelineno-8-28" id="__codelineno-8-28" name="__codelineno-8-28"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-8-29" id="__codelineno-8-29" name="__codelineno-8-29"></a><span class="p">}</span>
+</code></pre></div>
+<hr/>
+<h3 id="interview-questions-and-answers">Interview Questions and Answers</h3>
+<h4 id="beginner">Beginner</h4>
+<p><strong>Q1: How does a fraud detection pipeline decide whether to allow a transaction?</strong>
+<strong>A:</strong> It evaluates two parallel paths — a rules engine for known patterns (blocklists, velocity caps) and an ML model for risk scoring. The Decision Aggregator combines both via a policy matrix: rules BLOCK returns instantly; ML scores below 0.3 allow, above 0.9 challenge, and in-between route to manual review.</p>
+<p><strong>Q2: Why use a real-time feature store instead of computing features on-the-fly?</strong>
+<strong>A:</strong> Velocity features like "transactions in the last 5 minutes" require scanning recent transaction history — this takes too long (&gt;1s) for a 30ms scoring budget. Pre-aggregating in Redis gives sub-millisecond lookups.</p>
+<p><strong>Q3: What is shadow mode?</strong>
+<strong>A:</strong> New models run alongside production — they produce scores and predictions that are logged but don't affect live decisions. Shadow metrics (precision, recall, AUC) are compared against production before cutover.</p>
+<h4 id="intermediate">Intermediate</h4>
+<p><strong>Q4: Design a feature store that updates velocity counts every second.</strong>
+<strong>A:</strong> Use Kafka Streams or Flink to consume the transaction event log, compute tumbling-window aggregates per entity (card, user, device), and write to Redis with a TTL matching the window (e.g., 5 min counter expires after 5 min). Use Redis Streams for ordered processing.</p>
+<p><strong>Q5: How do you handle model drift?</strong>
+<strong>A:</strong> Monitor scoring distribution (if risk scores suddenly shift), false-positive/negative rates, and AUC per model version. Set up data and concept drift detectors. Use shadow mode for new models; retrain on a schedule (daily/hourly) with concept-drift-triggered retraining.</p>
+<p><strong>Q6: What happens when the ML service is too slow?</strong>
+<strong>A:</strong> Circuit breaker falls back to rules-only mode (higher false negatives but preserves availability). Alert on latency degradation. Auto-scale ML pods on CPU/memory pressure.</p>
+<p><strong>Q7: How do you prevent model poisoning?</strong>
+<strong>A:</strong> Feature validation (schema + outlier detection), data lineage tracking, adversarial example detection at inference, and dual-control for training data changes.</p>
+<h4 id="advanced">Advanced</h4>
+<p><strong>Q8: Design a distributed feature store for 10M QPS.</strong>
+<strong>A:</strong> Partition by entity_id hash across Redis clusters in each AZ. Use consistent hashing for scaling. Local cache per AZ for hot features. Stream processor (Flink) pre-aggregates and writes to the correct shard. Handle cross-DC replication for DR. Use bloom filters for existence checks.</p>
+<p><strong>Q9: How would you design the feedback loop for continuous learning?</strong>
+<strong>A:</strong> Analyst-confirmed labels → case review DB → feature extraction pipeline → labeled dataset → trigger retraining → A/B test new model in shadow mode → promote if metrics improve → deploy. Use feature store for consistent training/serving feature computation.</p>
+<p><strong>Q10: How do you handle adversarial attacks on the ML model?</strong>
+<strong>A:</strong> Train with adversarial examples (FGSM, PGD), monitor for distributional shift at inference, reject inputs far from training data (Mahalanobis distance), ensemble multiple models for robustness, and implement rate-limiting on suspicious patterns.</p>
+<h4 id="senior-system-design">Senior / System Design</h4>
+<p><strong>Q11: Design Stripe Radar-scale fraud detection (200M API requests/day).</strong>
+<strong>A:</strong> Multi-region: ingest layer (Kafka + Protobuf) → feature enrichment (Spark/Flink + Redis) → scoring tier (model serving cluster: TF Serving + custom C++ for rules) → decision sink (hot store + cold store). Key challenges: feature freshness at scale, model cold starts, multi-region consistency, shadow-mode for thousands of model variants, and explainability serving.</p>
+<p><strong>Q12: How do you balance false positives vs. false negatives?</strong>
+<strong>A:</strong> Business-driven threshold tuning — measure revenue impact of false declines vs. chargeback costs. Use per-segment thresholds (high-value customers get lower false-positive tolerance). Implement progressive challenge (step-up auth) instead of flat block. Track LIFT (lift in detection rate over random) per segment.</p>
+<p><strong>Q13: Design a fraud detection system for account takeover (ATO).</strong>
+<strong>A:</strong> Behavioral biometrics (typing rhythm, mouse movements, device fingerprinting) + session analysis (IP change velocity, unusual navigation). Real-time signal fusion with the transaction pipeline. Account recovery must also be secured (MFA, recovery codes). Key tension: security vs. user friction on legitimate logins.</p>
+<p><strong>Q14: How would you scale the streaming feature computation pipeline?</strong>
+<strong>A:</strong> Kafka + Flink with keyed state per entity. Scale Flink taskmanagers by key-group parallelism. Use RocksDB state backend for large windows. Handle state size via TTL and incremental checkpoints. Monitor backpressure and waterAR</p>
+<p>Common mistakes:
+- Computing features from raw events at scoring time (too slow).
+- No fallback path for ML degradation (system becomes unavailable).
+- Shadow mode without statistical significance check (promoting based on noisy shadow data).
+- No explainability (regulatory non-compliance, debugging nightmare).</p>
+<p>Follow-up questions:
+- How would you detect collusion attacks across multiple accounts?
+- How do you handle feature stores when some features come from slow batch pipelines?</p>
+<hr/>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      © 2025 <a href="https://github.com/abhishekghoshh" rel="noopener" target="_blank">Abhishek Ghosh</a>
+</div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+<div class="md-social">
+<a class="md-social__link" href="https://github.com/abhishekghoshh" rel="noopener" target="_blank" title="github.com">
+<svg viewbox="0 0 480 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"></path></svg>
+</a>
+<a class="md-social__link" href="https://x.com/abhishek_ghoshh" rel="noopener" target="_blank" title="x.com">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253"></path></svg>
+</a>
+<a class="md-social__link" href="https://www.linkedin.com/in/abhishek-ghosh-220679132/" rel="noopener" target="_blank" title="www.linkedin.com">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5m282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"></path></svg>
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../../../..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy"], "search": "../../../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+<script src="../../../../../assets/javascripts/bundle.60a45f97.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+window.mermaidConfig = {default: {
+    startOnLoad: false
+}};</script></body>
+</html>
